@@ -1,0 +1,15 @@
+<package>
+  <description brief="amigo_base_controller">
+
+     amigo_base_controller_dev
+
+  </description>
+  <author>Tim Clephas</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/amigo_base_controller</url>
+  <depend package="orocos_components"/>
+
+</package>
+
+

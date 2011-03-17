@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="base_controller" pkg="ocl" type="deployer-gnulinux" args="-s $(find amigo_base_controller)/ROStopics.ops -s $(find amigo_base_controller_dev)/deploy.ops --"></node>           
+  <!--launch-prefix="konsole -e"-->
+</launch>

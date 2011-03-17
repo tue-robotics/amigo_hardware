@@ -1,0 +1,11 @@
+program ROStopics {
+var ConnPolicy cmd_vel;
+cmd_vel.size = 1;
+cmd_vel.transport = 3;
+cmd_vel.name_id = "cmd_vel";
+
+var ConnPolicy battery;
+battery.size = 1;
+battery.transport = 3;
+battery.name_id = "battery";
+}
