@@ -1,0 +1,62 @@
+setPeriod(0.1);
+runScript("ROStopics.ops");
+ROStopics.start;
+
+import("amigo_spindle_controller_dev");
+loadComponent("SpindleController","SpindleController");
+#SpindleController.setPeriod(0.004)
+
+loadComponent("Soem","soem_master::SoemMasterComponent")
+Soem.configure
+Soem.setPeriod(0.001)
+
+loadComponent("DigitalOuts","DigitalOuts")
+DigitalOuts.configure
+loadComponent("AnalogOuts","AnalogOuts")
+AnalogOuts.configure
+AnalogOuts.max_volt = array(0.0, 0.0, 0.0, 0.0, 1.1, 0.0, 0.0, 0.0)
+
+loadComponent("ReadSpindleEncoder","ReadEncoders")
+ReadSpindleEncoder.setPeriod(0.004)
+#loadService("ReadSpindleEncoder","rosparam")
+#ReadSpindleEncoder.rosparam.refreshProperties()
+ReadSpindleEncoder.encoderbits = 65536
+ReadSpindleEncoder.enc2SI = array (4.1666667e-7)
+ReadSpindleEncoder.configure
+
+
+connect ("Soem.Slave_1006.Slave_1006_value","ReadSpindleEncoder.enc1_in", ConnPolicy() )
+connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
+connect ("SpindleController.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
+connect ("SpindleController.read_encoders","ReadSpindleEncoder.out", ConnPolicy() )
+connect ("SpindleController.volt_out","AnalogOuts.spindle", ConnPolicy() )
+connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() )
+
+Soem.start
+DigitalOuts.start
+AnalogOuts.start
+ReadSpindleEncoder.start
+
+#Reading and initializing parameter values
+loadService("SpindleController","marshalling")
+SpindleController.marshalling.readProperties("spindle_parameters.cpf")
+
+#Setting up ROS-topics
+stream("SpindleController.spindle_setpoint",ROStopics.spindle_setpoint);
+stream("SpindleController.spindle_position",ROStopics.spindle_position);
+stream("SpindleController.pos_after_homing",ROStopics.spindle_setpoint);
+
+#Setting up reporting
+loadComponent("Reporter", "OCL::FileReporting")
+addPeer("Reporter","SpindleController")
+Reporter.reportPort("SpindleController","check_volt_out")
+Reporter.reportPort("SpindleController","current_position")
+Reporter.reportPort("SpindleController","pos_ref")
+Reporter.reportPort("SpindleController","error_pos")
+Reporter.reportPort("SpindleController","vel_ref")
+Reporter.reportPort("SpindleController","acc_ref")
+Reporter.reportPort("SpindleController","noise")
+Reporter.reportPort("SpindleController","control_output")
+Reporter.start
+
+SpindleController.configure

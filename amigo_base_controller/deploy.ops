@@ -1,3 +1,5 @@
+# DEPRECATED, TRY NOT TO USE THIS FILE BUT BASE_CONTROLLER.OPS !
+
 var double Ts = 0.004
 
 var double WHEELRAD = 0.075*0.9825; # Corrected for effective wheel radius
@@ -48,8 +50,7 @@ loadComponent("ReadReferenceVelocities","MSG::ReadTwistMsg")
 #loadService("ReadReferenceVelocities","rosparam")
 #ReadReferenceVelocities.rosparam.refreshProperties()
 ReadReferenceVelocities.max_start_vel = 0.1
-ReadReferenceVelocities.max_vel = array (0.5, 0.5, 1.0)
-ReadReferenceVelocities.max_acc = array (0.25, 0.15, 0.1)
+ReadReferenceVelocities.max_acc = array (0.5, 0.5, 1.0)
 ReadReferenceVelocities.max_interval = 1.0
 #Setting up ROS-topics
 stream("ReadReferenceVelocities.cmd_vel",ROStopics.cmd_vel);
@@ -73,7 +74,7 @@ CalculateErrors.configure
 loadComponent("Controller_Gains","MATH::Gains")
 connect ("CalculateErrors.out","Controller_Gains.in", ConnPolicy() )
 Controller_Gains.vectorsize = 3;
-Controller_Gains.gain = array (100.0, 100.0, 50.0)
+Controller_Gains.gain = array (100.0, 100.0, 40.0)
 Controller_Gains.configure
 
 ### LEADLAG ###
@@ -90,7 +91,7 @@ loadComponent("SecondOrderLowPass","FILTERS::SecondOrderLowPasses")
 connect ("LeadLag.out","SecondOrderLowPass.in", ConnPolicy() )
 SecondOrderLowPass.vector_size = 3;
 SecondOrderLowPass.sampling_time = Ts
-SecondOrderLowPass.pole_frequency = array (100.0, 100.0, 100.0)
+SecondOrderLowPass.pole_frequency = array (50.0, 50.0, 30.0)
 SecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7)
 SecondOrderLowPass.configure
 
@@ -134,13 +135,26 @@ AnalogOuts.max_volt = array ( 1.5, 1.5, 1.5, 1.5, 0.5, 0.0, 0.0, 0.0 )
 connect ("SI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Volt
 connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
 
+#### BATTERY
+#stream("Soem.Slave_100e.values",RosTopics.battery)
+
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
+BaseSafety.max_velocities = array (0.5, 0.5, 1.0)
 BaseSafety.max_errors = array ( 0.15, 0.15, 0.15 )
 BaseSafety.max_voltage = 1.3
+connect ("ReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
 connect ("CalculateErrors.out", "BaseSafety.error", ConnPolicy() )
 connect ("SI2Volt.out", "BaseSafety.voltage", ConnPolicy() )
 BaseSafety.configure
+
+
+#### LOAD COMPONENT TO PUBLISH ODOMETRY ###
+loadComponent("Odometry","AMIGO::PublishOdometry")
+connect ("DecouplePosition.out", "Odometry.pos", ConnPolicy() )
+stream("Odometry.odom",ROStopics.odom);
+Odometry.configure
+Odometry.setPeriod(0.05)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
 loadComponent("DigitalOuts","DigitalOuts")
@@ -157,8 +171,18 @@ addPeer("Reporter","Vel2Pos")
 Reporter.reportPort("Vel2Pos","out")
 addPeer("Reporter","ReadWheelEncoders")
 Reporter.reportPort("ReadWheelEncoders","out")
+addPeer("Reporter","DecouplePosition")
+Reporter.reportPort("DecouplePosition","out")
 addPeer("Reporter","CalculateErrors")
 Reporter.reportPort("CalculateErrors","out")
+addPeer("Reporter","SecondOrderLowPass")
+Reporter.reportPort("SecondOrderLowPass","out")
+addPeer("Reporter","FeedForward")
+Reporter.reportPort("FeedForward","out")
+addPeer("Reporter","Sum")
+Reporter.reportPort("Sum","out")
+addPeer("Reporter","SI2Volt")
+Reporter.reportPort("SI2Volt","out")
 Reporter.ReportFile = "/home/amigo/reports.dat"
 
 ReadReferenceVelocities.start
@@ -177,6 +201,7 @@ Sum.start
 DecoupleForce.start
 SI2Volt.start
 BaseSafety.start
+Odometry.start
 DigitalOuts.start
 AnalogOuts.start
 

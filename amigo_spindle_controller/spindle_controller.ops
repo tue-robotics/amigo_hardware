@@ -1,0 +1,51 @@
+loadComponent("SpindleController","SpindleController");
+
+loadComponent("ReadSpindleEncoder","ReadEncoders")
+ReadSpindleEncoder.setPeriod(0.004)
+ReadSpindleEncoder.encoderbits = 65536
+ReadSpindleEncoder.enc2SI = array (4.1666667e-7)
+ReadSpindleEncoder.configure
+
+connect ("Soem.Slave_1006.Slave_1006_value","ReadSpindleEncoder.enc1_in", ConnPolicy() )
+connect ("SpindleController.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
+connect ("SpindleController.read_encoders","ReadSpindleEncoder.out", ConnPolicy() )
+connect ("SpindleController.volt_out","AnalogOuts.spindle", ConnPolicy() )
+
+ReadSpindleEncoder.start
+
+#Reading and initializing parameter values
+#loadService("SpindleController","marshalling")
+#SpindleController.marshalling.readProperties("spindle_parameters.cpf")
+
+SpindleController.Gain_value = 15
+SpindleController.add_noise = false
+SpindleController.max_noise = 0.0
+SpindleController.Ref_position = 0.0
+SpindleController.Max_vel = 0.1
+SpindleController.Max_acc = 0.1
+#SpindleController.controller_numa = 39.99
+#SpindleController.controller_numb = -39.74
+#SpindleController.controller_dena = 1.0
+#SpindleController.controller_denb = -0.9752
+#SpindleController.grav_FFW = 0.07
+#SpindleController.statFric_FFW = 0.05
+#SpindleController.dynFric_FFW = 0.4
+
+#Setting up ROS-topics
+stream("SpindleController.spindle_setpoint",ROStopics.spindle_setpoint);
+stream("SpindleController.spindle_position",ROStopics.spindle_position);
+stream("SpindleController.pos_after_homing",ROStopics.spindle_setpoint);
+
+#Setting up reporting
+addPeer("Reporter","SpindleController")
+Reporter.reportPort("SpindleController","check_volt_out")
+Reporter.reportPort("SpindleController","current_position")
+Reporter.reportPort("SpindleController","pos_ref")
+Reporter.reportPort("SpindleController","error_pos")
+Reporter.reportPort("SpindleController","vel_ref")
+Reporter.reportPort("SpindleController","acc_ref")
+Reporter.reportPort("SpindleController","noise")
+Reporter.reportPort("SpindleController","control_output")
+
+SpindleController.configure
+SpindleController.start

@@ -9,6 +9,8 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/amigo_base_controller</url>
   <depend package="orocos_components"/>
+  <depend package="tf"/>
+  <depend package="rtt_ros_integration_nav_msgs"/>
 
 </package>
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<properties>
+  <simple name="WriteHeader" type="boolean">
+    <description>Set to true to start each report with a header.</description><value>1</value>
+  </simple>
+  <simple name="Decompose" type="boolean">
+    <description>Set to false in order to create multidimensional array in netcdf</description><value>0</value>
+  </simple>
+  <simple name="Synchronize" type="boolean">
+    <description>Set to true if the timestamp should be synchronized with the logging</description><value>1</value>
+  </simple>
+  <simple name="ReportFile" type="string">
+    <description>Location ondisc to store the reports.</description><value>$(find amigo_spindle_controller_dev)/reports.dat</value>
+  </simple>
+
+  <struct name="ReportData" type="PropertyBag">
+     <description>A PropertyBag which defines which ports or components to report.</description>
+     <!--<simple name="Component" type="string">
+        <description>Report all output ports of this component.</description><value>BaseController</value>
+     </simple>-->
+     <simple name="Port" type="string"><value>SpindleController.error_pos</value></simple>
+  </struct>
+</properties>
+
+
+
+
+

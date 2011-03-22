@@ -32,11 +32,13 @@ namespace AMIGO
     typedef vector<double> doubles;
 
     /* Declaring and output port*/
+    InputPort<doubles> refport;
     InputPort<doubles> errorport;
     InputPort<doubles> voltport;
     OutputPort<bool> outport;
 
     /* Declaring property variables */
+    doubles max_velocities;
     doubles max_errors;
     double max_voltage;
 

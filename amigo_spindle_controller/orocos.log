@@ -1,0 +1,3388 @@
+0.000 [ Info   ][Logger] No ORO_LOGLEVEL environment variable set.
+0.000 [ Info   ][Logger]  OROCOS version '2.2.1' compiled with GCC 4.4.3. Running in GNU/Linux.
+0.000 [ Info   ][Logger] Orocos Logging Activated at level : [ Warning] ( 4 ) 
+0.000 [ Info   ][Logger] Reference System Time is : 1298992965436510891 ticks ( 1.29899e+09 seconds ).
+0.000 [ Info   ][Logger] Logging is relative to this time.
+0.000 [ Info   ][Logger] Real-time memory: 17232 bytes free of 20480 allocated.
+0.001 [ Info   ][Logger] Setting OCL factory for real-time logging
+0.001 [ Info   ][Logger] RTT_COMPONENT_PATH was set to: /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos:/opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos . Searching in: /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos:/opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos:/tmp/buildd/ros-diamondback-orocos-toolchain-ros-0.2.1/debian/ros-diamondback-orocos-toolchain-ros/opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos
+0.001 [ Info   ][Logger] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos/plugins ...
+0.002 [ Info   ][Logger] Loaded RTT Service 'marshalling' from 'rtt-marshalling-gnulinux'
+0.002 [ Info   ][Logger] Loaded RTT Service 'scripting' from 'rtt-scripting-gnulinux'
+0.002 [ Info   ][Logger] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/plugins ...
+0.008 [ Info   ][Logger] Loaded RTT Service 'os' from 'os-gnulinux'
+0.069 [ Info   ][Logger] Loaded RTT Service 'Lua' from 'rttlua-plugin-gnulinux'
+0.074 [ Info   ][Logger] Loaded RTT Service 'print' from 'print-gnulinux'
+0.075 [ Info   ][Logger] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos/types ...
+0.283 [ Info   ][TypekitRepository::Import] Loading Typekit rtt-types.
+0.317 [ Info   ][Logger] Loaded RTT TypeKit/Transport 'rtt-types' from 'rtt-typekit-gnulinux'
+0.343 [ Info   ][TypekitRepository::Import] Loading Transport mqueue://rtt-types.
+0.343 [ Info   ][TypekitRepository::Import] Registered new 'mqueue' transport for array
+0.343 [ Info   ][TypekitRepository::Import] Registered new 'mqueue' transport for bool
+0.343 [ Info   ][TypekitRepository::Import] Registered new 'mqueue' transport for char
+0.343 [ Info   ][TypekitRepository::Import] Registered new 'mqueue' transport for double
+0.344 [ Info   ][TypekitRepository::Import] Registered new 'mqueue' transport for float
+0.344 [ Info   ][TypekitRepository::Import] Registered new 'mqueue' transport for int
+0.344 [ Info   ][TypekitRepository::Import] Registered new 'mqueue' transport for uint
+0.344 [ Info   ][Logger] Loaded RTT TypeKit/Transport 'rtt-mqueue-transport' from 'rtt-transport-mqueue-gnulinux'
+0.344 [ Info   ][Logger] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/types ...
+0.378 [ Info   ][TypekitRepository::Import] Loading Typekit OCLTypekit.
+0.382 [ Info   ][Logger] Loaded RTT TypeKit/Transport 'OCLTypekit' from 'ocl-gnulinux'
+0.382 [ Info   ][Thread] Creating Thread for scheduler: 0
+0.382 [ Info   ][Deployer] Thread created with scheduler type '0', priority 0 and period 0.
+0.383 [ Info   ][Thread] Creating Thread for scheduler: 0
+0.383 [ Info   ][GlobalEngine] Thread created with scheduler type '0', priority 0 and period 0.
+0.385 [ Info   ][DeploymentComponent::configure] RTT_COMPONENT_PATH was set to /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos:/opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos
+0.385 [ Info   ][DeploymentComponent::configure] Re-scanning for plugins and components...
+0.385 [ Info   ][DeploymentComponent::configure] Importing component libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos ...
+0.385 [ Info   ][DeploymentComponent::configure] Importing plugins and typekits from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos ...
+0.385 [ Info   ][DeploymentComponent::configure] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos/types ...
+0.386 [ Info   ][DeploymentComponent::configure] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt/install/lib/orocos/plugins ...
+0.386 [ Info   ][DeploymentComponent::configure] Importing component libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos ...
+0.395 [ Info   ][DeploymentComponent::configure] Loaded component type 'OCL::HelloWorld'
+0.402 [ Info   ][DeploymentComponent::configure] Loaded multi component library '/opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/liborocos-logging-gnulinux.so'
+0.410 [ Info   ][DeploymentComponent::configure] Loaded multi component library '/opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/liborocos-reporting-gnulinux.so'
+0.414 [ Info   ][DeploymentComponent::configure] Loaded component type 'OCL::LuaComponent'
+0.426 [ Info   ][DeploymentComponent::configure] Loaded multi component library '/opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/liborocos-timer-gnulinux.so'
+0.434 [ Info   ][DeploymentComponent::configure] Loaded multi component library '/opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/liborocos-ocl-common-gnulinux.so'
+0.434 [ Info   ][DeploymentComponent::configure] Importing plugins and typekits from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos ...
+0.434 [ Info   ][DeploymentComponent::configure] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/types ...
+0.434 [ Info   ][DeploymentComponent::configure] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/ocl/install/lib/orocos/plugins ...
+0.435 [ Info   ][Logger] Loading Service or Plugin scripting in TaskContext Deployer
+0.439 [ Info   ][Logger] Found complete interface of requested service 'scripting'
+0.450 [ Info   ][Logger] Running Script deploy.ops ...
+0.456 [ Info   ][ScriptingService] Running Script ROStopics.ops ...
+0.463 [ Info   ][ScriptingService] Loading Program 'ROStopics'
+0.497 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /home/s060883/ros/soem/soem_master/lib/orocos ...
+0.573 [ Info   ][DeploymentComponent::import] Loaded component type 'soem_master::SoemMasterComponent'
+0.573 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /home/s060883/ros/soem/soem_master/lib/orocos ...
+0.676 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration/lib/orocos ...
+0.676 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration/lib/orocos ...
+0.676 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration/lib/orocos/types ...
+1.322 [ Info   ][TypekitRepository::Import] Loading Typekit ros-primitives.
+1.324 [ Warning][TypekitRepository::Import] Overriding TypeInfo for 'int' with 'int32'.
+1.325 [ Warning][TypekitRepository::Import] Overriding TypeInfo for 'ints' with 'int32[]'.
+1.325 [ Warning][TypekitRepository::Import] Overriding TypeInfo for 'uint' with 'uint32'.
+1.327 [ Warning][TypekitRepository::Import] Overriding TypeInfo for 'float' with 'float32'.
+1.328 [ Warning][TypekitRepository::Import] Overriding TypeInfo for 'double' with 'float64'.
+1.328 [ Warning][TypekitRepository::Import] Overriding TypeInfo for 'array' with 'float64[]'.
+1.328 [ Warning][TypekitRepository::Import] Overriding TypeInfo for 'string' with 'string'.
+1.328 [ Warning][TypekitRepository::Import] Registering Type name 'string' twice to the Orocos Type System: replacing.
+1.329 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'ros-primitives' from 'rtt-ros-primitives-typekit-gnulinux'
+1.329 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration/lib/orocos/plugins ...
+1.355 [ Info   ][DeploymentComponent::import] Initializing ROS node
+1.457 [ Info   ][DeploymentComponent::import] ROS node spinner started
+1.457 [ Info   ][DeploymentComponent::import] Loaded RTT Plugin 'ros_integration' from 'rtt_ros_integration-gnulinux'
+1.503 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /home/s060883/ros/soem/soem_beckhoff_drivers/lib/orocos ...
+1.503 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /home/s060883/ros/soem/soem_beckhoff_drivers/lib/orocos ...
+1.503 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /home/s060883/ros/soem/soem_beckhoff_drivers/lib/orocos/types ...
+1.776 [ Info   ][TypekitRepository::Import] Loading Typekit ros-soem_beckhoff_drivers.
+1.779 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'ros-soem_beckhoff_drivers' from 'rtt-ros-soem_beckhoff_drivers-typekit-gnulinux'
+1.841 [ Info   ][TypekitRepository::Import] Loading Transport ros://ros-soem_beckhoff_drivers.
+1.841 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for AnalogMsg
+1.841 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for DigitalMsg
+1.841 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for EncoderInMsg
+1.841 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for EncoderMsg
+1.841 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for EncoderOutMsg
+1.841 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for PSUMsg
+1.841 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'rtt-ros-soem_beckhoff_drivers-transport' from 'rtt-ros-soem_beckhoff_drivers-transport-gnulinux'
+1.842 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /home/s060883/ros/soem/soem_beckhoff_drivers/lib/orocos/plugins ...
+1.916 [ Info   ][SoemDriverFactor] Registering driver for EL4002
+1.916 [ Info   ][SoemDriverFactor] Registering driver for EL4004
+1.916 [ Info   ][SoemDriverFactor] Registering driver for EL4008
+1.916 [ Info   ][SoemDriverFactor] Registering driver for EL4032
+1.916 [ Info   ][SoemDriverFactor] Registering driver for EL4034
+1.916 [ Info   ][SoemDriverFactor] Registering driver for EL4038
+1.916 [ Info   ][DeploymentComponent::import] Loaded RTT Plugin 'libsoem_el4xxx-gnulinux.so' from 'soem_el4xxx-gnulinux'
+1.973 [ Info   ][SoemDriverFactor] Registering driver for EL1124
+1.973 [ Info   ][SoemDriverFactor] Registering driver for EL1144
+1.973 [ Info   ][SoemDriverFactor] Registering driver for EL1004
+1.973 [ Info   ][SoemDriverFactor] Registering driver for EL1008
+1.973 [ Info   ][DeploymentComponent::import] Loaded RTT Plugin 'libsoem_el1xxx-gnulinux.so' from 'soem_el1xxx-gnulinux'
+2.040 [ Info   ][SoemDriverFactor] Registering driver for EL2002
+2.040 [ Info   ][SoemDriverFactor] Registering driver for EL2004
+2.040 [ Info   ][SoemDriverFactor] Registering driver for EL2008
+2.040 [ Info   ][SoemDriverFactor] Registering driver for EL2124
+2.040 [ Info   ][DeploymentComponent::import] Loaded RTT Plugin 'libsoem_el2xxx-gnulinux.so' from 'soem_el2xxx-gnulinux'
+2.124 [ Info   ][SoemDriverFactor] Registering driver for EL3062
+2.124 [ Info   ][DeploymentComponent::import] Loaded RTT Plugin 'libsoem_el3062-gnulinux.so' from 'soem_el3062-gnulinux'
+2.237 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_std_msgs/lib/orocos ...
+2.238 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_std_msgs/lib/orocos ...
+2.238 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_std_msgs/lib/orocos/types ...
+2.430 [ Info   ][TypekitRepository::Import] Loading Transport ros://ros-std_msgs.
+2.431 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'rtt-ros-std_msgs-transport' from 'rtt-ros-std_msgs-transport-gnulinux'
+3.296 [ Info   ][TypekitRepository::Import] Loading Typekit ros-std_msgs.
+3.296 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for ColorRGBA
+3.299 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt32MultiArray
+3.300 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt32
+3.300 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt64
+3.301 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt64MultiArray
+3.301 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for String
+3.302 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Empty
+3.302 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for ByteMultiArray
+3.303 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt8MultiArray
+3.304 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int64
+3.312 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt16
+3.312 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int64MultiArray
+3.313 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Duration
+3.313 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Float32MultiArray
+3.317 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int8MultiArray
+3.317 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Byte
+3.318 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int16MultiArray
+3.321 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int16
+3.321 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt16MultiArray
+3.322 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Float64MultiArray
+3.323 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Time
+3.323 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Header
+3.324 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Float64
+3.324 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int32MultiArray
+3.325 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int8
+3.332 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for MultiArrayDimension
+3.333 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Float32
+3.333 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Bool
+3.333 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Char
+3.334 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for UInt8
+3.334 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Int32
+3.335 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for MultiArrayLayout
+3.335 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'ros-std_msgs' from 'rtt-ros-std_msgs-typekit-gnulinux'
+3.352 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /home/s060883/Amigo/trunk/rtt_ros_integration_amigo_msgs/lib/orocos ...
+3.354 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /home/s060883/Amigo/trunk/rtt_ros_integration_amigo_msgs/lib/orocos ...
+3.354 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /home/s060883/Amigo/trunk/rtt_ros_integration_amigo_msgs/lib/orocos/types ...
+3.474 [ Info   ][TypekitRepository::Import] Loading Transport ros://ros-amigo_msgs.
+3.474 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'rtt-ros-amigo_msgs-transport' from 'rtt-ros-amigo_msgs-transport-gnulinux'
+4.103 [ Info   ][TypekitRepository::Import] Loading Typekit ros-amigo_msgs.
+4.103 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for LaserScannerSignal
+4.104 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for tip_ref
+4.104 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for head_ref
+4.104 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for spindle_setpoint
+4.105 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for spindle_ref
+4.105 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for ref_point
+4.106 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for people_detect
+4.106 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for arm_joints
+4.107 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'ros-amigo_msgs' from 'rtt-ros-amigo_msgs-typekit-gnulinux'
+4.112 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_geometry_msgs/lib/orocos ...
+4.112 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_geometry_msgs/lib/orocos ...
+4.112 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_geometry_msgs/lib/orocos/types ...
+4.941 [ Info   ][TypekitRepository::Import] Loading Typekit ros-geometry_msgs.
+4.970 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'ros-geometry_msgs' from 'rtt-ros-geometry_msgs-typekit-gnulinux'
+5.093 [ Info   ][TypekitRepository::Import] Loading Transport ros://ros-geometry_msgs.
+5.093 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Point
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Point32
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for PointStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Polygon
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for PolygonStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Pose
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Pose2D
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for PoseArray
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for PoseStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for PoseWithCovariance
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for PoseWithCovarianceStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Quaternion
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for QuaternionStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Transform
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for TransformStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Twist
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for TwistStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for TwistWithCovariance
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for TwistWithCovarianceStamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Vector3
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Vector3Stamped
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Wrench
+5.094 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for WrenchStamped
+5.094 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'rtt-ros-geometry_msgs-transport' from 'rtt-ros-geometry_msgs-transport-gnulinux'
+5.107 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_nav_msgs/lib/orocos ...
+5.109 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_nav_msgs/lib/orocos ...
+5.109 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_integration_nav_msgs/lib/orocos/types ...
+5.169 [ Info   ][TypekitRepository::Import] Loading Transport ros://ros-nav_msgs.
+5.169 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'rtt-ros-nav_msgs-transport' from 'rtt-ros-nav_msgs-transport-gnulinux'
+5.420 [ Info   ][TypekitRepository::Import] Loading Typekit ros-nav_msgs.
+5.421 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Path
+5.421 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for MapMetaData
+5.422 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for OccupancyGrid
+5.422 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for GridCells
+5.423 [ Info   ][TypekitRepository::Import] Registered new 'ros' transport for Odometry
+5.424 [ Info   ][DeploymentComponent::import] Loaded RTT TypeKit/Transport 'ros-nav_msgs' from 'rtt-ros-nav_msgs-typekit-gnulinux'
+5.448 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_param/lib/orocos ...
+5.449 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_param/lib/orocos ...
+5.449 [ Info   ][DeploymentComponent::import] Loading plugin libraries from directory /opt/ros/diamondback/stacks/orocos_toolchain_ros/rtt_ros_param/lib/orocos/plugins ...
+5.478 [ Info   ][DeploymentComponent::import] Loaded RTT Service 'rosparam' from 'rtt_ros_param-service-gnulinux'
+5.494 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /home/s060883/Amigo/trunk/orocos_components/lib/orocos ...
+5.881 [ Info   ][DeploymentComponent::import] Loaded component type 'Readcmd_vel'
+5.952 [ Info   ][DeploymentComponent::import] Loaded component type 'ReadEncoders'
+6.008 [ Info   ][DeploymentComponent::import] Loaded component type 'DigitalOuts'
+6.071 [ Info   ][DeploymentComponent::import] Loaded component type 'AnalogOuts'
+6.071 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /home/s060883/Amigo/trunk/orocos_components/lib/orocos ...
+6.072 [ Info   ][DeploymentComponent::import] Importing component libraries from directory /home/s060883/Amigo/dev/Niek/amigo_spindle_controller/lib/orocos ...
+6.097 [ Info   ][DeploymentComponent::import] Loaded component type 'SpindleController'
+6.097 [ Info   ][DeploymentComponent::import] Importing plugins and typekits from directory /home/s060883/Amigo/dev/Niek/amigo_spindle_controller/lib/orocos ...
+6.098 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.099 [ Info   ][SpindleController] Thread created with scheduler type '0', priority 0 and period 0.
+6.101 [ Info   ][DeploymentComponent::loadComponent] SpindleController will be triggered when new data is available on InputPort read_encoders
+6.101 [ Info   ][DeploymentComponent::loadComponent] Adding SpindleController as new peer:  OK.
+6.102 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.103 [ Info   ][Soem] Thread created with scheduler type '0', priority 0 and period 0.
+6.103 [ Info   ][DeploymentComponent::loadComponent] Adding Soem as new peer:  OK.
+6.103 [ ERROR  ][Soem] Could not initialize master on eth0
+6.105 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.105 [ Info   ][DigitalOuts] Thread created with scheduler type '0', priority 0 and period 0.
+6.105 [ Info   ][DeploymentComponent::loadComponent] DigitalOuts will be triggered when new data is available on InputPort amplifiers
+6.105 [ Info   ][DeploymentComponent::loadComponent] DigitalOuts will be triggered when new data is available on InputPort tuelights
+6.105 [ Info   ][DeploymentComponent::loadComponent] DigitalOuts will be triggered when new data is available on InputPort spindlebrake
+6.105 [ Info   ][DeploymentComponent::loadComponent] Adding DigitalOuts as new peer:  OK.
+6.106 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.106 [ Info   ][AnalogOuts] Thread created with scheduler type '0', priority 0 and period 0.
+6.107 [ Info   ][DeploymentComponent::loadComponent] AnalogOuts will be triggered when new data is available on InputPort wheels
+6.107 [ Info   ][DeploymentComponent::loadComponent] AnalogOuts will be triggered when new data is available on InputPort spindle
+6.107 [ Info   ][DeploymentComponent::loadComponent] Adding AnalogOuts as new peer:  OK.
+6.108 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.108 [ Info   ][ReadSpindleEncoder] Thread created with scheduler type '0', priority 0 and period 0.
+6.109 [ Info   ][DeploymentComponent::loadComponent] Adding ReadSpindleEncoder as new peer:  OK.
+6.112 [ Info   ][ScriptingService] Creating ports for 1 encoders.
+6.113 [ ERROR  ][DeploymentComponent::connectPorts] No such service: 'Slave_1006' while looking for port 'Soem.Slave_1006.Slave_1006_value'
+6.114 [ ERROR  ][DeploymentComponent::connectPorts] No such service: 'Slave_100b' while looking for port 'Soem.Slave_100b.bits'
+6.116 [ Info   ][DeploymentComponent::connectPorts] Connected Port SpindleController.spindle_brake to  DigitalOuts.spindlebrake.
+6.118 [ Info   ][DeploymentComponent::connectPorts] Connected Port SpindleController.read_encoders to  ReadSpindleEncoder.out.
+6.120 [ Info   ][DeploymentComponent::connectPorts] Connected Port SpindleController.volt_out to  AnalogOuts.spindle.
+6.121 [ ERROR  ][DeploymentComponent::connectPorts] No such service: 'Slave_100d' while looking for port 'Soem.Slave_100d.values'
+6.123 [ ERROR  ][ReadEncoders::startHook()] Inputport not connected!
+6.124 [ Info   ][ScriptingService] Loading Service or Plugin marshalling in TaskContext SpindleController
+6.125 [ Info   ][PropertyLoader:configure] Configuring TaskContext 'SpindleController' with 'spindle_parameters.cpf'.
+6.145 [ Info   ][ScriptingService] Created input stream for input port spindle_setpoint
+6.182 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.183 [ Info   ][RosPublishActivity] Thread created with scheduler type '0', priority 0 and period 0.
+6.184 [ Info   ][ScriptingService] Created output stream for output port spindle_position
+6.189 [ Info   ][ScriptingService] Created output stream for output port pos_after_homing
+6.191 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.191 [ Info   ][Reporter] Thread created with scheduler type '0', priority 0 and period 0.
+6.192 [ Info   ][DeploymentComponent::loadComponent] Adding Reporter as new peer:  OK.
+6.194 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.194 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_check_volt_out
+6.194 [ Info   ][ReportingComponent] Monitoring OutputPort check_volt_out : ok.
+6.195 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.195 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_current_position
+6.196 [ Info   ][ReportingComponent] Monitoring OutputPort current_position : ok.
+6.197 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.197 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_pos_ref
+6.197 [ Info   ][ReportingComponent] Monitoring OutputPort pos_ref : ok.
+6.198 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.198 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_error_pos
+6.198 [ Info   ][ReportingComponent] Monitoring OutputPort error_pos : ok.
+6.200 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.200 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_vel_ref
+6.200 [ Info   ][ReportingComponent] Monitoring OutputPort vel_ref : ok.
+6.201 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.201 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_acc_ref
+6.201 [ Info   ][ReportingComponent] Monitoring OutputPort acc_ref : ok.
+6.202 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.203 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_noise
+6.203 [ Info   ][ReportingComponent] Monitoring OutputPort noise : ok.
+6.204 [ Info   ][ReportingComponent] Buffering of data flow connections is set to 10 samples.
+6.204 [ Info   ][ReportingComponent] Reporter will be triggered when new data is available on InputPort SpindleController_control_output
+6.204 [ Info   ][ReportingComponent] Monitoring OutputPort control_output : ok.
+6.205 [ Info   ][ScriptingService] controller_num: 10.01 -9.79
+6.206 [ Info   ][ScriptingService] controller_den: 1 -0.7776
+6.206 [ Info   ][Thread] Creating Thread for scheduler: 0
+6.206 [ Info   ][TaskBrowser] Thread created with scheduler type '0', priority 0 and period 0.
+6.207 [ Info   ][Logger] Entering Task Deployer
+22.338 [ Info   ][Logger] error_pos: 3.27809e-07
+22.338 [ Info   ][Logger] controller output: 4.09352e-06
+22.342 [ Info   ][Logger] error_pos: 2.51505e-06
+22.342 [ Info   ][Logger] controller output: 3.22271e-05
+22.346 [ Info   ][Logger] error_pos: 6.37373e-06
+22.346 [ Info   ][Logger] controller output: 8.66891e-05
+22.350 [ Info   ][Logger] error_pos: 1.17827e-05
+22.350 [ Info   ][Logger] controller output: 0.00017003
+22.354 [ Info   ][Logger] error_pos: 1.88704e-05
+22.354 [ Info   ][Logger] controller output: 0.000287524
+22.358 [ Info   ][Logger] error_pos: 2.74986e-05
+22.358 [ Info   ][Logger] controller output: 0.000441356
+22.362 [ Info   ][Logger] error_pos: 3.8053e-05
+22.362 [ Info   ][Logger] controller output: 0.000639825
+22.366 [ Info   ][Logger] error_pos: 4.95561e-05
+22.366 [ Info   ][Logger] controller output: 0.00087509
+22.370 [ Info   ][Logger] error_pos: 6.30738e-05
+22.370 [ Info   ][Logger] controller output: 0.00116229
+22.374 [ Info   ][Logger] error_pos: 7.80654e-05
+22.374 [ Info   ][Logger] controller output: 0.00149912
+22.378 [ Info   ][Logger] error_pos: 9.4748e-05
+22.378 [ Info   ][Logger] controller output: 0.0018913
+22.382 [ Info   ][Logger] error_pos: 0.000113076
+22.382 [ Info   ][Logger] controller output: 0.00234174
+22.386 [ Info   ][Logger] error_pos: 0.000132879
+22.386 [ Info   ][Logger] controller output: 0.0028516
+22.390 [ Info   ][Logger] error_pos: 0.000154336
+22.390 [ Info   ][Logger] controller output: 0.00342591
+22.394 [ Info   ][Logger] error_pos: 0.000177463
+22.394 [ Info   ][Logger] controller output: 0.00406803
+22.398 [ Info   ][Logger] error_pos: 0.000202148
+22.398 [ Info   ][Logger] controller output: 0.00477974
+22.402 [ Info   ][Logger] error_pos: 0.000228313
+22.402 [ Info   ][Logger] controller output: 0.00556284
+22.406 [ Info   ][Logger] error_pos: 0.000256172
+22.406 [ Info   ][Logger] controller output: 0.00642254
+22.410 [ Info   ][Logger] error_pos: 0.000285743
+22.410 [ Info   ][Logger] controller output: 0.0073621
+22.414 [ Info   ][Logger] error_pos: 0.000316802
+22.414 [ Info   ][Logger] controller output: 0.00838172
+22.418 [ Info   ][Logger] error_pos: 0.00034934
+22.418 [ Info   ][Logger] controller output: 0.00948366
+22.422 [ Info   ][Logger] error_pos: 0.000383508
+22.422 [ Info   ][Logger] controller output: 0.0106721
+22.426 [ Info   ][Logger] error_pos: 0.000419602
+22.426 [ Info   ][Logger] controller output: 0.0119533
+22.430 [ Info   ][Logger] error_pos: 0.000456914
+22.430 [ Info   ][Logger] controller output: 0.0133219
+22.434 [ Info   ][Logger] error_pos: 0.00049587
+22.434 [ Info   ][Logger] controller output: 0.0147845
+22.438 [ Info   ][Logger] error_pos: 0.000535979
+22.438 [ Info   ][Logger] controller output: 0.0163376
+22.442 [ Info   ][Logger] error_pos: 0.000576115
+22.442 [ Info   ][Logger] controller output: 0.0179683
+22.446 [ Info   ][Logger] error_pos: 0.00061594
+22.446 [ Info   ][Logger] controller output: 0.0196707
+22.450 [ Info   ][Logger] error_pos: 0.000655952
+22.450 [ Info   ][Logger] controller output: 0.0214486
+22.454 [ Info   ][Logger] error_pos: 0.000695951
+22.454 [ Info   ][Logger] controller output: 0.0232984
+22.458 [ Info   ][Logger] error_pos: 0.000735979
+22.458 [ Info   ][Logger] controller output: 0.025219
+22.462 [ Info   ][Logger] error_pos: 0.00077621
+22.462 [ Info   ][Logger] controller output: 0.0272111
+22.466 [ Info   ][Logger] error_pos: 0.000815952
+22.466 [ Info   ][Logger] controller output: 0.0292651
+22.470 [ Info   ][Logger] error_pos: 0.000855878
+22.470 [ Info   ][Logger] controller output: 0.0313865
+22.474 [ Info   ][Logger] error_pos: 0.000895953
+22.474 [ Info   ][Logger] controller output: 0.0335741
+22.478 [ Info   ][Logger] error_pos: 0.000935962
+22.478 [ Info   ][Logger] controller output: 0.0358241
+22.482 [ Info   ][Logger] error_pos: 0.000975979
+22.482 [ Info   ][Logger] controller output: 0.0381358
+22.486 [ Info   ][Logger] error_pos: 0.00101586
+22.486 [ Info   ][Logger] controller output: 0.0405063
+22.490 [ Info   ][Logger] error_pos: 0.00105596
+22.490 [ Info   ][Logger] controller output: 0.042938
+22.494 [ Info   ][Logger] error_pos: 0.00109616
+22.494 [ Info   ][Logger] controller output: 0.045429
+22.498 [ Info   ][Logger] error_pos: 0.00113621
+22.498 [ Info   ][Logger] controller output: 0.047975
+22.502 [ Info   ][Logger] error_pos: 0.00117619
+22.502 [ Info   ][Logger] controller output: 0.0505753
+22.506 [ Info   ][Logger] error_pos: 0.00121618
+22.506 [ Info   ][Logger] controller output: 0.0532296
+22.510 [ Info   ][Logger] error_pos: 0.00125589
+22.510 [ Info   ][Logger] controller output: 0.0559332
+22.514 [ Info   ][Logger] error_pos: 0.00129621
+22.514 [ Info   ][Logger] controller output: 0.0586953
+22.518 [ Info   ][Logger] error_pos: 0.0013359
+22.518 [ Info   ][Logger] controller output: 0.0615008
+22.522 [ Info   ][Logger] error_pos: 0.00137619
+22.522 [ Info   ][Logger] controller output: 0.0643624
+22.526 [ Info   ][Logger] error_pos: 0.00141577
+22.526 [ Info   ][Logger] controller output: 0.067264
+22.530 [ Info   ][Logger] error_pos: 0.00145787
+22.530 [ Info   ][Logger] controller output: 0.0702433
+22.534 [ Info   ][Logger] error_pos: 0.00149607
+22.534 [ Info   ][Logger] controller output: 0.0732254
+22.538 [ Info   ][Logger] error_pos: 0.00153605
+22.538 [ Info   ][Logger] controller output: 0.0762703
+22.542 [ Info   ][Logger] error_pos: 0.00157604
+22.542 [ Info   ][Logger] controller output: 0.0793593
+22.546 [ Info   ][Logger] error_pos: 0.00161604
+22.546 [ Info   ][Logger] controller output: 0.0824917
+22.550 [ Info   ][Logger] error_pos: 0.00165603
+22.550 [ Info   ][Logger] controller output: 0.0856662
+22.554 [ Info   ][Logger] error_pos: 0.00169603
+22.554 [ Info   ][Logger] controller output: 0.0888821
+22.558 [ Info   ][Logger] error_pos: 0.00173604
+22.558 [ Info   ][Logger] controller output: 0.0921384
+22.562 [ Info   ][Logger] error_pos: 0.0017761
+22.562 [ Info   ][Logger] controller output: 0.095435
+22.566 [ Info   ][Logger] error_pos: 0.00181605
+22.566 [ Info   ][Logger] controller output: 0.0987691
+22.570 [ Info   ][Logger] error_pos: 0.00185584
+22.570 [ Info   ][Logger] controller output: 0.102139
+22.574 [ Info   ][Logger] error_pos: 0.0018966
+22.574 [ Info   ][Logger] controller output: 0.105557
+22.578 [ Info   ][Logger] error_pos: 0.00193609
+22.578 [ Info   ][Logger] controller output: 0.108997
+22.582 [ Info   ][Logger] error_pos: 0.00197607
+22.582 [ Info   ][Logger] controller output: 0.112478
+22.586 [ Info   ][Logger] error_pos: 0.00201607
+22.586 [ Info   ][Logger] controller output: 0.115994
+22.590 [ Info   ][Logger] error_pos: 0.00205605
+22.590 [ Info   ][Logger] controller output: 0.119543
+22.594 [ Info   ][Logger] error_pos: 0.00209603
+22.594 [ Info   ][Logger] controller output: 0.123125
+22.598 [ Info   ][Logger] error_pos: 0.00213608
+22.598 [ Info   ][Logger] controller output: 0.12674
+22.602 [ Info   ][Logger] error_pos: 0.00217607
+22.602 [ Info   ][Logger] controller output: 0.130386
+22.606 [ Info   ][Logger] error_pos: 0.00221607
+22.606 [ Info   ][Logger] controller output: 0.134063
+22.610 [ Info   ][Logger] error_pos: 0.00225613
+22.610 [ Info   ][Logger] controller output: 0.137772
+22.614 [ Info   ][Logger] error_pos: 0.00229608
+22.614 [ Info   ][Logger] controller output: 0.141508
+22.618 [ Info   ][Logger] error_pos: 0.00233607
+22.618 [ Info   ][Logger] controller output: 0.145274
+22.622 [ Info   ][Logger] error_pos: 0.00237606
+22.622 [ Info   ][Logger] controller output: 0.149069
+22.626 [ Info   ][Logger] error_pos: 0.00241693
+22.626 [ Info   ][Logger] controller output: 0.152902
+22.630 [ Info   ][Logger] error_pos: 0.00245607
+22.630 [ Info   ][Logger] controller output: 0.156742
+22.634 [ Info   ][Logger] error_pos: 0.00249604
+22.634 [ Info   ][Logger] controller output: 0.160618
+22.638 [ Info   ][Logger] error_pos: 0.00253607
+22.638 [ Info   ][Logger] controller output: 0.16452
+22.642 [ Info   ][Logger] error_pos: 0.00257606
+22.642 [ Info   ][Logger] controller output: 0.168446
+22.646 [ Info   ][Logger] error_pos: 0.00261607
+22.646 [ Info   ][Logger] controller output: 0.172398
+22.650 [ Info   ][Logger] error_pos: 0.00265608
+22.650 [ Info   ][Logger] controller output: 0.176374
+22.654 [ Info   ][Logger] error_pos: 0.00269606
+22.654 [ Info   ][Logger] controller output: 0.180374
+22.658 [ Info   ][Logger] error_pos: 0.00273606
+22.658 [ Info   ][Logger] controller output: 0.184397
+22.662 [ Info   ][Logger] error_pos: 0.00277607
+22.662 [ Info   ][Logger] controller output: 0.188442
+22.666 [ Info   ][Logger] error_pos: 0.00281605
+22.666 [ Info   ][Logger] controller output: 0.19251
+22.670 [ Info   ][Logger] error_pos: 0.00285598
+22.670 [ Info   ][Logger] controller output: 0.196598
+22.674 [ Info   ][Logger] error_pos: 0.00289606
+22.674 [ Info   ][Logger] controller output: 0.200709
+22.678 [ Info   ][Logger] error_pos: 0.00293606
+22.678 [ Info   ][Logger] controller output: 0.204841
+22.682 [ Info   ][Logger] error_pos: 0.00297607
+22.682 [ Info   ][Logger] controller output: 0.208992
+22.686 [ Info   ][Logger] error_pos: 0.00301606
+22.686 [ Info   ][Logger] controller output: 0.213164
+22.690 [ Info   ][Logger] error_pos: 0.00305606
+22.692 [ Info   ][Logger] controller output: 0.217355
+22.694 [ Info   ][Logger] error_pos: 0.00309582
+22.694 [ Info   ][Logger] controller output: 0.221561
+22.698 [ Info   ][Logger] error_pos: 0.00313671
+22.698 [ Info   ][Logger] controller output: 0.2258
+22.702 [ Info   ][Logger] error_pos: 0.00317595
+22.702 [ Info   ][Logger] controller output: 0.230039
+22.706 [ Info   ][Logger] error_pos: 0.00321586
+22.706 [ Info   ][Logger] controller output: 0.234302
+22.710 [ Info   ][Logger] error_pos: 0.00325619
+22.710 [ Info   ][Logger] controller output: 0.238587
+22.714 [ Info   ][Logger] error_pos: 0.00329617
+22.714 [ Info   ][Logger] controller output: 0.242886
+22.718 [ Info   ][Logger] error_pos: 0.00333606
+22.718 [ Info   ][Logger] controller output: 0.2472
+22.722 [ Info   ][Logger] error_pos: 0.00337619
+22.722 [ Info   ][Logger] controller output: 0.251533
+22.726 [ Info   ][Logger] error_pos: 0.0034162
+22.726 [ Info   ][Logger] controller output: 0.255881
+22.730 [ Info   ][Logger] error_pos: 0.00345697
+22.730 [ Info   ][Logger] controller output: 0.260254
+22.734 [ Info   ][Logger] error_pos: 0.00349619
+22.734 [ Info   ][Logger] controller output: 0.264625
+22.738 [ Info   ][Logger] error_pos: 0.00353622
+22.738 [ Info   ][Logger] controller output: 0.269018
+22.742 [ Info   ][Logger] error_pos: 0.0035762
+22.742 [ Info   ][Logger] controller output: 0.273426
+22.746 [ Info   ][Logger] error_pos: 0.00361618
+22.746 [ Info   ][Logger] controller output: 0.277848
+22.750 [ Info   ][Logger] error_pos: 0.0036562
+22.750 [ Info   ][Logger] controller output: 0.282284
+22.754 [ Info   ][Logger] error_pos: 0.00369618
+22.754 [ Info   ][Logger] controller output: 0.286733
+22.758 [ Info   ][Logger] error_pos: 0.0037362
+22.758 [ Info   ][Logger] controller output: 0.291196
+22.762 [ Info   ][Logger] error_pos: 0.00377616
+22.762 [ Info   ][Logger] controller output: 0.295672
+22.766 [ Info   ][Logger] error_pos: 0.00381619
+22.766 [ Info   ][Logger] controller output: 0.30016
+22.770 [ Info   ][Logger] error_pos: 0.0038562
+22.770 [ Info   ][Logger] controller output: 0.304661
+22.774 [ Info   ][Logger] error_pos: 0.0038962
+22.774 [ Info   ][Logger] controller output: 0.309175
+22.778 [ Info   ][Logger] error_pos: 0.00393623
+22.778 [ Info   ][Logger] controller output: 0.3137
+22.782 [ Info   ][Logger] error_pos: 0.00397619
+22.782 [ Info   ][Logger] controller output: 0.318236
+22.786 [ Info   ][Logger] error_pos: 0.00401618
+22.786 [ Info   ][Logger] controller output: 0.322784
+22.790 [ Info   ][Logger] error_pos: 0.0040562
+22.790 [ Info   ][Logger] controller output: 0.327344
+22.794 [ Info   ][Logger] error_pos: 0.00409618
+22.794 [ Info   ][Logger] controller output: 0.331914
+22.798 [ Info   ][Logger] error_pos: 0.00413591
+22.798 [ Info   ][Logger] controller output: 0.336491
+22.802 [ Info   ][Logger] error_pos: 0.0041762
+22.802 [ Info   ][Logger] controller output: 0.341085
+22.806 [ Info   ][Logger] error_pos: 0.00421618
+22.806 [ Info   ][Logger] controller output: 0.345686
+22.810 [ Info   ][Logger] error_pos: 0.00425619
+22.810 [ Info   ][Logger] controller output: 0.350298
+22.814 [ Info   ][Logger] error_pos: 0.00429618
+22.814 [ Info   ][Logger] controller output: 0.354918
+22.818 [ Info   ][Logger] error_pos: 0.00433619
+22.818 [ Info   ][Logger] controller output: 0.359549
+22.822 [ Info   ][Logger] error_pos: 0.00437583
+22.822 [ Info   ][Logger] controller output: 0.364184
+22.826 [ Info   ][Logger] error_pos: 0.00441619
+22.826 [ Info   ][Logger] controller output: 0.368837
+22.830 [ Info   ][Logger] error_pos: 0.00445622
+22.830 [ Info   ][Logger] controller output: 0.373495
+22.834 [ Info   ][Logger] error_pos: 0.0044962
+22.834 [ Info   ][Logger] controller output: 0.378162
+22.838 [ Info   ][Logger] error_pos: 0.0045362
+22.838 [ Info   ][Logger] controller output: 0.382837
+22.842 [ Info   ][Logger] error_pos: 0.00457619
+22.842 [ Info   ][Logger] controller output: 0.387521
+22.846 [ Info   ][Logger] error_pos: 0.00461589
+22.846 [ Info   ][Logger] controller output: 0.392208
+22.850 [ Info   ][Logger] error_pos: 0.00465619
+22.850 [ Info   ][Logger] controller output: 0.396911
+22.854 [ Info   ][Logger] error_pos: 0.00469619
+22.854 [ Info   ][Logger] controller output: 0.401619
+22.858 [ Info   ][Logger] error_pos: 0.00473619
+22.858 [ Info   ][Logger] controller output: 0.406334
+22.862 [ Info   ][Logger] error_pos: 0.00477619
+22.862 [ Info   ][Logger] controller output: 0.411056
+22.866 [ Info   ][Logger] error_pos: 0.00481618
+22.866 [ Info   ][Logger] controller output: 0.415786
+22.870 [ Info   ][Logger] error_pos: 0.00485619
+22.870 [ Info   ][Logger] controller output: 0.420523
+22.874 [ Info   ][Logger] error_pos: 0.0048962
+22.874 [ Info   ][Logger] controller output: 0.425267
+22.878 [ Info   ][Logger] error_pos: 0.0049362
+22.878 [ Info   ][Logger] controller output: 0.430018
+22.882 [ Info   ][Logger] error_pos: 0.00497619
+22.882 [ Info   ][Logger] controller output: 0.434775
+22.886 [ Info   ][Logger] error_pos: 0.00501617
+22.886 [ Info   ][Logger] controller output: 0.439539
+22.890 [ Info   ][Logger] error_pos: -1.57488e-06
+22.890 [ Info   ][Logger] controller output: 0.381151
+22.894 [ Info   ][Logger] error_pos: -4.80284e-06
+22.894 [ Info   ][Logger] controller output: 0.372729
+22.898 [ Info   ][Logger] error_pos: -9.54885e-06
+22.898 [ Info   ][Logger] controller output: 0.364465
+22.902 [ Info   ][Logger] error_pos: -1.60051e-05
+22.902 [ Info   ][Logger] controller output: 0.356347
+22.906 [ Info   ][Logger] error_pos: -2.40042e-05
+22.906 [ Info   ][Logger] controller output: 0.348371
+22.910 [ Info   ][Logger] error_pos: -3.36114e-05
+22.910 [ Info   ][Logger] controller output: 0.340528
+22.914 [ Info   ][Logger] error_pos: -4.48037e-05
+22.914 [ Info   ][Logger] controller output: 0.332811
+22.918 [ Info   ][Logger] error_pos: -5.7609e-05
+22.918 [ Info   ][Logger] controller output: 0.325212
+22.922 [ Info   ][Logger] error_pos: -7.20146e-05
+22.922 [ Info   ][Logger] controller output: 0.317724
+22.926 [ Info   ][Logger] error_pos: -8.80074e-05
+22.926 [ Info   ][Logger] controller output: 0.310342
+22.930 [ Info   ][Logger] error_pos: -0.000105625
+22.930 [ Info   ][Logger] controller output: 0.303057
+22.934 [ Info   ][Logger] error_pos: -0.000125007
+22.934 [ Info   ][Logger] controller output: 0.295861
+22.938 [ Info   ][Logger] error_pos: -0.000145806
+22.938 [ Info   ][Logger] controller output: 0.288751
+22.942 [ Info   ][Logger] error_pos: -0.000168016
+22.942 [ Info   ][Logger] controller output: 0.281723
+22.946 [ Info   ][Logger] error_pos: -0.000192023
+22.946 [ Info   ][Logger] controller output: 0.274765
+22.950 [ Info   ][Logger] error_pos: -0.00021764
+22.950 [ Info   ][Logger] controller output: 0.267873
+22.954 [ Info   ][Logger] error_pos: -0.000244815
+22.954 [ Info   ][Logger] controller output: 0.261042
+22.958 [ Info   ][Logger] error_pos: -0.000273637
+22.958 [ Info   ][Logger] controller output: 0.254265
+22.962 [ Info   ][Logger] error_pos: -0.00030404
+22.962 [ Info   ][Logger] controller output: 0.247537
+22.966 [ Info   ][Logger] error_pos: -0.00033602
+22.966 [ Info   ][Logger] controller output: 0.240853
+22.970 [ Info   ][Logger] error_pos: -0.000369631
+22.970 [ Info   ][Logger] controller output: 0.234206
+22.974 [ Info   ][Logger] error_pos: -0.000404845
+22.974 [ Info   ][Logger] controller output: 0.227593
+22.978 [ Info   ][Logger] error_pos: -0.000441651
+22.978 [ Info   ][Logger] controller output: 0.221007
+22.982 [ Info   ][Logger] error_pos: -0.000480048
+22.982 [ Info   ][Logger] controller output: 0.214443
+22.986 [ Info   ][Logger] error_pos: -0.000520024
+22.986 [ Info   ][Logger] controller output: 0.207898
+22.990 [ Info   ][Logger] error_pos: -0.000561666
+22.990 [ Info   ][Logger] controller output: 0.201365
+22.994 [ Info   ][Logger] error_pos: -0.000604846
+22.994 [ Info   ][Logger] controller output: 0.19484
+22.998 [ Info   ][Logger] error_pos: -0.000649658
+22.998 [ Info   ][Logger] controller output: 0.188318
+23.002 [ Info   ][Logger] error_pos: -0.00069618
+23.002 [ Info   ][Logger] controller output: 0.181794
+23.006 [ Info   ][Logger] error_pos: -0.000744011
+23.006 [ Info   ][Logger] controller output: 0.175268
+23.010 [ Info   ][Logger] error_pos: -0.000793632
+23.010 [ Info   ][Logger] controller output: 0.16873
+23.014 [ Info   ][Logger] error_pos: -0.000844801
+23.014 [ Info   ][Logger] controller output: 0.162179
+23.018 [ Info   ][Logger] error_pos: -0.000897665
+23.018 [ Info   ][Logger] controller output: 0.155608
+23.022 [ Info   ][Logger] error_pos: -0.000952059
+23.022 [ Info   ][Logger] controller output: 0.149016
+23.026 [ Info   ][Logger] error_pos: -0.00100805
+23.026 [ Info   ][Logger] controller output: 0.142397
+23.030 [ Info   ][Logger] error_pos: -0.00106524
+23.030 [ Info   ][Logger] controller output: 0.135754
+23.034 [ Info   ][Logger] error_pos: -0.00112485
+23.034 [ Info   ][Logger] controller output: 0.129068
+23.038 [ Info   ][Logger] error_pos: -0.00118569
+23.038 [ Info   ][Logger] controller output: 0.122347
+23.042 [ Info   ][Logger] error_pos: -0.00124808
+23.042 [ Info   ][Logger] controller output: 0.115586
+23.046 [ Info   ][Logger] error_pos: -0.00131204
+23.046 [ Info   ][Logger] controller output: 0.108781
+23.050 [ Info   ][Logger] error_pos: -0.00137769
+23.050 [ Info   ][Logger] controller output: 0.101927
+23.054 [ Info   ][Logger] error_pos: -0.00144486
+23.054 [ Info   ][Logger] controller output: 0.0950215
+23.058 [ Info   ][Logger] error_pos: -0.00151371
+23.058 [ Info   ][Logger] controller output: 0.0880606
+23.062 [ Info   ][Logger] error_pos: -0.00158504
+23.062 [ Info   ][Logger] controller output: 0.0810306
+23.066 [ Info   ][Logger] error_pos: -0.00165605
+23.066 [ Info   ][Logger] controller output: 0.0739609
+23.070 [ Info   ][Logger] error_pos: -0.00172967
+23.070 [ Info   ][Logger] controller output: 0.0668169
+23.074 [ Info   ][Logger] error_pos: -0.00180489
+23.074 [ Info   ][Logger] controller output: 0.0596054
+23.078 [ Info   ][Logger] error_pos: -0.00188171
+23.078 [ Info   ][Logger] controller output: 0.0523236
+23.082 [ Info   ][Logger] error_pos: -0.00195887
+23.082 [ Info   ][Logger] controller output: 0.0449841
+23.086 [ Info   ][Logger] error_pos: -0.00204007
+23.086 [ Info   ][Logger] controller output: 0.0375412
+23.090 [ Info   ][Logger] error_pos: -0.00212172
+23.090 [ Info   ][Logger] controller output: 0.0300309
+23.094 [ Info   ][Logger] error_pos: -0.00220489
+23.094 [ Info   ][Logger] controller output: 0.0224398
+23.098 [ Info   ][Logger] error_pos: -0.00228907
+23.098 [ Info   ][Logger] controller output: 0.0147719
+23.102 [ Info   ][Logger] error_pos: -0.0023761
+23.102 [ Info   ][Logger] controller output: 0.00700316
+23.106 [ Info   ][Logger] error_pos: -0.00246401
+23.106 [ Info   ][Logger] controller output: -0.000847501
+23.110 [ Info   ][Logger] error_pos: -0.00255371
+23.110 [ Info   ][Logger] controller output: -0.00879208
+23.114 [ Info   ][Logger] error_pos: -0.00264489
+23.114 [ Info   ][Logger] controller output: -0.0168297
+23.118 [ Info   ][Logger] error_pos: -0.00273774
+23.118 [ Info   ][Logger] controller output: -0.0249647
+23.122 [ Info   ][Logger] error_pos: -0.00283212
+23.122 [ Info   ][Logger] controller output: -0.033198
+23.126 [ Info   ][Logger] error_pos: -0.00292805
+23.126 [ Info   ][Logger] controller output: -0.0415317
+23.130 [ Info   ][Logger] error_pos: -0.00302572
+23.130 [ Info   ][Logger] controller output: -0.0499704
+23.134 [ Info   ][Logger] error_pos: -0.00312498
+23.134 [ Info   ][Logger] controller output: -0.0585147
+23.138 [ Info   ][Logger] error_pos: -0.00322576
+23.138 [ Info   ][Logger] controller output: -0.0671659
+23.142 [ Info   ][Logger] error_pos: -0.00332813
+23.142 [ Info   ][Logger] controller output: -0.0759268
+23.146 [ Info   ][Logger] error_pos: -0.00343207
+23.146 [ Info   ][Logger] controller output: -0.084799
+23.150 [ Info   ][Logger] error_pos: -0.00353777
+23.150 [ Info   ][Logger] controller output: -0.0937868
+23.154 [ Info   ][Logger] error_pos: -0.00364488
+23.154 [ Info   ][Logger] controller output: -0.102888
+23.158 [ Info   ][Logger] error_pos: -0.00375375
+23.158 [ Info   ][Logger] controller output: -0.112109
+23.162 [ Info   ][Logger] error_pos: -0.00386413
+23.162 [ Info   ][Logger] controller output: -0.121449
+23.166 [ Info   ][Logger] error_pos: -0.00397609
+23.166 [ Info   ][Logger] controller output: -0.130909
+23.170 [ Info   ][Logger] error_pos: -0.00408973
+23.170 [ Info   ][Logger] controller output: -0.140493
+23.174 [ Info   ][Logger] error_pos: -0.0042049
+23.174 [ Info   ][Logger] controller output: -0.150202
+23.178 [ Info   ][Logger] error_pos: -0.00432175
+23.178 [ Info   ][Logger] controller output: -0.160038
+23.182 [ Info   ][Logger] error_pos: -0.00443944
+23.182 [ Info   ][Logger] controller output: -0.169993
+23.186 [ Info   ][Logger] error_pos: -0.00456009
+23.186 [ Info   ][Logger] controller output: -0.180093
+23.190 [ Info   ][Logger] error_pos: -0.00468177
+23.190 [ Info   ][Logger] controller output: -0.190318
+23.194 [ Info   ][Logger] error_pos: -0.00480492
+23.194 [ Info   ][Logger] controller output: -0.200676
+23.198 [ Info   ][Logger] error_pos: -0.0049308
+23.198 [ Info   ][Logger] controller output: -0.211182
+23.202 [ Info   ][Logger] error_pos: -0.00505615
+23.202 [ Info   ][Logger] controller output: -0.221799
+23.206 [ Info   ][Logger] error_pos: -0.00518203
+23.206 [ Info   ][Logger] controller output: -0.232539
+23.210 [ Info   ][Logger] error_pos: -0.00531378
+23.210 [ Info   ][Logger] controller output: -0.243465
+23.214 [ Info   ][Logger] error_pos: -0.00544497
+23.214 [ Info   ][Logger] controller output: -0.25451
+23.218 [ Info   ][Logger] error_pos: -0.0055778
+23.218 [ Info   ][Logger] controller output: -0.265697
+23.222 [ Info   ][Logger] error_pos: -0.00571218
+23.222 [ Info   ][Logger] controller output: -0.277026
+23.226 [ Info   ][Logger] error_pos: -0.00584652
+23.226 [ Info   ][Logger] controller output: -0.288479
+23.230 [ Info   ][Logger] error_pos: -0.00598584
+23.230 [ Info   ][Logger] controller output: -0.300116
+23.234 [ Info   ][Logger] error_pos: -0.00612494
+23.234 [ Info   ][Logger] controller output: -0.311881
+23.238 [ Info   ][Logger] error_pos: -0.00626582
+23.238 [ Info   ][Logger] controller output: -0.323796
+23.242 [ Info   ][Logger] error_pos: -0.0064082
+23.242 [ Info   ][Logger] controller output: -0.335859
+23.246 [ Info   ][Logger] error_pos: -0.0065521
+23.246 [ Info   ][Logger] controller output: -0.348072
+23.250 [ Info   ][Logger] error_pos: -0.0066978
+23.250 [ Info   ][Logger] controller output: -0.360438
+23.254 [ Info   ][Logger] error_pos: -0.00684489
+23.254 [ Info   ][Logger] controller output: -0.372954
+23.258 [ Info   ][Logger] error_pos: -0.00699398
+23.258 [ Info   ][Logger] controller output: -0.385629
+23.262 [ Info   ][Logger] error_pos: -0.00714414
+23.262 [ Info   ][Logger] controller output: -0.398452
+23.266 [ Info   ][Logger] error_pos: -0.0072961
+23.266 [ Info   ][Logger] controller output: -0.411434
+23.270 [ Info   ][Logger] error_pos: -0.00744975
+23.270 [ Info   ][Logger] controller output: -0.424573
+23.274 [ Info   ][Logger] error_pos: -0.00760491
+23.274 [ Info   ][Logger] controller output: -0.437869
+23.278 [ Info   ][Logger] error_pos: -0.00776175
+23.278 [ Info   ][Logger] controller output: -0.451324
+23.282 [ Info   ][Logger] error_pos: -0.00792013
+23.282 [ Info   ][Logger] controller output: -0.464939
+23.286 [ Info   ][Logger] error_pos: -0.00808008
+23.286 [ Info   ][Logger] controller output: -0.478714
+23.290 [ Info   ][Logger] error_pos: -0.00824171
+23.290 [ Info   ][Logger] controller output: -0.492651
+23.294 [ Info   ][Logger] error_pos: -0.00840493
+23.294 [ Info   ][Logger] controller output: -0.506751
+23.298 [ Info   ][Logger] error_pos: -0.00856983
+23.298 [ Info   ][Logger] controller output: -0.521015
+23.302 [ Info   ][Logger] error_pos: -0.00873611
+23.302 [ Info   ][Logger] controller output: -0.535441
+23.306 [ Info   ][Logger] error_pos: -0.00890408
+23.306 [ Info   ][Logger] controller output: -0.550033
+23.310 [ Info   ][Logger] error_pos: -0.00907387
+23.310 [ Info   ][Logger] controller output: -0.564793
+23.314 [ Info   ][Logger] error_pos: -0.00924488
+23.314 [ Info   ][Logger] controller output: -0.579716
+23.318 [ Info   ][Logger] error_pos: -0.00941775
+23.318 [ Info   ][Logger] controller output: -0.594808
+23.322 [ Info   ][Logger] error_pos: -0.00959213
+23.322 [ Info   ][Logger] controller output: -0.610068
+23.326 [ Info   ][Logger] error_pos: -0.00976813
+23.326 [ Info   ][Logger] controller output: -0.625498
+23.330 [ Info   ][Logger] error_pos: -0.00994587
+23.330 [ Info   ][Logger] controller output: -0.641098
+23.334 [ Info   ][Logger] error_pos: -0.010125
+23.334 [ Info   ][Logger] controller output: -0.656867
+23.338 [ Info   ][Logger] error_pos: -0.0103059
+23.338 [ Info   ][Logger] controller output: -0.672808
+23.342 [ Info   ][Logger] error_pos: -0.0104882
+23.342 [ Info   ][Logger] controller output: -0.68892
+23.346 [ Info   ][Logger] error_pos: -0.0106722
+23.346 [ Info   ][Logger] controller output: -0.705204
+23.350 [ Info   ][Logger] error_pos: -0.0108578
+23.350 [ Info   ][Logger] controller output: -0.721663
+23.354 [ Info   ][Logger] error_pos: -0.0110449
+23.354 [ Info   ][Logger] controller output: -0.738293
+23.358 [ Info   ][Logger] error_pos: -0.0112355
+23.358 [ Info   ][Logger] controller output: -0.75512
+23.362 [ Info   ][Logger] error_pos: -0.0114227
+23.362 [ Info   ][Logger] controller output: -0.772066
+23.366 [ Info   ][Logger] error_pos: -0.0116145
+23.366 [ Info   ][Logger] controller output: -0.789216
+23.370 [ Info   ][Logger] error_pos: -0.0118082
+23.370 [ Info   ][Logger] controller output: -0.806545
+23.374 [ Info   ][Logger] error_pos: -0.0120044
+23.374 [ Info   ][Logger] controller output: -0.824062
+23.378 [ Info   ][Logger] error_pos: -0.0122009
+23.378 [ Info   ][Logger] controller output: -0.841745
+23.382 [ Info   ][Logger] error_pos: -0.0123994
+23.382 [ Info   ][Logger] controller output: -0.859608
+23.386 [ Info   ][Logger] error_pos: -0.0125994
+23.386 [ Info   ][Logger] controller output: -0.877649
+23.390 [ Info   ][Logger] error_pos: -0.0128009
+23.390 [ Info   ][Logger] controller output: -0.895868
+23.394 [ Info   ][Logger] error_pos: -0.0130042
+23.394 [ Info   ][Logger] controller output: -0.914268
+23.398 [ Info   ][Logger] error_pos: -0.0132077
+23.398 [ Info   ][Logger] controller output: -0.93283
+23.402 [ Info   ][Logger] error_pos: -0.0134153
+23.402 [ Info   ][Logger] controller output: -0.951602
+23.406 [ Info   ][Logger] error_pos: -0.0136234
+23.406 [ Info   ][Logger] controller output: -0.970544
+23.410 [ Info   ][Logger] error_pos: -0.0138329
+23.410 [ Info   ][Logger] controller output: -0.989665
+23.414 [ Info   ][Logger] error_pos: -0.0140442
+23.414 [ Info   ][Logger] controller output: -1.00897
+23.418 [ Info   ][Logger] error_pos: -0.0142569
+23.418 [ Info   ][Logger] controller output: -1.02845
+23.422 [ Info   ][Logger] error_pos: -0.0144705
+23.422 [ Info   ][Logger] controller output: -1.04811
+23.426 [ Info   ][Logger] error_pos: -0.0146874
+23.426 [ Info   ][Logger] controller output: -1.06797
+23.430 [ Info   ][Logger] error_pos: -0.014905
+23.430 [ Info   ][Logger] controller output: -1.08801
+23.434 [ Info   ][Logger] error_pos: -0.0151241
+23.434 [ Info   ][Logger] controller output: -1.10823
+23.438 [ Info   ][Logger] error_pos: -0.015345
+23.438 [ Info   ][Logger] controller output: -1.12863
+23.442 [ Info   ][Logger] error_pos: -0.0155673
+23.442 [ Info   ][Logger] controller output: -1.14922
+23.446 [ Info   ][Logger] error_pos: -0.0157913
+23.446 [ Info   ][Logger] controller output: -1.16999
+23.450 [ Info   ][Logger] error_pos: -0.0160168
+23.450 [ Info   ][Logger] controller output: -1.19095
+23.454 [ Info   ][Logger] error_pos: -0.0162442
+23.454 [ Info   ][Logger] controller output: -1.2121
+23.458 [ Info   ][Logger] error_pos: -0.0164729
+23.458 [ Info   ][Logger] controller output: -1.23343
+23.462 [ Info   ][Logger] error_pos: -0.0167031
+23.462 [ Info   ][Logger] controller output: -1.25494
+23.466 [ Info   ][Logger] error_pos: -0.0169352
+23.466 [ Info   ][Logger] controller output: -1.27665
+23.470 [ Info   ][Logger] error_pos: -0.0171688
+23.470 [ Info   ][Logger] controller output: -1.29854
+23.474 [ Info   ][Logger] error_pos: -0.0174041
+23.474 [ Info   ][Logger] controller output: -1.32062
+23.478 [ Info   ][Logger] error_pos: -0.0176408
+23.478 [ Info   ][Logger] controller output: -1.34289
+23.482 [ Info   ][Logger] error_pos: -0.0178792
+23.482 [ Info   ][Logger] controller output: -1.36534
+23.486 [ Info   ][Logger] error_pos: -0.0181192
+23.486 [ Info   ][Logger] controller output: -1.38799
+23.490 [ Info   ][Logger] error_pos: -0.0183608
+23.490 [ Info   ][Logger] controller output: -1.41082
+23.494 [ Info   ][Logger] error_pos: -0.018604
+23.494 [ Info   ][Logger] controller output: -1.43384
+23.498 [ Info   ][Logger] error_pos: -0.0188487
+23.498 [ Info   ][Logger] controller output: -1.45705
+23.502 [ Info   ][Logger] error_pos: -0.0190952
+23.502 [ Info   ][Logger] controller output: -1.48045
+23.506 [ Info   ][Logger] error_pos: -0.0193431
+23.506 [ Info   ][Logger] controller output: -1.50404
+23.510 [ Info   ][Logger] error_pos: -0.0195928
+23.510 [ Info   ][Logger] controller output: -1.52783
+23.514 [ Info   ][Logger] error_pos: -0.019844
+23.514 [ Info   ][Logger] controller output: -1.5518
+23.518 [ Info   ][Logger] error_pos: -0.0200968
+23.518 [ Info   ][Logger] controller output: -1.57596
+23.522 [ Info   ][Logger] error_pos: -0.0203511
+23.522 [ Info   ][Logger] controller output: -1.60031
+23.526 [ Info   ][Logger] error_pos: -0.0206073
+23.526 [ Info   ][Logger] controller output: -1.62486
+23.530 [ Info   ][Logger] error_pos: -0.0208649
+23.530 [ Info   ][Logger] controller output: -1.6496
+23.534 [ Info   ][Logger] error_pos: -0.0211242
+23.534 [ Info   ][Logger] controller output: -1.67453
+23.538 [ Info   ][Logger] error_pos: -0.0213894
+23.538 [ Info   ][Logger] controller output: -1.6997
+23.542 [ Info   ][Logger] error_pos: -0.0216476
+23.542 [ Info   ][Logger] controller output: -1.72497
+23.546 [ Info   ][Logger] error_pos: -0.0219115
+23.546 [ Info   ][Logger] controller output: -1.75048
+23.550 [ Info   ][Logger] error_pos: -0.022177
+23.550 [ Info   ][Logger] controller output: -1.77617
+23.554 [ Info   ][Logger] error_pos: -0.0224442
+23.554 [ Info   ][Logger] controller output: -1.80206
+23.558 [ Info   ][Logger] error_pos: -0.022713
+23.558 [ Info   ][Logger] controller output: -1.82815
+23.562 [ Info   ][Logger] error_pos: -0.0229833
+23.562 [ Info   ][Logger] controller output: -1.85442
+23.566 [ Info   ][Logger] error_pos: -0.0232555
+23.566 [ Info   ][Logger] controller output: -1.8809
+23.570 [ Info   ][Logger] error_pos: -0.0235291
+23.570 [ Info   ][Logger] controller output: -1.90756
+23.574 [ Info   ][Logger] error_pos: -0.0238043
+23.574 [ Info   ][Logger] controller output: -1.93442
+23.578 [ Info   ][Logger] error_pos: -0.024081
+23.578 [ Info   ][Logger] controller output: -1.96147
+23.582 [ Info   ][Logger] error_pos: -0.0243592
+23.582 [ Info   ][Logger] controller output: -1.98871
+23.586 [ Info   ][Logger] error_pos: -0.0246394
+23.586 [ Info   ][Logger] controller output: -2.01615
+23.590 [ Info   ][Logger] error_pos: -0.0249208
+23.590 [ Info   ][Logger] controller output: -2.04378
+23.594 [ Info   ][Logger] error_pos: -0.0252043
+23.594 [ Info   ][Logger] controller output: -2.07162
+23.598 [ Info   ][Logger] error_pos: -0.0254886
+23.598 [ Info   ][Logger] controller output: -2.09963
+23.602 [ Info   ][Logger] error_pos: -0.0257753
+23.602 [ Info   ][Logger] controller output: -2.12786
+23.606 [ Info   ][Logger] error_pos: -0.0260634
+23.606 [ Info   ][Logger] controller output: -2.15627
+23.610 [ Info   ][Logger] error_pos: -0.026353
+23.610 [ Info   ][Logger] controller output: -2.18488
+23.614 [ Info   ][Logger] error_pos: -0.0266442
+23.614 [ Info   ][Logger] controller output: -2.21369
+23.618 [ Info   ][Logger] error_pos: -0.0269368
+23.618 [ Info   ][Logger] controller output: -2.24269
+23.622 [ Info   ][Logger] error_pos: -0.0272311
+23.622 [ Info   ][Logger] controller output: -2.27188
+23.626 [ Info   ][Logger] error_pos: -0.0275274
+23.626 [ Info   ][Logger] controller output: -2.30127
+23.630 [ Info   ][Logger] error_pos: -0.0278251
+23.630 [ Info   ][Logger] controller output: -2.33087
+23.634 [ Info   ][Logger] error_pos: -0.0281242
+23.634 [ Info   ][Logger] controller output: -2.36065
+23.638 [ Info   ][Logger] error_pos: -0.028425
+23.638 [ Info   ][Logger] controller output: -2.39063
+23.642 [ Info   ][Logger] error_pos: -0.0287272
+23.642 [ Info   ][Logger] controller output: -2.4208
+23.646 [ Info   ][Logger] error_pos: -0.0290314
+23.646 [ Info   ][Logger] controller output: -2.45118
+23.650 [ Info   ][Logger] error_pos: -0.0293368
+23.650 [ Info   ][Logger] controller output: -2.48175
+23.654 [ Info   ][Logger] error_pos: -0.0296441
+23.654 [ Info   ][Logger] controller output: -2.51252
+23.658 [ Info   ][Logger] error_pos: -0.0299536
+23.658 [ Info   ][Logger] controller output: -2.54349
+23.662 [ Info   ][Logger] error_pos: -0.0302633
+23.662 [ Info   ][Logger] controller output: -2.57464
+23.666 [ Info   ][Logger] error_pos: -0.0305721
+23.666 [ Info   ][Logger] controller output: -2.60596
+23.670 [ Info   ][Logger] error_pos: -0.0308792
+23.670 [ Info   ][Logger] controller output: -2.63743
+23.674 [ Info   ][Logger] error_pos: -0.031185
+23.674 [ Info   ][Logger] controller output: -2.66904
+23.678 [ Info   ][Logger] error_pos: -0.0314888
+23.678 [ Info   ][Logger] controller output: -2.70078
+23.682 [ Info   ][Logger] error_pos: -0.0317884
+23.682 [ Info   ][Logger] controller output: -2.73262
+23.686 [ Info   ][Logger] error_pos: -0.0320921
+23.686 [ Info   ][Logger] controller output: -2.76464
+23.690 [ Info   ][Logger] error_pos: -0.0323913
+23.690 [ Info   ][Logger] controller output: -2.79674
+23.694 [ Info   ][Logger] error_pos: -0.032689
+23.694 [ Info   ][Logger] controller output: -2.82895
+23.698 [ Info   ][Logger] error_pos: -0.0329845
+23.698 [ Info   ][Logger] controller output: -2.86125
+23.702 [ Info   ][Logger] error_pos: -0.0332792
+23.702 [ Info   ][Logger] controller output: -2.89365
+23.706 [ Info   ][Logger] error_pos: -0.0335723
+23.706 [ Info   ][Logger] controller output: -2.92613
+23.710 [ Info   ][Logger] error_pos: -0.0338634
+23.710 [ Info   ][Logger] controller output: -2.9587
+23.714 [ Info   ][Logger] error_pos: -0.034153
+23.714 [ Info   ][Logger] controller output: -2.99133
+23.718 [ Info   ][Logger] error_pos: -0.0344408
+23.718 [ Info   ][Logger] controller output: -3.02403
+23.722 [ Info   ][Logger] error_pos: -0.0347272
+23.722 [ Info   ][Logger] controller output: -3.0568
+23.726 [ Info   ][Logger] error_pos: -0.0350121
+23.726 [ Info   ][Logger] controller output: -3.08962
+23.730 [ Info   ][Logger] error_pos: -0.0352954
+23.730 [ Info   ][Logger] controller output: -3.12249
+23.734 [ Info   ][Logger] error_pos: -0.0355771
+23.734 [ Info   ][Logger] controller output: -3.1554
+23.738 [ Info   ][Logger] error_pos: -0.0358549
+23.738 [ Info   ][Logger] controller output: -3.18833
+23.742 [ Info   ][Logger] error_pos: -0.0361324
+23.742 [ Info   ][Logger] controller output: -3.2213
+23.746 [ Info   ][Logger] error_pos: -0.036412
+23.746 [ Info   ][Logger] controller output: -3.25434
+23.750 [ Info   ][Logger] error_pos: -0.0366871
+23.750 [ Info   ][Logger] controller output: -3.28738
+23.754 [ Info   ][Logger] error_pos: -0.0369606
+23.754 [ Info   ][Logger] controller output: -3.32043
+23.758 [ Info   ][Logger] error_pos: -0.0372328
+23.758 [ Info   ][Logger] controller output: -3.3535
+23.762 [ Info   ][Logger] error_pos: -0.0375032
+23.762 [ Info   ][Logger] controller output: -3.38658
+23.766 [ Info   ][Logger] error_pos: -0.0377721
+23.766 [ Info   ][Logger] controller output: -3.41966
+23.770 [ Info   ][Logger] error_pos: -0.0380392
+23.770 [ Info   ][Logger] controller output: -3.45274
+23.774 [ Info   ][Logger] error_pos: -0.038305
+23.774 [ Info   ][Logger] controller output: -3.48582
+23.778 [ Info   ][Logger] error_pos: -0.0385688
+23.778 [ Info   ][Logger] controller output: -3.51888
+23.782 [ Info   ][Logger] error_pos: -0.0388332
+23.782 [ Info   ][Logger] controller output: -3.55196
+23.786 [ Info   ][Logger] error_pos: -0.0390921
+23.786 [ Info   ][Logger] controller output: -3.58497
+23.790 [ Info   ][Logger] error_pos: -0.0393511
+23.790 [ Info   ][Logger] controller output: -3.61799
+23.794 [ Info   ][Logger] error_pos: -0.0396089
+23.794 [ Info   ][Logger] controller output: -3.65098
+23.798 [ Info   ][Logger] error_pos: -0.0398646
+23.798 [ Info   ][Logger] controller output: -3.68393
+23.802 [ Info   ][Logger] error_pos: -0.0401192
+23.802 [ Info   ][Logger] controller output: -3.71686
+23.806 [ Info   ][Logger] error_pos: -0.0403896
+23.806 [ Info   ][Logger] controller output: -3.74996
+23.810 [ Info   ][Logger] error_pos: -0.0406239
+23.810 [ Info   ][Logger] controller output: -3.78264
+23.814 [ Info   ][Logger] error_pos: -0.0408735
+23.814 [ Info   ][Logger] controller output: -3.81545
+23.818 [ Info   ][Logger] error_pos: -0.0411348
+23.818 [ Info   ][Logger] controller output: -3.84837
+23.822 [ Info   ][Logger] error_pos: -0.0413673
+23.822 [ Info   ][Logger] controller output: -3.88093
+23.826 [ Info   ][Logger] error_pos: -0.0416234
+23.826 [ Info   ][Logger] controller output: -3.91372
+23.830 [ Info   ][Logger] error_pos: -0.0418561
+23.830 [ Info   ][Logger] controller output: -3.94621
+23.834 [ Info   ][Logger] error_pos: -0.0421107
+23.834 [ Info   ][Logger] controller output: -3.9789
+23.838 [ Info   ][Logger] error_pos: -0.0423359
+23.838 [ Info   ][Logger] controller output: -4.01122
+23.842 [ Info   ][Logger] error_pos: -0.0425786
+23.842 [ Info   ][Logger] controller output: -4.04367
+23.846 [ Info   ][Logger] error_pos: -0.0428121
+23.846 [ Info   ][Logger] controller output: -4.07596
+23.850 [ Info   ][Logger] error_pos: -0.0430558
+23.850 [ Info   ][Logger] controller output: -4.10832
+23.854 [ Info   ][Logger] error_pos: -0.0432814
+23.854 [ Info   ][Logger] controller output: -4.14042
+23.858 [ Info   ][Logger] error_pos: -0.0435219
+23.858 [ Info   ][Logger] controller output: -4.17263
+23.862 [ Info   ][Logger] error_pos: -0.0437438
+23.862 [ Info   ][Logger] controller output: -4.20456
+23.866 [ Info   ][Logger] error_pos: -0.0439819
+23.866 [ Info   ][Logger] controller output: -4.23662
+23.870 [ Info   ][Logger] error_pos: -0.0441991
+23.870 [ Info   ][Logger] controller output: -4.26836
+23.874 [ Info   ][Logger] error_pos: -0.0444266
+23.874 [ Info   ][Logger] controller output: -4.30014
+23.878 [ Info   ][Logger] error_pos: -0.0446488
+23.878 [ Info   ][Logger] controller output: -4.33179
+23.882 [ Info   ][Logger] error_pos: -0.0448761
+23.882 [ Info   ][Logger] controller output: -4.36343
+23.886 [ Info   ][Logger] error_pos: -0.045092
+23.886 [ Info   ][Logger] controller output: -4.39485
+23.890 [ Info   ][Logger] error_pos: -0.0453103
+23.890 [ Info   ][Logger] controller output: -4.42622
+23.894 [ Info   ][Logger] error_pos: -0.0455289
+23.894 [ Info   ][Logger] controller output: -4.45751
+23.898 [ Info   ][Logger] error_pos: -0.0457433
+23.898 [ Info   ][Logger] controller output: -4.48866
+23.902 [ Info   ][Logger] error_pos: -0.0459592
+23.902 [ Info   ][Logger] controller output: -4.51974
+23.906 [ Info   ][Logger] error_pos: -0.0461718
+23.906 [ Info   ][Logger] controller output: -4.5507
+23.910 [ Info   ][Logger] error_pos: -0.046383
+23.910 [ Info   ][Logger] controller output: -4.58155
+23.914 [ Info   ][Logger] error_pos: -0.0465927
+23.914 [ Info   ][Logger] controller output: -4.61229
+23.918 [ Info   ][Logger] error_pos: -0.0468006
+23.918 [ Info   ][Logger] controller output: -4.64292
+23.922 [ Info   ][Logger] error_pos: -0.0470069
+23.922 [ Info   ][Logger] controller output: -4.67343
+23.926 [ Info   ][Logger] error_pos: -0.0472118
+23.926 [ Info   ][Logger] controller output: -4.70383
+23.930 [ Info   ][Logger] error_pos: -0.0474151
+23.930 [ Info   ][Logger] controller output: -4.7341
+23.934 [ Info   ][Logger] error_pos: -0.0476167
+23.934 [ Info   ][Logger] controller output: -4.76425
+23.938 [ Info   ][Logger] error_pos: -0.0478249
+23.938 [ Info   ][Logger] controller output: -4.79439
+23.942 [ Info   ][Logger] error_pos: -0.0480153
+23.942 [ Info   ][Logger] controller output: -4.82421
+23.946 [ Info   ][Logger] error_pos: -0.0482119
+23.946 [ Info   ][Logger] controller output: -4.85399
+23.950 [ Info   ][Logger] error_pos: -0.048407
+23.950 [ Info   ][Logger] controller output: -4.88364
+23.954 [ Info   ][Logger] error_pos: -0.0486097
+23.954 [ Info   ][Logger] controller output: -4.91328
+23.958 [ Info   ][Logger] error_pos: -0.0487932
+23.958 [ Info   ][Logger] controller output: -4.94258
+23.962 [ Info   ][Logger] error_pos: -0.0489911
+23.962 [ Info   ][Logger] controller output: -4.97194
+23.966 [ Info   ][Logger] error_pos: -0.0491719
+23.966 [ Info   ][Logger] controller output: -5.00098
+23.970 [ Info   ][Logger] error_pos: -0.0493626
+23.970 [ Info   ][Logger] controller output: -5.03001
+23.974 [ Info   ][Logger] error_pos: -0.0495448
+23.974 [ Info   ][Logger] controller output: -5.05883
+23.978 [ Info   ][Logger] error_pos: -0.0497325
+23.978 [ Info   ][Logger] controller output: -5.08759
+23.982 [ Info   ][Logger] error_pos: -0.049911
+23.982 [ Info   ][Logger] controller output: -5.11612
+23.986 [ Info   ][Logger] error_pos: -0.0500916
+23.986 [ Info   ][Logger] controller output: -5.14455
+23.990 [ Info   ][Logger] error_pos: -0.050271
+23.990 [ Info   ][Logger] controller output: -5.17283
+23.994 [ Info   ][Logger] error_pos: -0.0504487
+23.994 [ Info   ][Logger] controller output: -5.20098
+23.998 [ Info   ][Logger] error_pos: -0.0506281
+23.998 [ Info   ][Logger] controller output: -5.22902
+24.002 [ Info   ][Logger] error_pos: -0.0508066
+24.002 [ Info   ][Logger] controller output: -5.25693
+24.006 [ Info   ][Logger] error_pos: -0.0509717
+24.006 [ Info   ][Logger] controller output: -5.28456
+24.010 [ Info   ][Logger] error_pos: -0.0511424
+24.010 [ Info   ][Logger] controller output: -5.3121
+24.014 [ Info   ][Logger] error_pos: -0.0513116
+24.014 [ Info   ][Logger] controller output: -5.3395
+24.018 [ Info   ][Logger] error_pos: -0.0514806
+24.018 [ Info   ][Logger] controller output: -5.36676
+24.022 [ Info   ][Logger] error_pos: -0.0516462
+24.022 [ Info   ][Logger] controller output: -5.39385
+24.026 [ Info   ][Logger] error_pos: -0.0518194
+24.026 [ Info   ][Logger] controller output: -5.4209
+24.030 [ Info   ][Logger] error_pos: -0.051974
+24.030 [ Info   ][Logger] controller output: -5.44761
+24.034 [ Info   ][Logger] error_pos: -0.0521454
+24.034 [ Info   ][Logger] controller output: -5.47436
+24.038 [ Info   ][Logger] error_pos: -0.0522965
+24.038 [ Info   ][Logger] controller output: -5.50075
+24.042 [ Info   ][Logger] error_pos: -0.052458
+24.042 [ Info   ][Logger] controller output: -5.52711
+24.046 [ Info   ][Logger] error_pos: -0.0526117
+24.046 [ Info   ][Logger] controller output: -5.55325
+24.050 [ Info   ][Logger] error_pos: -0.0527661
+24.050 [ Info   ][Logger] controller output: -5.57924
+24.054 [ Info   ][Logger] error_pos: -0.0529233
+24.054 [ Info   ][Logger] controller output: -5.60512
+24.058 [ Info   ][Logger] error_pos: -0.0530801
+24.058 [ Info   ][Logger] controller output: -5.63087
+24.062 [ Info   ][Logger] error_pos: -0.0532233
+24.062 [ Info   ][Logger] controller output: -5.65632
+24.066 [ Info   ][Logger] error_pos: -0.0533799
+24.066 [ Info   ][Logger] controller output: -5.68177
+24.070 [ Info   ][Logger] error_pos: -0.0535193
+24.070 [ Info   ][Logger] controller output: -5.70689
+24.074 [ Info   ][Logger] error_pos: -0.053671
+24.074 [ Info   ][Logger] controller output: -5.73199
+24.078 [ Info   ][Logger] error_pos: -0.0538085
+24.078 [ Info   ][Logger] controller output: -5.75679
+24.083 [ Info   ][Logger] error_pos: -0.0539792
+24.083 [ Info   ][Logger] controller output: -5.78183
+24.087 [ Info   ][Logger] error_pos: -0.0541096
+24.087 [ Info   ][Logger] controller output: -5.8063
+24.090 [ Info   ][Logger] error_pos: -0.0542328
+24.090 [ Info   ][Logger] controller output: -5.8305
+24.094 [ Info   ][Logger] error_pos: -0.05437
+24.094 [ Info   ][Logger] controller output: -5.85469
+24.098 [ Info   ][Logger] error_pos: -0.0545044
+24.098 [ Info   ][Logger] controller output: -5.87869
+24.102 [ Info   ][Logger] error_pos: -0.0546391
+24.102 [ Info   ][Logger] controller output: -5.90254
+24.106 [ Info   ][Logger] error_pos: -0.0547714
+24.106 [ Info   ][Logger] controller output: -5.92621
+24.110 [ Info   ][Logger] error_pos: -0.0549034
+24.110 [ Info   ][Logger] controller output: -5.94973
+24.114 [ Info   ][Logger] error_pos: -0.0550323
+24.114 [ Info   ][Logger] controller output: -5.97305
+24.118 [ Info   ][Logger] error_pos: -0.0551606
+24.118 [ Info   ][Logger] controller output: -5.99622
+24.122 [ Info   ][Logger] error_pos: -0.0552867
+24.122 [ Info   ][Logger] controller output: -6.0192
+24.126 [ Info   ][Logger] error_pos: -0.0554112
+24.126 [ Info   ][Logger] controller output: -6.04201
+24.130 [ Info   ][Logger] error_pos: -0.0555346
+24.130 [ Info   ][Logger] controller output: -6.06465
+24.134 [ Info   ][Logger] error_pos: -0.0556569
+24.135 [ Info   ][Logger] controller output: -6.08712
+24.138 [ Info   ][Logger] error_pos: -0.0557776
+24.138 [ Info   ][Logger] controller output: -6.10941
+24.142 [ Info   ][Logger] error_pos: -0.0558956
+24.142 [ Info   ][Logger] controller output: -6.13152
+24.146 [ Info   ][Logger] error_pos: -0.0560119
+24.146 [ Info   ][Logger] controller output: -6.15345
+24.150 [ Info   ][Logger] error_pos: -0.056127
+24.150 [ Info   ][Logger] controller output: -6.1752
+24.154 [ Info   ][Logger] error_pos: -0.0562406
+24.154 [ Info   ][Logger] controller output: -6.19678
+24.158 [ Info   ][Logger] error_pos: -0.0563526
+24.158 [ Info   ][Logger] controller output: -6.21818
+24.162 [ Info   ][Logger] error_pos: -0.0564631
+24.162 [ Info   ][Logger] controller output: -6.2394
+24.166 [ Info   ][Logger] error_pos: -0.0565718
+24.166 [ Info   ][Logger] controller output: -6.26044
+24.170 [ Info   ][Logger] error_pos: -0.056679
+24.170 [ Info   ][Logger] controller output: -6.2813
+24.174 [ Info   ][Logger] error_pos: -0.0567846
+24.174 [ Info   ][Logger] controller output: -6.30197
+24.178 [ Info   ][Logger] error_pos: -0.0568886
+24.178 [ Info   ][Logger] controller output: -6.32247
+24.182 [ Info   ][Logger] error_pos: -0.056991
+24.182 [ Info   ][Logger] controller output: -6.34279
+24.186 [ Info   ][Logger] error_pos: -0.0570904
+24.186 [ Info   ][Logger] controller output: -6.3629
+24.190 [ Info   ][Logger] error_pos: -0.057191
+24.190 [ Info   ][Logger] controller output: -6.38287
+24.194 [ Info   ][Logger] error_pos: -0.0572881
+24.194 [ Info   ][Logger] controller output: -6.40263
+24.198 [ Info   ][Logger] error_pos: -0.0573846
+24.198 [ Info   ][Logger] controller output: -6.42222
+24.202 [ Info   ][Logger] error_pos: -0.057479
+24.202 [ Info   ][Logger] controller output: -6.44162
+24.206 [ Info   ][Logger] error_pos: -0.057572
+24.206 [ Info   ][Logger] controller output: -6.46084
+24.210 [ Info   ][Logger] error_pos: -0.057663
+24.210 [ Info   ][Logger] controller output: -6.47987
+24.214 [ Info   ][Logger] error_pos: -0.0577519
+24.214 [ Info   ][Logger] controller output: -6.49871
+24.218 [ Info   ][Logger] error_pos: -0.0578405
+24.218 [ Info   ][Logger] controller output: -6.51738
+24.222 [ Info   ][Logger] error_pos: -0.057927
+24.222 [ Info   ][Logger] controller output: -6.53585
+24.226 [ Info   ][Logger] error_pos: -0.0580126
+24.226 [ Info   ][Logger] controller output: -6.55415
+24.231 [ Info   ][Logger] error_pos: -0.0581133
+24.231 [ Info   ][Logger] controller output: -6.57248
+24.235 [ Info   ][Logger] error_pos: -0.0581887
+24.235 [ Info   ][Logger] controller output: -6.59036
+24.238 [ Info   ][Logger] error_pos: -0.058256
+24.238 [ Info   ][Logger] controller output: -6.60796
+24.242 [ Info   ][Logger] error_pos: -0.0583345
+24.242 [ Info   ][Logger] controller output: -6.6255
+24.246 [ Info   ][Logger] error_pos: -0.0584116
+24.246 [ Info   ][Logger] controller output: -6.64286
+24.250 [ Info   ][Logger] error_pos: -0.0584865
+24.250 [ Info   ][Logger] controller output: -6.66002
+24.254 [ Info   ][Logger] error_pos: -0.0585604
+24.254 [ Info   ][Logger] controller output: -6.677
+24.258 [ Info   ][Logger] error_pos: -0.0586321
+24.258 [ Info   ][Logger] controller output: -6.69378
+24.262 [ Info   ][Logger] error_pos: -0.0587028
+24.262 [ Info   ][Logger] controller output: -6.71038
+24.266 [ Info   ][Logger] error_pos: -0.0587714
+24.266 [ Info   ][Logger] controller output: -6.72679
+24.270 [ Info   ][Logger] error_pos: -0.0588387
+24.270 [ Info   ][Logger] controller output: -6.74301
+24.274 [ Info   ][Logger] error_pos: -0.0589049
+24.274 [ Info   ][Logger] controller output: -6.75905
+24.278 [ Info   ][Logger] error_pos: -0.0589682
+24.278 [ Info   ][Logger] controller output: -6.77488
+24.282 [ Info   ][Logger] error_pos: -0.0590305
+24.282 [ Info   ][Logger] controller output: -6.79053
+24.286 [ Info   ][Logger] error_pos: -0.0590914
+24.286 [ Info   ][Logger] controller output: -6.80598
+24.290 [ Info   ][Logger] error_pos: -0.0591505
+24.290 [ Info   ][Logger] controller output: -6.82125
+24.294 [ Info   ][Logger] error_pos: -0.0592095
+24.294 [ Info   ][Logger] controller output: -6.83634
+24.298 [ Info   ][Logger] error_pos: -0.0592641
+24.298 [ Info   ][Logger] controller output: -6.85121
+24.302 [ Info   ][Logger] error_pos: -0.0593186
+24.302 [ Info   ][Logger] controller output: -6.86591
+24.306 [ Info   ][Logger] error_pos: -0.059375
+24.306 [ Info   ][Logger] controller output: -6.88045
+24.310 [ Info   ][Logger] error_pos: -0.0594227
+24.310 [ Info   ][Logger] controller output: -6.89473
+24.314 [ Info   ][Logger] error_pos: -0.0594723
+24.314 [ Info   ][Logger] controller output: -6.90885
+24.318 [ Info   ][Logger] error_pos: -0.0595202
+24.318 [ Info   ][Logger] controller output: -6.92277
+24.322 [ Info   ][Logger] error_pos: -0.0595666
+24.322 [ Info   ][Logger] controller output: -6.9365
+24.326 [ Info   ][Logger] error_pos: -0.0596114
+24.326 [ Info   ][Logger] controller output: -6.95004
+24.330 [ Info   ][Logger] error_pos: -0.0596546
+24.330 [ Info   ][Logger] controller output: -6.96339
+24.334 [ Info   ][Logger] error_pos: -0.0596967
+24.334 [ Info   ][Logger] controller output: -6.97654
+24.338 [ Info   ][Logger] error_pos: -0.0597362
+24.338 [ Info   ][Logger] controller output: -6.9895
+24.342 [ Info   ][Logger] error_pos: -0.0597746
+24.342 [ Info   ][Logger] controller output: -7.00226
+24.346 [ Info   ][Logger] error_pos: -0.0598114
+24.346 [ Info   ][Logger] controller output: -7.01483
+24.350 [ Info   ][Logger] error_pos: -0.0598468
+24.350 [ Info   ][Logger] controller output: -7.02721
+24.354 [ Info   ][Logger] error_pos: -0.0598802
+24.354 [ Info   ][Logger] controller output: -7.03939
+24.358 [ Info   ][Logger] error_pos: -0.0599123
+24.358 [ Info   ][Logger] controller output: -7.05138
+24.362 [ Info   ][Logger] error_pos: -0.0599426
+24.362 [ Info   ][Logger] controller output: -7.06318
+24.366 [ Info   ][Logger] error_pos: -0.0599715
+24.366 [ Info   ][Logger] controller output: -7.07478
+24.370 [ Info   ][Logger] error_pos: -0.0599986
+24.370 [ Info   ][Logger] controller output: -7.08618
+24.374 [ Info   ][Logger] error_pos: -0.0600253
+24.374 [ Info   ][Logger] controller output: -7.0974
+24.378 [ Info   ][Logger] error_pos: -0.060048
+24.378 [ Info   ][Logger] controller output: -7.1084
+24.382 [ Info   ][Logger] error_pos: -0.0600705
+24.382 [ Info   ][Logger] controller output: -7.11922
+24.386 [ Info   ][Logger] error_pos: -0.060091
+24.386 [ Info   ][Logger] controller output: -7.12984
+24.390 [ Info   ][Logger] error_pos: -0.0601105
+24.390 [ Info   ][Logger] controller output: -7.14027
+24.394 [ Info   ][Logger] error_pos: -0.0601279
+24.394 [ Info   ][Logger] controller output: -7.1505
+24.398 [ Info   ][Logger] error_pos: -0.0601439
+24.398 [ Info   ][Logger] controller output: -7.16053
+24.402 [ Info   ][Logger] error_pos: -0.0601584
+24.402 [ Info   ][Logger] controller output: -7.17037
+24.406 [ Info   ][Logger] error_pos: -0.0601712
+24.406 [ Info   ][Logger] controller output: -7.18001
+24.410 [ Info   ][Logger] error_pos: -0.0601824
+24.410 [ Info   ][Logger] controller output: -7.18946
+24.414 [ Info   ][Logger] error_pos: -0.060192
+24.414 [ Info   ][Logger] controller output: -7.19871
+24.418 [ Info   ][Logger] error_pos: -0.0602
+24.418 [ Info   ][Logger] controller output: -7.20776
+24.422 [ Info   ][Logger] error_pos: -0.0602064
+24.422 [ Info   ][Logger] controller output: -7.21662
+24.426 [ Info   ][Logger] error_pos: -0.0602112
+24.426 [ Info   ][Logger] controller output: -7.22528
+24.430 [ Info   ][Logger] error_pos: -0.0602144
+24.430 [ Info   ][Logger] controller output: -7.23374
+24.434 [ Info   ][Logger] error_pos: -0.060216
+24.434 [ Info   ][Logger] controller output: -7.24201
+24.438 [ Info   ][Logger] error_pos: -0.060216
+24.438 [ Info   ][Logger] controller output: -7.25008
+24.442 [ Info   ][Logger] error_pos: -0.0602144
+24.442 [ Info   ][Logger] controller output: -7.25795
+24.446 [ Info   ][Logger] error_pos: -0.0602112
+24.446 [ Info   ][Logger] controller output: -7.26562
+24.450 [ Info   ][Logger] error_pos: -0.0602064
+24.450 [ Info   ][Logger] controller output: -7.2731
+24.454 [ Info   ][Logger] error_pos: -0.0602
+24.454 [ Info   ][Logger] controller output: -7.28038
+24.458 [ Info   ][Logger] error_pos: -0.060192
+24.458 [ Info   ][Logger] controller output: -7.28746
+24.462 [ Info   ][Logger] error_pos: -0.0601824
+24.462 [ Info   ][Logger] controller output: -7.29434
+24.466 [ Info   ][Logger] error_pos: -0.0601712
+24.466 [ Info   ][Logger] controller output: -7.30102
+24.470 [ Info   ][Logger] error_pos: -0.0601585
+24.470 [ Info   ][Logger] controller output: -7.30751
+24.474 [ Info   ][Logger] error_pos: -0.0601441
+24.474 [ Info   ][Logger] controller output: -7.3138
+24.478 [ Info   ][Logger] error_pos: -0.0601281
+24.478 [ Info   ][Logger] controller output: -7.31989
+24.482 [ Info   ][Logger] error_pos: -0.0601103
+24.482 [ Info   ][Logger] controller output: -7.32578
+24.486 [ Info   ][Logger] error_pos: -0.0600912
+24.486 [ Info   ][Logger] controller output: -7.33148
+24.490 [ Info   ][Logger] error_pos: -0.0600736
+24.490 [ Info   ][Logger] controller output: -7.33701
+24.494 [ Info   ][Logger] error_pos: -0.0600576
+24.494 [ Info   ][Logger] controller output: -7.3424
+24.498 [ Info   ][Logger] error_pos: -0.0600431
+24.498 [ Info   ][Logger] controller output: -7.34764
+24.502 [ Info   ][Logger] error_pos: -0.0600303
+24.502 [ Info   ][Logger] controller output: -7.35274
+24.506 [ Info   ][Logger] error_pos: -0.0600191
+24.506 [ Info   ][Logger] controller output: -7.35772
+24.510 [ Info   ][Logger] error_pos: -0.0600095
+24.510 [ Info   ][Logger] controller output: -7.36258
+24.514 [ Info   ][Logger] error_pos: -0.0600015
+24.514 [ Info   ][Logger] controller output: -7.36733
+24.518 [ Info   ][Logger] error_pos: -0.0599951
+24.518 [ Info   ][Logger] controller output: -7.37197
+24.522 [ Info   ][Logger] error_pos: -0.0599903
+24.522 [ Info   ][Logger] controller output: -7.3765
+24.526 [ Info   ][Logger] error_pos: -0.0599871
+24.526 [ Info   ][Logger] controller output: -7.38095
+24.530 [ Info   ][Logger] error_pos: -0.0599855
+24.530 [ Info   ][Logger] controller output: -7.38531
+24.534 [ Info   ][Logger] error_pos: -0.0599855
+24.534 [ Info   ][Logger] controller output: -7.38959
+24.538 [ Info   ][Logger] error_pos: -0.06
+24.538 [ Info   ][Logger] controller output: -7.39395
+24.542 [ Info   ][Logger] error_pos: -0.06
+24.542 [ Info   ][Logger] controller output: -7.39808
+24.546 [ Info   ][Logger] error_pos: -0.06
+24.546 [ Info   ][Logger] controller output: -7.40212
+24.550 [ Info   ][Logger] error_pos: -0.06
+24.550 [ Info   ][Logger] controller output: -7.40607
+24.554 [ Info   ][Logger] error_pos: -0.06
+24.554 [ Info   ][Logger] controller output: -7.40993
+24.558 [ Info   ][Logger] error_pos: -0.06
+24.558 [ Info   ][Logger] controller output: -7.41371
+24.562 [ Info   ][Logger] error_pos: -0.06
+24.562 [ Info   ][Logger] controller output: -7.4174
+24.566 [ Info   ][Logger] error_pos: -0.06
+24.566 [ Info   ][Logger] controller output: -7.42102
+24.570 [ Info   ][Logger] error_pos: -0.06
+24.570 [ Info   ][Logger] controller output: -7.42455
+24.574 [ Info   ][Logger] error_pos: -0.06
+24.574 [ Info   ][Logger] controller output: -7.42801
+24.578 [ Info   ][Logger] error_pos: -0.06
+24.578 [ Info   ][Logger] controller output: -7.43139
+24.582 [ Info   ][Logger] error_pos: -0.06
+24.582 [ Info   ][Logger] controller output: -7.43469
+24.586 [ Info   ][Logger] error_pos: -0.06
+24.586 [ Info   ][Logger] controller output: -7.43793
+24.590 [ Info   ][Logger] error_pos: -0.06
+24.590 [ Info   ][Logger] controller output: -7.44109
+24.594 [ Info   ][Logger] error_pos: -0.06
+24.594 [ Info   ][Logger] controller output: -7.44418
+24.598 [ Info   ][Logger] error_pos: -0.06
+24.598 [ Info   ][Logger] controller output: -7.44721
+24.602 [ Info   ][Logger] error_pos: -0.06
+24.602 [ Info   ][Logger] controller output: -7.45017
+24.606 [ Info   ][Logger] error_pos: -0.06
+24.606 [ Info   ][Logger] controller output: -7.45306
+24.610 [ Info   ][Logger] error_pos: -0.06
+24.610 [ Info   ][Logger] controller output: -7.45589
+24.614 [ Info   ][Logger] error_pos: -0.06
+24.614 [ Info   ][Logger] controller output: -7.45866
+24.618 [ Info   ][Logger] error_pos: -0.06
+24.618 [ Info   ][Logger] controller output: -7.46136
+24.622 [ Info   ][Logger] error_pos: -0.06
+24.622 [ Info   ][Logger] controller output: -7.46401
+24.626 [ Info   ][Logger] error_pos: -0.06
+24.626 [ Info   ][Logger] controller output: -7.4666
+24.630 [ Info   ][Logger] error_pos: -0.06
+24.630 [ Info   ][Logger] controller output: -7.46913
+24.634 [ Info   ][Logger] error_pos: -0.06
+24.634 [ Info   ][Logger] controller output: -7.47161
+24.638 [ Info   ][Logger] error_pos: -0.06
+24.638 [ Info   ][Logger] controller output: -7.47403
+24.642 [ Info   ][Logger] error_pos: -0.06
+24.642 [ Info   ][Logger] controller output: -7.4764
+24.646 [ Info   ][Logger] error_pos: -0.06
+24.646 [ Info   ][Logger] controller output: -7.47872
+24.650 [ Info   ][Logger] error_pos: -0.06
+24.650 [ Info   ][Logger] controller output: -7.48098
+24.654 [ Info   ][Logger] error_pos: -0.06
+24.654 [ Info   ][Logger] controller output: -7.4832
+24.658 [ Info   ][Logger] error_pos: -0.06
+24.658 [ Info   ][Logger] controller output: -7.48537
+24.662 [ Info   ][Logger] error_pos: -0.06
+24.662 [ Info   ][Logger] controller output: -7.48749
+24.666 [ Info   ][Logger] error_pos: -0.06
+24.666 [ Info   ][Logger] controller output: -7.48956
+24.670 [ Info   ][Logger] error_pos: -0.06
+24.670 [ Info   ][Logger] controller output: -7.49159
+24.674 [ Info   ][Logger] error_pos: -0.06
+24.674 [ Info   ][Logger] controller output: -7.49357
+24.678 [ Info   ][Logger] error_pos: -0.06
+24.678 [ Info   ][Logger] controller output: -7.49551
+24.682 [ Info   ][Logger] error_pos: -0.06
+24.682 [ Info   ][Logger] controller output: -7.49741
+24.686 [ Info   ][Logger] error_pos: -0.06
+24.686 [ Info   ][Logger] controller output: -7.49926
+24.690 [ Info   ][Logger] error_pos: -0.06
+24.690 [ Info   ][Logger] controller output: -7.50108
+24.694 [ Info   ][Logger] error_pos: -0.06
+24.694 [ Info   ][Logger] controller output: -7.50285
+24.698 [ Info   ][Logger] error_pos: -0.06
+24.698 [ Info   ][Logger] controller output: -7.50459
+24.702 [ Info   ][Logger] error_pos: -0.06
+24.702 [ Info   ][Logger] controller output: -7.50628
+24.706 [ Info   ][Logger] error_pos: -0.06
+24.706 [ Info   ][Logger] controller output: -7.50794
+24.710 [ Info   ][Logger] error_pos: -0.06
+24.710 [ Info   ][Logger] controller output: -7.50957
+24.714 [ Info   ][Logger] error_pos: -0.06
+24.714 [ Info   ][Logger] controller output: -7.51116
+24.718 [ Info   ][Logger] error_pos: -0.06
+24.718 [ Info   ][Logger] controller output: -7.51271
+24.722 [ Info   ][Logger] error_pos: -0.06
+24.722 [ Info   ][Logger] controller output: -7.51423
+24.726 [ Info   ][Logger] error_pos: -0.06
+24.726 [ Info   ][Logger] controller output: -7.51571
+24.730 [ Info   ][Logger] error_pos: -0.06
+24.730 [ Info   ][Logger] controller output: -7.51717
+24.734 [ Info   ][Logger] error_pos: -0.06
+24.734 [ Info   ][Logger] controller output: -7.51859
+24.738 [ Info   ][Logger] error_pos: -0.06
+24.738 [ Info   ][Logger] controller output: -7.51998
+24.742 [ Info   ][Logger] error_pos: -0.06
+24.742 [ Info   ][Logger] controller output: -7.52134
+24.746 [ Info   ][Logger] error_pos: -0.06
+24.746 [ Info   ][Logger] controller output: -7.52267
+24.750 [ Info   ][Logger] error_pos: -0.06
+24.750 [ Info   ][Logger] controller output: -7.52397
+24.754 [ Info   ][Logger] error_pos: -0.06
+24.754 [ Info   ][Logger] controller output: -7.52524
+24.758 [ Info   ][Logger] error_pos: -0.06
+24.758 [ Info   ][Logger] controller output: -7.52648
+24.762 [ Info   ][Logger] error_pos: -0.06
+24.762 [ Info   ][Logger] controller output: -7.5277
+24.766 [ Info   ][Logger] error_pos: -0.06
+24.766 [ Info   ][Logger] controller output: -7.52889
+24.770 [ Info   ][Logger] error_pos: -0.06
+24.770 [ Info   ][Logger] controller output: -7.53005
+24.774 [ Info   ][Logger] error_pos: -0.06
+24.774 [ Info   ][Logger] controller output: -7.53119
+24.778 [ Info   ][Logger] error_pos: -0.06
+24.778 [ Info   ][Logger] controller output: -7.5323
+24.782 [ Info   ][Logger] error_pos: -0.06
+24.782 [ Info   ][Logger] controller output: -7.53339
+24.786 [ Info   ][Logger] error_pos: -0.06
+24.786 [ Info   ][Logger] controller output: -7.53445
+24.790 [ Info   ][Logger] error_pos: -0.06
+24.790 [ Info   ][Logger] controller output: -7.53549
+24.794 [ Info   ][Logger] error_pos: -0.06
+24.794 [ Info   ][Logger] controller output: -7.53651
+24.798 [ Info   ][Logger] error_pos: -0.06
+24.798 [ Info   ][Logger] controller output: -7.53751
+24.802 [ Info   ][Logger] error_pos: -0.06
+24.802 [ Info   ][Logger] controller output: -7.53848
+24.806 [ Info   ][Logger] error_pos: -0.06
+24.806 [ Info   ][Logger] controller output: -7.53943
+24.810 [ Info   ][Logger] error_pos: -0.06
+24.810 [ Info   ][Logger] controller output: -7.54037
+24.814 [ Info   ][Logger] error_pos: -0.06
+24.814 [ Info   ][Logger] controller output: -7.54128
+24.818 [ Info   ][Logger] error_pos: -0.06
+24.818 [ Info   ][Logger] controller output: -7.54217
+24.822 [ Info   ][Logger] error_pos: -0.06
+24.822 [ Info   ][Logger] controller output: -7.54304
+24.826 [ Info   ][Logger] error_pos: -0.06
+24.826 [ Info   ][Logger] controller output: -7.54389
+24.830 [ Info   ][Logger] error_pos: -0.06
+24.830 [ Info   ][Logger] controller output: -7.54472
+24.834 [ Info   ][Logger] error_pos: -0.06
+24.834 [ Info   ][Logger] controller output: -7.54554
+24.838 [ Info   ][Logger] error_pos: -0.06
+24.838 [ Info   ][Logger] controller output: -7.54634
+24.842 [ Info   ][Logger] error_pos: -0.06
+24.842 [ Info   ][Logger] controller output: -7.54712
+24.846 [ Info   ][Logger] error_pos: -0.06
+24.846 [ Info   ][Logger] controller output: -7.54788
+24.850 [ Info   ][Logger] error_pos: -0.06
+24.850 [ Info   ][Logger] controller output: -7.54863
+24.854 [ Info   ][Logger] error_pos: -0.06
+24.854 [ Info   ][Logger] controller output: -7.54936
+24.858 [ Info   ][Logger] error_pos: -0.06
+24.858 [ Info   ][Logger] controller output: -7.55007
+24.862 [ Info   ][Logger] error_pos: -0.06
+24.862 [ Info   ][Logger] controller output: -7.55077
+24.866 [ Info   ][Logger] error_pos: -0.06
+24.866 [ Info   ][Logger] controller output: -7.55145
+24.870 [ Info   ][Logger] error_pos: -0.06
+24.870 [ Info   ][Logger] controller output: -7.55212
+24.874 [ Info   ][Logger] error_pos: -0.06
+24.874 [ Info   ][Logger] controller output: -7.55277
+24.878 [ Info   ][Logger] error_pos: -0.06
+24.878 [ Info   ][Logger] controller output: -7.55341
+24.882 [ Info   ][Logger] error_pos: -0.06
+24.882 [ Info   ][Logger] controller output: -7.55403
+24.886 [ Info   ][Logger] error_pos: -0.06
+24.886 [ Info   ][Logger] controller output: -7.55464
+24.890 [ Info   ][Logger] error_pos: -0.06
+24.890 [ Info   ][Logger] controller output: -7.55524
+24.894 [ Info   ][Logger] error_pos: -0.06
+24.894 [ Info   ][Logger] controller output: -7.55582
+24.898 [ Info   ][Logger] error_pos: -0.06
+24.898 [ Info   ][Logger] controller output: -7.5564
+24.902 [ Info   ][Logger] error_pos: -0.06
+24.902 [ Info   ][Logger] controller output: -7.55695
+24.906 [ Info   ][Logger] error_pos: -0.06
+24.906 [ Info   ][Logger] controller output: -7.5575
+24.910 [ Info   ][Logger] error_pos: -0.06
+24.910 [ Info   ][Logger] controller output: -7.55804
+24.914 [ Info   ][Logger] error_pos: -0.06
+24.914 [ Info   ][Logger] controller output: -7.55856
+24.918 [ Info   ][Logger] error_pos: -0.06
+24.918 [ Info   ][Logger] controller output: -7.55907
+24.922 [ Info   ][Logger] error_pos: -0.06
+24.922 [ Info   ][Logger] controller output: -7.55957
+24.926 [ Info   ][Logger] error_pos: -0.06
+24.926 [ Info   ][Logger] controller output: -7.56006
+24.930 [ Info   ][Logger] error_pos: -0.06
+24.930 [ Info   ][Logger] controller output: -7.56054
+24.934 [ Info   ][Logger] error_pos: -0.06
+24.934 [ Info   ][Logger] controller output: -7.561
+24.938 [ Info   ][Logger] error_pos: -0.06
+24.938 [ Info   ][Logger] controller output: -7.56146
+24.942 [ Info   ][Logger] error_pos: -0.06
+24.942 [ Info   ][Logger] controller output: -7.56191
+24.946 [ Info   ][Logger] error_pos: -0.06
+24.946 [ Info   ][Logger] controller output: -7.56235
+24.950 [ Info   ][Logger] error_pos: -0.06
+24.950 [ Info   ][Logger] controller output: -7.56277
+24.954 [ Info   ][Logger] error_pos: -0.06
+24.954 [ Info   ][Logger] controller output: -7.56319
+24.958 [ Info   ][Logger] error_pos: -0.06
+24.958 [ Info   ][Logger] controller output: -7.5636
+24.962 [ Info   ][Logger] error_pos: -0.06
+24.962 [ Info   ][Logger] controller output: -7.564
+24.966 [ Info   ][Logger] error_pos: -0.06
+24.966 [ Info   ][Logger] controller output: -7.56439
+24.970 [ Info   ][Logger] error_pos: -0.06
+24.970 [ Info   ][Logger] controller output: -7.56478
+24.974 [ Info   ][Logger] error_pos: -0.06
+24.974 [ Info   ][Logger] controller output: -7.56515
+24.978 [ Info   ][Logger] error_pos: -0.06
+24.978 [ Info   ][Logger] controller output: -7.56552
+24.982 [ Info   ][Logger] error_pos: -0.06
+24.982 [ Info   ][Logger] controller output: -7.56588
+24.986 [ Info   ][Logger] error_pos: -0.06
+24.986 [ Info   ][Logger] controller output: -7.56623
+24.990 [ Info   ][Logger] error_pos: -0.06
+24.990 [ Info   ][Logger] controller output: -7.56657
+24.994 [ Info   ][Logger] error_pos: -0.06
+24.994 [ Info   ][Logger] controller output: -7.5669
+24.998 [ Info   ][Logger] error_pos: -0.06
+24.998 [ Info   ][Logger] controller output: -7.56723
+25.002 [ Info   ][Logger] error_pos: -0.06
+25.002 [ Info   ][Logger] controller output: -7.56755
+25.006 [ Info   ][Logger] error_pos: -0.06
+25.007 [ Info   ][Logger] controller output: -7.56787
+25.010 [ Info   ][Logger] error_pos: -0.06
+25.010 [ Info   ][Logger] controller output: -7.56817
+25.014 [ Info   ][Logger] error_pos: -0.06
+25.014 [ Info   ][Logger] controller output: -7.56847
+25.018 [ Info   ][Logger] error_pos: -0.06
+25.018 [ Info   ][Logger] controller output: -7.56877
+25.022 [ Info   ][Logger] error_pos: -0.06
+25.022 [ Info   ][Logger] controller output: -7.56905
+25.026 [ Info   ][Logger] error_pos: -0.06
+25.026 [ Info   ][Logger] controller output: -7.56933
+25.030 [ Info   ][Logger] error_pos: -0.06
+25.030 [ Info   ][Logger] controller output: -7.56961
+25.034 [ Info   ][Logger] error_pos: -0.06
+25.034 [ Info   ][Logger] controller output: -7.56988
+25.038 [ Info   ][Logger] error_pos: -0.06
+25.038 [ Info   ][Logger] controller output: -7.57014
+25.042 [ Info   ][Logger] error_pos: -0.06
+25.042 [ Info   ][Logger] controller output: -7.5704
+25.046 [ Info   ][Logger] error_pos: -0.06
+25.046 [ Info   ][Logger] controller output: -7.57065
+25.050 [ Info   ][Logger] error_pos: -0.06
+25.050 [ Info   ][Logger] controller output: -7.57089
+25.054 [ Info   ][Logger] error_pos: -0.06
+25.054 [ Info   ][Logger] controller output: -7.57113
+25.058 [ Info   ][Logger] error_pos: -0.06
+25.058 [ Info   ][Logger] controller output: -7.57137
+25.062 [ Info   ][Logger] error_pos: -0.06
+25.062 [ Info   ][Logger] controller output: -7.5716
+25.066 [ Info   ][Logger] error_pos: -0.06
+25.066 [ Info   ][Logger] controller output: -7.57182
+25.070 [ Info   ][Logger] error_pos: -0.06
+25.070 [ Info   ][Logger] controller output: -7.57204
+25.074 [ Info   ][Logger] error_pos: -0.06
+25.074 [ Info   ][Logger] controller output: -7.57226
+25.078 [ Info   ][Logger] error_pos: -0.06
+25.078 [ Info   ][Logger] controller output: -7.57247
+25.082 [ Info   ][Logger] error_pos: -0.06
+25.082 [ Info   ][Logger] controller output: -7.57267
+25.086 [ Info   ][Logger] error_pos: -0.06
+25.086 [ Info   ][Logger] controller output: -7.57287
+25.090 [ Info   ][Logger] error_pos: -0.06
+25.090 [ Info   ][Logger] controller output: -7.57307
+25.094 [ Info   ][Logger] error_pos: -0.06
+25.094 [ Info   ][Logger] controller output: -7.57326
+25.098 [ Info   ][Logger] error_pos: -0.06
+25.098 [ Info   ][Logger] controller output: -7.57345
+25.102 [ Info   ][Logger] error_pos: -0.06
+25.102 [ Info   ][Logger] controller output: -7.57363
+25.106 [ Info   ][Logger] error_pos: -0.06
+25.106 [ Info   ][Logger] controller output: -7.57381
+25.110 [ Info   ][Logger] error_pos: -0.06
+25.110 [ Info   ][Logger] controller output: -7.57399
+25.114 [ Info   ][Logger] error_pos: -0.06
+25.114 [ Info   ][Logger] controller output: -7.57416
+25.118 [ Info   ][Logger] error_pos: -0.06
+25.118 [ Info   ][Logger] controller output: -7.57433
+25.122 [ Info   ][Logger] error_pos: -0.06
+25.122 [ Info   ][Logger] controller output: -7.57449
+25.126 [ Info   ][Logger] error_pos: -0.06
+25.126 [ Info   ][Logger] controller output: -7.57466
+25.130 [ Info   ][Logger] error_pos: -0.06
+25.130 [ Info   ][Logger] controller output: -7.57481
+25.134 [ Info   ][Logger] error_pos: -0.06
+25.134 [ Info   ][Logger] controller output: -7.57497
+25.138 [ Info   ][Logger] error_pos: -0.06
+25.138 [ Info   ][Logger] controller output: -7.57512
+25.142 [ Info   ][Logger] error_pos: -0.06
+25.142 [ Info   ][Logger] controller output: -7.57526
+25.146 [ Info   ][Logger] error_pos: -0.06
+25.146 [ Info   ][Logger] controller output: -7.57541
+25.150 [ Info   ][Logger] error_pos: -0.06
+25.150 [ Info   ][Logger] controller output: -7.57555
+25.154 [ Info   ][Logger] error_pos: -0.06
+25.154 [ Info   ][Logger] controller output: -7.57569
+25.158 [ Info   ][Logger] error_pos: -0.06
+25.158 [ Info   ][Logger] controller output: -7.57582
+25.162 [ Info   ][Logger] error_pos: -0.06
+25.162 [ Info   ][Logger] controller output: -7.57595
+25.166 [ Info   ][Logger] error_pos: -0.06
+25.166 [ Info   ][Logger] controller output: -7.57608
+25.170 [ Info   ][Logger] error_pos: -0.06
+25.170 [ Info   ][Logger] controller output: -7.57621
+25.174 [ Info   ][Logger] error_pos: -0.06
+25.174 [ Info   ][Logger] controller output: -7.57633
+25.178 [ Info   ][Logger] error_pos: -0.06
+25.178 [ Info   ][Logger] controller output: -7.57645
+25.182 [ Info   ][Logger] error_pos: -0.06
+25.182 [ Info   ][Logger] controller output: -7.57657
+25.186 [ Info   ][Logger] error_pos: -0.06
+25.186 [ Info   ][Logger] controller output: -7.57669
+25.190 [ Info   ][Logger] error_pos: -0.06
+25.190 [ Info   ][Logger] controller output: -7.5768
+25.194 [ Info   ][Logger] error_pos: -0.06
+25.194 [ Info   ][Logger] controller output: -7.57691
+25.198 [ Info   ][Logger] error_pos: -0.06
+25.198 [ Info   ][Logger] controller output: -7.57702
+25.202 [ Info   ][Logger] error_pos: -0.06
+25.202 [ Info   ][Logger] controller output: -7.57712
+25.206 [ Info   ][Logger] error_pos: -0.06
+25.206 [ Info   ][Logger] controller output: -7.57723
+25.210 [ Info   ][Logger] error_pos: -0.06
+25.210 [ Info   ][Logger] controller output: -7.57733
+25.214 [ Info   ][Logger] error_pos: -0.06
+25.214 [ Info   ][Logger] controller output: -7.57743
+25.218 [ Info   ][Logger] error_pos: -0.06
+25.218 [ Info   ][Logger] controller output: -7.57752
+25.222 [ Info   ][Logger] error_pos: -0.06
+25.222 [ Info   ][Logger] controller output: -7.57762
+25.226 [ Info   ][Logger] error_pos: -0.06
+25.226 [ Info   ][Logger] controller output: -7.57771
+25.230 [ Info   ][Logger] error_pos: -0.06
+25.230 [ Info   ][Logger] controller output: -7.5778
+25.234 [ Info   ][Logger] error_pos: -0.06
+25.234 [ Info   ][Logger] controller output: -7.57789
+25.238 [ Info   ][Logger] error_pos: -0.06
+25.238 [ Info   ][Logger] controller output: -7.57797
+25.242 [ Info   ][Logger] error_pos: -0.06
+25.242 [ Info   ][Logger] controller output: -7.57806
+25.246 [ Info   ][Logger] error_pos: -0.06
+25.246 [ Info   ][Logger] controller output: -7.57814
+25.250 [ Info   ][Logger] error_pos: -0.06
+25.250 [ Info   ][Logger] controller output: -7.57822
+25.254 [ Info   ][Logger] error_pos: -0.06
+25.254 [ Info   ][Logger] controller output: -7.5783
+25.258 [ Info   ][Logger] error_pos: -0.06
+25.258 [ Info   ][Logger] controller output: -7.57838
+25.262 [ Info   ][Logger] error_pos: -0.06
+25.262 [ Info   ][Logger] controller output: -7.57845
+25.266 [ Info   ][Logger] error_pos: -0.06
+25.266 [ Info   ][Logger] controller output: -7.57853
+25.270 [ Info   ][Logger] error_pos: -0.06
+25.270 [ Info   ][Logger] controller output: -7.5786
+25.274 [ Info   ][Logger] error_pos: -0.06
+25.274 [ Info   ][Logger] controller output: -7.57867
+25.278 [ Info   ][Logger] error_pos: -0.06
+25.278 [ Info   ][Logger] controller output: -7.57874
+25.282 [ Info   ][Logger] error_pos: -0.06
+25.282 [ Info   ][Logger] controller output: -7.57881
+25.286 [ Info   ][Logger] error_pos: -0.06
+25.286 [ Info   ][Logger] controller output: -7.57887
+25.290 [ Info   ][Logger] error_pos: -0.06
+25.290 [ Info   ][Logger] controller output: -7.57894
+25.294 [ Info   ][Logger] error_pos: -0.06
+25.294 [ Info   ][Logger] controller output: -7.579
+25.298 [ Info   ][Logger] error_pos: -0.06
+25.298 [ Info   ][Logger] controller output: -7.57906
+25.302 [ Info   ][Logger] error_pos: -0.06
+25.302 [ Info   ][Logger] controller output: -7.57912
+25.306 [ Info   ][Logger] error_pos: -0.06
+25.306 [ Info   ][Logger] controller output: -7.57918
+25.310 [ Info   ][Logger] error_pos: -0.06
+25.310 [ Info   ][Logger] controller output: -7.57924
+25.314 [ Info   ][Logger] error_pos: -0.06
+25.314 [ Info   ][Logger] controller output: -7.5793
+25.318 [ Info   ][Logger] error_pos: -0.06
+25.318 [ Info   ][Logger] controller output: -7.57935
+25.322 [ Info   ][Logger] error_pos: -0.06
+25.322 [ Info   ][Logger] controller output: -7.57941
+25.326 [ Info   ][Logger] error_pos: -0.06
+25.326 [ Info   ][Logger] controller output: -7.57946
+25.330 [ Info   ][Logger] error_pos: -0.06
+25.330 [ Info   ][Logger] controller output: -7.57951
+25.334 [ Info   ][Logger] error_pos: -0.06
+25.334 [ Info   ][Logger] controller output: -7.57956
+25.338 [ Info   ][Logger] error_pos: -0.06
+25.338 [ Info   ][Logger] controller output: -7.57961
+25.342 [ Info   ][Logger] error_pos: -0.06
+25.342 [ Info   ][Logger] controller output: -7.57966
+25.346 [ Info   ][Logger] error_pos: -0.06
+25.346 [ Info   ][Logger] controller output: -7.57971
+25.350 [ Info   ][Logger] error_pos: -0.06
+25.350 [ Info   ][Logger] controller output: -7.57975
+25.354 [ Info   ][Logger] error_pos: -0.06
+25.354 [ Info   ][Logger] controller output: -7.5798
+25.358 [ Info   ][Logger] error_pos: -0.06
+25.358 [ Info   ][Logger] controller output: -7.57984
+25.362 [ Info   ][Logger] error_pos: -0.06
+25.362 [ Info   ][Logger] controller output: -7.57989
+25.366 [ Info   ][Logger] error_pos: -0.06
+25.366 [ Info   ][Logger] controller output: -7.57993
+25.370 [ Info   ][Logger] error_pos: -0.06
+25.370 [ Info   ][Logger] controller output: -7.57997
+25.374 [ Info   ][Logger] error_pos: -0.06
+25.374 [ Info   ][Logger] controller output: -7.58001
+25.378 [ Info   ][Logger] error_pos: -0.06
+25.378 [ Info   ][Logger] controller output: -7.58005
+25.382 [ Info   ][Logger] error_pos: -0.06
+25.382 [ Info   ][Logger] controller output: -7.58009
+25.386 [ Info   ][Logger] error_pos: -0.06
+25.386 [ Info   ][Logger] controller output: -7.58013
+25.390 [ Info   ][Logger] error_pos: -0.06
+25.390 [ Info   ][Logger] controller output: -7.58017
+25.394 [ Info   ][Logger] error_pos: -0.06
+25.394 [ Info   ][Logger] controller output: -7.5802
+25.398 [ Info   ][Logger] error_pos: -0.06
+25.398 [ Info   ][Logger] controller output: -7.58024
+25.402 [ Info   ][Logger] error_pos: -0.06
+25.402 [ Info   ][Logger] controller output: -7.58027
+25.406 [ Info   ][Logger] error_pos: -0.06
+25.406 [ Info   ][Logger] controller output: -7.58031
+25.410 [ Info   ][Logger] error_pos: -0.06
+25.410 [ Info   ][Logger] controller output: -7.58034
+25.414 [ Info   ][Logger] error_pos: -0.06
+25.414 [ Info   ][Logger] controller output: -7.58037
+25.418 [ Info   ][Logger] error_pos: -0.06
+25.418 [ Info   ][Logger] controller output: -7.5804
+25.422 [ Info   ][Logger] error_pos: -0.06
+25.422 [ Info   ][Logger] controller output: -7.58043
+25.426 [ Info   ][Logger] error_pos: -0.06
+25.426 [ Info   ][Logger] controller output: -7.58047
+25.430 [ Info   ][Logger] error_pos: -0.06
+25.430 [ Info   ][Logger] controller output: -7.5805
+25.434 [ Info   ][Logger] error_pos: -0.06
+25.434 [ Info   ][Logger] controller output: -7.58052
+25.438 [ Info   ][Logger] error_pos: -0.06
+25.438 [ Info   ][Logger] controller output: -7.58055
+25.442 [ Info   ][Logger] error_pos: -0.06
+25.442 [ Info   ][Logger] controller output: -7.58058
+25.446 [ Info   ][Logger] error_pos: -0.06
+25.446 [ Info   ][Logger] controller output: -7.58061
+25.450 [ Info   ][Logger] error_pos: -0.06
+25.450 [ Info   ][Logger] controller output: -7.58063
+25.454 [ Info   ][Logger] error_pos: -0.06
+25.454 [ Info   ][Logger] controller output: -7.58066
+25.458 [ Info   ][Logger] error_pos: -0.06
+25.458 [ Info   ][Logger] controller output: -7.58069
+25.462 [ Info   ][Logger] error_pos: -0.06
+25.462 [ Info   ][Logger] controller output: -7.58071
+25.466 [ Info   ][Logger] error_pos: -0.06
+25.466 [ Info   ][Logger] controller output: -7.58073
+25.470 [ Info   ][Logger] error_pos: -0.06
+25.470 [ Info   ][Logger] controller output: -7.58076
+25.474 [ Info   ][Logger] error_pos: -0.06
+25.474 [ Info   ][Logger] controller output: -7.58078
+25.478 [ Info   ][Logger] error_pos: -0.06
+25.478 [ Info   ][Logger] controller output: -7.5808
+25.482 [ Info   ][Logger] error_pos: -0.06
+25.482 [ Info   ][Logger] controller output: -7.58083
+25.486 [ Info   ][Logger] error_pos: -0.06
+25.486 [ Info   ][Logger] controller output: -7.58085
+25.490 [ Info   ][Logger] error_pos: -0.06
+25.490 [ Info   ][Logger] controller output: -7.58087
+25.494 [ Info   ][Logger] error_pos: -0.06
+25.494 [ Info   ][Logger] controller output: -7.58089
+25.498 [ Info   ][Logger] error_pos: -0.06
+25.498 [ Info   ][Logger] controller output: -7.58091
+25.502 [ Info   ][Logger] error_pos: -0.06
+25.502 [ Info   ][Logger] controller output: -7.58093
+25.506 [ Info   ][Logger] error_pos: -0.06
+25.506 [ Info   ][Logger] controller output: -7.58095
+25.510 [ Info   ][Logger] error_pos: -0.06
+25.510 [ Info   ][Logger] controller output: -7.58097
+25.514 [ Info   ][Logger] error_pos: -0.06
+25.514 [ Info   ][Logger] controller output: -7.58099
+25.518 [ Info   ][Logger] error_pos: -0.06
+25.518 [ Info   ][Logger] controller output: -7.58101
+25.522 [ Info   ][Logger] error_pos: -0.06
+25.522 [ Info   ][Logger] controller output: -7.58102
+25.526 [ Info   ][Logger] error_pos: -0.06
+25.526 [ Info   ][Logger] controller output: -7.58104
+25.530 [ Info   ][Logger] error_pos: -0.06
+25.530 [ Info   ][Logger] controller output: -7.58106
+25.534 [ Info   ][Logger] error_pos: -0.06
+25.534 [ Info   ][Logger] controller output: -7.58108
+25.538 [ Info   ][Logger] error_pos: -0.06
+25.538 [ Info   ][Logger] controller output: -7.58109
+25.542 [ Info   ][Logger] error_pos: -0.06
+25.542 [ Info   ][Logger] controller output: -7.58111
+25.546 [ Info   ][Logger] error_pos: -0.06
+25.546 [ Info   ][Logger] controller output: -7.58112
+25.550 [ Info   ][Logger] error_pos: -0.06
+25.550 [ Info   ][Logger] controller output: -7.58114
+25.554 [ Info   ][Logger] error_pos: -0.06
+25.554 [ Info   ][Logger] controller output: -7.58115
+25.558 [ Info   ][Logger] error_pos: -0.06
+25.558 [ Info   ][Logger] controller output: -7.58117
+25.562 [ Info   ][Logger] error_pos: -0.06
+25.562 [ Info   ][Logger] controller output: -7.58118
+25.566 [ Info   ][Logger] error_pos: -0.06
+25.566 [ Info   ][Logger] controller output: -7.5812
+25.570 [ Info   ][Logger] error_pos: -0.06
+25.570 [ Info   ][Logger] controller output: -7.58121
+25.574 [ Info   ][Logger] error_pos: -0.06
+25.574 [ Info   ][Logger] controller output: -7.58122
+25.578 [ Info   ][Logger] error_pos: -0.06
+25.578 [ Info   ][Logger] controller output: -7.58124
+25.582 [ Info   ][Logger] error_pos: -0.06
+25.582 [ Info   ][Logger] controller output: -7.58125
+25.586 [ Info   ][Logger] error_pos: -0.06
+25.586 [ Info   ][Logger] controller output: -7.58126
+25.590 [ Info   ][Logger] error_pos: -0.06
+25.590 [ Info   ][Logger] controller output: -7.58127
+25.594 [ Info   ][Logger] error_pos: -0.06
+25.594 [ Info   ][Logger] controller output: -7.58129
+25.598 [ Info   ][Logger] error_pos: -0.06
+25.598 [ Info   ][Logger] controller output: -7.5813
+25.602 [ Info   ][Logger] error_pos: -0.06
+25.602 [ Info   ][Logger] controller output: -7.58131
+25.606 [ Info   ][Logger] error_pos: -0.06
+25.606 [ Info   ][Logger] controller output: -7.58132
+25.610 [ Info   ][Logger] error_pos: -0.06
+25.610 [ Info   ][Logger] controller output: -7.58133
+25.614 [ Info   ][Logger] error_pos: -0.06
+25.614 [ Info   ][Logger] controller output: -7.58134
+25.618 [ Info   ][Logger] error_pos: -0.06
+25.618 [ Info   ][Logger] controller output: -7.58135
+25.622 [ Info   ][Logger] error_pos: -0.06
+25.622 [ Info   ][Logger] controller output: -7.58136
+25.626 [ Info   ][Logger] error_pos: -0.06
+25.626 [ Info   ][Logger] controller output: -7.58137
+25.630 [ Info   ][Logger] error_pos: -0.06
+25.630 [ Info   ][Logger] controller output: -7.58138
+25.634 [ Info   ][Logger] error_pos: -0.06
+25.634 [ Info   ][Logger] controller output: -7.58139
+25.638 [ Info   ][Logger] error_pos: -0.06
+25.638 [ Info   ][Logger] controller output: -7.5814
+25.642 [ Info   ][Logger] error_pos: -0.06
+25.642 [ Info   ][Logger] controller output: -7.58141
+25.646 [ Info   ][Logger] error_pos: -0.06
+25.646 [ Info   ][Logger] controller output: -7.58142
+25.650 [ Info   ][Logger] error_pos: -0.06
+25.650 [ Info   ][Logger] controller output: -7.58143
+25.654 [ Info   ][Logger] error_pos: -0.06
+25.654 [ Info   ][Logger] controller output: -7.58144
+25.658 [ Info   ][Logger] error_pos: -0.06
+25.658 [ Info   ][Logger] controller output: -7.58145
+25.662 [ Info   ][Logger] error_pos: -0.06
+25.662 [ Info   ][Logger] controller output: -7.58145
+25.666 [ Info   ][Logger] error_pos: -0.06
+25.666 [ Info   ][Logger] controller output: -7.58146
+25.670 [ Info   ][Logger] error_pos: -0.06
+25.670 [ Info   ][Logger] controller output: -7.58147
+25.674 [ Info   ][Logger] error_pos: -0.06
+25.674 [ Info   ][Logger] controller output: -7.58148
+25.678 [ Info   ][Logger] error_pos: -0.06
+25.678 [ Info   ][Logger] controller output: -7.58148
+25.682 [ Info   ][Logger] error_pos: -0.06
+25.682 [ Info   ][Logger] controller output: -7.58149
+25.686 [ Info   ][Logger] error_pos: -0.06
+25.686 [ Info   ][Logger] controller output: -7.5815
+25.690 [ Info   ][Logger] error_pos: -0.06
+25.690 [ Info   ][Logger] controller output: -7.58151
+25.694 [ Info   ][Logger] error_pos: -0.06
+25.694 [ Info   ][Logger] controller output: -7.58151
+25.698 [ Info   ][Logger] error_pos: -0.06
+25.698 [ Info   ][Logger] controller output: -7.58152
+25.702 [ Info   ][Logger] error_pos: -0.06
+25.702 [ Info   ][Logger] controller output: -7.58153
+25.706 [ Info   ][Logger] error_pos: -0.06
+25.706 [ Info   ][Logger] controller output: -7.58153
+25.710 [ Info   ][Logger] error_pos: -0.06
+25.710 [ Info   ][Logger] controller output: -7.58154
+25.714 [ Info   ][Logger] error_pos: -0.06
+25.714 [ Info   ][Logger] controller output: -7.58155
+25.718 [ Info   ][Logger] error_pos: -0.06
+25.718 [ Info   ][Logger] controller output: -7.58155
+25.722 [ Info   ][Logger] error_pos: -0.06
+25.722 [ Info   ][Logger] controller output: -7.58156
+25.726 [ Info   ][Logger] error_pos: -0.06
+25.726 [ Info   ][Logger] controller output: -7.58156
+25.730 [ Info   ][Logger] error_pos: -0.06
+25.730 [ Info   ][Logger] controller output: -7.58157
+25.734 [ Info   ][Logger] error_pos: -0.06
+25.734 [ Info   ][Logger] controller output: -7.58157
+25.738 [ Info   ][Logger] error_pos: -0.06
+25.738 [ Info   ][Logger] controller output: -7.58158
+25.742 [ Info   ][Logger] error_pos: -0.06
+25.742 [ Info   ][Logger] controller output: -7.58158
+25.746 [ Info   ][Logger] error_pos: -0.06
+25.746 [ Info   ][Logger] controller output: -7.58159
+25.750 [ Info   ][Logger] error_pos: -0.06
+25.750 [ Info   ][Logger] controller output: -7.58159
+25.754 [ Info   ][Logger] error_pos: -0.06
+25.754 [ Info   ][Logger] controller output: -7.5816
+25.758 [ Info   ][Logger] error_pos: -0.06
+25.758 [ Info   ][Logger] controller output: -7.5816
+25.762 [ Info   ][Logger] error_pos: -0.06
+25.762 [ Info   ][Logger] controller output: -7.58161
+25.766 [ Info   ][Logger] error_pos: -0.06
+25.766 [ Info   ][Logger] controller output: -7.58161
+25.770 [ Info   ][Logger] error_pos: -0.06
+25.770 [ Info   ][Logger] controller output: -7.58162
+25.774 [ Info   ][Logger] error_pos: -0.06
+25.774 [ Info   ][Logger] controller output: -7.58162
+25.778 [ Info   ][Logger] error_pos: -0.06
+25.778 [ Info   ][Logger] controller output: -7.58163
+25.782 [ Info   ][Logger] error_pos: -0.06
+25.782 [ Info   ][Logger] controller output: -7.58163
+25.786 [ Info   ][Logger] error_pos: -0.06
+25.786 [ Info   ][Logger] controller output: -7.58164
+25.790 [ Info   ][Logger] error_pos: -0.06
+25.790 [ Info   ][Logger] controller output: -7.58164
+25.794 [ Info   ][Logger] error_pos: -0.06
+25.794 [ Info   ][Logger] controller output: -7.58164
+25.798 [ Info   ][Logger] error_pos: -0.06
+25.798 [ Info   ][Logger] controller output: -7.58165
+25.802 [ Info   ][Logger] error_pos: -0.06
+25.802 [ Info   ][Logger] controller output: -7.58165
+25.806 [ Info   ][Logger] error_pos: -0.06
+25.806 [ Info   ][Logger] controller output: -7.58165
+25.810 [ Info   ][Logger] error_pos: -0.06
+25.810 [ Info   ][Logger] controller output: -7.58166
+25.814 [ Info   ][Logger] error_pos: -0.06
+25.814 [ Info   ][Logger] controller output: -7.58166
+25.818 [ Info   ][Logger] error_pos: -0.06
+25.818 [ Info   ][Logger] controller output: -7.58166
+25.822 [ Info   ][Logger] error_pos: -0.06
+25.822 [ Info   ][Logger] controller output: -7.58167
+25.826 [ Info   ][Logger] error_pos: -0.06
+25.826 [ Info   ][Logger] controller output: -7.58167
+25.830 [ Info   ][Logger] error_pos: -0.06
+25.830 [ Info   ][Logger] controller output: -7.58167
+25.834 [ Info   ][Logger] error_pos: -0.06
+25.834 [ Info   ][Logger] controller output: -7.58168
+25.838 [ Info   ][Logger] error_pos: -0.06
+25.838 [ Info   ][Logger] controller output: -7.58168
+25.842 [ Info   ][Logger] error_pos: -0.06
+25.842 [ Info   ][Logger] controller output: -7.58168
+25.846 [ Info   ][Logger] error_pos: -0.06
+25.846 [ Info   ][Logger] controller output: -7.58169
+25.850 [ Info   ][Logger] error_pos: -0.06
+25.850 [ Info   ][Logger] controller output: -7.58169
+25.854 [ Info   ][Logger] error_pos: -0.06
+25.854 [ Info   ][Logger] controller output: -7.58169
+25.858 [ Info   ][Logger] error_pos: -0.06
+25.858 [ Info   ][Logger] controller output: -7.5817
+25.862 [ Info   ][Logger] error_pos: -0.06
+25.862 [ Info   ][Logger] controller output: -7.5817
+25.866 [ Info   ][Logger] error_pos: -0.06
+25.866 [ Info   ][Logger] controller output: -7.5817
+25.870 [ Info   ][Logger] error_pos: -0.06
+25.870 [ Info   ][Logger] controller output: -7.5817
+25.874 [ Info   ][Logger] error_pos: -0.06
+25.874 [ Info   ][Logger] controller output: -7.58171
+25.878 [ Info   ][Logger] error_pos: -0.06
+25.878 [ Info   ][Logger] controller output: -7.58171
+25.882 [ Info   ][Logger] error_pos: -0.06
+25.882 [ Info   ][Logger] controller output: -7.58171
+25.886 [ Info   ][Logger] error_pos: -0.06
+25.886 [ Info   ][Logger] controller output: -7.58171
+25.890 [ Info   ][Logger] error_pos: -0.06
+25.890 [ Info   ][Logger] controller output: -7.58172
+25.894 [ Info   ][Logger] error_pos: -0.06
+25.894 [ Info   ][Logger] controller output: -7.58172
+25.898 [ Info   ][Logger] error_pos: -0.06
+25.898 [ Info   ][Logger] controller output: -7.58172
+25.902 [ Info   ][Logger] error_pos: -0.06
+25.902 [ Info   ][Logger] controller output: -7.58172
+25.906 [ Info   ][Logger] error_pos: -0.06
+25.906 [ Info   ][Logger] controller output: -7.58172
+25.910 [ Info   ][Logger] error_pos: -0.06
+25.910 [ Info   ][Logger] controller output: -7.58173
+25.914 [ Info   ][Logger] error_pos: -0.06
+25.914 [ Info   ][Logger] controller output: -7.58173
+25.918 [ Info   ][Logger] error_pos: -0.06
+25.918 [ Info   ][Logger] controller output: -7.58173
+25.922 [ Info   ][Logger] error_pos: -0.06
+25.922 [ Info   ][Logger] controller output: -7.58173
+25.926 [ Info   ][Logger] error_pos: -0.06
+25.926 [ Info   ][Logger] controller output: -7.58173
+25.930 [ Info   ][Logger] error_pos: -0.06
+25.930 [ Info   ][Logger] controller output: -7.58174
+25.934 [ Info   ][Logger] error_pos: -0.06
+25.934 [ Info   ][Logger] controller output: -7.58174
+25.938 [ Info   ][Logger] error_pos: -0.06
+25.938 [ Info   ][Logger] controller output: -7.58174
+25.942 [ Info   ][Logger] error_pos: -0.06
+25.942 [ Info   ][Logger] controller output: -7.58174
+25.946 [ Info   ][Logger] error_pos: -0.06
+25.946 [ Info   ][Logger] controller output: -7.58174
+25.950 [ Info   ][Logger] error_pos: -0.06
+25.950 [ Info   ][Logger] controller output: -7.58174
+25.954 [ Info   ][Logger] error_pos: -0.06
+25.954 [ Info   ][Logger] controller output: -7.58175
+25.958 [ Info   ][Logger] error_pos: -0.06
+25.958 [ Info   ][Logger] controller output: -7.58175
+25.962 [ Info   ][Logger] error_pos: -0.06
+25.962 [ Info   ][Logger] controller output: -7.58175
+25.966 [ Info   ][Logger] error_pos: -0.06
+25.966 [ Info   ][Logger] controller output: -7.58175
+25.970 [ Info   ][Logger] error_pos: -0.06
+25.970 [ Info   ][Logger] controller output: -7.58175
+25.974 [ Info   ][Logger] error_pos: -0.06
+25.974 [ Info   ][Logger] controller output: -7.58175
+25.978 [ Info   ][Logger] error_pos: -0.06
+25.978 [ Info   ][Logger] controller output: -7.58176
+25.982 [ Info   ][Logger] error_pos: -0.06
+25.982 [ Info   ][Logger] controller output: -7.58176
+25.986 [ Info   ][Logger] error_pos: -0.06
+25.986 [ Info   ][Logger] controller output: -7.58176
+25.990 [ Info   ][Logger] error_pos: -0.06
+25.990 [ Info   ][Logger] controller output: -7.58176
+25.994 [ Info   ][Logger] error_pos: -0.06
+25.994 [ Info   ][Logger] controller output: -7.58176
+25.998 [ Info   ][Logger] error_pos: -0.06
+25.998 [ Info   ][Logger] controller output: -7.58176
+26.002 [ Info   ][Logger] error_pos: -0.06
+26.002 [ Info   ][Logger] controller output: -7.58176
+26.006 [ Info   ][Logger] error_pos: -0.06
+26.006 [ Info   ][Logger] controller output: -7.58176
+26.010 [ Info   ][Logger] error_pos: -0.06
+26.010 [ Info   ][Logger] controller output: -7.58177
+26.014 [ Info   ][Logger] error_pos: -0.06
+26.014 [ Info   ][Logger] controller output: -7.58177
+26.018 [ Info   ][Logger] error_pos: -0.06
+26.018 [ Info   ][Logger] controller output: -7.58177
+26.022 [ Info   ][Logger] error_pos: -0.06
+26.022 [ Info   ][Logger] controller output: -7.58177
+26.026 [ Info   ][Logger] error_pos: -0.06
+26.026 [ Info   ][Logger] controller output: -7.58177
+26.030 [ Info   ][Logger] error_pos: -0.06
+26.030 [ Info   ][Logger] controller output: -7.58177
+26.034 [ Info   ][Logger] error_pos: -0.06
+26.034 [ Info   ][Logger] controller output: -7.58177
+26.038 [ Info   ][Logger] error_pos: -0.06
+26.038 [ Info   ][Logger] controller output: -7.58177
+26.042 [ Info   ][Logger] error_pos: -0.06
+26.042 [ Info   ][Logger] controller output: -7.58177
+26.046 [ Info   ][Logger] error_pos: -0.06
+26.046 [ Info   ][Logger] controller output: -7.58178
+26.050 [ Info   ][Logger] error_pos: -0.06
+26.050 [ Info   ][Logger] controller output: -7.58178
+26.054 [ Info   ][Logger] error_pos: -0.06
+26.054 [ Info   ][Logger] controller output: -7.58178
+26.058 [ Info   ][Logger] error_pos: -0.06
+26.058 [ Info   ][Logger] controller output: -7.58178
+26.062 [ Info   ][Logger] error_pos: -0.06
+26.062 [ Info   ][Logger] controller output: -7.58178
+26.066 [ Info   ][Logger] error_pos: -0.06
+26.066 [ Info   ][Logger] controller output: -7.58178
+26.070 [ Info   ][Logger] error_pos: -0.06
+26.070 [ Info   ][Logger] controller output: -7.58178
+26.074 [ Info   ][Logger] error_pos: -0.06
+26.074 [ Info   ][Logger] controller output: -7.58178
+26.078 [ Info   ][Logger] error_pos: -0.06
+26.078 [ Info   ][Logger] controller output: -7.58178
+26.082 [ Info   ][Logger] error_pos: -0.06
+26.082 [ Info   ][Logger] controller output: -7.58178
+26.086 [ Info   ][Logger] error_pos: -0.06
+26.086 [ Info   ][Logger] controller output: -7.58178
+26.090 [ Info   ][Logger] error_pos: -0.06
+26.090 [ Info   ][Logger] controller output: -7.58178
+26.094 [ Info   ][Logger] error_pos: -0.06
+26.094 [ Info   ][Logger] controller output: -7.58179
+26.098 [ Info   ][Logger] error_pos: -0.06
+26.098 [ Info   ][Logger] controller output: -7.58179
+26.102 [ Info   ][Logger] error_pos: -0.06
+26.102 [ Info   ][Logger] controller output: -7.58179
+26.106 [ Info   ][Logger] error_pos: -0.06
+26.106 [ Info   ][Logger] controller output: -7.58179
+26.110 [ Info   ][Logger] error_pos: -0.06
+26.110 [ Info   ][Logger] controller output: -7.58179
+26.114 [ Info   ][Logger] error_pos: -0.06
+26.114 [ Info   ][Logger] controller output: -7.58179
+26.118 [ Info   ][Logger] error_pos: -0.06
+26.118 [ Info   ][Logger] controller output: -7.58179
+26.122 [ Info   ][Logger] error_pos: -0.06
+26.122 [ Info   ][Logger] controller output: -7.58179
+26.126 [ Info   ][Logger] error_pos: -0.06
+26.126 [ Info   ][Logger] controller output: -7.58179
+26.130 [ Info   ][Logger] error_pos: -0.06
+26.130 [ Info   ][Logger] controller output: -7.58179
+26.134 [ Info   ][Logger] error_pos: -0.06
+26.134 [ Info   ][Logger] controller output: -7.58179
+26.138 [ Info   ][Logger] error_pos: -0.06
+26.138 [ Info   ][Logger] controller output: -7.58179
+26.142 [ Info   ][Logger] error_pos: -0.06
+26.142 [ Info   ][Logger] controller output: -7.58179
+26.146 [ Info   ][Logger] error_pos: -0.06
+26.146 [ Info   ][Logger] controller output: -7.58179
+26.150 [ Info   ][Logger] error_pos: -0.06
+26.150 [ Info   ][Logger] controller output: -7.58179
+26.154 [ Info   ][Logger] error_pos: -0.06
+26.154 [ Info   ][Logger] controller output: -7.58179
+26.158 [ Info   ][Logger] error_pos: -0.06
+26.158 [ Info   ][Logger] controller output: -7.5818
+26.162 [ Info   ][Logger] error_pos: -0.06
+26.162 [ Info   ][Logger] controller output: -7.5818
+26.166 [ Info   ][Logger] error_pos: -0.06
+26.166 [ Info   ][Logger] controller output: -7.5818
+26.170 [ Info   ][Logger] error_pos: -0.06
+26.170 [ Info   ][Logger] controller output: -7.5818
+26.174 [ Info   ][Logger] error_pos: -0.06
+26.174 [ Info   ][Logger] controller output: -7.5818
+26.178 [ Info   ][Logger] error_pos: -0.06
+26.178 [ Info   ][Logger] controller output: -7.5818
+26.182 [ Info   ][Logger] error_pos: -0.06
+26.182 [ Info   ][Logger] controller output: -7.5818
+26.186 [ Info   ][Logger] error_pos: -0.06
+26.186 [ Info   ][Logger] controller output: -7.5818
+26.190 [ Info   ][Logger] error_pos: -0.06
+26.190 [ Info   ][Logger] controller output: -7.5818
+26.194 [ Info   ][Logger] error_pos: -0.06
+26.194 [ Info   ][Logger] controller output: -7.5818
+26.198 [ Info   ][Logger] error_pos: -0.06
+26.198 [ Info   ][Logger] controller output: -7.5818
+26.202 [ Info   ][Logger] error_pos: -0.06
+26.202 [ Info   ][Logger] controller output: -7.5818
+26.206 [ Info   ][Logger] error_pos: -0.06
+26.206 [ Info   ][Logger] controller output: -7.5818
+26.210 [ Info   ][Logger] error_pos: -0.06
+26.210 [ Info   ][Logger] controller output: -7.5818
+26.214 [ Info   ][Logger] error_pos: -0.06
+26.214 [ Info   ][Logger] controller output: -7.5818
+26.218 [ Info   ][Logger] error_pos: -0.06
+26.218 [ Info   ][Logger] controller output: -7.5818
+26.222 [ Info   ][Logger] error_pos: -0.06
+26.222 [ Info   ][Logger] controller output: -7.5818
+26.226 [ Info   ][Logger] error_pos: -0.06
+26.226 [ Info   ][Logger] controller output: -7.5818
+26.230 [ Info   ][Logger] error_pos: -0.06
+26.230 [ Info   ][Logger] controller output: -7.5818
+26.234 [ Info   ][Logger] error_pos: -0.06
+26.234 [ Info   ][Logger] controller output: -7.5818
+26.238 [ Info   ][Logger] error_pos: -0.06
+26.238 [ Info   ][Logger] controller output: -7.5818
+26.242 [ Info   ][Logger] error_pos: -0.06
+26.242 [ Info   ][Logger] controller output: -7.5818
+26.246 [ Info   ][Logger] error_pos: -0.06
+26.246 [ Info   ][Logger] controller output: -7.5818
+26.250 [ Info   ][Logger] error_pos: -0.06
+26.250 [ Info   ][Logger] controller output: -7.5818
+26.254 [ Info   ][Logger] error_pos: -0.06
+26.254 [ Info   ][Logger] controller output: -7.5818
+26.258 [ Info   ][Logger] error_pos: -0.06
+26.258 [ Info   ][Logger] controller output: -7.5818
+26.262 [ Info   ][Logger] error_pos: -0.06
+26.262 [ Info   ][Logger] controller output: -7.58181
+26.266 [ Info   ][Logger] error_pos: -0.06
+26.266 [ Info   ][Logger] controller output: -7.58181
+26.270 [ Info   ][Logger] error_pos: -0.06
+26.270 [ Info   ][Logger] controller output: -7.58181
+26.274 [ Info   ][Logger] error_pos: -0.06
+26.274 [ Info   ][Logger] controller output: -7.58181
+26.278 [ Info   ][Logger] error_pos: -0.06
+26.278 [ Info   ][Logger] controller output: -7.58181
+26.282 [ Info   ][Logger] error_pos: -0.06
+26.282 [ Info   ][Logger] controller output: -7.58181
+26.286 [ Info   ][Logger] error_pos: -0.06
+26.286 [ Info   ][Logger] controller output: -7.58181
+26.290 [ Info   ][Logger] error_pos: -0.06
+26.290 [ Info   ][Logger] controller output: -7.58181
+26.294 [ Info   ][Logger] error_pos: -0.06
+26.294 [ Info   ][Logger] controller output: -7.58181
+26.298 [ Info   ][Logger] error_pos: -0.06
+26.298 [ Info   ][Logger] controller output: -7.58181
+26.302 [ Info   ][Logger] error_pos: -0.06
+26.302 [ Info   ][Logger] controller output: -7.58181
+26.306 [ Info   ][Logger] error_pos: -0.06
+26.306 [ Info   ][Logger] controller output: -7.58181
+26.310 [ Info   ][Logger] error_pos: -0.06
+26.310 [ Info   ][Logger] controller output: -7.58181
+26.314 [ Info   ][Logger] error_pos: -0.06
+26.314 [ Info   ][Logger] controller output: -7.58181
+26.318 [ Info   ][Logger] error_pos: -0.06
+26.318 [ Info   ][Logger] controller output: -7.58181
+26.322 [ Info   ][Logger] error_pos: -0.06
+26.322 [ Info   ][Logger] controller output: -7.58181
+26.326 [ Info   ][Logger] error_pos: -0.06
+26.326 [ Info   ][Logger] controller output: -7.58181
+26.330 [ Info   ][Logger] error_pos: -0.06
+26.330 [ Info   ][Logger] controller output: -7.58181
+26.334 [ Info   ][Logger] error_pos: -0.06
+26.334 [ Info   ][Logger] controller output: -7.58181
+26.338 [ Info   ][Logger] error_pos: -0.06
+26.338 [ Info   ][Logger] controller output: -7.58181
+26.342 [ Info   ][Logger] error_pos: -0.06
+26.342 [ Info   ][Logger] controller output: -7.58181
+26.346 [ Info   ][Logger] error_pos: -0.06
+26.346 [ Info   ][Logger] controller output: -7.58181
+26.350 [ Info   ][Logger] error_pos: -0.06
+26.350 [ Info   ][Logger] controller output: -7.58181
+26.354 [ Info   ][Logger] error_pos: -0.06
+26.354 [ Info   ][Logger] controller output: -7.58181
+26.358 [ Info   ][Logger] error_pos: -0.06
+26.358 [ Info   ][Logger] controller output: -7.58181
+26.362 [ Info   ][Logger] error_pos: -0.06
+26.362 [ Info   ][Logger] controller output: -7.58181
+26.366 [ Info   ][Logger] error_pos: -0.06
+26.366 [ Info   ][Logger] controller output: -7.58181
+26.370 [ Info   ][Logger] error_pos: -0.06
+26.370 [ Info   ][Logger] controller output: -7.58181
+26.374 [ Info   ][Logger] error_pos: -0.06
+26.374 [ Info   ][Logger] controller output: -7.58181
+26.378 [ Info   ][Logger] error_pos: -0.06
+26.378 [ Info   ][Logger] controller output: -7.58181
+26.382 [ Info   ][Logger] error_pos: -0.06
+26.382 [ Info   ][Logger] controller output: -7.58181
+26.386 [ Info   ][Logger] error_pos: -0.06
+26.386 [ Info   ][Logger] controller output: -7.58181
+26.390 [ Info   ][Logger] error_pos: -0.06
+26.390 [ Info   ][Logger] controller output: -7.58181
+26.394 [ Info   ][Logger] error_pos: -0.06
+26.394 [ Info   ][Logger] controller output: -7.58181
+26.398 [ Info   ][Logger] error_pos: -0.06
+26.398 [ Info   ][Logger] controller output: -7.58181
+26.402 [ Info   ][Logger] error_pos: -0.06
+26.402 [ Info   ][Logger] controller output: -7.58181
+26.406 [ Info   ][Logger] error_pos: -0.06
+26.406 [ Info   ][Logger] controller output: -7.58181
+26.410 [ Info   ][Logger] error_pos: -0.06
+26.410 [ Info   ][Logger] controller output: -7.58181
+26.414 [ Info   ][Logger] error_pos: -0.06
+26.414 [ Info   ][Logger] controller output: -7.58181
+26.418 [ Info   ][Logger] error_pos: -0.06
+26.418 [ Info   ][Logger] controller output: -7.58181
+26.422 [ Info   ][Logger] error_pos: -0.06
+26.422 [ Info   ][Logger] controller output: -7.58181
+26.426 [ Info   ][Logger] error_pos: -0.06
+26.426 [ Info   ][Logger] controller output: -7.58181
+26.430 [ Info   ][Logger] error_pos: -0.06
+26.430 [ Info   ][Logger] controller output: -7.58181
+26.434 [ Info   ][Logger] error_pos: -0.06
+26.434 [ Info   ][Logger] controller output: -7.58181
+26.438 [ Info   ][Logger] error_pos: -0.06
+26.438 [ Info   ][Logger] controller output: -7.58181
+26.442 [ Info   ][Logger] error_pos: -0.06
+26.442 [ Info   ][Logger] controller output: -7.58181
+26.446 [ Info   ][Logger] error_pos: -0.06
+26.446 [ Info   ][Logger] controller output: -7.58181
+26.450 [ Info   ][Logger] error_pos: -0.06
+26.450 [ Info   ][Logger] controller output: -7.58181
+26.454 [ Info   ][Logger] error_pos: -0.06
+26.454 [ Info   ][Logger] controller output: -7.58181
+26.458 [ Info   ][Logger] error_pos: -0.06
+26.458 [ Info   ][Logger] controller output: -7.58181
+26.462 [ Info   ][Logger] error_pos: -0.06
+26.462 [ Info   ][Logger] controller output: -7.58181
+26.466 [ Info   ][Logger] error_pos: -0.06
+26.466 [ Info   ][Logger] controller output: -7.58181
+26.470 [ Info   ][Logger] error_pos: -0.06
+26.470 [ Info   ][Logger] controller output: -7.58181
+26.474 [ Info   ][Logger] error_pos: -0.06
+26.474 [ Info   ][Logger] controller output: -7.58181
+26.478 [ Info   ][Logger] error_pos: -0.06
+26.478 [ Info   ][Logger] controller output: -7.58181
+26.482 [ Info   ][Logger] error_pos: -0.06
+26.482 [ Info   ][Logger] controller output: -7.58181
+26.486 [ Info   ][Logger] error_pos: -0.06
+26.486 [ Info   ][Logger] controller output: -7.58181
+26.490 [ Info   ][Logger] error_pos: -0.06
+26.490 [ Info   ][Logger] controller output: -7.58181
+26.494 [ Info   ][Logger] error_pos: -0.06
+26.494 [ Info   ][Logger] controller output: -7.58181
+26.498 [ Info   ][Logger] error_pos: -0.06
+26.498 [ Info   ][Logger] controller output: -7.58181
+26.502 [ Info   ][Logger] error_pos: -0.06
+26.502 [ Info   ][Logger] controller output: -7.58181
+26.506 [ Info   ][Logger] error_pos: -0.06
+26.506 [ Info   ][Logger] controller output: -7.58181
+26.510 [ Info   ][Logger] error_pos: -0.06
+26.510 [ Info   ][Logger] controller output: -7.58181
+26.514 [ Info   ][Logger] error_pos: -0.06
+26.514 [ Info   ][Logger] controller output: -7.58181
+26.518 [ Info   ][Logger] error_pos: -0.06
+26.518 [ Info   ][Logger] controller output: -7.58182
+26.522 [ Info   ][Logger] error_pos: -0.06
+26.522 [ Info   ][Logger] controller output: -7.58182
+26.526 [ Info   ][Logger] error_pos: -0.06
+26.526 [ Info   ][Logger] controller output: -7.58182
+26.530 [ Info   ][Logger] error_pos: -0.06
+26.530 [ Info   ][Logger] controller output: -7.58182
+26.534 [ Info   ][Logger] error_pos: -0.06
+26.534 [ Info   ][Logger] controller output: -7.58182
+26.538 [ Info   ][Logger] error_pos: -0.06
+26.538 [ Info   ][Logger] controller output: -7.58182
+26.542 [ Info   ][Logger] error_pos: -0.06
+26.542 [ Info   ][Logger] controller output: -7.58182
+26.546 [ Info   ][Logger] error_pos: -0.06
+26.546 [ Info   ][Logger] controller output: -7.58182
+26.550 [ Info   ][Logger] error_pos: -0.06
+26.550 [ Info   ][Logger] controller output: -7.58182
+26.554 [ Info   ][Logger] error_pos: -0.06
+26.554 [ Info   ][Logger] controller output: -7.58182
+26.558 [ Info   ][Logger] error_pos: -0.06
+26.558 [ Info   ][Logger] controller output: -7.58182
+26.562 [ Info   ][Logger] error_pos: -0.06
+26.562 [ Info   ][Logger] controller output: -7.58182
+26.566 [ Info   ][Logger] error_pos: -0.06
+26.566 [ Info   ][Logger] controller output: -7.58182
+26.570 [ Info   ][Logger] error_pos: -0.06
+26.570 [ Info   ][Logger] controller output: -7.58182
+26.574 [ Info   ][Logger] error_pos: -0.06
+26.574 [ Info   ][Logger] controller output: -7.58182
+26.578 [ Info   ][Logger] error_pos: -0.06
+26.578 [ Info   ][Logger] controller output: -7.58182
+26.582 [ Info   ][Logger] error_pos: -0.06
+26.582 [ Info   ][Logger] controller output: -7.58182
+26.586 [ Info   ][Logger] error_pos: -0.06
+26.586 [ Info   ][Logger] controller output: -7.58182
+26.590 [ Info   ][Logger] error_pos: -0.06
+26.590 [ Info   ][Logger] controller output: -7.58182
+26.594 [ Info   ][Logger] error_pos: -0.06
+26.594 [ Info   ][Logger] controller output: -7.58182
+26.598 [ Info   ][Logger] error_pos: -0.06
+26.598 [ Info   ][Logger] controller output: -7.58182
+26.602 [ Info   ][Logger] error_pos: -0.06
+26.602 [ Info   ][Logger] controller output: -7.58182
+26.606 [ Info   ][Logger] error_pos: -0.06
+26.606 [ Info   ][Logger] controller output: -7.58182
+26.610 [ Info   ][Logger] error_pos: -0.06
+26.610 [ Info   ][Logger] controller output: -7.58182
+26.614 [ Info   ][Logger] error_pos: -0.06
+26.614 [ Info   ][Logger] controller output: -7.58182
+26.618 [ Info   ][Logger] error_pos: -0.06
+26.618 [ Info   ][Logger] controller output: -7.58182
+26.622 [ Info   ][Logger] error_pos: -0.06
+26.622 [ Info   ][Logger] controller output: -7.58182
+26.626 [ Info   ][Logger] error_pos: -0.06
+26.626 [ Info   ][Logger] controller output: -7.58182
+26.630 [ Info   ][Logger] error_pos: -0.06
+26.630 [ Info   ][Logger] controller output: -7.58182
+26.634 [ Info   ][Logger] error_pos: -0.06
+26.634 [ Info   ][Logger] controller output: -7.58182
+26.638 [ Info   ][Logger] error_pos: -0.06
+26.638 [ Info   ][Logger] controller output: -7.58182
+26.642 [ Info   ][Logger] error_pos: -0.06
+26.642 [ Info   ][Logger] controller output: -7.58182
+26.646 [ Info   ][Logger] error_pos: -0.06
+26.646 [ Info   ][Logger] controller output: -7.58182
+26.650 [ Info   ][Logger] error_pos: -0.06
+26.650 [ Info   ][Logger] controller output: -7.58182
+26.654 [ Info   ][Logger] error_pos: -0.06
+26.654 [ Info   ][Logger] controller output: -7.58182
+26.658 [ Info   ][Logger] error_pos: -0.06
+26.658 [ Info   ][Logger] controller output: -7.58182
+26.662 [ Info   ][Logger] error_pos: -0.06
+26.662 [ Info   ][Logger] controller output: -7.58182
+26.666 [ Info   ][Logger] error_pos: -0.06
+26.666 [ Info   ][Logger] controller output: -7.58182
+26.670 [ Info   ][Logger] error_pos: -0.06
+26.670 [ Info   ][Logger] controller output: -7.58182
+26.674 [ Info   ][Logger] error_pos: -0.06
+26.674 [ Info   ][Logger] controller output: -7.58182
+26.678 [ Info   ][Logger] error_pos: -0.06
+26.678 [ Info   ][Logger] controller output: -7.58182
+26.682 [ Info   ][Logger] error_pos: -0.06
+26.682 [ Info   ][Logger] controller output: -7.58182
+26.686 [ Info   ][Logger] error_pos: -0.06
+26.686 [ Info   ][Logger] controller output: -7.58182
+26.690 [ Info   ][Logger] error_pos: -0.06
+26.690 [ Info   ][Logger] controller output: -7.58182
+26.694 [ Info   ][Logger] error_pos: -0.06
+26.694 [ Info   ][Logger] controller output: -7.58182
+26.698 [ Info   ][Logger] error_pos: -0.06
+26.698 [ Info   ][Logger] controller output: -7.58182
+26.702 [ Info   ][Logger] error_pos: -0.06
+26.702 [ Info   ][Logger] controller output: -7.58182
+26.706 [ Info   ][Logger] error_pos: -0.06
+26.706 [ Info   ][Logger] controller output: -7.58182
+26.710 [ Info   ][Logger] error_pos: -0.06
+26.710 [ Info   ][Logger] controller output: -7.58182
+26.714 [ Info   ][Logger] error_pos: -0.06
+26.714 [ Info   ][Logger] controller output: -7.58182
+26.718 [ Info   ][Logger] error_pos: -0.06
+26.718 [ Info   ][Logger] controller output: -7.58182
+26.722 [ Info   ][Logger] error_pos: -0.06
+26.722 [ Info   ][Logger] controller output: -7.58182
+26.726 [ Info   ][Logger] error_pos: -0.06
+26.726 [ Info   ][Logger] controller output: -7.58182
+26.730 [ Info   ][Logger] error_pos: -0.06
+26.730 [ Info   ][Logger] controller output: -7.58182
+26.734 [ Info   ][Logger] error_pos: -0.06
+26.734 [ Info   ][Logger] controller output: -7.58182
+26.738 [ Info   ][Logger] error_pos: -0.06
+26.738 [ Info   ][Logger] controller output: -7.58182
+26.742 [ Info   ][Logger] error_pos: -0.06
+26.742 [ Info   ][Logger] controller output: -7.58182
+26.746 [ Info   ][Logger] error_pos: -0.06
+26.746 [ Info   ][Logger] controller output: -7.58182
+26.750 [ Info   ][Logger] error_pos: -0.06
+26.750 [ Info   ][Logger] controller output: -7.58182
+26.754 [ Info   ][Logger] error_pos: -0.06
+26.754 [ Info   ][Logger] controller output: -7.58182
+26.758 [ Info   ][Logger] error_pos: -0.06
+26.758 [ Info   ][Logger] controller output: -7.58182
+26.762 [ Info   ][Logger] error_pos: -0.06
+26.762 [ Info   ][Logger] controller output: -7.58182
+26.766 [ Info   ][Logger] error_pos: -0.06
+26.766 [ Info   ][Logger] controller output: -7.58182
+26.770 [ Info   ][Logger] error_pos: -0.06
+26.770 [ Info   ][Logger] controller output: -7.58182
+26.774 [ Info   ][Logger] error_pos: -0.06
+26.774 [ Info   ][Logger] controller output: -7.58182
+26.778 [ Info   ][Logger] error_pos: -0.06
+26.778 [ Info   ][Logger] controller output: -7.58182
+26.782 [ Info   ][Logger] error_pos: -0.06
+26.782 [ Info   ][Logger] controller output: -7.58182
+26.786 [ Info   ][Logger] error_pos: -0.06
+26.786 [ Info   ][Logger] controller output: -7.58182
+26.790 [ Info   ][Logger] error_pos: -0.06
+26.790 [ Info   ][Logger] controller output: -7.58182
+26.794 [ Info   ][Logger] error_pos: -0.06
+26.794 [ Info   ][Logger] controller output: -7.58182
+26.798 [ Info   ][Logger] error_pos: -0.06
+26.798 [ Info   ][Logger] controller output: -7.58182
+26.802 [ Info   ][Logger] error_pos: -0.06
+26.802 [ Info   ][Logger] controller output: -7.58182
+26.806 [ Info   ][Logger] error_pos: -0.06
+26.806 [ Info   ][Logger] controller output: -7.58182
+26.810 [ Info   ][Logger] error_pos: -0.06
+26.810 [ Info   ][Logger] controller output: -7.58182
+26.814 [ Info   ][Logger] error_pos: -0.06
+26.814 [ Info   ][Logger] controller output: -7.58182
+26.818 [ Info   ][Logger] error_pos: -0.06
+26.818 [ Info   ][Logger] controller output: -7.58182
+26.822 [ Info   ][Logger] error_pos: -0.06
+26.822 [ Info   ][Logger] controller output: -7.58182
+26.826 [ Info   ][Logger] error_pos: -0.06
+26.826 [ Info   ][Logger] controller output: -7.58182
+26.830 [ Info   ][Logger] error_pos: -0.06
+26.830 [ Info   ][Logger] controller output: -7.58182
+26.834 [ Info   ][Logger] error_pos: -0.06
+26.834 [ Info   ][Logger] controller output: -7.58182
+26.838 [ Info   ][Logger] error_pos: -0.06
+26.838 [ Info   ][Logger] controller output: -7.58182
+26.842 [ Info   ][Logger] error_pos: -0.06
+26.842 [ Info   ][Logger] controller output: -7.58182
+26.846 [ Info   ][Logger] error_pos: -0.06
+26.846 [ Info   ][Logger] controller output: -7.58182
+26.850 [ Info   ][Logger] error_pos: -0.06
+26.850 [ Info   ][Logger] controller output: -7.58182
+26.854 [ Info   ][Logger] error_pos: -0.06
+26.854 [ Info   ][Logger] controller output: -7.58182
+26.858 [ Info   ][Logger] error_pos: -0.06
+26.858 [ Info   ][Logger] controller output: -7.58182
+26.862 [ Info   ][Logger] error_pos: -0.06
+26.862 [ Info   ][Logger] controller output: -7.58182
+26.866 [ Info   ][Logger] error_pos: -0.06
+26.866 [ Info   ][Logger] controller output: -7.58182
+26.870 [ Info   ][Logger] error_pos: -0.06
+26.870 [ Info   ][Logger] controller output: -7.58182
+26.874 [ Info   ][Logger] error_pos: -0.06
+26.874 [ Info   ][Logger] controller output: -7.58182
+26.878 [ Info   ][Logger] error_pos: -0.06
+26.878 [ Info   ][Logger] controller output: -7.58182
+26.882 [ Info   ][Logger] error_pos: -0.06
+26.882 [ Info   ][Logger] controller output: -7.58182
+26.886 [ Info   ][Logger] error_pos: -0.06
+26.886 [ Info   ][Logger] controller output: -7.58182
+26.890 [ Info   ][Logger] error_pos: -0.06
+26.890 [ Info   ][Logger] controller output: -7.58182
+26.894 [ Info   ][Logger] error_pos: -0.06
+26.894 [ Info   ][Logger] controller output: -7.58182
+26.898 [ Info   ][Logger] error_pos: -0.06
+26.898 [ Info   ][Logger] controller output: -7.58182
+26.902 [ Info   ][Logger] error_pos: -0.06
+26.902 [ Info   ][Logger] controller output: -7.58182
+26.906 [ Info   ][Logger] error_pos: -0.06
+26.906 [ Info   ][Logger] controller output: -7.58182
+26.910 [ Info   ][Logger] error_pos: -0.06
+26.910 [ Info   ][Logger] controller output: -7.58182
+26.914 [ Info   ][Logger] error_pos: -0.06
+26.914 [ Info   ][Logger] controller output: -7.58182
+26.918 [ Info   ][Logger] error_pos: -0.06
+26.918 [ Info   ][Logger] controller output: -7.58182
+26.922 [ Info   ][Logger] error_pos: -0.06
+26.922 [ Info   ][Logger] controller output: -7.58182
+26.926 [ Info   ][Logger] error_pos: -0.06
+26.926 [ Info   ][Logger] controller output: -7.58182
+26.930 [ Info   ][Logger] error_pos: -0.06
+26.930 [ Info   ][Logger] controller output: -7.58182
+26.934 [ Info   ][Logger] error_pos: -0.06
+26.934 [ Info   ][Logger] controller output: -7.58182
+26.938 [ Info   ][Logger] error_pos: -0.06
+26.938 [ Info   ][Logger] controller output: -7.58182
+26.942 [ Info   ][Logger] error_pos: -0.06
+26.942 [ Info   ][Logger] controller output: -7.58182
+26.946 [ Info   ][Logger] error_pos: -0.06
+26.946 [ Info   ][Logger] controller output: -7.58182
+26.950 [ Info   ][Logger] error_pos: -0.06
+26.950 [ Info   ][Logger] controller output: -7.58182
+26.954 [ Info   ][Logger] error_pos: -0.06
+26.954 [ Info   ][Logger] controller output: -7.58182
+26.958 [ Info   ][Logger] error_pos: -0.06
+26.958 [ Info   ][Logger] controller output: -7.58182
+26.962 [ Info   ][Logger] error_pos: -0.06
+26.962 [ Info   ][Logger] controller output: -7.58182
+26.966 [ Info   ][Logger] error_pos: -0.06
+26.966 [ Info   ][Logger] controller output: -7.58182
+26.970 [ Info   ][Logger] error_pos: -0.06
+26.970 [ Info   ][Logger] controller output: -7.58182
+26.974 [ Info   ][Logger] error_pos: -0.06
+26.974 [ Info   ][Logger] controller output: -7.58182
+26.978 [ Info   ][Logger] error_pos: -0.06
+26.978 [ Info   ][Logger] controller output: -7.58182
+26.982 [ Info   ][Logger] error_pos: -0.06
+26.982 [ Info   ][Logger] controller output: -7.58182
+26.986 [ Info   ][Logger] error_pos: -0.06
+26.986 [ Info   ][Logger] controller output: -7.58182
+26.990 [ Info   ][Logger] error_pos: -0.06
+26.990 [ Info   ][Logger] controller output: -7.58182
+26.994 [ Info   ][Logger] error_pos: -0.06
+26.994 [ Info   ][Logger] controller output: -7.58182
+26.998 [ Info   ][Logger] error_pos: -0.06
+26.998 [ Info   ][Logger] controller output: -7.58182
+27.002 [ Info   ][Logger] error_pos: -0.06
+27.002 [ Info   ][Logger] controller output: -7.58182
+27.006 [ Info   ][Logger] error_pos: -0.06
+27.006 [ Info   ][Logger] controller output: -7.58182
+27.010 [ Info   ][Logger] error_pos: -0.06
+27.010 [ Info   ][Logger] controller output: -7.58182
+27.014 [ Info   ][Logger] error_pos: -0.06
+27.014 [ Info   ][Logger] controller output: -7.58182
+27.018 [ Info   ][Logger] error_pos: -0.06
+27.018 [ Info   ][Logger] controller output: -7.58182
+27.022 [ Info   ][Logger] error_pos: -0.06
+27.022 [ Info   ][Logger] controller output: -7.58182
+27.026 [ Info   ][Logger] error_pos: -0.06
+27.026 [ Info   ][Logger] controller output: -7.58182
+27.030 [ Info   ][Logger] error_pos: -0.06
+27.030 [ Info   ][Logger] controller output: -7.58182
+27.034 [ Info   ][Logger] error_pos: -0.06
+27.034 [ Info   ][Logger] controller output: -7.58182
+27.038 [ Info   ][Logger] error_pos: -0.06
+27.038 [ Info   ][Logger] controller output: -7.58182
+27.042 [ Info   ][Logger] error_pos: -0.06
+27.042 [ Info   ][Logger] controller output: -7.58182
+27.046 [ Info   ][Logger] error_pos: -0.06
+27.046 [ Info   ][Logger] controller output: -7.58182
+27.050 [ Info   ][Logger] error_pos: -0.06
+27.050 [ Info   ][Logger] controller output: -7.58182
+27.054 [ Info   ][Logger] error_pos: -0.06
+27.054 [ Info   ][Logger] controller output: -7.58182
+27.058 [ Info   ][Logger] error_pos: -0.06
+27.058 [ Info   ][Logger] controller output: -7.58182
+27.062 [ Info   ][Logger] error_pos: -0.06
+27.062 [ Info   ][Logger] controller output: -7.58182
+27.066 [ Info   ][Logger] error_pos: -0.06
+27.066 [ Info   ][Logger] controller output: -7.58182
+27.070 [ Info   ][Logger] error_pos: -0.06
+27.070 [ Info   ][Logger] controller output: -7.58182
+27.074 [ Info   ][Logger] error_pos: -0.06
+27.074 [ Info   ][Logger] controller output: -7.58182
+27.078 [ Info   ][Logger] error_pos: -0.06
+27.078 [ Info   ][Logger] controller output: -7.58182
+27.082 [ Info   ][Logger] error_pos: -0.06
+27.082 [ Info   ][Logger] controller output: -7.58182
+27.086 [ Info   ][Logger] error_pos: -0.06
+27.086 [ Info   ][Logger] controller output: -7.58182
+27.090 [ Info   ][Logger] error_pos: -0.06
+27.090 [ Info   ][Logger] controller output: -7.58182
+27.094 [ Info   ][Logger] error_pos: -0.06
+27.094 [ Info   ][Logger] controller output: -7.58182
+27.098 [ Info   ][Logger] error_pos: -0.06
+27.098 [ Info   ][Logger] controller output: -7.58182
+27.102 [ Info   ][Logger] error_pos: -0.06
+27.102 [ Info   ][Logger] controller output: -7.58182
+27.106 [ Info   ][Logger] error_pos: -0.06
+27.106 [ Info   ][Logger] controller output: -7.58182
+27.110 [ Info   ][Logger] error_pos: -0.06
+27.110 [ Info   ][Logger] controller output: -7.58182
+27.114 [ Info   ][Logger] error_pos: -0.06
+27.114 [ Info   ][Logger] controller output: -7.58182
+27.118 [ Info   ][Logger] error_pos: -0.06
+27.118 [ Info   ][Logger] controller output: -7.58182
+27.122 [ Info   ][Logger] error_pos: -0.06
+27.122 [ Info   ][Logger] controller output: -7.58182
+27.126 [ Info   ][Logger] error_pos: -0.06
+27.126 [ Info   ][Logger] controller output: -7.58182
+27.130 [ Info   ][Logger] error_pos: -0.06
+27.130 [ Info   ][Logger] controller output: -7.58182
+27.135 [ Info   ][Logger] error_pos: -0.06
+27.135 [ Info   ][Logger] controller output: -7.58182
+27.138 [ Info   ][Logger] error_pos: -0.06
+27.138 [ Info   ][Logger] controller output: -7.58182
+27.142 [ Info   ][Logger] error_pos: -0.06
+27.142 [ Info   ][Logger] controller output: -7.58182
+27.146 [ Info   ][Logger] error_pos: -0.06
+27.146 [ Info   ][Logger] controller output: -7.58182
+27.150 [ Info   ][Logger] error_pos: -0.06
+27.150 [ Info   ][Logger] controller output: -7.58182
+27.154 [ Info   ][Logger] error_pos: -0.06
+27.154 [ Info   ][Logger] controller output: -7.58182
+27.158 [ Info   ][Logger] error_pos: -0.06
+27.158 [ Info   ][Logger] controller output: -7.58182
+27.162 [ Info   ][Logger] error_pos: -0.06
+27.162 [ Info   ][Logger] controller output: -7.58182
+27.166 [ Info   ][Logger] error_pos: -0.06
+27.166 [ Info   ][Logger] controller output: -7.58182
+27.170 [ Info   ][Logger] error_pos: -0.06
+27.170 [ Info   ][Logger] controller output: -7.58182
+27.174 [ Info   ][Logger] error_pos: -0.06
+27.174 [ Info   ][Logger] controller output: -7.58182
+27.178 [ Info   ][Logger] error_pos: -0.06
+27.178 [ Info   ][Logger] controller output: -7.58182
+27.182 [ Info   ][Logger] error_pos: -0.06
+27.182 [ Info   ][Logger] controller output: -7.58182
+27.186 [ Info   ][Logger] error_pos: -0.06
+27.186 [ Info   ][Logger] controller output: -7.58182
+27.190 [ Info   ][Logger] error_pos: -0.06
+27.190 [ Info   ][Logger] controller output: -7.58182
+27.194 [ Info   ][Logger] error_pos: -0.06
+27.194 [ Info   ][Logger] controller output: -7.58182
+27.198 [ Info   ][Logger] error_pos: -0.06
+27.198 [ Info   ][Logger] controller output: -7.58182
+27.202 [ Info   ][Logger] error_pos: -0.06
+27.202 [ Info   ][Logger] controller output: -7.58182
+27.206 [ Info   ][Logger] error_pos: -0.06
+27.206 [ Info   ][Logger] controller output: -7.58182
+27.210 [ Info   ][Logger] error_pos: -0.06
+27.210 [ Info   ][Logger] controller output: -7.58182
+27.214 [ Info   ][Logger] error_pos: -0.06
+27.214 [ Info   ][Logger] controller output: -7.58182
+27.218 [ Info   ][Logger] error_pos: -0.06
+27.218 [ Info   ][Logger] controller output: -7.58182
+27.222 [ Info   ][Logger] error_pos: -0.06
+27.222 [ Info   ][Logger] controller output: -7.58182
+27.226 [ Info   ][Logger] error_pos: -0.06
+27.226 [ Info   ][Logger] controller output: -7.58182
+27.230 [ Info   ][Logger] error_pos: -0.06
+27.230 [ Info   ][Logger] controller output: -7.58182
+27.234 [ Info   ][Logger] error_pos: -0.06
+27.234 [ Info   ][Logger] controller output: -7.58182
+27.238 [ Info   ][Logger] error_pos: -0.06
+27.238 [ Info   ][Logger] controller output: -7.58182
+27.242 [ Info   ][Logger] error_pos: -0.06
+27.242 [ Info   ][Logger] controller output: -7.58182
+27.246 [ Info   ][Logger] error_pos: -0.06
+27.246 [ Info   ][Logger] controller output: -7.58182
+27.250 [ Info   ][Logger] error_pos: -0.06
+27.250 [ Info   ][Logger] controller output: -7.58182
+27.254 [ Info   ][Logger] error_pos: -0.06
+27.254 [ Info   ][Logger] controller output: -7.58182
+27.258 [ Info   ][Logger] error_pos: -0.06
+27.258 [ Info   ][Logger] controller output: -7.58182
+27.262 [ Info   ][Logger] error_pos: -0.06
+27.262 [ Info   ][Logger] controller output: -7.58182
+27.266 [ Info   ][Logger] error_pos: -0.06
+27.266 [ Info   ][Logger] controller output: -7.58182
+27.270 [ Info   ][Logger] error_pos: -0.06
+27.270 [ Info   ][Logger] controller output: -7.58182
+27.274 [ Info   ][Logger] error_pos: -0.06
+27.274 [ Info   ][Logger] controller output: -7.58182
+27.278 [ Info   ][Logger] error_pos: -0.06
+27.278 [ Info   ][Logger] controller output: -7.58182
+27.282 [ Info   ][Logger] error_pos: -0.06
+27.282 [ Info   ][Logger] controller output: -7.58182
+27.286 [ Info   ][Logger] error_pos: -0.06
+27.286 [ Info   ][Logger] controller output: -7.58182
+27.290 [ Info   ][Logger] error_pos: -0.06
+27.290 [ Info   ][Logger] controller output: -7.58182
+27.294 [ Info   ][Logger] error_pos: -0.06
+27.294 [ Info   ][Logger] controller output: -7.58182
+27.298 [ Info   ][Logger] error_pos: -0.06
+27.298 [ Info   ][Logger] controller output: -7.58182
+27.302 [ Info   ][Logger] error_pos: -0.06
+27.302 [ Info   ][Logger] controller output: -7.58182
+27.306 [ Info   ][Logger] error_pos: -0.06
+27.306 [ Info   ][Logger] controller output: -7.58182
+27.310 [ Info   ][Logger] error_pos: -0.06
+27.310 [ Info   ][Logger] controller output: -7.58182
+27.314 [ Info   ][Logger] error_pos: -0.06
+27.314 [ Info   ][Logger] controller output: -7.58182
+27.318 [ Info   ][Logger] error_pos: -0.06
+27.318 [ Info   ][Logger] controller output: -7.58182
+27.322 [ Info   ][Logger] error_pos: -0.06
+27.322 [ Info   ][Logger] controller output: -7.58182
+27.326 [ Info   ][Logger] error_pos: -0.06
+27.326 [ Info   ][Logger] controller output: -7.58182
+27.330 [ Info   ][Logger] error_pos: -0.06
+27.330 [ Info   ][Logger] controller output: -7.58182
+27.334 [ Info   ][Logger] error_pos: -0.06
+27.334 [ Info   ][Logger] controller output: -7.58182
+27.338 [ Info   ][Logger] error_pos: -0.06
+27.338 [ Info   ][Logger] controller output: -7.58182
+27.342 [ Info   ][Logger] error_pos: -0.06
+27.342 [ Info   ][Logger] controller output: -7.58182
+27.346 [ Info   ][Logger] error_pos: -0.06
+27.346 [ Info   ][Logger] controller output: -7.58182
+27.350 [ Info   ][Logger] error_pos: -0.06
+27.350 [ Info   ][Logger] controller output: -7.58182
+27.354 [ Info   ][Logger] error_pos: -0.06
+27.354 [ Info   ][Logger] controller output: -7.58182
+27.358 [ Info   ][Logger] error_pos: -0.06
+27.358 [ Info   ][Logger] controller output: -7.58182
+27.362 [ Info   ][Logger] error_pos: -0.06
+27.362 [ Info   ][Logger] controller output: -7.58182
+27.366 [ Info   ][Logger] error_pos: -0.06
+27.366 [ Info   ][Logger] controller output: -7.58182
+27.370 [ Info   ][Logger] error_pos: -0.06
+27.370 [ Info   ][Logger] controller output: -7.58182
+27.374 [ Info   ][Logger] error_pos: -0.06
+27.374 [ Info   ][Logger] controller output: -7.58182
+27.378 [ Info   ][Logger] error_pos: -0.06
+27.378 [ Info   ][Logger] controller output: -7.58182
+27.382 [ Info   ][Logger] error_pos: -0.06
+27.382 [ Info   ][Logger] controller output: -7.58182
+27.386 [ Info   ][Logger] error_pos: -0.06
+27.386 [ Info   ][Logger] controller output: -7.58182
+27.390 [ Info   ][Logger] error_pos: -0.06
+27.390 [ Info   ][Logger] controller output: -7.58182
+27.394 [ Info   ][Logger] error_pos: -0.06
+27.394 [ Info   ][Logger] controller output: -7.58182
+27.398 [ Info   ][Logger] error_pos: -0.06
+27.398 [ Info   ][Logger] controller output: -7.58182
+27.402 [ Info   ][Logger] error_pos: -0.06
+27.402 [ Info   ][Logger] controller output: -7.58182
+27.406 [ Info   ][Logger] error_pos: -0.06
+27.406 [ Info   ][Logger] controller output: -7.58182
+27.410 [ Info   ][Logger] error_pos: -0.06
+27.410 [ Info   ][Logger] controller output: -7.58182
+27.414 [ Info   ][Logger] error_pos: -0.06
+27.414 [ Info   ][Logger] controller output: -7.58182
+27.418 [ Info   ][Logger] error_pos: -0.06
+27.418 [ Info   ][Logger] controller output: -7.58182
+27.422 [ Info   ][Logger] error_pos: -0.06
+27.422 [ Info   ][Logger] controller output: -7.58182
+27.426 [ Info   ][Logger] error_pos: -0.06
+27.426 [ Info   ][Logger] controller output: -7.58182
+27.430 [ Info   ][Logger] error_pos: -0.06
+27.430 [ Info   ][Logger] controller output: -7.58182
+27.434 [ Info   ][Logger] error_pos: -0.06
+27.434 [ Info   ][Logger] controller output: -7.58182
+27.438 [ Info   ][Logger] error_pos: -0.06
+27.438 [ Info   ][Logger] controller output: -7.58182
+27.442 [ Info   ][Logger] error_pos: -0.06
+27.442 [ Info   ][Logger] controller output: -7.58182
+27.446 [ Info   ][Logger] error_pos: -0.06
+27.446 [ Info   ][Logger] controller output: -7.58182
+27.450 [ Info   ][Logger] error_pos: -0.06
+27.450 [ Info   ][Logger] controller output: -7.58182
+27.454 [ Info   ][Logger] error_pos: -0.06
+27.454 [ Info   ][Logger] controller output: -7.58182
+27.458 [ Info   ][Logger] error_pos: -0.06
+27.458 [ Info   ][Logger] controller output: -7.58182
+27.462 [ Info   ][Logger] error_pos: -0.06
+27.462 [ Info   ][Logger] controller output: -7.58182
+27.466 [ Info   ][Logger] error_pos: -0.06
+27.466 [ Info   ][Logger] controller output: -7.58182
+27.470 [ Info   ][Logger] error_pos: -0.06
+27.470 [ Info   ][Logger] controller output: -7.58182
+27.474 [ Info   ][Logger] error_pos: -0.06
+27.474 [ Info   ][Logger] controller output: -7.58182
+27.478 [ Info   ][Logger] error_pos: -0.06
+27.478 [ Info   ][Logger] controller output: -7.58182
+27.482 [ Info   ][Logger] error_pos: -0.06
+27.482 [ Info   ][Logger] controller output: -7.58182
+27.486 [ Info   ][Logger] error_pos: -0.06
+27.486 [ Info   ][Logger] controller output: -7.58182
+27.490 [ Info   ][Logger] error_pos: -0.06
+27.490 [ Info   ][Logger] controller output: -7.58182
+27.494 [ Info   ][Logger] error_pos: -0.06
+27.494 [ Info   ][Logger] controller output: -7.58182
+27.498 [ Info   ][Logger] error_pos: -0.06
+27.498 [ Info   ][Logger] controller output: -7.58182
+27.502 [ Info   ][Logger] error_pos: -0.06
+27.502 [ Info   ][Logger] controller output: -7.58182
+27.506 [ Info   ][Logger] error_pos: -0.06
+27.506 [ Info   ][Logger] controller output: -7.58182
+27.510 [ Info   ][Logger] error_pos: -0.06
+27.510 [ Info   ][Logger] controller output: -7.58182
+27.514 [ Info   ][Logger] error_pos: -0.06
+27.514 [ Info   ][Logger] controller output: -7.58182
+27.518 [ Info   ][Logger] error_pos: -0.06
+27.518 [ Info   ][Logger] controller output: -7.58182
+27.522 [ Info   ][Logger] error_pos: -0.06
+27.522 [ Info   ][Logger] controller output: -7.58182
+27.526 [ Info   ][Logger] error_pos: -0.06
+27.526 [ Info   ][Logger] controller output: -7.58182
+27.530 [ Info   ][Logger] error_pos: -0.06
+27.530 [ Info   ][Logger] controller output: -7.58182
+27.534 [ Info   ][Logger] error_pos: -0.06
+27.534 [ Info   ][Logger] controller output: -7.58182
+27.538 [ Info   ][Logger] error_pos: -0.06
+27.538 [ Info   ][Logger] controller output: -7.58182
+27.542 [ Info   ][Logger] error_pos: -0.06
+27.542 [ Info   ][Logger] controller output: -7.58182
+27.546 [ Info   ][Logger] error_pos: -0.06
+27.546 [ Info   ][Logger] controller output: -7.58182
+27.550 [ Info   ][Logger] error_pos: -0.06
+27.550 [ Info   ][Logger] controller output: -7.58182
+27.554 [ Info   ][Logger] error_pos: -0.06
+27.554 [ Info   ][Logger] controller output: -7.58182
+27.558 [ Info   ][Logger] error_pos: -0.06
+27.558 [ Info   ][Logger] controller output: -7.58182
+27.562 [ Info   ][Logger] error_pos: -0.06
+27.562 [ Info   ][Logger] controller output: -7.58182
+27.566 [ Info   ][Logger] error_pos: -0.06
+27.566 [ Info   ][Logger] controller output: -7.58182
+27.570 [ Info   ][Logger] error_pos: -0.06
+27.570 [ Info   ][Logger] controller output: -7.58182
+27.574 [ Info   ][Logger] error_pos: -0.06
+27.574 [ Info   ][Logger] controller output: -7.58182
+27.578 [ Info   ][Logger] error_pos: -0.06
+27.578 [ Info   ][Logger] controller output: -7.58182
+27.582 [ Info   ][Logger] error_pos: -0.06
+27.582 [ Info   ][Logger] controller output: -7.58182
+27.586 [ Info   ][Logger] error_pos: -0.06
+27.586 [ Info   ][Logger] controller output: -7.58182
+27.590 [ Info   ][Logger] error_pos: -0.06
+27.590 [ Info   ][Logger] controller output: -7.58182
+27.594 [ Info   ][Logger] error_pos: -0.06
+27.594 [ Info   ][Logger] controller output: -7.58182
+27.598 [ Info   ][Logger] error_pos: -0.06
+27.598 [ Info   ][Logger] controller output: -7.58182
+27.602 [ Info   ][Logger] error_pos: -0.06
+27.602 [ Info   ][Logger] controller output: -7.58182
+27.606 [ Info   ][Logger] error_pos: -0.06
+27.606 [ Info   ][Logger] controller output: -7.58182
+27.610 [ Info   ][Logger] error_pos: -0.06
+27.610 [ Info   ][Logger] controller output: -7.58182
+27.614 [ Info   ][Logger] error_pos: -0.06
+27.614 [ Info   ][Logger] controller output: -7.58182
+27.618 [ Info   ][Logger] error_pos: -0.06
+27.618 [ Info   ][Logger] controller output: -7.58182
+27.622 [ Info   ][Logger] error_pos: -0.06
+27.622 [ Info   ][Logger] controller output: -7.58182
+27.626 [ Info   ][Logger] error_pos: -0.06
+27.626 [ Info   ][Logger] controller output: -7.58182
+27.630 [ Info   ][Logger] error_pos: -0.06
+27.630 [ Info   ][Logger] controller output: -7.58182
+27.634 [ Info   ][Logger] error_pos: -0.06
+27.634 [ Info   ][Logger] controller output: -7.58182
+27.638 [ Info   ][Logger] error_pos: -0.06
+27.638 [ Info   ][Logger] controller output: -7.58182
+27.642 [ Info   ][Logger] error_pos: -0.06
+27.642 [ Info   ][Logger] controller output: -7.58182
+27.646 [ Info   ][Logger] error_pos: -0.06
+27.646 [ Info   ][Logger] controller output: -7.58182
+27.650 [ Info   ][Logger] error_pos: -0.06
+27.650 [ Info   ][Logger] controller output: -7.58182
+27.654 [ Info   ][Logger] error_pos: -0.06
+27.654 [ Info   ][Logger] controller output: -7.58182
+27.658 [ Info   ][Logger] error_pos: -0.06
+27.658 [ Info   ][Logger] controller output: -7.58182
+27.662 [ Info   ][Logger] error_pos: -0.06
+27.662 [ Info   ][Logger] controller output: -7.58182
+27.666 [ Info   ][Logger] error_pos: -0.06
+27.666 [ Info   ][Logger] controller output: -7.58182
+27.670 [ Info   ][Logger] error_pos: -0.06
+27.670 [ Info   ][Logger] controller output: -7.58182
+27.674 [ Info   ][Logger] error_pos: -0.06
+27.674 [ Info   ][Logger] controller output: -7.58182
+27.678 [ Info   ][Logger] error_pos: -0.06
+27.678 [ Info   ][Logger] controller output: -7.58182
+27.682 [ Info   ][Logger] error_pos: -0.06
+27.682 [ Info   ][Logger] controller output: -7.58182
+27.686 [ Info   ][Logger] error_pos: -0.06
+27.686 [ Info   ][Logger] controller output: -7.58182
+27.690 [ Info   ][Logger] error_pos: -0.06
+27.691 [ Info   ][Logger] controller output: -7.58182
+27.694 [ Info   ][Logger] error_pos: -0.06
+27.694 [ Info   ][Logger] controller output: -7.58182
+27.698 [ Info   ][Logger] error_pos: -0.06
+27.698 [ Info   ][Logger] controller output: -7.58182
+27.702 [ Info   ][Logger] error_pos: -0.06
+27.702 [ Info   ][Logger] controller output: -7.58182
+27.706 [ Info   ][Logger] error_pos: -0.06
+27.706 [ Info   ][Logger] controller output: -7.58182
+27.710 [ Info   ][Logger] error_pos: -0.06
+27.710 [ Info   ][Logger] controller output: -7.58182
+27.714 [ Info   ][Logger] error_pos: -0.06
+27.714 [ Info   ][Logger] controller output: -7.58182
+27.718 [ Info   ][Logger] error_pos: -0.06
+27.718 [ Info   ][Logger] controller output: -7.58182
+27.722 [ Info   ][Logger] error_pos: -0.06
+27.722 [ Info   ][Logger] controller output: -7.58182
+27.726 [ Info   ][Logger] error_pos: -0.06
+27.726 [ Info   ][Logger] controller output: -7.58182
+27.730 [ Info   ][Logger] error_pos: -0.06
+27.730 [ Info   ][Logger] controller output: -7.58182
+27.734 [ Info   ][Logger] error_pos: -0.06
+27.734 [ Info   ][Logger] controller output: -7.58182
+27.738 [ Info   ][Logger] error_pos: -0.06
+27.738 [ Info   ][Logger] controller output: -7.58182
+27.742 [ Info   ][Logger] error_pos: -0.06
+27.742 [ Info   ][Logger] controller output: -7.58182
+27.746 [ Info   ][Logger] error_pos: -0.06
+27.746 [ Info   ][Logger] controller output: -7.58182
+27.750 [ Info   ][Logger] error_pos: -0.06
+27.750 [ Info   ][Logger] controller output: -7.58182
+27.754 [ Info   ][Logger] error_pos: -0.06
+27.754 [ Info   ][Logger] controller output: -7.58182
+27.758 [ Info   ][Logger] error_pos: -0.06
+27.758 [ Info   ][Logger] controller output: -7.58182
+27.762 [ Info   ][Logger] error_pos: -0.06
+27.762 [ Info   ][Logger] controller output: -7.58182
+27.766 [ Info   ][Logger] error_pos: -0.06
+27.766 [ Info   ][Logger] controller output: -7.58182
+27.770 [ Info   ][Logger] error_pos: -0.06
+27.770 [ Info   ][Logger] controller output: -7.58182
+27.774 [ Info   ][Logger] error_pos: -0.06
+27.774 [ Info   ][Logger] controller output: -7.58182
+27.778 [ Info   ][Logger] error_pos: -0.06
+27.778 [ Info   ][Logger] controller output: -7.58182
+27.782 [ Info   ][Logger] error_pos: -0.06
+27.782 [ Info   ][Logger] controller output: -7.58182
+27.786 [ Info   ][Logger] error_pos: -0.06
+27.786 [ Info   ][Logger] controller output: -7.58182
+27.790 [ Info   ][Logger] error_pos: -0.06
+27.790 [ Info   ][Logger] controller output: -7.58182
+27.794 [ Info   ][Logger] error_pos: -0.06
+27.794 [ Info   ][Logger] controller output: -7.58182
+27.798 [ Info   ][Logger] error_pos: -0.06
+27.798 [ Info   ][Logger] controller output: -7.58182
+27.802 [ Info   ][Logger] error_pos: -0.06
+27.802 [ Info   ][Logger] controller output: -7.58182
+27.806 [ Info   ][Logger] error_pos: -0.06
+27.806 [ Info   ][Logger] controller output: -7.58182
+27.810 [ Info   ][Logger] error_pos: -0.06
+27.810 [ Info   ][Logger] controller output: -7.58182
+27.814 [ Info   ][Logger] error_pos: -0.06
+27.814 [ Info   ][Logger] controller output: -7.58182
+27.818 [ Info   ][Logger] error_pos: -0.06
+27.818 [ Info   ][Logger] controller output: -7.58182
+27.822 [ Info   ][Logger] error_pos: -0.06
+27.822 [ Info   ][Logger] controller output: -7.58182
+27.826 [ Info   ][Logger] error_pos: -0.06
+27.826 [ Info   ][Logger] controller output: -7.58182
+27.830 [ Info   ][Logger] error_pos: -0.06
+27.830 [ Info   ][Logger] controller output: -7.58182
+27.834 [ Info   ][Logger] error_pos: -0.06
+27.834 [ Info   ][Logger] controller output: -7.58182
+27.838 [ Info   ][Logger] error_pos: -0.06
+27.838 [ Info   ][Logger] controller output: -7.58182
+27.842 [ Info   ][Logger] error_pos: -0.06
+27.842 [ Info   ][Logger] controller output: -7.58182
+27.846 [ Info   ][Logger] error_pos: -0.06
+27.846 [ Info   ][Logger] controller output: -7.58182
+27.850 [ Info   ][Logger] error_pos: -0.06
+27.850 [ Info   ][Logger] controller output: -7.58182
+27.854 [ Info   ][Logger] error_pos: -0.06
+27.854 [ Info   ][Logger] controller output: -7.58182
+27.858 [ Info   ][Logger] error_pos: -0.06
+27.858 [ Info   ][Logger] controller output: -7.58182
+27.862 [ Info   ][Logger] error_pos: -0.06
+27.862 [ Info   ][Logger] controller output: -7.58182
+27.866 [ Info   ][Logger] error_pos: -0.06
+27.866 [ Info   ][Logger] controller output: -7.58182
+27.870 [ Info   ][Logger] error_pos: -0.06
+27.870 [ Info   ][Logger] controller output: -7.58182
+27.874 [ Info   ][Logger] error_pos: -0.06
+27.874 [ Info   ][Logger] controller output: -7.58182
+27.878 [ Info   ][Logger] error_pos: -0.06
+27.878 [ Info   ][Logger] controller output: -7.58182
+27.882 [ Info   ][Logger] error_pos: -0.06
+27.882 [ Info   ][Logger] controller output: -7.58182
+27.886 [ Info   ][Logger] error_pos: -0.06
+27.886 [ Info   ][Logger] controller output: -7.58182
+27.890 [ Info   ][Logger] error_pos: -0.06
+27.890 [ Info   ][Logger] controller output: -7.58182
+27.894 [ Info   ][Logger] error_pos: -0.06
+27.894 [ Info   ][Logger] controller output: -7.58182
+27.898 [ Info   ][Logger] error_pos: -0.06
+27.898 [ Info   ][Logger] controller output: -7.58182
+27.902 [ Info   ][Logger] error_pos: -0.06
+27.902 [ Info   ][Logger] controller output: -7.58182
+27.906 [ Info   ][Logger] error_pos: -0.06
+27.906 [ Info   ][Logger] controller output: -7.58182
+27.910 [ Info   ][Logger] error_pos: -0.06
+27.910 [ Info   ][Logger] controller output: -7.58182
+27.914 [ Info   ][Logger] error_pos: -0.06
+27.914 [ Info   ][Logger] controller output: -7.58182
+27.918 [ Info   ][Logger] error_pos: -0.06
+27.918 [ Info   ][Logger] controller output: -7.58182
+27.922 [ Info   ][Logger] error_pos: -0.06
+27.922 [ Info   ][Logger] controller output: -7.58182
+27.926 [ Info   ][Logger] error_pos: -0.06
+27.926 [ Info   ][Logger] controller output: -7.58182
+27.930 [ Info   ][Logger] error_pos: -0.06
+27.930 [ Info   ][Logger] controller output: -7.58182
+27.934 [ Info   ][Logger] error_pos: -0.06
+27.934 [ Info   ][Logger] controller output: -7.58182
+27.938 [ Info   ][Logger] error_pos: -0.06
+27.938 [ Info   ][Logger] controller output: -7.58182
+27.942 [ Info   ][Logger] error_pos: -0.06
+27.942 [ Info   ][Logger] controller output: -7.58182
+27.946 [ Info   ][Logger] error_pos: -0.06
+27.946 [ Info   ][Logger] controller output: -7.58182
+27.950 [ Info   ][Logger] error_pos: -0.06
+27.950 [ Info   ][Logger] controller output: -7.58182
+27.954 [ Info   ][Logger] error_pos: -0.06
+27.954 [ Info   ][Logger] controller output: -7.58182
+27.958 [ Info   ][Logger] error_pos: -0.06
+27.958 [ Info   ][Logger] controller output: -7.58182
+27.962 [ Info   ][Logger] error_pos: -0.06
+27.962 [ Info   ][Logger] controller output: -7.58182
+27.966 [ Info   ][Logger] error_pos: -0.06
+27.966 [ Info   ][Logger] controller output: -7.58182
+27.970 [ Info   ][Logger] error_pos: -0.06
+27.970 [ Info   ][Logger] controller output: -7.58182
+27.974 [ Info   ][Logger] error_pos: -0.06
+27.974 [ Info   ][Logger] controller output: -7.58182
+27.978 [ Info   ][Logger] error_pos: -0.06
+27.978 [ Info   ][Logger] controller output: -7.58182
+27.982 [ Info   ][Logger] error_pos: -0.06
+27.982 [ Info   ][Logger] controller output: -7.58182
+27.986 [ Info   ][Logger] error_pos: -0.06
+27.986 [ Info   ][Logger] controller output: -7.58182
+27.990 [ Info   ][Logger] error_pos: -0.06
+27.990 [ Info   ][Logger] controller output: -7.58182
+27.994 [ Info   ][Logger] error_pos: -0.06
+27.994 [ Info   ][Logger] controller output: -7.58182
+27.998 [ Info   ][Logger] error_pos: -0.06
+27.998 [ Info   ][Logger] controller output: -7.58182
+28.002 [ Info   ][Logger] error_pos: -0.06
+28.002 [ Info   ][Logger] controller output: -7.58182
+28.006 [ Info   ][Logger] error_pos: -0.06
+28.006 [ Info   ][Logger] controller output: -7.58182
+28.010 [ Info   ][Logger] error_pos: -0.06
+28.010 [ Info   ][Logger] controller output: -7.58182
+28.014 [ Info   ][Logger] error_pos: -0.06
+28.014 [ Info   ][Logger] controller output: -7.58182
+28.018 [ Info   ][Logger] error_pos: -0.06
+28.018 [ Info   ][Logger] controller output: -7.58182
+28.022 [ Info   ][Logger] error_pos: -0.06
+28.022 [ Info   ][Logger] controller output: -7.58182
+28.026 [ Info   ][Logger] error_pos: -0.06
+28.026 [ Info   ][Logger] controller output: -7.58182
+28.030 [ Info   ][Logger] error_pos: -0.06
+28.030 [ Info   ][Logger] controller output: -7.58182
+28.034 [ Info   ][Logger] error_pos: -0.06
+28.034 [ Info   ][Logger] controller output: -7.58182
+28.038 [ Info   ][Logger] error_pos: -0.06
+28.038 [ Info   ][Logger] controller output: -7.58182
+28.042 [ Info   ][Logger] error_pos: -0.06
+28.042 [ Info   ][Logger] controller output: -7.58182
+28.046 [ Info   ][Logger] error_pos: -0.06
+28.046 [ Info   ][Logger] controller output: -7.58182
+28.050 [ Info   ][Logger] error_pos: -0.06
+28.050 [ Info   ][Logger] controller output: -7.58182
+28.054 [ Info   ][Logger] error_pos: -0.06
+28.054 [ Info   ][Logger] controller output: -7.58182
+28.058 [ Info   ][Logger] error_pos: -0.06
+28.058 [ Info   ][Logger] controller output: -7.58182
+28.062 [ Info   ][Logger] error_pos: -0.06
+28.062 [ Info   ][Logger] controller output: -7.58182
+28.066 [ Info   ][Logger] error_pos: -0.06
+28.066 [ Info   ][Logger] controller output: -7.58182
+28.070 [ Info   ][Logger] error_pos: -0.06
+28.070 [ Info   ][Logger] controller output: -7.58182
+28.074 [ Info   ][Logger] error_pos: -0.06
+28.074 [ Info   ][Logger] controller output: -7.58182
+28.078 [ Info   ][Logger] error_pos: -0.06
+28.078 [ Info   ][Logger] controller output: -7.58182
+28.082 [ Info   ][Logger] error_pos: -0.06
+28.082 [ Info   ][Logger] controller output: -7.58182
+28.086 [ Info   ][Logger] error_pos: -0.06
+28.086 [ Info   ][Logger] controller output: -7.58182
+28.090 [ Info   ][Logger] error_pos: -0.06
+28.090 [ Info   ][Logger] controller output: -7.58182
+28.094 [ Info   ][Logger] error_pos: -0.06
+28.094 [ Info   ][Logger] controller output: -7.58182
+28.098 [ Info   ][Logger] error_pos: -0.06
+28.098 [ Info   ][Logger] controller output: -7.58182
+28.102 [ Info   ][Logger] error_pos: -0.06
+28.102 [ Info   ][Logger] controller output: -7.58182
+28.106 [ Info   ][Logger] error_pos: -0.06
+28.106 [ Info   ][Logger] controller output: -7.58182
+28.110 [ Info   ][Logger] error_pos: -0.06
+28.110 [ Info   ][Logger] controller output: -7.58182
+28.114 [ Info   ][Logger] error_pos: -0.06
+28.114 [ Info   ][Logger] controller output: -7.58182
+28.118 [ Info   ][Logger] error_pos: -0.06
+28.118 [ Info   ][Logger] controller output: -7.58182
+28.122 [ Info   ][Logger] error_pos: -0.06
+28.122 [ Info   ][Logger] controller output: -7.58182
+28.126 [ Info   ][Logger] error_pos: -0.06
+28.126 [ Info   ][Logger] controller output: -7.58182
+28.130 [ Info   ][Logger] error_pos: -0.06
+28.130 [ Info   ][Logger] controller output: -7.58182
+28.134 [ Info   ][Logger] error_pos: -0.06
+28.134 [ Info   ][Logger] controller output: -7.58182
+28.138 [ Info   ][Logger] error_pos: -0.06
+28.138 [ Info   ][Logger] controller output: -7.58182
+28.142 [ Info   ][Logger] error_pos: -0.06
+28.142 [ Info   ][Logger] controller output: -7.58182
+28.146 [ Info   ][Logger] error_pos: -0.06
+28.146 [ Info   ][Logger] controller output: -7.58182
+28.150 [ Info   ][Logger] error_pos: -0.06
+28.150 [ Info   ][Logger] controller output: -7.58182
+28.154 [ Info   ][Logger] error_pos: -0.06
+28.154 [ Info   ][Logger] controller output: -7.58182
+28.158 [ Info   ][Logger] error_pos: -0.06
+28.158 [ Info   ][Logger] controller output: -7.58182
+28.162 [ Info   ][Logger] error_pos: -0.06
+28.162 [ Info   ][Logger] controller output: -7.58182
+28.166 [ Info   ][Logger] error_pos: -0.06
+28.166 [ Info   ][Logger] controller output: -7.58182
+28.170 [ Info   ][Logger] error_pos: -0.06
+28.170 [ Info   ][Logger] controller output: -7.58182
+28.174 [ Info   ][Logger] error_pos: -0.06
+28.174 [ Info   ][Logger] controller output: -7.58182
+28.178 [ Info   ][Logger] error_pos: -0.06
+28.178 [ Info   ][Logger] controller output: -7.58182
+28.182 [ Info   ][Logger] error_pos: -0.06
+28.182 [ Info   ][Logger] controller output: -7.58182
+28.186 [ Info   ][Logger] error_pos: -0.06
+28.186 [ Info   ][Logger] controller output: -7.58182
+28.190 [ Info   ][Logger] error_pos: -0.06
+28.190 [ Info   ][Logger] controller output: -7.58182
+28.194 [ Info   ][Logger] error_pos: -0.06
+28.194 [ Info   ][Logger] controller output: -7.58182
+28.198 [ Info   ][Logger] error_pos: -0.06
+28.198 [ Info   ][Logger] controller output: -7.58182
+28.202 [ Info   ][Logger] error_pos: -0.06
+28.202 [ Info   ][Logger] controller output: -7.58182
+28.206 [ Info   ][Logger] error_pos: -0.06
+28.206 [ Info   ][Logger] controller output: -7.58182
+28.210 [ Info   ][Logger] error_pos: -0.06
+28.210 [ Info   ][Logger] controller output: -7.58182
+28.214 [ Info   ][Logger] error_pos: -0.06
+28.214 [ Info   ][Logger] controller output: -7.58182
+28.218 [ Info   ][Logger] error_pos: -0.06
+28.218 [ Info   ][Logger] controller output: -7.58182
+28.222 [ Info   ][Logger] error_pos: -0.06
+28.222 [ Info   ][Logger] controller output: -7.58182
+28.226 [ Info   ][Logger] error_pos: -0.06
+28.226 [ Info   ][Logger] controller output: -7.58182
+28.230 [ Info   ][Logger] error_pos: -0.06
+28.230 [ Info   ][Logger] controller output: -7.58182
+28.234 [ Info   ][Logger] error_pos: -0.06
+28.234 [ Info   ][Logger] controller output: -7.58182
+28.238 [ Info   ][Logger] error_pos: -0.06
+28.238 [ Info   ][Logger] controller output: -7.58182
+28.242 [ Info   ][Logger] error_pos: -0.06
+28.242 [ Info   ][Logger] controller output: -7.58182
+28.246 [ Info   ][Logger] error_pos: -0.06
+28.246 [ Info   ][Logger] controller output: -7.58182
+28.250 [ Info   ][Logger] error_pos: -0.06
+28.250 [ Info   ][Logger] controller output: -7.58182
+28.254 [ Info   ][Logger] error_pos: -0.06
+28.254 [ Info   ][Logger] controller output: -7.58182
+28.258 [ Info   ][Logger] error_pos: -0.06
+28.258 [ Info   ][Logger] controller output: -7.58182
+28.262 [ Info   ][Logger] error_pos: -0.06
+28.262 [ Info   ][Logger] controller output: -7.58182
+28.266 [ Info   ][Logger] error_pos: -0.06
+28.266 [ Info   ][Logger] controller output: -7.58182
+28.270 [ Info   ][Logger] error_pos: -0.06
+28.270 [ Info   ][Logger] controller output: -7.58182
+28.274 [ Info   ][Logger] error_pos: -0.06
+28.274 [ Info   ][Logger] controller output: -7.58182
+28.278 [ Info   ][Logger] error_pos: -0.06
+28.278 [ Info   ][Logger] controller output: -7.58182
+28.282 [ Info   ][Logger] error_pos: -0.06
+28.282 [ Info   ][Logger] controller output: -7.58182
+28.286 [ Info   ][Logger] error_pos: -0.06
+28.286 [ Info   ][Logger] controller output: -7.58182
+28.290 [ Info   ][Logger] error_pos: -0.06
+28.290 [ Info   ][Logger] controller output: -7.58182
+28.294 [ Info   ][Logger] error_pos: -0.06
+28.294 [ Info   ][Logger] controller output: -7.58182
+28.298 [ Info   ][Logger] error_pos: -0.06
+28.298 [ Info   ][Logger] controller output: -7.58182
+28.302 [ Info   ][Logger] error_pos: -0.06
+28.302 [ Info   ][Logger] controller output: -7.58182
+28.306 [ Info   ][Logger] error_pos: -0.06
+28.306 [ Info   ][Logger] controller output: -7.58182
+28.310 [ Info   ][Logger] error_pos: -0.06
+28.310 [ Info   ][Logger] controller output: -7.58182
+28.314 [ Info   ][Logger] error_pos: -0.06
+28.314 [ Info   ][Logger] controller output: -7.58182
+28.318 [ Info   ][Logger] error_pos: -0.06
+28.318 [ Info   ][Logger] controller output: -7.58182
+28.322 [ Info   ][Logger] error_pos: -0.06
+28.322 [ Info   ][Logger] controller output: -7.58182
+28.326 [ Info   ][Logger] error_pos: -0.06
+28.326 [ Info   ][Logger] controller output: -7.58182
+28.330 [ Info   ][Logger] error_pos: -0.06
+28.330 [ Info   ][Logger] controller output: -7.58182
+28.334 [ Info   ][Logger] error_pos: -0.06
+28.334 [ Info   ][Logger] controller output: -7.58182
+28.338 [ Info   ][Logger] error_pos: -0.06
+28.338 [ Info   ][Logger] controller output: -7.58182
+28.342 [ Info   ][Logger] error_pos: -0.06
+28.342 [ Info   ][Logger] controller output: -7.58182
+28.346 [ Info   ][Logger] error_pos: -0.06
+28.346 [ Info   ][Logger] controller output: -7.58182
+28.350 [ Info   ][Logger] error_pos: -0.06
+28.350 [ Info   ][Logger] controller output: -7.58182
+28.354 [ Info   ][Logger] error_pos: -0.06
+28.354 [ Info   ][Logger] controller output: -7.58182
+28.358 [ Info   ][Logger] error_pos: -0.06
+28.358 [ Info   ][Logger] controller output: -7.58182
+28.362 [ Info   ][Logger] error_pos: -0.06
+28.362 [ Info   ][Logger] controller output: -7.58182
+28.366 [ Info   ][Logger] error_pos: -0.06
+28.366 [ Info   ][Logger] controller output: -7.58182
+28.370 [ Info   ][Logger] error_pos: -0.06
+28.370 [ Info   ][Logger] controller output: -7.58182
+28.374 [ Info   ][Logger] error_pos: -0.06
+28.374 [ Info   ][Logger] controller output: -7.58182
+28.378 [ Info   ][Logger] error_pos: -0.06
+28.378 [ Info   ][Logger] controller output: -7.58182
+28.382 [ Info   ][Logger] error_pos: -0.06
+28.382 [ Info   ][Logger] controller output: -7.58182
+28.386 [ Info   ][Logger] error_pos: -0.06
+28.386 [ Info   ][Logger] controller output: -7.58182
+28.390 [ Info   ][Logger] error_pos: -0.06
+28.390 [ Info   ][Logger] controller output: -7.58182
+28.394 [ Info   ][Logger] error_pos: -0.06
+28.394 [ Info   ][Logger] controller output: -7.58182
+28.398 [ Info   ][Logger] error_pos: -0.06
+28.398 [ Info   ][Logger] controller output: -7.58182
+28.402 [ Info   ][Logger] error_pos: -0.06
+28.402 [ Info   ][Logger] controller output: -7.58182
+28.406 [ Info   ][Logger] error_pos: -0.06
+28.406 [ Info   ][Logger] controller output: -7.58182
+28.410 [ Info   ][Logger] error_pos: -0.06
+28.410 [ Info   ][Logger] controller output: -7.58182
+28.414 [ Info   ][Logger] error_pos: -0.06
+28.414 [ Info   ][Logger] controller output: -7.58182
+28.418 [ Info   ][Logger] error_pos: -0.06
+28.418 [ Info   ][Logger] controller output: -7.58182
+28.422 [ Info   ][Logger] error_pos: -0.06
+28.422 [ Info   ][Logger] controller output: -7.58182
+28.426 [ Info   ][Logger] error_pos: -0.06
+28.426 [ Info   ][Logger] controller output: -7.58182
+28.430 [ Info   ][Logger] error_pos: -0.06
+28.430 [ Info   ][Logger] controller output: -7.58182
+28.434 [ Info   ][Logger] error_pos: -0.06
+28.434 [ Info   ][Logger] controller output: -7.58182
+28.438 [ Info   ][Logger] error_pos: -0.06
+28.438 [ Info   ][Logger] controller output: -7.58182
+28.442 [ Info   ][Logger] error_pos: -0.06
+28.442 [ Info   ][Logger] controller output: -7.58182
+28.446 [ Info   ][Logger] error_pos: -0.06
+28.446 [ Info   ][Logger] controller output: -7.58182
+28.450 [ Info   ][Logger] error_pos: -0.06
+28.450 [ Info   ][Logger] controller output: -7.58182
+28.454 [ Info   ][Logger] error_pos: -0.06
+28.454 [ Info   ][Logger] controller output: -7.58182
+28.458 [ Info   ][Logger] error_pos: -0.06
+28.458 [ Info   ][Logger] controller output: -7.58182
+28.462 [ Info   ][Logger] error_pos: -0.06
+28.462 [ Info   ][Logger] controller output: -7.58182
+28.466 [ Info   ][Logger] error_pos: -0.06
+28.466 [ Info   ][Logger] controller output: -7.58182
+28.470 [ Info   ][Logger] error_pos: -0.06
+28.470 [ Info   ][Logger] controller output: -7.58182
+28.474 [ Info   ][Logger] error_pos: -0.06
+28.474 [ Info   ][Logger] controller output: -7.58182
+28.478 [ Info   ][Logger] error_pos: -0.06
+28.478 [ Info   ][Logger] controller output: -7.58182
+28.482 [ Info   ][Logger] error_pos: -0.06
+28.482 [ Info   ][Logger] controller output: -7.58182
+28.486 [ Info   ][Logger] error_pos: -0.06
+28.486 [ Info   ][Logger] controller output: -7.58182
+28.490 [ Info   ][Logger] error_pos: -0.06
+28.490 [ Info   ][Logger] controller output: -7.58182
+28.494 [ Info   ][Logger] error_pos: -0.06
+28.494 [ Info   ][Logger] controller output: -7.58182
+28.498 [ Info   ][Logger] error_pos: -0.06
+28.498 [ Info   ][Logger] controller output: -7.58182
+28.502 [ Info   ][Logger] error_pos: -0.06
+28.502 [ Info   ][Logger] controller output: -7.58182
+28.506 [ Info   ][Logger] error_pos: -0.06
+28.506 [ Info   ][Logger] controller output: -7.58182
+28.510 [ Info   ][Logger] error_pos: -0.06
+28.510 [ Info   ][Logger] controller output: -7.58182
+28.514 [ Info   ][Logger] error_pos: -0.06
+28.514 [ Info   ][Logger] controller output: -7.58182
+28.518 [ Info   ][Logger] error_pos: -0.06
+28.518 [ Info   ][Logger] controller output: -7.58182
+28.522 [ Info   ][Logger] error_pos: -0.06
+28.522 [ Info   ][Logger] controller output: -7.58182
+28.526 [ Info   ][Logger] error_pos: -0.06
+28.526 [ Info   ][Logger] controller output: -7.58182
+28.530 [ Info   ][Logger] error_pos: -0.06
+28.530 [ Info   ][Logger] controller output: -7.58182
+28.534 [ Info   ][Logger] error_pos: -0.06
+28.534 [ Info   ][Logger] controller output: -7.58182
+122.355 [ Info   ][Logger] ScriptingService unloads Program ROStopics...
+122.356 [ Info   ][Logger] Orocos Logging Deactivated.
