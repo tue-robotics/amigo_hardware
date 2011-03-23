@@ -12,8 +12,6 @@
   <depend package="ocl"/>
   <depend package="rtt_ros_integration"/>
   <depend package="geometry_msgs"/>
-  <depend package="amigo_filters"/>
-  <depend package="tf"/>
   <depend package="amigo_ref_interpolator"/>
   <depend package="rtt_ros_integration_std_msgs"/>
   <depend package="rtt_ros_integration_amigo_msgs"/>
