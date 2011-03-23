@@ -13,7 +13,7 @@
 #define SPOED 0.004	
 #define ENCODERSTEPS 2000
 #define TRANSMISSION 4.8
-#define VOLTLIMIT 1.0
+#define VOLTLIMIT 1.5
 #define	BRAKEOFF true
 #define BRAKEON	false
 #define	SAFETYMARGIN 0.01
