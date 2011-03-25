@@ -60,15 +60,24 @@ CalculateErrors.configure
 loadComponent("Controller_Gains","MATH::Gains")
 connect ("CalculateErrors.out","Controller_Gains.in", ConnPolicy() )
 Controller_Gains.vectorsize = 3;
-Controller_Gains.gain = array (800.0, 800.0, 230.0)
+Controller_Gains.gain = array (100.0, 100.0, 40.0)
 Controller_Gains.configure
+
+### LEADLAG ###
+loadComponent("LeadLag","FILTERS::LeadLags")
+connect ("Controller_Gains.out","LeadLag.in", ConnPolicy() )
+LeadLag.vector_size = 3;
+LeadLag.sampling_time = Ts
+LeadLag.zero_frequency = array (0.667, 0.667, 1.0)
+LeadLag.pole_frequency = array (6.0, 6.0, 9.0)
+LeadLag.configure
 
 ### LOWPASS ###
 loadComponent("SecondOrderLowPass","FILTERS::SecondOrderLowPasses")
-connect ("Controller_Gains.out","SecondOrderLowPass.in", ConnPolicy() )
+connect ("LeadLag.out","SecondOrderLowPass.in", ConnPolicy() )
 SecondOrderLowPass.vector_size = 3;
 SecondOrderLowPass.sampling_time = Ts
-SecondOrderLowPass.pole_frequency = array (100.0, 100.0, 100.0)
+SecondOrderLowPass.pole_frequency = array (50.0, 50.0, 30.0)
 SecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7)
 SecondOrderLowPass.configure
 
@@ -156,6 +165,7 @@ ReadWheelEncoders.start
 DecouplePosition.start
 CalculateErrors.start
 Controller_Gains.start
+LeadLag.start
 SecondOrderLowPass.start
 FeedForward.start
 Sum.start
