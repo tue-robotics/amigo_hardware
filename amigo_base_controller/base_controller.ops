@@ -1,4 +1,4 @@
-var double Ts = 0.004
+var double Ts = 0.001
 
 var double WHEELRAD = 0.075*0.9825; # Corrected for effective wheel radius
 var double DIS2CENT = 0.29072
@@ -49,36 +49,48 @@ Vel2Pos.vector_size = 3
 Vel2Pos.configure
 connect ("ReadReferenceVelocities.out","Vel2Pos.in", ConnPolicy() ); #[m/s \n m/s \n rad/s]
 
+### DECOUPLE REFERENCE ###
+loadComponent("DecoupleReference","MatrixTransform")
+DecoupleReference.Nrows = 4
+DecoupleReference.Ncolumns = 3
+DecoupleReference.configure
+DecoupleReference.function1 = array ( -HALFSQRT2/WHEELRAD,  HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
+DecoupleReference.function2 = array ( -HALFSQRT2/WHEELRAD, -HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
+DecoupleReference.function3 = array (  HALFSQRT2/WHEELRAD, -HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
+DecoupleReference.function4 = array (  HALFSQRT2/WHEELRAD,  HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
+connect ("Vel2Pos.out","DecoupleReference.in", ConnPolicy() ); # [N \n N \n Nm]
+    
+    
 ### CALCULATE ERRORS ###
 loadComponent("CalculateErrors","CalculateErrors")
-CalculateErrors.max_errors = array (0.15, 0.15, 0.15)
-connect ("Vel2Pos.out","CalculateErrors.in_plus", ConnPolicy() ); #[m \n m \n rad]
-connect ("DecouplePosition.out","CalculateErrors.in_minus", ConnPolicy() ); #[m \n m \n rad]
+CalculateErrors.max_errors = array (2.0, 2.0, 2.0, 2.0)
+connect ("DecoupleReference.out","CalculateErrors.in_plus", ConnPolicy() ); #[m \n m \n rad]
+connect ("ReadWheelEncoders.out","CalculateErrors.in_minus", ConnPolicy() ); #[m \n m \n rad]
 CalculateErrors.configure
 
 ### GAIN ###
 loadComponent("Controller_Gains","MATH::Gains")
 connect ("CalculateErrors.out","Controller_Gains.in", ConnPolicy() )
-Controller_Gains.vectorsize = 3;
-Controller_Gains.gain = array (100.0, 100.0, 40.0)
+Controller_Gains.vectorsize = 4;
+Controller_Gains.gain = array (0.22, 0.22, 0.22, 0.22)
 Controller_Gains.configure
 
 ### LEADLAG ###
 loadComponent("LeadLag","FILTERS::LeadLags")
 connect ("Controller_Gains.out","LeadLag.in", ConnPolicy() )
-LeadLag.vector_size = 3;
+LeadLag.vector_size = 4;
 LeadLag.sampling_time = Ts
-LeadLag.zero_frequency = array (0.667, 0.667, 1.0)
-LeadLag.pole_frequency = array (6.0, 6.0, 9.0)
+LeadLag.zero_frequency = array (0.25, 0.25, 0.25, 0.25)
+LeadLag.pole_frequency = array (2.0, 2.0, 2.0, 2.0)
 LeadLag.configure
 
 ### LOWPASS ###
 loadComponent("SecondOrderLowPass","FILTERS::SecondOrderLowPasses")
 connect ("LeadLag.out","SecondOrderLowPass.in", ConnPolicy() )
-SecondOrderLowPass.vector_size = 3;
+SecondOrderLowPass.vector_size = 4;
 SecondOrderLowPass.sampling_time = Ts
-SecondOrderLowPass.pole_frequency = array (50.0, 50.0, 30.0)
-SecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7)
+SecondOrderLowPass.pole_frequency = array (100.0, 100.0, 100.0, 100.0)
+SecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7, 0.7)
 SecondOrderLowPass.configure
 
 ### FEEDFORWARD ###
@@ -95,28 +107,14 @@ connect ("SecondOrderLowPass.out","Sum.in2_event", ConnPolicy() )
 Sum.vectorsize = 3;
 Sum.configure
 
-### DECOUPLE FORCE ###
-loadComponent("DecoupleForce","MatrixTransform")
-DecoupleForce.Nrows = 4
-DecoupleForce.Ncolumns = 3
-DecoupleForce.configure
-DecoupleForce.function1 = array ( -0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/DIS2CENT )
-DecoupleForce.function2 = array ( -0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/DIS2CENT )
-DecoupleForce.function3 = array (  0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/DIS2CENT )
-DecoupleForce.function4 = array (  0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/DIS2CENT )
-connect ("Sum.out","DecoupleForce.in", ConnPolicy() ); # [N \n N \n Nm]
-
 ### SI2VOLT ###
 loadComponent("SI2Volt","MATH::Gains")
-connect ("DecoupleForce.out","SI2Volt.in", ConnPolicy() ); # 4x[Nm]
+connect ("Sum.out","SI2Volt.in", ConnPolicy() ); # 4x[Nm]
 connect ("SI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Volt
 SI2Volt.vectorsize = 4;
 var double SI2V = TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
 SI2Volt.gain = array (SI2V, SI2V, SI2V, SI2V)
 SI2Volt.configure
-
-#### BATTERY
-#stream("Soem.Slave_100e.values",RosTopics.battery)
 
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
@@ -138,38 +136,40 @@ stream("Odometry.odom",ROStopics.odom);
 Odometry.configure
 Odometry.setPeriod(0.05)
 
-addPeer("Reporter","ReadReferenceVelocities")
-Reporter.reportPort("ReadReferenceVelocities","out")
-addPeer("Reporter","Vel2Pos")
-Reporter.reportPort("Vel2Pos","out")
-addPeer("Reporter","ReadWheelEncoders")
-Reporter.reportPort("ReadWheelEncoders","out")
-addPeer("Reporter","DecouplePosition")
-Reporter.reportPort("DecouplePosition","out")
-addPeer("Reporter","CalculateErrors")
-Reporter.reportPort("CalculateErrors","out")
-addPeer("Reporter","SecondOrderLowPass")
-Reporter.reportPort("SecondOrderLowPass","out")
-addPeer("Reporter","FeedForward")
-Reporter.reportPort("FeedForward","out")
-addPeer("Reporter","Sum")
-Reporter.reportPort("Sum","out")
-addPeer("Reporter","SI2Volt")
-Reporter.reportPort("SI2Volt","out")
+#Setting up reporting
+loadComponent("BaseReporter", "OCL::FileReporting")
+BaseReporter.ReportFile = "/home/amigo/basereports.dat"
+#addPeer("BaseReporter","ReadReferenceVelocities")
+#BaseReporter.reportPort("ReadReferenceVelocities","out")
+#addPeer("BaseReporter","Vel2Pos")
+#BaseReporter.reportPort("Vel2Pos","out")
+#addPeer("BaseReporter","ReadWheelEncoders")
+#BaseReporter.reportPort("ReadWheelEncoders","out")
+#addPeer("BaseReporter","WheelVel")
+#BaseReporter.reportPort("WheelVel","out")
+#addPeer("BaseReporter","DecouplePosition")
+#BaseReporter.reportPort("DecouplePosition","out")
+addPeer("BaseReporter","CalculateErrors")
+BaseReporter.reportPort("CalculateErrors","out")
+addPeer("BaseReporter","SecondOrderLowPass")
+BaseReporter.reportPort("SecondOrderLowPass","out")
+addPeer("BaseReporter","AddNoise")
+BaseReporter.reportPort("AddNoise","out")
+#addPeer("BaseReporter","SI2Volt")
+#BaseReporter.reportPort("SI2Volt","out")
+#BaseReporter.NullSample = "-1"
+#BaseReporter.setPeriod(Ts)
 
-ReadReferenceVelocities.start
-ReadReferenceVelocities.trigger
-Vel2Pos.start
-Vel2Pos.trigger
 ReadWheelEncoders.start
-DecouplePosition.start
+ReadReferenceVelocities.start
+Vel2Pos.start
+DecoupleReference.start
 CalculateErrors.start
 Controller_Gains.start
 LeadLag.start
 SecondOrderLowPass.start
 FeedForward.start
 Sum.start
-DecoupleForce.start
 SI2Volt.start
 BaseSafety.start
 Odometry.start
