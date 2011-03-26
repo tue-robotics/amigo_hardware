@@ -97,7 +97,7 @@ SecondOrderLowPass.configure
 loadComponent("FeedForward","MATH::Gains")
 connect ("ReadReferenceVelocities.out","FeedForward.in", ConnPolicy() )
 FeedForward.vectorsize = 3;
-FeedForward.gain = array (55.0, 55.0, 5.0)
+FeedForward.gain = array (0.0, 0.0, 0.0, 0.0)
 FeedForward.configure
 
 ### ADDITION ###
