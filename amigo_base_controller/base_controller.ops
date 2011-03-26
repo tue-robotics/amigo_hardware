@@ -109,7 +109,7 @@ Sum.configure
 
 ### SI2VOLT ###
 loadComponent("SI2Volt","MATH::Gains")
-connect ("Sum.out","SI2Volt.in", ConnPolicy() ); # 4x[Nm]
+connect ("SecondOrderLowPass.out","SI2Volt.in", ConnPolicy() ); # 4x[Nm]
 connect ("SI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Volt
 SI2Volt.vectorsize = 4;
 var double SI2V = TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
