@@ -153,8 +153,6 @@ addPeer("BaseReporter","CalculateErrors")
 BaseReporter.reportPort("CalculateErrors","out")
 addPeer("BaseReporter","SecondOrderLowPass")
 BaseReporter.reportPort("SecondOrderLowPass","out")
-addPeer("BaseReporter","AddNoise")
-BaseReporter.reportPort("AddNoise","out")
 #addPeer("BaseReporter","SI2Volt")
 #BaseReporter.reportPort("SI2Volt","out")
 #BaseReporter.NullSample = "-1"
