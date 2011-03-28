@@ -2,6 +2,7 @@
 #include <actionlib/server/simple_action_server.h>
 #include <amigo_head_server/move_headAction.h>
 #include <amigo_msgs/head_ref.h>
+#include <sensor_msgs/JointState.h>
 
 class HeadServer
 {
@@ -17,6 +18,7 @@ protected:
   ros::Subscriber sub_;
   ros::Publisher pub_;
   double tol_head_pan, tol_head_tilt;
+  int neck_pan_joint, neck_tilt_joint;
   
 public:
     
@@ -27,13 +29,16 @@ public:
 	//get parameters from parameter server
     nh_.param<double> (name+"/tol_head_pan", tol_head_pan,0.025);  
     nh_.param<double> (name+"/tol_head_tilt", tol_head_tilt,0.025);   
-	  
+    
+    nh_.param<int> (name+"/neck_pan_joint", neck_pan_joint,23);   
+    nh_.param<int> (name+"/neck_tilt_joint", neck_tilt_joint,24);   
+   
     //register the goal and feeback callbacks
     as_.registerGoalCallback(boost::bind(&HeadServer::goalCB, this));
     as_.registerPreemptCallback(boost::bind(&HeadServer::preemptCB, this));
 
-    pub_ = nh_.advertise<amigo_msgs::head_ref>(name+"/set_Head", 50);
-    sub_ = nh_.subscribe(name+"/measured_head_position", 1, &HeadServer::headCallback, this);
+    pub_ = nh_.advertise<amigo_msgs::head_ref>("/head_controller/set_Head", 50);
+    sub_ = nh_.subscribe("/joint_states", 1, &HeadServer::headCallback, this);
   }
 
   ~HeadServer(void)
@@ -61,7 +66,7 @@ public:
     as_.setPreempted();
   }
 
-  void headCallback(const amigo_msgs::head_ref::ConstPtr& msg)
+  void headCallback(const sensor_msgs::JointState::ConstPtr& msg)
   {
 	  
 	// make sure that the action hasn't been canceled
@@ -73,15 +78,17 @@ public:
     int reached = 0;
     
     //populate feedback msg
-    feedback_.position = *msg;
+    feedback_.position.head_pan = msg->position[neck_pan_joint];
+    feedback_.position.head_tilt = msg->position[neck_tilt_joint];
+    
   
     //publish feedback
     as_.publishFeedback(feedback_);
 
     //determine if position is within tolerance
-    if (msg->head_pan <= (head_msg.head_pan + tol_head_pan/2) && msg->head_pan >= (head_msg.head_pan - tol_head_pan/2))
+    if (msg->position[neck_pan_joint] <= (head_msg.head_pan + tol_head_pan/2) && msg->position[neck_pan_joint] >= (head_msg.head_pan - tol_head_pan/2))
       status_head[0] = 1;
-    if (msg->head_tilt <= (head_msg.head_tilt + tol_head_tilt/2) && msg->head_tilt >= (head_msg.head_tilt - tol_head_tilt/2))
+    if (msg->position[neck_tilt_joint] <= (head_msg.head_tilt + tol_head_tilt/2) && msg->position[neck_tilt_joint] >= (head_msg.head_tilt - tol_head_tilt/2))
       status_head[1] = 1;  
 
     for (int i=0;i<2;i++)

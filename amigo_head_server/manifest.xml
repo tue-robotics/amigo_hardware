@@ -10,6 +10,7 @@
   <url>http://ros.org/wiki/amigo_head_executive</url>
   <depend package="roscpp"/>
   <depend package="amigo_msgs"/>
+  <depend package="sensor_msgs"/>
   <depend package="roslib"/>
   <depend package="actionlib"/>
   <depend package="actionlib_msgs"/>

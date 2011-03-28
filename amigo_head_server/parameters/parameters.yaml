@@ -1,3 +1,5 @@
 head_server:
   tol_head_pan: 0.025
-  tol_head_tilt: 0.025 
+  tol_head_tilt: 0.025
+  neck_pan_joint: 23
+  neck_tilt_joint: 24
