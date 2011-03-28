@@ -1,0 +1,8 @@
+#goal definition
+amigo_msgs/head_ref position
+---
+#result definition
+amigo_msgs/head_ref position
+---
+#feedback
+amigo_msgs/head_ref position

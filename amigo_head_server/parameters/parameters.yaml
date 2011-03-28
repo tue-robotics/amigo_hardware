@@ -1,0 +1,3 @@
+head_server:
+  tol_head_pan: 0.025
+  tol_head_tilt: 0.025 
