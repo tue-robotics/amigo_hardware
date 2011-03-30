@@ -39,7 +39,7 @@ BaseSafety::~BaseSafety(){}
 bool BaseSafety::configureHook()
 {
   Logger::In in("BaseSafety::configureHook()");
-  if ( max_errors.size() != 3 )
+  if ( max_errors.size() < 3 ) //TODO: Compare with array size
   {
     log(Error)<<"Maximum errors not specified!"<<endlog();
     return false;
