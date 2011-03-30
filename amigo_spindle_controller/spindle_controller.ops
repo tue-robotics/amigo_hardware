@@ -37,15 +37,17 @@ stream("SpindleController.spindle_position",ROStopics.spindle_position);
 stream("SpindleController.pos_after_homing",ROStopics.spindle_setpoint);
 
 #Setting up reporting
-addPeer("Reporter","SpindleController")
-Reporter.reportPort("SpindleController","check_volt_out")
-Reporter.reportPort("SpindleController","current_position")
-Reporter.reportPort("SpindleController","pos_ref")
-Reporter.reportPort("SpindleController","error_pos")
-Reporter.reportPort("SpindleController","vel_ref")
-Reporter.reportPort("SpindleController","acc_ref")
-Reporter.reportPort("SpindleController","noise")
-Reporter.reportPort("SpindleController","control_output")
+loadComponent("SpindleReporter", "OCL::FileReporting")
+SpindleReporter.ReportFile = "/home/amigo/spindlereports.dat"
+addPeer("SpindleReporter","SpindleController")
+SpindleReporter.reportPort("SpindleController","check_volt_out")
+SpindleReporter.reportPort("SpindleController","current_position")
+SpindleReporter.reportPort("SpindleController","pos_ref")
+SpindleReporter.reportPort("SpindleController","error_pos")
+SpindleReporter.reportPort("SpindleController","vel_ref")
+SpindleReporter.reportPort("SpindleController","acc_ref")
+SpindleReporter.reportPort("SpindleController","noise")
+SpindleReporter.reportPort("SpindleController","control_output")
 
 SpindleController.configure
 SpindleController.start
