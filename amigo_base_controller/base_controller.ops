@@ -170,5 +170,6 @@ FeedForward.start
 Sum.start
 SI2Volt.start
 BaseSafety.start
+DecouplePosition.start
 Odometry.start
 
