@@ -20,6 +20,8 @@ using namespace AMIGO;
 BaseSafety::BaseSafety(const string& name) :
 	                    		    TaskContext(name, PreOperational)
 {
+  max_velocities.assign(3,0.0);
+  max_errors.assign(4,0.0);
   max_voltage = 0;
 
   // Adding properties
