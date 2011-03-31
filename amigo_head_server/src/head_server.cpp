@@ -6,118 +6,135 @@
 
 class HeadServer
 {
-protected:
-    
-  ros::NodeHandle nh_;
-  actionlib::SimpleActionServer<amigo_head_server::move_headAction> as_;
-  std::string action_name_;
-  amigo_head_server::move_headFeedback feedback_;
-  amigo_head_server::move_headResult result_;
-  amigo_msgs::head_ref goal_;
-  amigo_msgs::head_ref head_msg;
-  ros::Subscriber sub_;
-  ros::Publisher pub_;
-  double tol_head_pan, tol_head_tilt;
-  int neck_pan_joint, neck_tilt_joint;
-  
-public:
-    
-  HeadServer(std::string name) : 
-    as_(nh_, name),
-    action_name_(name)
-  {
-	//get parameters from parameter server
-    nh_.param<double> (name+"/tol_head_pan", tol_head_pan,0.025);  
-    nh_.param<double> (name+"/tol_head_tilt", tol_head_tilt,0.025);   
-    
-    nh_.param<int> (name+"/neck_pan_joint", neck_pan_joint,23);   
-    nh_.param<int> (name+"/neck_tilt_joint", neck_tilt_joint,24);   
-   
-    //register the goal and feeback callbacks
-    as_.registerGoalCallback(boost::bind(&HeadServer::goalCB, this));
-    as_.registerPreemptCallback(boost::bind(&HeadServer::preemptCB, this));
+	protected:
 
-    pub_ = nh_.advertise<amigo_msgs::head_ref>("/head_controller/set_Head", 50);
-    sub_ = nh_.subscribe("/joint_states", 1, &HeadServer::headCallback, this);
-  }
+		ros::NodeHandle nh_;
+		actionlib::SimpleActionServer<amigo_head_server::move_headAction> as_;
+		std::string action_name_, field_tilt, field_pan;
+		amigo_head_server::move_headFeedback feedback_;
+		amigo_head_server::move_headResult result_;
+		amigo_msgs::head_ref goal_;
+		amigo_msgs::head_ref head_msg;
+		ros::Subscriber sub_;
+		ros::Publisher pub_;
+		double tol_head_pan, tol_head_tilt;
+		int pan_index, tilt_index;
 
-  ~HeadServer(void)
-  {
-  }
+	public:
+
+		HeadServer(std::string name) : 
+			as_(nh_, name),
+			action_name_(name)
+			{
+			//get parameters from parameter server
+			nh_.param<double> (name+"/tol_head_pan", tol_head_pan,0.015);  
+			nh_.param<double> (name+"/tol_head_tilt", tol_head_tilt,0.015);   
+			nh_.param<std::string> (name+"/field_pan", field_pan,"neck_pan_joint");
+			nh_.param<std::string> (name+"/field_tilt", field_tilt,"neck_tilt_joint");   
+
+			//register the goal and feeback callbacks
+			as_.registerGoalCallback(boost::bind(&HeadServer::goalCB, this));
+			as_.registerPreemptCallback(boost::bind(&HeadServer::preemptCB, this));
+
+			pub_ = nh_.advertise<amigo_msgs::head_ref>("/head_controller/set_Head", 50);
+			sub_ = nh_.subscribe("/joint_states", 1, &HeadServer::headCallback, this);
+			pan_index=-1;
+			tilt_index=-1;
+			}
+
+		~HeadServer(void)
+		{
+		}
 
 
-  void goalCB()
-  {
-	  // accept the new goal
-      goal_ = as_.acceptNewGoal()->position;
-  
-      ROS_INFO("Head server: Goal accepted...");
+		void goalCB()
+		{
+			// accept the new goal
+			goal_ = as_.acceptNewGoal()->position;
 
-	  head_msg.head_pan = goal_.head_pan;
-	  head_msg.head_tilt = goal_.head_tilt;    
-	  
-	  pub_.publish(head_msg);
-  }
+			ROS_INFO("Head server: Goal accepted...");
 
-  void preemptCB()
-  {
-    ROS_INFO("%s: Preempted", action_name_.c_str());
-    // set the action state to preempted
-    as_.setPreempted();
-  }
+			head_msg.head_pan = goal_.head_pan;
+			head_msg.head_tilt = goal_.head_tilt;    
 
-  void headCallback(const sensor_msgs::JointState::ConstPtr& msg)
-  {
-	  
-	// make sure that the action hasn't been canceled
-    if (!as_.isActive())
-      return;
-    
-    int status_head[2] = {0,0};
-    
-    int reached = 0;
-    
-    //populate feedback msg
-    feedback_.position.head_pan = msg->position[neck_pan_joint];
-    feedback_.position.head_tilt = msg->position[neck_tilt_joint];
-    
-  
-    //publish feedback
-    as_.publishFeedback(feedback_);
+			pub_.publish(head_msg);
+		}
 
-    //determine if position is within tolerance
-    if (msg->position[neck_pan_joint] <= (head_msg.head_pan + tol_head_pan/2) && msg->position[neck_pan_joint] >= (head_msg.head_pan - tol_head_pan/2))
-      status_head[0] = 1;
-    if (msg->position[neck_tilt_joint] <= (head_msg.head_tilt + tol_head_tilt/2) && msg->position[neck_tilt_joint] >= (head_msg.head_tilt - tol_head_tilt/2))
-      status_head[1] = 1;  
+		void preemptCB()
+		{
+			ROS_INFO("%s: Preempted", action_name_.c_str());
+			// set the action state to preempted
+			as_.setPreempted();
+		}
 
-    for (int i=0;i<2;i++)
-      reached += status_head[i];  
+		void headCallback(const sensor_msgs::JointState::ConstPtr& msg)
+		{
 
-    //if position reached  
-    if (reached == 2){
-      result_.position = feedback_.position;
-      ROS_INFO("%s: Succeeded", action_name_.c_str());
-      // set the action state to succeeded
-      as_.setSucceeded(result_);
-    }
- 	
-  }
+			// make sure that the action hasn't been canceled
+			if (!as_.isActive())
+				return;
+
+			if (pan_index == -1) {
+				for (unsigned int i = 0; i < msg->name.size(); i++) {
+					if (field_pan.compare(msg->name[i]) == 0) {
+						pan_index = i;
+						break;
+					}
+				}
+			}
+
+			if (tilt_index == -1) {
+				for (unsigned int i = 0; i < msg->name.size(); i++) {
+					if (field_tilt.compare(msg->name[i]) == 0) {
+						tilt_index = i;
+						break;
+					}
+				}
+			}			
+
+			if ((pan_index == -1) || (tilt_index == -1)) {
+				ROS_WARN("Head server: pan and tilt fields not found in the JointState msg!");
+				return;
+			}
+
+			bool reached = false;
+
+			//populate feedback msg
+			feedback_.position.head_pan = msg->position[pan_index];
+			feedback_.position.head_tilt = msg->position[tilt_index];
+
+			//publish feedback
+			as_.publishFeedback(feedback_);
+
+			//determine if position is within tolerance
+			if ((msg->position[pan_index] <= (head_msg.head_pan + tol_head_pan) && msg->position[pan_index] >= (head_msg.head_pan - tol_head_pan))
+					&& (msg->position[tilt_index] <= (head_msg.head_tilt + tol_head_tilt) && msg->position[tilt_index] >= (head_msg.head_tilt - tol_head_tilt)))
+				reached =true;  
+
+			//if position reached  
+			if (reached){
+				result_.position = feedback_.position;
+				ROS_INFO("%s: Succeeded", action_name_.c_str());
+				// set the action state to succeeded
+				as_.setSucceeded(result_);
+			}
+
+		}
 };
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "head_server");
-  
-  std::string ns = ros::this_node::getName();
-  
-  //construct object
-  HeadServer server_object(ns);
-  
-  ROS_INFO("Action server '%s' is active and spinning...",ros::this_node::getName().c_str());
-  
-  ros::spin();
+	ros::init(argc, argv, "head_server");
 
-  return 0;
+	std::string ns = ros::this_node::getName();
+
+	//construct object
+	HeadServer server_object(ns);
+
+	ROS_INFO("Action server '%s' is active and spinning...",ros::this_node::getName().c_str());
+
+	ros::spin();
+
+	return 0;
 }
 
