@@ -36,7 +36,7 @@ loadComponent("ReadReferenceVelocities","MSG::ReadTwistMsg")
 #loadService("ReadReferenceVelocities","rosparam")
 #ReadReferenceVelocities.rosparam.refreshProperties()
 ReadReferenceVelocities.max_start_vel = 0.1
-ReadReferenceVelocities.max_acc = array (0.5, 0.5, 1.0)
+ReadReferenceVelocities.max_acc = array (0.7, 0.7, 2.0)
 ReadReferenceVelocities.max_interval = 1.0
 #Setting up ROS-topics
 stream("ReadReferenceVelocities.cmd_vel",ROStopics.cmd_vel);
@@ -118,7 +118,7 @@ SI2Volt.configure
 
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
-BaseSafety.max_velocities = array (0.5, 0.5, 1.0)
+BaseSafety.max_velocities = array (0.7, 0.7, 2.0)
 BaseSafety.max_errors = array ( 4.0, 4.0, 4.0, 4.0 )
 BaseSafety.max_voltage = 2.5
 connect ("ReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
