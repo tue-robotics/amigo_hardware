@@ -118,7 +118,7 @@ SI2Volt.configure
 
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
-BaseSafety.max_velocities = array (0.7, 0.7, 2.0)
+BaseSafety.max_velocities = array (1.8, 1.0, 3.1415)
 BaseSafety.max_errors = array ( 4.0, 4.0, 4.0, 4.0 )
 BaseSafety.max_voltage = 2.5
 connect ("ReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
