@@ -1,7 +1,7 @@
 <launch>
 
   <!-- load robot on parameter server-->
-  <param name="robot_description" textfile="$(find amigo_simulation_model)/robot.urdf" />
+  <param name="robot_description" textfile="$(find amigo_robot_model)/robot.urdf" />
   <rosparam file="$(find amigo_redundancy_search)/parameters/parameters.yaml" command="load" />
 
 
