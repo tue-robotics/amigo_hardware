@@ -9,8 +9,8 @@ Redundancy::Redundancy(std::string ns): nh_private ("~"){
   error = false;
   
   //initialize object
-  if (init(ns)<0) {
-    ROS_ERROR("Could not initialize kinematics node");
+  if (!init(ns)) {
+    ROS_ERROR("Could not initialize reducndancy class");
     error = true;
   }
   
@@ -37,13 +37,13 @@ bool Redundancy::init(std::string ns) {
 
     // Get Root and Tip From Parameter Service
     if (!nh_private.getParam("root_name", root_name)) {
-        ROS_FATAL("GenericIK: No root_name found on parameter server");
+        ROS_FATAL("GenericIK: No root_name found on parameter server (namespace: %s)",ns.c_str());
         error = true;
         return false;
     }
     
     if (!nh_private.getParam("tip_name", tip_name)) {
-        ROS_FATAL("GenericIK: No tip name found on parameter server");
+        ROS_FATAL("GenericIK: No tip name found on parameter server (namespace: %s)",ns.c_str());
         error = true;
         return false;
     }
