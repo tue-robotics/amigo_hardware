@@ -33,7 +33,8 @@ BaseSafety::BaseSafety(const string& name) :
   addEventPort( "error", errorport );
   addEventPort( "ref", refport );
   addEventPort( "voltage", voltport );
-  addPort( "out", outport );
+  addEventPort( "reset", resetport );
+  addPort( "wheel_amplifiers", amplifierport );
 }
 
 BaseSafety::~BaseSafety(){}
@@ -70,7 +71,7 @@ bool BaseSafety::startHook()
     return false;
   }
 
-  if ( !outport.connected() )
+  if ( !amplifierport.connected() )
   {
     log(Warning)<<"Output port not connected!"<<endlog();
   }
@@ -95,7 +96,7 @@ void BaseSafety::updateHook()
       safe = false;
     }
 
-    if ( !outport.connected() )
+    if ( !amplifierport.connected() )
     {
       log(Warning)<<"Output port not connected!"<<endlog();
     }
@@ -129,7 +130,13 @@ void BaseSafety::updateHook()
         log(Error)<<"Voltages: "<<voltage[0]<<"   "<<voltage[1]<<"   "<<voltage[2]<<"   "<<voltage[3]<<"   "<<voltage[4]<<"   "<<voltage[5]<<"   "<<voltage[6]<<"   "<<voltage[7]<<endlog();
       }
   }
-  outport.write( safe );
+  else if ( resetport.read( reset ) == NewData )
+	  safe = true;
+  //if ( laststate != safe )
+  //{
+	  amplifierport.write( safe );
+//	  laststate = safe;
+  //}
 }
 
 ORO_CREATE_COMPONENT(AMIGO::BaseSafety)

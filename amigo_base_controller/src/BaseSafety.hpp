@@ -35,7 +35,9 @@ namespace AMIGO
     InputPort<doubles> refport;
     InputPort<doubles> errorport;
     InputPort<doubles> voltport;
-    OutputPort<bool> outport;
+    InputPort<bool> resetport;
+    OutputPort<bool> amplifierport;
+
 
     /* Declaring property variables */
     doubles max_velocities;
@@ -44,6 +46,8 @@ namespace AMIGO
 
     /* Declaring global variables */
     bool safe;
+    bool laststate;
+    bool reset;
 
     public:
 

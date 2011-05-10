@@ -62,8 +62,8 @@ connect ("Vel2Pos.out","DecoupleReference.in", ConnPolicy() ); # [N \n N \n Nm]
     
     
 ### CALCULATE ERRORS ###
-loadComponent("CalculateErrors","CalculateErrors")
-CalculateErrors.max_errors = array (5.0, 5.0, 5.0, 5.0)
+loadComponent("CalculateErrors","Substraction")
+CalculateErrors.vectorsize = 4;
 connect ("DecoupleReference.out","CalculateErrors.in_plus", ConnPolicy() ); #[m \n m \n rad]
 connect ("ReadWheelEncoders.out","CalculateErrors.in_minus", ConnPolicy() ); #[m \n m \n rad]
 CalculateErrors.configure
@@ -124,10 +124,19 @@ BaseSafety.max_voltage = 2.5
 connect ("ReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
 connect ("CalculateErrors.out", "BaseSafety.error", ConnPolicy() )
 connect ("SI2Volt.out", "BaseSafety.voltage", ConnPolicy() )
-connect ("BaseSafety.out", "DigitalOuts.amplifiers", ConnPolicy() ); # amplifiers
-connect ("BaseSafety.out", "DigitalOuts.tuelights", ConnPolicy() ); # lights
-
+connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.amplifiers", ConnPolicy() ); # amplifiers
+connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.tuelights", ConnPolicy() ); # lights
 BaseSafety.configure
+
+
+#### LOAD COMPONENT FOR RESET ###
+loadComponent("BaseReset","AMIGO::BaseReset")
+connect ("BaseReset.integratorreset", "Vel2Pos.reset", ConnPolicy() )
+connect ("DecoupleReference.out", "BaseReset.pos", ConnPolicy() )
+connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
+connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
+stream("BaseReset.ros",ROStopics.reset);
+BaseReset.configure
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
 loadComponent("Odometry","AMIGO::PublishOdometry")
@@ -170,6 +179,7 @@ FeedForward.start
 Sum.start
 SI2Volt.start
 BaseSafety.start
+BaseReset.start
 DecouplePosition.start
 Odometry.start
 

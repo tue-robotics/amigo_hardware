@@ -40,6 +40,7 @@ void PublishOdometry::updateHook()
   ros::Time current_time = ros::Time::now(); // Change to wall-time?
   long double new_time = os::TimeService::Instance()->getNSecs()*1e-9;
   double dt = new_time - old_time;
+  old_time = new_time;
 
   doubles pos(3);
   pos_port.read(pos);
