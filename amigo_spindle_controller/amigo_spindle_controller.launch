@@ -1,5 +1,0 @@
-<launch>
-
-  <node name="spindle_controller_dev" pkg="ocl" type="deployer-gnulinux" launch-prefix="konsole -e" args="-s $(find amigo_spindle_controller_dev)/deploy.ops --"></node>           
-  
-</launch>
