@@ -1,0 +1,6 @@
+<launch>
+  
+
+  <node name="spindle_controller" pkg="ocl" type="deployer-gnulinux" launch-prefix="konsole -e" args="-lwarning -s $(find amigo_hardware_startup_dev)/ROStopics.ops -s $(find amigo_hardware_startup_dev)/soem.ops -s $(find amigo_spindle_controller)/spindle_controller.ops --"></node>-->
+  <!--launch-prefix="konsole -e"-->
+</launch>
