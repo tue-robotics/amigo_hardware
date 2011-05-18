@@ -53,8 +53,8 @@ SpindleGain.configure
 loadComponent("SpindleLeadLag","FILTERS::LeadLags")
 SpindleLeadLag.vector_size = 1
 SpindleLeadLag.sampling_time = 0.004
-SpindleLeadLag.zero_frequency = array (0.2)
-SpindleLeadLag.pole_frequency = array (5.0)
+SpindleLeadLag.zero_frequency = array (0.14)
+SpindleLeadLag.pole_frequency = array (7.0)
 SpindleLeadLag.configure
 loadComponent("SpindleFirstOrderLowPass","FILTERS::FirstOrderLowPasses")
 SpindleFirstOrderLowPass.vector_size = 1
