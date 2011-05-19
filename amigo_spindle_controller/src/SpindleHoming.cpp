@@ -95,7 +95,7 @@ void SpindleHoming::updateHook()
 	}
 	if(homed == false)
 	{
-		log(Warning)<<"Spindle is not homed. Homing procedure started."<<endlog();
+		//log(Warning)<<"Spindle is not homed. Homing procedure started."<<endlog();
 		ref_pos[0] = 0.5;
 	}
 	
