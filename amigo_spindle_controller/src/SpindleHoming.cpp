@@ -66,6 +66,7 @@ bool SpindleHoming::startHook()
   homed = false;
   maxvel = maxvel_property.get();
   maxacc = maxacc_property.get();
+  log(Warning)<<"Spindle is not homed. Homing procedure started."<<endlog();  
   return true;
 }
 
@@ -95,7 +96,6 @@ void SpindleHoming::updateHook()
 	}
 	if(homed == false)
 	{
-		//log(Warning)<<"Spindle is not homed. Homing procedure started."<<endlog();
 		ref_pos[0] = 0.5;
 	}
 	
