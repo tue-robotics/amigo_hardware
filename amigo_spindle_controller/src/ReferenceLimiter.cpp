@@ -96,7 +96,7 @@ void ReferenceLimiter::updateHook()
 	{
 		// Publishing a message after 500 cycles, which is 2 seconds at 250 Hz		
 		publish_counterb += 1.0;
-		if( publish_counterb == 500.0 )
+		if( publish_counterb == 1500.0 )
 		{
 		log(Warning)<<"No information about left arm received. Use spindle with caution, no arm safety!!"<<endlog();
 		publish_counterb = 0.0;
