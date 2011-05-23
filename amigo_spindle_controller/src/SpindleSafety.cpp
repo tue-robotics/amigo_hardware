@@ -51,6 +51,7 @@ void SpindleSafety::updateHook()
 {
 	safety = true;
 	Logger::In in("SpindleSafety::updateHook()");
+	
 	// Measuring safety
 	errorpos_inport.read(error_pos);
 	if( abs(error_pos[0]) > ERRORMARGIN )

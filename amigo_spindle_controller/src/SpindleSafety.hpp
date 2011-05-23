@@ -25,7 +25,6 @@ namespace AMIGO // Just because it looks nice
     // Declaring variables
     bool safety;
     doubles error_pos;
-    double publish_counter;
     
 
     public:

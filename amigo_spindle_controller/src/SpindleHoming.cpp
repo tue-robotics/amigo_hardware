@@ -6,7 +6,7 @@
 
 #define HOMINGERROR 0.005
 #define HOMEDPOSITION 0.35
-#define STROKE 0.41
+#define STROKE 0.413
 #define RESET 1.0
 #define NORESET 0.0
 

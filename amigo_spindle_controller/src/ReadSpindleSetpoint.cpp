@@ -4,9 +4,6 @@
 
 #include "ReadSpindleSetpoint.hpp"
 
-#define STROKE 0.41
-#define SAFETYMARGIN 0.01
-
 using namespace RTT;
 using namespace MSG;
 
@@ -55,23 +52,12 @@ bool ReadSpindleSetpoint::startHook()
 
 void ReadSpindleSetpoint::updateHook()
 {
+  Logger::In in("ReadSpindleSetpoint::updateHook()");
+  
   // Read the inputports
   spindle_setpoint_inport.read(spindle_setpoint);
   ref_pos = spindle_setpoint.pos;
-  
-  double minimum_pos = SAFETYMARGIN;
-  double maximum_pos = STROKE - SAFETYMARGIN;
- 
-	// Limiting the references if necessary
-    if(ref_pos < minimum_pos)
-	{
-		ref_pos = minimum_pos;
-	}
-	if(ref_pos > maximum_pos)
-	{
-		ref_pos = maximum_pos;
-	}
-	
+ 	
   // Write data to ports
   refpos_outport.write( ref_pos );
 }
