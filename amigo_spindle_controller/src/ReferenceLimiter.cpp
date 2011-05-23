@@ -94,7 +94,7 @@ void ReferenceLimiter::updateHook()
 	}
 	if( NewData != left_tip_inport.read( left_tip ) )
 	{
-		// Publishing a message after 500 cycles, which is 2 seconds at 250 Hz		
+		// Publishing a message after 1500 cycles, which is 6 seconds at 250 Hz		
 		publish_counterb += 1.0;
 		if( publish_counterb == 1500.0 )
 		{
