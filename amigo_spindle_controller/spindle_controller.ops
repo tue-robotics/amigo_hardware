@@ -77,6 +77,10 @@ ReadSpindleSetpoint.setPeriod(0.004)
 ReadSpindleSetpoint.homed_pos = 0.35
 ReadSpindleSetpoint.configure
 
+#Loading reference limiter component
+loadComponent("SpindleReferenceLimiter","ReferenceLimiter")
+SpindleReferenceLimiter.configure
+
 #Loading Reference Generator
 loadComponent("SpindleReferenceGenerator","ReferenceGenerator")
 SpindleReferenceGenerator.setPeriod(0.004)
@@ -94,13 +98,14 @@ connect ("SpindleHoming.correction_out","CalculatePosition.in_plus", ConnPolicy(
 connect ("SpindleHoming.reset_generator","SpindleReferenceGenerator.resetValues", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
 connect ("SpindleSafety.safety","OutputLimiter.safety", ConnPolicy() )
-connect ("ReadSpindleSetpoint.ref_pos","SpindleHoming.ref_pos_in", ConnPolicy() )
+connect ("ReadSpindleSetpoint.ref_pos","SpindleReferenceLimiter.ref_pos_in", ConnPolicy() )
+connect ("SpindleReferenceLimiter.ref_pos_out","SpindleHoming.ref_pos_in", ConnPolicy() )
 connect ("SpindleHoming.ref_pos_out","SpindleReferenceGenerator.posin", ConnPolicy() )
-connect ("ReadSpindleEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
 connect ("SpindleReferenceGenerator.posout","CalculateError.in_plus", ConnPolicy() )
 connect ("CalculatePosition.out","CalculateError.in_minus", ConnPolicy() )
 connect ("CalculatePosition.out","PublishPosition.in", ConnPolicy() )
 connect ("CalculatePosition.out","SpindleHoming.current_pos", ConnPolicy() )
+connect ("CalculatePosition.out","SpindleReferenceLimiter.spindle_position", ConnPolicy() )
 connect ("SpindleReferenceGenerator.velout","CalculateFFW.ref_vel", ConnPolicy() )
 connect ("SpindleReferenceGenerator.accout","CalculateFFW.ref_acc", ConnPolicy() )
 connect ("CalculateError.out","SpindleGain.in", ConnPolicy() )
@@ -113,11 +118,14 @@ connect ("SpindleIntegrator.out","CalculateOutput.in2_event", ConnPolicy() )
 connect ("CalculateFFW.FFW_out","CalculateOutput.in1", ConnPolicy() )
 connect ("CalculateOutput.out","OutputLimiter.input", ConnPolicy() )
 connect ("OutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
+connect ("ReadSpindleEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
 
 #Setting up the connections with ROS-topics
 stream("ReadSpindleSetpoint.spindle_setpoint",ROStopics.spindle_setpoint);
 stream("PublishPosition.out",ROStopics.spindle_position);
 stream("ReadSpindleSetpoint.afterhoming_pos",ROStopics.spindle_setpoint);
+stream("SpindleReferenceLimiter.right_tip",ROStopics.right_tip);
+stream("SpindleReferenceLimiter.left_tip",ROStopics.left_tip);
 
 
 ### Setting up reporting ###
@@ -158,4 +166,4 @@ OutputLimiter.start
 PublishPosition.start
 SpindleSafety.start
 SpindleReporter.start
-
+SpindleReferenceLimiter.start
