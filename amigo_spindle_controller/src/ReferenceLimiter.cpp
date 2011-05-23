@@ -84,9 +84,9 @@ void ReferenceLimiter::updateHook()
 	// Limiting references if this is the case. 
 	if( NewData != right_tip_inport.read( right_tip ) )
 	{	
-		// Publishing a message after 500 cycles, which is 2 seconds at 250 Hz
+		// Publishing a message after 1500 cycles, which is 6 seconds at 250 Hz
 		publish_countera += 1.0;
-		if( publish_countera == 500.0 )
+		if( publish_countera == 1500.0 )
 		{
 		log(Warning)<<"No information about right arm received. Use spindle with caution, no arm safety!!"<<endlog();
 		publish_countera = 0.0;
