@@ -28,8 +28,8 @@ CalculateOutput.vectorsize = 1
 CalculateOutput.configure
 
 #Limiting the Output
-loadComponent("OutputLimiter","OutputLimiter")
-OutputLimiter.configure
+loadComponent("SpindleOutputLimiter","OutputLimiter")
+SpindleOutputLimiter.configure
 
 #Publishing the spindle position to ROS
 loadComponent("PublishPosition","PublishPosition")
@@ -97,7 +97,7 @@ connect ("ReadSpindleEncoder.out","CalculatePosition.in_minus", ConnPolicy() )
 connect ("SpindleHoming.correction_out","CalculatePosition.in_plus", ConnPolicy() )
 connect ("SpindleHoming.reset_generator","SpindleReferenceGenerator.resetValues", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
-connect ("SpindleSafety.safety","OutputLimiter.safety", ConnPolicy() )
+connect ("SpindleSafety.safety","SpindleOutputLimiter.safety", ConnPolicy() )
 connect ("ReadSpindleSetpoint.ref_pos","SpindleReferenceLimiter.ref_pos_in", ConnPolicy() )
 connect ("SpindleReferenceLimiter.ref_pos_out","SpindleHoming.ref_pos_in", ConnPolicy() )
 connect ("SpindleHoming.ref_pos_out","SpindleReferenceGenerator.posin", ConnPolicy() )
@@ -116,8 +116,8 @@ connect ("SpindleLeadLag.out","SpindleFirstOrderLowPass.in", ConnPolicy() )
 connect ("SpindleFirstOrderLowPass.out","SpindleIntegrator.in", ConnPolicy() )
 connect ("SpindleIntegrator.out","CalculateOutput.in2_event", ConnPolicy() )
 connect ("CalculateFFW.FFW_out","CalculateOutput.in1", ConnPolicy() )
-connect ("CalculateOutput.out","OutputLimiter.input", ConnPolicy() )
-connect ("OutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
+connect ("CalculateOutput.out","SpindleOutputLimiter.input", ConnPolicy() )
+connect ("SpindleOutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
 connect ("ReadSpindleEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
 
 #Setting up the connections with ROS-topics
@@ -131,7 +131,7 @@ stream("SpindleReferenceLimiter.left_tip",ROStopics.left_tip);
 ### Setting up reporting ###
 loadComponent("SpindleReporter", "OCL::FileReporting")
 SpindleReporter.ReportFile = "/home/amigo/spindlereports.dat"
-addPeer("SpindleReporter","OutputLimiter")
+addPeer("SpindleReporter","SpindleOutputLimiter")
 addPeer("SpindleReporter","CalculatePosition")
 addPeer("SpindleReporter","SpindleReferenceGenerator")
 addPeer("SpindleReporter","CalculateError")
@@ -139,7 +139,7 @@ addPeer("SpindleReporter","SpindleFirstOrderLowPass")
 addPeer("SpindleReporter","ReadSpindleSetpoint")
 addPeer("SpindleReporter","SpindleIntegrator")
 SpindleReporter.reportPort("ReadSpindleSetpoint","ref_pos")
-SpindleReporter.reportPort("OutputLimiter","output")
+SpindleReporter.reportPort("SpindleOutputLimiter","output")
 SpindleReporter.reportPort("CalculatePosition","out")
 SpindleReporter.reportPort("SpindleReferenceGenerator","posout")
 SpindleReporter.reportPort("CalculateError","out")
@@ -162,7 +162,7 @@ CalculateError.start
 CalculateFFW.start
 CalculatePosition.start
 CalculateOutput.start
-OutputLimiter.start
+SpindleOutputLimiter.start
 PublishPosition.start
 SpindleSafety.start
 SpindleReporter.start
