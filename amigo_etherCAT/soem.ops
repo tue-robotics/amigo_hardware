@@ -1,0 +1,21 @@
+import("amigo_etherCAT")
+
+### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
+loadComponent("Soem","soem_master::SoemMasterComponent")
+Soem.configure
+Soem.setPeriod(0.001)
+
+#### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
+loadComponent("AnalogOuts","AnalogOuts")
+AnalogOuts.configure
+AnalogOuts.max_volt = array ( 2.6, 2.6, 2.6, 2.6, 1.1, 0.0, 0.0, 0.0 )
+connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
+
+#### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
+loadComponent("DigitalOuts","DigitalOuts")
+connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
+DigitalOuts.configure
+
+Soem.start
+AnalogOuts.start
+DigitalOuts.start
