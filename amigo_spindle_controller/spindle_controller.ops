@@ -1,4 +1,5 @@
 import("amigo_spindle_controller")
+spindle_ROStopics.start
 
 ### Loading Components ###
 #Reading Encoders
@@ -121,11 +122,11 @@ connect ("SpindleOutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
 connect ("ReadSpindleEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
 
 #Setting up the connections with ROS-topics
-stream("ReadSpindleSetpoint.spindle_setpoint",ROStopics.spindle_setpoint);
-stream("PublishPosition.out",ROStopics.spindle_position);
-stream("ReadSpindleSetpoint.afterhoming_pos",ROStopics.spindle_setpoint);
-stream("SpindleReferenceLimiter.right_tip",ROStopics.right_tip);
-stream("SpindleReferenceLimiter.left_tip",ROStopics.left_tip);
+stream("ReadSpindleSetpoint.spindle_setpoint",spindle_ROStopics.spindle_setpoint);
+stream("PublishPosition.out",spindle_ROStopics.spindle_position);
+stream("ReadSpindleSetpoint.afterhoming_pos",spindle_ROStopics.spindle_setpoint);
+stream("SpindleReferenceLimiter.right_tip",spindle_ROStopics.right_tip);
+stream("SpindleReferenceLimiter.left_tip",spindle_ROStopics.left_tip);
 
 
 ### Setting up reporting ###
