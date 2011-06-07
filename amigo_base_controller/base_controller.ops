@@ -74,7 +74,7 @@ BaseCalculateErrors.configure
 loadComponent("BaseControllerGains","MATH::Gains")
 connect ("BaseCalculateErrors.out","BaseControllerGains.in", ConnPolicy() )
 BaseControllerGains.vectorsize = 4;
-BaseControllerGains.gain = array (0.22, 0.22, 0.22, 0.22)
+BaseControllerGains.gain = array (0.5, 0.5, 0.5, 0.5)
 BaseControllerGains.configure
 
 ### LEADLAG ###
@@ -82,8 +82,8 @@ loadComponent("BaseLeadLag","FILTERS::LeadLags")
 connect ("BaseControllerGains.out","BaseLeadLag.in", ConnPolicy() )
 BaseLeadLag.vector_size = 4;
 BaseLeadLag.sampling_time = Ts
-BaseLeadLag.zero_frequency = array (0.25, 0.25, 0.25, 0.25)
-BaseLeadLag.pole_frequency = array (2.0, 2.0, 2.0, 2.0)
+BaseLeadLag.zero_frequency = array (5.0, 5.0, 5.0, 5.0)
+BaseLeadLag.pole_frequency = array (20.0, 20.0, 20.0, 20.0)
 BaseLeadLag.configure
 
 ### LOWPASS ###
@@ -91,7 +91,7 @@ loadComponent("BaseSecondOrderLowPass","FILTERS::SecondOrderLowPasses")
 connect ("BaseLeadLag.out","BaseSecondOrderLowPass.in", ConnPolicy() )
 BaseSecondOrderLowPass.vector_size = 4;
 BaseSecondOrderLowPass.sampling_time = Ts
-BaseSecondOrderLowPass.pole_frequency = array (100.0, 100.0, 100.0, 100.0)
+BaseSecondOrderLowPass.pole_frequency = array (250.0, 250.0, 250.0, 250.0)
 BaseSecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7, 0.7)
 BaseSecondOrderLowPass.configure
 
@@ -130,14 +130,14 @@ connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.amplifiers", ConnPolicy() )
 connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.tuelights", ConnPolicy() ); # lights
 BaseSafety.configure
 
-
 #### LOAD COMPONENT FOR RESET ###
 loadComponent("BaseReset","AMIGO::BaseReset")
 connect ("BaseReset.integratorreset", "BaseVel2Pos.reset", ConnPolicy() )
-connect ("BaseDecoupleReference.out", "BaseReset.pos", ConnPolicy() )
+connect ("BaseDecouplePosition.out", "BaseReset.pos", ConnPolicy() )
 connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
 connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
 stream("BaseReset.rosreset",base_ROStopics.reset);
+stream("BaseReset.rosemergency",base_ROStopics.emergency_switch);
 BaseReset.configure
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
