@@ -15,7 +15,7 @@ SpindleHoming.max_acc = 0.02
 SpindleHoming.configure
 
 #Calculating Feed Forward
-loadComponent("SpindleCalculateFFW","SpindleCalculateFFW")
+loadComponent("SpindleCalculateFFW","CalculateFFW")
 SpindleCalculateFFW.FFWgrav = 0.07
 SpindleCalculateFFW.FFWstat = 0.05
 SpindleCalculateFFW.FFWdyn = 0.4
@@ -32,7 +32,7 @@ loadComponent("SpindleOutputLimiter","OutputLimiter")
 SpindleOutputLimiter.configure
 
 #Publishing the spindle position to ROS
-loadComponent("SpindlePublishPosition","SpindlePublishPosition")
+loadComponent("SpindlePublishPosition","PublishPosition")
 SpindlePublishPosition.configure
 
 #Calculating Spindle Position
@@ -72,7 +72,7 @@ loadComponent("SpindleSafety","SpindleSafety")
 SpindleSafety.configure
 
 #Reading spindle setpoints 
-loadComponent("SpindleReadSetpoint","MSG::SpindleReadSetpoint")
+loadComponent("SpindleReadSetpoint","MSG::ReadSpindleSetpoint")
 SpindleReadSetpoint.setPeriod(0.004)
 SpindleReadSetpoint.homed_pos = 0.35
 SpindleReadSetpoint.configure
