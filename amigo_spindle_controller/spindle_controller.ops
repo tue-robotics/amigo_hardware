@@ -1,7 +1,4 @@
 import("amigo_spindle_controller")
-trigger
-spindle_ROStopics.start
-trigger
 
 ### Loading Components ###
 #Reading Encoders

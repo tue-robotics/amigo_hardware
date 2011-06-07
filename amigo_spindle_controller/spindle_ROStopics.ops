@@ -20,3 +20,5 @@ left_tip.size = 1;
 left_tip.transport = 3;
 left_tip.name_id = "/arm_left/measured_tip_position";
 }
+spindle_ROStopics.start
+trigger
