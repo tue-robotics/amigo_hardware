@@ -44,7 +44,7 @@ BaseReadReferenceVelocities.max_start_vel = 0.1
 BaseReadReferenceVelocities.max_acc = array (0.7, 0.7, 2.0)
 BaseReadReferenceVelocities.max_interval = 1.0
 #Setting up ROS-topics
-stream("BaseReadReferenceVelocities.cmd_vel",ROStopics.cmd_vel);
+stream("BaseReadReferenceVelocities.cmd_vel",base_ROStopics.cmd_vel);
 BaseReadReferenceVelocities.setPeriod(0.01)
 BaseReadReferenceVelocities.configure
     
@@ -140,13 +140,13 @@ connect ("BaseReset.integratorreset", "BaseVel2Pos.reset", ConnPolicy() )
 connect ("BaseDecoupleReference.out", "BaseReset.pos", ConnPolicy() )
 connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
 connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
-stream("BaseReset.ros",ROStopics.reset);
+stream("BaseReset.ros",base_ROStopics.reset);
 BaseReset.configure
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
 loadComponent("Odometry","AMIGO::PublishOdometry")
 connect ("BaseDecouplePosition.out", "Odometry.pos", ConnPolicy() )
-stream("Odometry.odom",ROStopics.odom);
+stream("Odometry.odom",base_ROStopics.odom);
 Odometry.configure
 Odometry.setPeriod(0.05)
 
