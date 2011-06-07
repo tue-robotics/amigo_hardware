@@ -14,3 +14,4 @@ reset.size = 1;
 reset.transport = 3;
 reset.name_id = "reset_base";
 }
+base_ROStopics.start

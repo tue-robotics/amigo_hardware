@@ -1,5 +1,4 @@
 import("amigo_base_controller")
-base_ROStopics.start
 
 var double Ts = 0.001
 
