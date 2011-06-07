@@ -34,7 +34,8 @@ namespace AMIGO
 
     /* Declaring and output port*/
     InputPort<bool> safeport;
-    InputPort<std_msgs::Bool> rosport;
+    InputPort<std_msgs::Bool> rosresetport;
+    InputPort<std_msgs::Bool> rosemergencyport;
     OutputPort<bool> resetport;
 
     InputPort<doubles> posport;
