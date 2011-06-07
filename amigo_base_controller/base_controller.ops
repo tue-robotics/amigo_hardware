@@ -137,7 +137,7 @@ connect ("BaseDecouplePosition.out", "BaseReset.pos", ConnPolicy() )
 connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
 connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
 stream("BaseReset.rosreset",base_ROStopics.reset);
-stream("BaseReset.rosemergency",base_ROStopics.emergency_switch);
+#stream("BaseReset.rosemergency",base_ROStopics.emergency_switch);
 BaseReset.configure
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
