@@ -10,3 +10,4 @@ var ConnPolicy spindle_position;
 spindle_position.size = 1;
 spindle_position.transport = 3;
 spindle_position.name_id = "/spindle_position";
+}
