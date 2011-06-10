@@ -1,0 +1,41 @@
+program communication_right {
+var ConnPolicy joint_coordinates_right;
+joint_coordinates_right.size = 1;
+joint_coordinates_right.transport = 3;
+joint_coordinates_right.name_id = "arm_right_controller/joint_coordinates";
+
+var ConnPolicy set_gripper_right;
+set_gripper_right.size = 1;
+set_gripper_right.transport = 3;
+set_gripper_right.name_id = "arm_right_controller/set_gripper";
+
+var ConnPolicy arm_angles_right;
+arm_angles_right.size = 1;
+arm_angles_right.transport = 3;
+arm_angles_right.name_id = "arm_position_right";
+
+var ConnPolicy emergency_switch;
+emergency_switch.size = 1;
+emergency_switch.transport = 3;
+emergency_switch.name_id = "emergency_switch";
+
+var ConnPolicy joint_torques_right;
+joint_torques_right.size = 1;
+joint_torques_right.transport = 3;
+joint_torques_right.name_id = "joint_torques_right";
+
+var ConnPolicy gripper_status_right;
+gripper_status_right.size = 1;
+gripper_status_right.transport = 3;
+gripper_status_right.name_id = "gripper_status_right";
+
+var ConnPolicy jointDataRight;
+jointDataRight.size = 1;
+jointDataRight.transport = 3;
+jointDataRight.name_id = "jointDataRight";
+
+var ConnPolicy armDataRight;
+armDataRight.size = 1;
+armDataRight.transport = 3;
+armDataRight.name_id = "armDataRight";
+}

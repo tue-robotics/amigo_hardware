@@ -1,0 +1,4 @@
+<launch>
+  <node name="stop_arm_controller" pkg="ocl" type="deployer-gnulinux" args="-s $(find philips_arm_controller_dev)/stopPERA.ops -ldebug --" output="screen"></node>
+  <!--launch-prefix="konsole -e"-->
+</launch>
