@@ -13,7 +13,7 @@
   <depend package="ocl"/>
   <depend package="eigen"/>
   <depend package="orocos_components"/>
-  <depend package="PERA_USB_IO_dev"/>
+  <depend package="PERA_USB_IO"/>
   <depend package="rtt_ros_integration_std_msgs"/>\
   <depend package="rtt_ros_integration_amigo_msgs"/>\
 
