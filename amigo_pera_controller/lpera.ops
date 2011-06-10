@@ -1,4 +1,4 @@
-import("philips_arm_controller_dev")
+import("amigo_pera_controller")
 trigger
 
 ### Read reference joint angles ###
