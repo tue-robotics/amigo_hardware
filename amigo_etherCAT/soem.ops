@@ -1,4 +1,5 @@
 import("amigo_etherCAT")
+trigger
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 loadComponent("Soem","soem_master::SoemMasterComponent")
@@ -16,6 +17,14 @@ loadComponent("DigitalOuts","DigitalOuts")
 connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
 
+#### LOAD COMPONENT TO ENABLE DIGITAL INS ###
+loadComponent("DigitalIns1","DigitalIns")
+DigitalIns1.setPeriod(0.1)
+connect ("Soem.Slave_1009.bits", "DigitalIns1.in", ConnPolicy() )
+stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
+DigitalIns1.configure
+
 Soem.start
 AnalogOuts.start
 DigitalOuts.start
+DigitalIns1.start
