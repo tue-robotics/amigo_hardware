@@ -1,4 +1,0 @@
-<launch>
-  <node name="jtf_arm_controller" pkg="ocl" type="deployer-gnulinux" args="-s $(find philips_arm_controller_dev)/jtf_deploy_right.ops -linfo --" output="screen"></node>
-  <!--launch-prefix="konsole -e"-->
-</launch>
