@@ -88,6 +88,8 @@ namespace PERA
 		double jntNr;
 		//! Variable for storing the previous measured jointangle during homing
 		double prevAngle;
+		//! The startingjoint for the homing procedure
+		double strtJnt;	
 		//! The stepsize if moving towards mechanical endstop
 		double stepSize;	
 		//! The margin used to determine if the mechanical endstop is reached

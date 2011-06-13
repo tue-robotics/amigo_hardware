@@ -19,8 +19,8 @@ LPERA_ReferenceInterpolator.interpolator2 = array (0.0, 0.43, 0.2)
 LPERA_ReferenceInterpolator.interpolator3 = array (0.0, 0.6, 0.25)
 LPERA_ReferenceInterpolator.interpolator4 = array (0.0, 0.5, 0.2)
 LPERA_ReferenceInterpolator.interpolator5 = array (0.0, 0.35, 0.15)
-LPERA_ReferenceInterpolator.interpolator6 = array (0.0, 3.1416, 0.5)
-LPERA_ReferenceInterpolator.interpolator7 = array (0.0, 3.1416, 0.5)
+LPERA_ReferenceInterpolator.interpolator6 = array (0.0, 0.6, 0.35)
+LPERA_ReferenceInterpolator.interpolator7 = array (0.0, 0.6, 0.35)
 LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 0.4, 0.1)
 
 ### PERA watchdog ###
@@ -28,15 +28,16 @@ loadComponent("LPERA_Watchdog","PERA::WATCHDOG")
 LPERA_Watchdog.setPeriod(0.004)
 LPERA_Watchdog.jointLowerBounds = array ( -1.570796327, -1.570796327, -1.570796327, 0.0, -1.832595715, -0.954837674, -0.785398164 )
 LPERA_Watchdog.jointUpperBounds = array ( 0.0, 1.570796327, 1.570796327, 1.989675348, 1.832595715, 0.954837674, 0.785398164 )
-LPERA_Watchdog.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.4363, 0.4363, 0.6109)
+LPERA_Watchdog.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 1.25, 1.25, 0.6109)
 # Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
 LPERA_Watchdog.resetAngles = array ( -0.3, -1.570796325, 0.0, 0.5, 0.0, -1.570796325, 0.0, 0.0 )
 LPERA_Watchdog.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-LPERA_Watchdog.homedPos = array (480.0, 635.0, 1.5708, 0.0, 1.8326, 0.9948, 0.7854)
+LPERA_Watchdog.homedPos = array (480.0, 635.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
 LPERA_Watchdog.stepSize = 0.001570796
 LPERA_Watchdog.absSenDir = array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Watchdog.enableOutput = true
 LPERA_Watchdog.requireHoming = true
+LPERA_Watchdog.startJoint = 5
 LPERA_Watchdog.configure
 
 ### PERA USB IO ###
@@ -173,7 +174,7 @@ addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
 LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
 addPeer("LPERA_Reporter","LPERA_Watchdog")
 LPERA_Reporter.reportPort("LPERA_Watchdog","enablePort")
-LPERA_Reporter.ReportFile = "/home/amigo/reports_bas.dat"
+LPERA_Reporter.ReportFile = "/home/amigo/pinksterren_8.dat"
 LPERA_Reporter.configure
 
 ### Get the real-time velocity and acceleration ###

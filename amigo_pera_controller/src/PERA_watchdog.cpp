@@ -44,6 +44,7 @@ WATCHDOG::WATCHDOG(const string& name) :
 	addProperty( "absSenDir", absSenDir ).doc("");
 	addProperty( "stepSize", stepSize ).doc("");
 	addProperty( "requireHoming", requireHoming ).doc("");
+	addProperty( "startJoint", strtJnt ).doc("");
 	
 }
 
@@ -74,7 +75,7 @@ bool WATCHDOG::configureHook()
 	}
 	
 	// Set the initial jnt for homingprocedure
-	jntNr=5;
+	jntNr=strtJnt;
 	
 	/* Pressed is true by default to ensure that the SOEM is running
 	 * upon enabling PERA_USB_IO. Otherwise PERA_USB_IO could be enabled
@@ -171,7 +172,7 @@ void WATCHDOG::updateHook()
 			for(unsigned int i = 0;i<8;i++){
 
 				// If the error is too large and corresponding joint is NOT being homed -> stop PERA IO
-				if( (fabs(jointErrors[i])>maxErrors[i]) && (jntNr!=i+1) && homed ){
+				if( (fabs(jointErrors[i])>maxErrors[i]) && (jntNr!=i+1) ){
 					
 					enable = false;
 					
