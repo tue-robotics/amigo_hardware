@@ -19,8 +19,8 @@ LPERA_ReferenceInterpolator.interpolator2 = array (0.0, 0.43, 0.2)
 LPERA_ReferenceInterpolator.interpolator3 = array (0.0, 0.6, 0.25)
 LPERA_ReferenceInterpolator.interpolator4 = array (0.0, 0.5, 0.2)
 LPERA_ReferenceInterpolator.interpolator5 = array (0.0, 0.35, 0.15)
-LPERA_ReferenceInterpolator.interpolator6 = array (0.0, 0.6, 0.35)
-LPERA_ReferenceInterpolator.interpolator7 = array (0.0, 0.6, 0.35)
+LPERA_ReferenceInterpolator.interpolator6 = array (0.0, 0.3, 0.15)
+LPERA_ReferenceInterpolator.interpolator7 = array (0.0, 0.3, 0.15)
 LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 0.4, 0.1)
 
 ### PERA watchdog ###
