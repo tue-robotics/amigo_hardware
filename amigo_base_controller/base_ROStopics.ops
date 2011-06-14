@@ -1,4 +1,3 @@
-setPeriod(99999) #Removes period warning
 program base_ROStopics {
 var ConnPolicy cmd_vel;
 cmd_vel.size = 1;
