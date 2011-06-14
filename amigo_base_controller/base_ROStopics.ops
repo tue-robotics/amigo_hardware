@@ -16,3 +16,4 @@ reset.name_id = "reset_base";
 }
 base_ROStopics.start
 trigger
+scripting.ZeroPeriodWarning=false
