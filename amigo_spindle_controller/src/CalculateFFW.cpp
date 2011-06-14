@@ -45,17 +45,15 @@ bool CalculateFFW::configureHook()
 
 bool CalculateFFW::startHook()
 {
-  Logger::In in("CalculateFFW::startHook()");
-
   // Check validity of Ports:
   if ( !refvel_inport.connected() || !accref_inport.connected() )
   {
-    log(Error)<<"One or more inputports not connected!"<<endlog();
+    log(Error)<<"CalculateFFW::One or more inputports not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
   if ( !FFW_outport.connected() ) {
-    log(Warning)<<"Outputport not connected!"<<endlog();
+    log(Warning)<<"CalculateFFW::Outputport not connected!"<<endlog();
   }
   return true;
 }

@@ -26,17 +26,15 @@ bool PublishPosition::configureHook()
 
 bool PublishPosition::startHook()
 {
-  Logger::In in("PublishPosition::startHook()");
-
   // Check validity of Ports:
   if ( !spindle_pos_inport.connected() )
   {
-    log(Error)<<"One or more inputports not connected!"<<endlog();
+    log(Error)<<"PublishPosition::One or more inputports not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
   if ( !spindle_pos_outport.connected() ) {
-    log(Warning)<<"Outputport not connected!"<<endlog();
+    log(Warning)<<"PublishPosition::Outputport not connected!"<<endlog();
   }
   return true;
 }

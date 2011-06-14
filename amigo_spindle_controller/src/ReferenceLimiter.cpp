@@ -38,25 +38,21 @@ bool ReferenceLimiter::configureHook()
 
 bool ReferenceLimiter::startHook()
 {
-  Logger::In in("ReferenceLimiter::startHook()");
-  
   // Check validity of Ports:
   if ( !right_tip_inport.connected() || !left_tip_inport.connected() || !spindle_position_inport.connected() || !refpos_inport.connected() ) {
-    log(Error)<<"One or more inputports not connected!"<<endlog();
+    log(Error)<<"ReferenceLimiter::One or more inputports not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
   
   if ( !refpos_outport.connected() ) {
-    log(Warning)<<"Outputport not connected!"<<endlog();
+    log(Warning)<<"ReferenceLimiter::Outputport not connected!"<<endlog();
   }
   return true;
 }
 
 void ReferenceLimiter::updateHook()
 {
-  Logger::In in("ReferenceLimiter::updateHook()");
-  
   // Read the inputports
   refpos_inport.read(ref_pos);
   spindle_position_inport.read(current_position);

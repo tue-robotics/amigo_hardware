@@ -30,17 +30,15 @@ bool SpindleSafety::configureHook()
 
 bool SpindleSafety::startHook()
 { 
-  Logger::In in("SpindleSafety::startHook()");
-
   // Check validity of Ports:
   if ( !errorpos_inport.connected() )
   {
-    log(Error)<<"Inputport not connected!"<<endlog();
+    log(Error)<<"SpindleSafety::Inputport not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
   if ( !spindle_brake_outport.connected() || !safety_outport.connected() ) {
-    log(Warning)<<"One or more outputports not connected!"<<endlog();
+    log(Warning)<<"SpindleSafety::One or more outputports not connected!"<<endlog();
   }
   	 
   safety = true;
@@ -50,7 +48,6 @@ bool SpindleSafety::startHook()
 void SpindleSafety::updateHook()
 {
 	safety = true;
-	Logger::In in("SpindleSafety::updateHook()");
 	
 	// Measuring safety
 	errorpos_inport.read(error_pos);

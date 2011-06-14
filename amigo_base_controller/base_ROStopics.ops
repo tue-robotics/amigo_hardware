@@ -1,5 +1,4 @@
 program base_ROStopics {
-scripting.ZeroPeriodWarning=false
 var ConnPolicy cmd_vel;
 cmd_vel.size = 1;
 cmd_vel.transport = 3;

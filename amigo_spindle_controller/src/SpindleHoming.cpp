@@ -50,29 +50,26 @@ bool SpindleHoming::configureHook()
 
 bool SpindleHoming::startHook()
 { 
-  Logger::In in("SpindleHoming::startHook()");
-
   // Check validity of Ports:
   if ( !encoder_inport.connected() || !errorpos_inport.connected() || !refpos_inport.connected() )
   {
-    log(Error)<<"One or more inputports not connected!"<<endlog();
+    log(Error)<<"SpindleHoming:One or more inputports not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
   if ( !refpos_outport.connected() || !correction_outport.connected() || !reset_generator_outport.connected() ) {
-    log(Warning)<<"One or more outputports not connected!"<<endlog();
+    log(Warning)<<"SpindleHoming:One or more outputports not connected!"<<endlog();
   }
 
   homed = false;
   maxvel = maxvel_property.get();
   maxacc = maxacc_property.get();
-  log(Warning)<<"Spindle is not homed. Homing procedure started."<<endlog();  
+  log(Info)<<"Spindle is not homed. Homing procedure started."<<endlog();  
   return true;
 }
 
 void SpindleHoming::updateHook()
 {   	
-	Logger::In in("SpindleHoming::updateHook()");
 	errorpos_inport.read(error_pos);
 	double refpos_old = ref_pos[0];
 	refpos_inport.read(refpos);
@@ -81,7 +78,7 @@ void SpindleHoming::updateHook()
 	
 	if(abs(error_pos[0]) > HOMINGERROR && homed == false)
 	{
-		log(Warning)<<"Spindle is homed."<<endlog();
+		log(Info)<<"Spindle is homed."<<endlog();
 		homed = true;
 		encoder_inport.read(input);
 		correction[0] = STROKE + input[0];

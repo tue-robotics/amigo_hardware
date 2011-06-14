@@ -41,39 +41,36 @@ BaseSafety::~BaseSafety(){}
 
 bool BaseSafety::configureHook()
 {
-  Logger::In in("BaseSafety::configureHook()");
   if ( max_errors.size() < 3 ) //TODO: Compare with array size
   {
-    log(Error)<<"Maximum errors not specified!"<<endlog();
+    log(Error)<<"BaseSafety::Maximum errors not specified!"<<endlog();
     return false;
   }
   if ( max_velocities.size() != 3 )
   {
-    log(Error)<<"Maximum velocities not specified!"<<endlog();
+    log(Error)<<"BaseSafety::Maximum velocities not specified!"<<endlog();
     return false;
   }
   if ( max_voltage == 0 )
   {
-    log(Warning)<<"Maximum voltage is zero!"<<endlog();
+    log(Warning)<<"BaseSafety::Maximum voltage is zero!"<<endlog();
   }
   return true;
 }
 
 bool BaseSafety::startHook()
 {
-  Logger::In in("BaseSafety::startHook()");
-
   // Check validity of Ports
   if ( !refport.connected() || !errorport.connected() || !voltport.connected() )
   {
-    log(Error)<<"Input port not connected!"<<endlog();
+    log(Error)<<"BaseSafety::Input port not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
 
   if ( !amplifierport.connected() )
   {
-    log(Warning)<<"Output port not connected!"<<endlog();
+    log(Warning)<<"BaseSafety::Output port not connected!"<<endlog();
   }
 
   safe = true;
@@ -83,22 +80,20 @@ bool BaseSafety::startHook()
 
 void BaseSafety::updateHook()
 {
-  Logger::In in("BaseSafety::updateHook()");
-
   if (safe) //Safetychecks only usefull if safe is true
   {
 
     // Check validity of Ports
     if ( !refport.connected() || !errorport.connected() || !voltport.connected() )
     {
-      log(Error)<<"Input port not connected!"<<endlog();
+      log(Error)<<"BaseSafety::Input port not connected!"<<endlog();
       // No connection was made, can't do my job !
       safe = false;
     }
 
     if ( !amplifierport.connected() )
     {
-      log(Warning)<<"Output port not connected!"<<endlog();
+      log(Warning)<<"BaseSafety::Output port not connected!"<<endlog();
     }
 
     doubles refs(3);
@@ -107,7 +102,7 @@ void BaseSafety::updateHook()
       if ( refs[i] > max_velocities[i] )
       {
         safe = false;
-        log(Error)<<"Maximum reference velocity exeeded! Disabling hardware!"<<endlog();
+        log(Error)<<"BaseSafety::Maximum reference velocity exeeded! Disabling hardware!"<<endlog();
       }
 
     doubles errors(3);
@@ -116,7 +111,7 @@ void BaseSafety::updateHook()
       if ( errors[i] > max_errors[i] )
       {
         safe = false;
-        log(Error)<<"Maximum errors exeeded! Disabling hardware!"<<endlog();
+        log(Error)<<"BaseSafety::Maximum errors exeeded! Disabling hardware!"<<endlog();
       }
 
     doubles voltage(4);
@@ -126,8 +121,8 @@ void BaseSafety::updateHook()
       {
         safe = false;
 
-        log(Error)<<"Maximum voltage exeeded! Disabling hardware!"<<endlog();
-        log(Error)<<"Voltages: "<<voltage[0]<<"   "<<voltage[1]<<"   "<<voltage[2]<<"   "<<voltage[3]<<"   "<<voltage[4]<<"   "<<voltage[5]<<"   "<<voltage[6]<<"   "<<voltage[7]<<endlog();
+        log(Error)<<"BaseSafety::Maximum voltage exeeded! Disabling hardware!"<<endlog();
+        log(Error)<<"BaseSafety::Voltages: "<<voltage[0]<<"   "<<voltage[1]<<"   "<<voltage[2]<<"   "<<voltage[3]<<"   "<<voltage[4]<<"   "<<voltage[5]<<"   "<<voltage[6]<<"   "<<voltage[7]<<endlog();
       }
   }
   else if ( resetport.read( reset ) == NewData )

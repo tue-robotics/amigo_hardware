@@ -30,17 +30,15 @@ bool OutputLimiter::configureHook()
 
 bool OutputLimiter::startHook()
 {
-  Logger::In in("OutputLimiter::startHook()");
-
   // Check validity of Ports:
   if ( !inport.connected() || !safety_inport.connected() )
   {
-    log(Error)<<"One or more inputports not connected!"<<endlog();
+    log(Error)<<"OutputLimiter::One or more inputports not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
   if ( !outport.connected() ) {
-    log(Warning)<<"Outputport not connected!"<<endlog();
+    log(Warning)<<"OutputLimiter::Outputport not connected!"<<endlog();
   }
   return true;
 }

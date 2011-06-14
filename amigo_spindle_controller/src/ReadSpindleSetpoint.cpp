@@ -29,17 +29,15 @@ bool ReadSpindleSetpoint::configureHook()
 
 bool ReadSpindleSetpoint::startHook()
 {
-  Logger::In in("ReadSpindleSetpoint::startHook()");
-  
   // Check validity of Ports:
   if ( !spindle_setpoint_inport.connected() ) {
-    log(Error)<<"inputport not connected!"<<endlog();
+    log(Error)<<"ReadSpindleSetpoint::inputport not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
   }
   
   if ( !refpos_outport.connected() ) {
-    log(Warning)<<"Outputport not connected!"<<endlog();
+    log(Warning)<<"ReadSpindleSetpoint::Outputport not connected!"<<endlog();
   }
 
   // During the startup the position which is desired after homing, 
@@ -52,8 +50,6 @@ bool ReadSpindleSetpoint::startHook()
 
 void ReadSpindleSetpoint::updateHook()
 {
-  Logger::In in("ReadSpindleSetpoint::updateHook()");
-  
   // Read the inputports
   spindle_setpoint_inport.read(spindle_setpoint);
   ref_pos = spindle_setpoint.pos;
