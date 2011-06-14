@@ -96,18 +96,18 @@ BaseSecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7, 0.7)
 BaseSecondOrderLowPass.configure
 
 ### FEEDFORWARD ###
-loadComponent("BaseFeedForward","MATH::Gains")
-connect ("BaseReadReferenceVelocities.out","BaseFeedForward.in", ConnPolicy() )
-BaseFeedForward.vectorsize = 3;
-BaseFeedForward.gain = array (0.0, 0.0, 0.0, 0.0)
-BaseFeedForward.configure
+#loadComponent("BaseFeedForward","MATH::Gains")
+#connect ("BaseReadReferenceVelocities.out","BaseFeedForward.in", ConnPolicy() )
+#BaseFeedForward.vectorsize = 3;
+#BaseFeedForward.gain = array (0.0, 0.0, 0.0, 0.0)
+#BaseFeedForward.configure
 
 ### ADDITION ###
-loadComponent("BaseSum","MATH::Addition")
-connect ("BaseFeedForward.out","BaseSum.in1", ConnPolicy() )
-connect ("BaseSecondOrderLowPass.out","BaseSum.in2_event", ConnPolicy() )
-BaseSum.vectorsize = 3;
-BaseSum.configure
+#loadComponent("BaseSum","MATH::Addition")
+#connect ("BaseFeedForward.out","BaseSum.in1", ConnPolicy() )
+#connect ("BaseSecondOrderLowPass.out","BaseSum.in2_event", ConnPolicy() )
+#BaseSum.vectorsize = 3;
+#BaseSum.configure
 
 ### SI2VOLT ###
 loadComponent("BaseSI2Volt","MATH::Gains")
