@@ -1,5 +1,9 @@
 import("amigo_pera_controller")
 trigger
+runScript ("com_left.ops")
+trigger
+com_left.start
+trigger
 
 ### Read reference joint angles ###
 loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
@@ -36,7 +40,7 @@ LPERA_Watchdog.homedPos = array (480.0, 635.0, 1.5708, 0.0, 1.8326, 0.7857, 0.78
 LPERA_Watchdog.stepSize = 0.001570796
 LPERA_Watchdog.absSenDir = array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Watchdog.enableOutput = true
-LPERA_Watchdog.requireHoming = true
+LPERA_Watchdog.requireHoming = false
 LPERA_Watchdog.startJoint = 5
 LPERA_Watchdog.configure
 
@@ -177,13 +181,13 @@ LPERA_Reporter.reportPort("LPERA_Watchdog","enablePort")
 LPERA_Reporter.ReportFile = "/home/amigo/pinksterren_8.dat"
 LPERA_Reporter.configure
 
-### Get the real-time velocity and acceleration ###
-loadComponent("LPERA_PlotData","AMIGO::PlotData")
-LPERA_PlotData.selectJoint = 4
-LPERA_PlotData.selectMotor1 = 2
-LPERA_PlotData.selectMotor2 = 3
-LPERA_PlotData.setPeriod(0.02)
-LPERA_PlotData.configure
+#### Get the real-time velocity and acceleration ###
+#loadComponent("LPERA_PlotData","AMIGO::PlotData")
+#LPERA_PlotData.selectJoint = 4
+#LPERA_PlotData.selectMotor1 = 2
+#LPERA_PlotData.selectMotor2 = 3
+#LPERA_PlotData.setPeriod(0.02)
+#LPERA_PlotData.configure
 
 ### Ports and streams for control and watchdog ###
 connect ("LPERA_ReadReferenceAngles.pos","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
@@ -212,10 +216,10 @@ connect ("LPERA_Watchdog.homJntAnglesPort","LPERA_ReferenceInterpolator.posin", 
 connect ("LPERA_Watchdog.enableReadRefPort","LPERA_ReadReferenceAngles.enablePort", ConnPolicy() )
 connect ("LPERA_Watchdog.reNullPort","LPERA_IO.reNullPort", ConnPolicy() )
 
-stream("LPERA_Watchdog.eButtonPort",hardware_ROStopics.emergency_switch)
-stream("LPERA_Watchdog.resetRefPort",armleft_ROStopics.joint_coordinates_left)
-stream("LPERA_WriteCurrentJointAngles.joint_coordinates",armleft_ROStopics.arm_angles_left)
-stream("LPERA_ReadReferenceAngles.joint_coordinates",armleft_ROStopics.joint_coordinates_left)
+stream("LPERA_Watchdog.eButtonPort",com_left.emergency_switch)
+stream("LPERA_Watchdog.resetRefPort",com_left.joint_coordinates_left)
+stream("LPERA_WriteCurrentJointAngles.joint_coordinates",com_left.arm_angles_left)
+stream("LPERA_ReadReferenceAngles.joint_coordinates",com_left.joint_coordinates_left)
 
 ### Ports and streams for gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
@@ -223,9 +227,9 @@ connect ("LPERA_GripperControl.gripper_ref","LPERA_ReadReferenceAngles.gripper_p
 connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_WriteArmTorquesMsg.in", ConnPolicy() )
 
-stream("LPERA_WriteArmTorquesMsg.out",armleft_ROStopics.joint_torques_left)
-stream("LPERA_GripperControl.gripper_close",armleft_ROStopics.set_gripper_left)
-stream("LPERA_GripperControl.gripper_status",armleft_ROStopics.gripper_status_left)
+stream("LPERA_WriteArmTorquesMsg.out",com_left.joint_torques_left)
+stream("LPERA_GripperControl.gripper_close",com_left.set_gripper_left)
+stream("LPERA_GripperControl.gripper_status",com_left.gripper_status_left)
 
 ### Ports and stream for online data viewing using rxplot ###
 connect ("LPERA_ReferenceInterpolator.posout",	"LPERA_PlotData.port1",					ConnPolicy() )
@@ -237,7 +241,7 @@ connect ("LPERA_OutputLimiter.out",		 	"LPERA_PlotData.port8",					ConnPolicy() 
 
 # Copy this statement into a terminal for online data viewing
 #rxplot /jointDataLeft/data[0],/jointDataLeft/data[1] /jointDataLeft/data[4] /jointDataLeft/data[8],/jointDataLeft/data[9] /jointDataLeft/data[6],/jointDataLeft/data[7]
-stream  ("LPERA_PlotData.dataPort", armleft_ROStopics.jointDataLeft)
+stream  ("LPERA_PlotData.dataPort", com_left.jointDataLeft)
 
 LPERA_Watchdog.start
 LPERA_ReadReferenceAngles.start
@@ -258,5 +262,5 @@ LPERA_WriteArmTorquesMsg.start
 LPERA_SensorTorques.start
 LPERA_GripperControl.start
 LPERA_Reporter.start
-LPERA_PlotData.start
+#LPERA_PlotData.start
 

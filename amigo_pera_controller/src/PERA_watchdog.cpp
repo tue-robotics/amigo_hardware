@@ -62,6 +62,9 @@ bool WATCHDOG::configureHook()
 	cntr2=0;
 	errors=false;
 	resetReference=false;
+	
+	enable=enableProperty;
+	
 	enablePort.write(enable);
 	goodToGo = true;
 	prevJntNr = 4;
@@ -119,7 +122,6 @@ bool WATCHDOG::startHook()
 void WATCHDOG::updateHook()
 {
 	if(enableProperty){
-	
 		// Read emergency-button state
 		eButtonPort.read(eButtonPressed);
 			
@@ -229,7 +231,6 @@ void WATCHDOG::updateHook()
 			
 		}
 		else if(pressed){
-			
 			doubles resetdata(32,0.0);
 			doubles measRelJntAngles(8,0.0);
 			amigo_msgs::arm_joints jointResetData;
