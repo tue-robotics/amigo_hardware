@@ -33,6 +33,8 @@ ReferenceLimiter::~ReferenceLimiter(){}
 
 bool ReferenceLimiter::configureHook()
 {
+  onceleft = false;
+  onceright = false;
   return true;
 }
 
@@ -82,19 +84,25 @@ void ReferenceLimiter::updateHook()
 	{	
 		// Publishing a message after 1500 cycles, which is 6 seconds at 250 Hz
 		publish_countera += 1.0;
-		if( publish_countera == 1500.0 )
+		if( publish_countera == 1500.0)
 		{
-		log(Warning)<<"No information about right arm received. Use spindle with caution, no arm safety!!"<<endlog();
-		publish_countera = 0.0;
+			if(!onceright){
+				log(Warning)<<"No information about right arm received. Use spindle with caution, no arm safety!!"<<endlog();
+				onceright = true;
+			}
+			publish_countera = 0.0;
 		}
 	}
 	if( NewData != left_tip_inport.read( left_tip ) )
 	{
 		// Publishing a message after 1500 cycles, which is 6 seconds at 250 Hz		
 		publish_counterb += 1.0;
-		if( publish_counterb == 1500.0 )
+		if( publish_counterb == 1500.0)
 		{
-		log(Warning)<<"No information about left arm received. Use spindle with caution, no arm safety!!"<<endlog();
+			if(!onceleft){
+				log(Warning)<<"No information about left arm received. Use spindle with caution, no arm safety!!"<<endlog();
+				onceleft = true;
+			}
 		publish_counterb = 0.0;
 		}
 	}

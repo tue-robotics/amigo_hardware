@@ -25,6 +25,7 @@ SpindleSafety::~SpindleSafety(){}
 
 bool SpindleSafety::configureHook()
 {
+  once = false;
   return true;
 }
 
@@ -57,10 +58,13 @@ void SpindleSafety::updateHook()
 		
 		// Publishing a message after 500 cycles, which is 2 seconds at 250 Hz
 		publish_counter += 1.0;
-		if( publish_counter == 500.0 )
+		if( publish_counter == 500.0)
 		{
-		log(Warning)<<"Error too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
-		publish_counter = 0.0;
+			if(!once){
+				log(Warning)<<"Error too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
+				once = true;
+			}
+			publish_counter = 0.0;
 		}
 	}
 	

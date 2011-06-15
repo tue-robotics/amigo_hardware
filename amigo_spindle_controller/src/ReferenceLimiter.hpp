@@ -31,6 +31,8 @@ namespace AMIGO // Just because it looks nice
     amigo_msgs::tip_ref left_tip;
     
 	// Declaring variables
+	bool onceleft;
+	bool onceright;
 	double ref_pos;
 	doubles current_position;
 	double publish_countera;
