@@ -13,6 +13,11 @@ var ConnPolicy reset;
 reset.size = 1;
 reset.transport = 3;
 reset.name_id = "reset_base";
+
+var ConnPolicy emergency_switch;
+emergency_switch.size = 1;
+emergency_switch.transport = 3;
+emergency_switch.name_id = "emergency_switch";
 }
 base_ROStopics.start
 trigger
