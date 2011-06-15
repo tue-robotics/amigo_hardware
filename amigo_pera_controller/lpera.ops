@@ -181,13 +181,13 @@ LPERA_Reporter.reportPort("LPERA_Watchdog","enablePort")
 LPERA_Reporter.ReportFile = "/home/amigo/pinksterren_8.dat"
 LPERA_Reporter.configure
 
-#### Get the real-time velocity and acceleration ###
-#loadComponent("LPERA_PlotData","AMIGO::PlotData")
-#LPERA_PlotData.selectJoint = 4
-#LPERA_PlotData.selectMotor1 = 2
-#LPERA_PlotData.selectMotor2 = 3
-#LPERA_PlotData.setPeriod(0.02)
-#LPERA_PlotData.configure
+### Get the real-time velocity and acceleration ###
+loadComponent("LPERA_PlotData","AMIGO::PlotData")
+LPERA_PlotData.selectJoint = 5
+LPERA_PlotData.selectMotor1 = 4
+LPERA_PlotData.selectMotor2 = 5
+LPERA_PlotData.setPeriod(0.02)
+LPERA_PlotData.configure
 
 ### Ports and streams for control and watchdog ###
 connect ("LPERA_ReadReferenceAngles.pos","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
@@ -262,5 +262,5 @@ LPERA_WriteArmTorquesMsg.start
 LPERA_SensorTorques.start
 LPERA_GripperControl.start
 LPERA_Reporter.start
-#LPERA_PlotData.start
+LPERA_PlotData.start
 
