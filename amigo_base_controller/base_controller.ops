@@ -150,10 +150,10 @@ Odometry.setPeriod(0.05)
 #Setting up reporting
 loadComponent("BaseReporter", "OCL::FileReporting")
 BaseReporter.ReportFile = "/home/amigo/basereports.dat"
-#addPeer("BaseReporter","BaseReadReferenceVelocities")
-#BaseReporter.reportPort("BaseReadReferenceVelocities","out")
-#addPeer("BaseReporter","BaseVel2Pos")
-#BaseReporter.reportPort("BaseVel2Pos","out")
+addPeer("BaseReporter","BaseReadReferenceVelocities")
+BaseReporter.reportPort("BaseReadReferenceVelocities","out")
+addPeer("BaseReporter","BaseVel2Pos")
+BaseReporter.reportPort("BaseVel2Pos","out")
 #addPeer("BaseReporter","ReadWheelEncoders")
 #BaseReporter.reportPort("ReadWheelEncoders","out")
 #addPeer("BaseReporter","WheelVel")
@@ -164,10 +164,10 @@ addPeer("BaseReporter","BaseCalculateErrors")
 BaseReporter.reportPort("BaseCalculateErrors","out")
 addPeer("BaseReporter","BaseSecondOrderLowPass")
 BaseReporter.reportPort("BaseSecondOrderLowPass","out")
-#addPeer("BaseReporter","BaseSI2Volt")
-#BaseReporter.reportPort("BaseSI2Volt","out")
+addPeer("BaseReporter","BaseSI2Volt")
+BaseReporter.reportPort("BaseSI2Volt","out")
 #BaseReporter.NullSample = "-1"
-#BaseReporter.setPeriod(Ts)
+BaseReporter.setPeriod(Ts)
 
 
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
@@ -187,3 +187,4 @@ BaseSafety.start
 BaseDecouplePosition.start
 Odometry.start
 
+BaseReporter.start
