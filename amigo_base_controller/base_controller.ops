@@ -169,6 +169,9 @@ BaseReporter.reportPort("BaseSecondOrderLowPass","out")
 #BaseReporter.NullSample = "-1"
 #BaseReporter.setPeriod(Ts)
 
+
+#Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
+BaseReset.start
 ReadWheelEncoders.start
 BaseReadReferenceVelocities.start
 BaseVel2Pos.start
@@ -181,7 +184,6 @@ BaseSecondOrderLowPass.start
 #BaseSum.start
 BaseSI2Volt.start
 BaseSafety.start
-BaseReset.start
 BaseDecouplePosition.start
 Odometry.start
 
