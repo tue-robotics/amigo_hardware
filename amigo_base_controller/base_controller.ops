@@ -150,6 +150,8 @@ Odometry.setPeriod(0.05)
 #Setting up reporting
 loadComponent("BaseReporter", "OCL::FileReporting")
 BaseReporter.ReportFile = "/home/amigo/basereports.dat"
+addPeer("BaseReporter","BaseReset.integratorreset")
+BaseReporter.reportPort("BaseReset","out")
 addPeer("BaseReporter","BaseReadReferenceVelocities")
 BaseReporter.reportPort("BaseReadReferenceVelocities","out")
 addPeer("BaseReporter","BaseVel2Pos")
@@ -166,7 +168,7 @@ addPeer("BaseReporter","BaseSecondOrderLowPass")
 BaseReporter.reportPort("BaseSecondOrderLowPass","out")
 addPeer("BaseReporter","BaseSI2Volt")
 BaseReporter.reportPort("BaseSI2Volt","out")
-#BaseReporter.NullSample = "-1"
+BaseReporter.NullSample = "-1"
 BaseReporter.setPeriod(Ts)
 
 
