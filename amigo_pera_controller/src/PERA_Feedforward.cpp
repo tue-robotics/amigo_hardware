@@ -31,8 +31,8 @@ using namespace PERA;
 			
 			// Loading properties
 			/// Coulomb friction feedforward
-			addProperty( "kfcFeedForward", kfcValues );
-			addProperty( "ffdirections", ffdir );
+			addProperty( "kfcFeedForward", KFC_VALUES );
+			addProperty( "ffdirections", FF_DIR );
 
 	  }
 
@@ -66,10 +66,10 @@ using namespace PERA;
 		for ( uint i = 0; i < 8; i++ ){
 			
 			if (velocities[i] > 0.0){
-				cmdEffort[i]=ffdir[i]*kfcValues[i];
+				cmdEffort[i]=FF_DIR[i]*KFC_VALUES[i];
 			}
 			else if (velocities[i] < 0.0){
-				cmdEffort[i]=-ffdir[i]*kfcValues[i];
+				cmdEffort[i]=-FF_DIR[i]*KFC_VALUES[i];
 			}
 			
 		}

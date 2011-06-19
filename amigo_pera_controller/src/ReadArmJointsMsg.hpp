@@ -53,9 +53,9 @@ namespace PERA
     OutputPort<doubles> accport;
     
     //! Offsets to account for difference between controller and DH convention zero-position
-    doubles offsetValues;
+    doubles OFFSET_VALUES;
     //! Signs to account for the difference in controller and DH conventio rotational directions
-    doubles signalSigns;
+    doubles SIGNAL_SIGNS;
     //! Bool to preventing updateHook to perform cycle @ t=0.0
     bool goodtogo;
     //! Bool for receiving enable signal from watchdog

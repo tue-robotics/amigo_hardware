@@ -63,15 +63,15 @@ namespace PERA
 		
 		//! Emergency button pressed / released (true/false) (message type bool)
 		std_msgs::Bool eButtonPressed;
-		//! Counter for loopcounting
+		//! Counters for loopcounting
 		int cntr;
 		int cntr2;
 		//! Emergency button pressed / released (true/false) (memory bool)
 		bool pressed;
 		//! Does the deployerfile require homing
-		bool requireHoming;
+		bool REQUIRE_HOMING;
 		//! Property to enable / disable output of amplifiers
-		bool enableProperty;
+		bool ENABLE_PROPERTY;
 		//! Variable for storing value of PERA enableport
 		bool enable;
 		//! Bool indicating if homing is completed yes / no (true/false)
@@ -88,32 +88,30 @@ namespace PERA
 		double jntNr;
 		//! Variable for storing the previous measured jointangle during homing
 		double prevAngle;
-		//! The startingjoint for the homing procedure
-		double strtJnt;	
-		//! The stepsize if moving towards mechanical endstop
-		double stepSize;	
-		//! The margin used to determine if the mechanical endstop is reached
-		double margin;	
-		//! Defines the joint angles for after the reset
-		doubles resetAngles;
-		//! Vector for storing desired positions during homing
-		doubles homJntAngles;
-		//! Joint lower bounds
-		doubles lowerBounds;
-		//! Joint upper bounds
-		doubles upperBounds;
 		//! Requested joint angles
 		doubles jointAngles;
-		//! Specified maximum joint errors
-		doubles maxErrors;
 		//! Measured joint errors
-		doubles jointErrors;	
+		doubles jointErrors;
+		//! Vector for storing desired positions during homing
+		doubles homJntAngles;
+		//! The startingjoint for the homing procedure
+		double STRT_JNT;	
+		//! The stepsize if moving towards mechanical endstop
+		double STEPSIZE;	
+		//! Defines the joint angles for after the reset
+		doubles RESETANGLES;
+		//! Joint lower bounds
+		doubles LOWERBOUNDS;
+		//! Joint upper bounds
+		doubles UPPERBOUNDS;	
+		//! Specified maximum joint errors
+		doubles MAX_ERRORS;
 		//! The homed position (combination of rel and abs)
-		doubles homedPos;	
+		doubles HOMEDPOS;	
 		//! Specifies if homing is done using abs (0.0) or rel (1.0) data
-		doubles absOrRel;	
+		doubles ABS_OR_REL;	
 		//! Specifies if the abs sensors measure opposite (-1.0) to the joint angles or in the same direction (1.0)
-		doubles absSenDir;	
+		doubles ABS_SEN_DIR;	
 	
     public:
 

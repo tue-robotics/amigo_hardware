@@ -10,14 +10,16 @@ using namespace PERA;
 ReadArmJointsMsg::ReadArmJointsMsg(const string& name) : TaskContext(name, PreOperational)
 {
   // Creating ports:
-  addProperty( "offsets", offsetValues );
-  addProperty( "signs", signalSigns );
   addEventPort( "joint_coordinates", inport );
   addEventPort( "gripper_pos", ingripperport );
   addPort( "pos", posport );
   addPort( "vel", velport );
   addPort( "acc", accport );
   addPort( "enablePort", enablePort );
+  
+  // Loading properties
+  addProperty( "offsets", OFFSET_VALUES );
+  addProperty( "signs", SIGNAL_SIGNS );
 }
 ReadArmJointsMsg::~ReadArmJointsMsg(){}
 
@@ -53,7 +55,7 @@ bool ReadArmJointsMsg::startHook()
   }
   
   goodtogo = false;
-  bool enable = false;
+  enable = false;
   return true;
 }
 
@@ -69,7 +71,7 @@ void ReadArmJointsMsg::updateHook()
 
   /* Workaround if statement. Prevents first cycle from having any effect.
    * If not implemented the first cycle it will read all joint angles
-   * should be zero (default port value) and it will go to offsetvalues
+   * should be zero (default port value) and it will go to OFFSET_VALUES
    * which is undesired.
    */
   if (goodtogo && enable)
@@ -83,14 +85,14 @@ void ReadArmJointsMsg::updateHook()
 
 	  if( inport.read(jointdata) == NewData){
 		  for ( uint i = 0; i < 7; i++ ){
-			  pos[i] = signalSigns[i]*(jointdata.pos[i].data+offsetValues[i]);
+			  pos[i] = SIGNAL_SIGNS[i]*(jointdata.pos[i].data+OFFSET_VALUES[i]);
 			  vel[i] = jointdata.vel[i].data;
 			  acc[i] = jointdata.acc[i].data;
 		  }
 	  }
 	  
 	  if( ingripperport.read(gripper_pos) ==NewData){
-		  pos[7] = signalSigns[7]*(gripper_pos+offsetValues[7]);
+		  pos[7] = SIGNAL_SIGNS[7]*(gripper_pos+OFFSET_VALUES[7]);
 	  }
 	  
 	  // Write data to port

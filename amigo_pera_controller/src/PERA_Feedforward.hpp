@@ -31,8 +31,8 @@ namespace PERA
 	  OutputPort<doubles> outport;
 	  	  
 	  // Vector witch coulomb friction feedforward values
-	  doubles kfcValues;
-	  doubles ffdir;
+	  doubles KFC_VALUES;
+	  doubles FF_DIR;
 
 	public:
 

@@ -12,10 +12,12 @@ using namespace PERA;
 WriteArmJointsMsg::WriteArmJointsMsg(const string& name) : TaskContext(name, PreOperational)
 {
   // Creating ports:
-  addProperty ("offsets", offsetValues);
-  addProperty ("signs", signalSigns);
   addEventPort( "pos", inport );
   addPort( "joint_coordinates", outport );
+  
+  // Loading properties
+  addProperty ("offsets", OFFSET_VALUES);
+  addProperty ("signs", SIGNAL_SIGNS);
 
 }
 
@@ -58,7 +60,7 @@ void WriteArmJointsMsg::updateHook()
   // Change sign and add offset (wrt inverse kinematics)
   for ( uint i = 0; i < 7; i++ )
 	{
-	  jointdata.pos[i].data = angles[i]*signalSigns[i]-offsetValues[i];
+	  jointdata.pos[i].data = angles[i]*SIGNAL_SIGNS[i]-OFFSET_VALUES[i];
 	}
 
   // Write data to port (ie publishing on ROS topic)

@@ -39,9 +39,9 @@ namespace PERA
     OutputPort<amigo_msgs::arm_joints> outport;
     
     //! Signs to account for the difference in controller and DH conventio rotational directions
-    doubles signalSigns;
+    doubles SIGNAL_SIGNS;
     //! Offsets to account for difference between controller and DH convention zero-position
-    doubles offsetValues;
+    doubles OFFSET_VALUES;
 
     public:
 

@@ -34,17 +34,17 @@ WATCHDOG::WATCHDOG(const string& name) :
 	addPort("enableReadRefPort",enableReadRefPort).doc("");
 
 	
-	addProperty( "maxJointErrors", maxErrors).doc("");
-	addProperty( "enableOutput", enableProperty ).doc("");
-	addProperty( "jointUpperBounds", upperBounds ).doc("");
-	addProperty( "jointLowerBounds", lowerBounds ).doc("");
-	addProperty( "resetAngles", resetAngles ).doc("");
-	addProperty( "homedPos", homedPos ).doc("");
-	addProperty( "absOrRel", absOrRel ).doc("");
-	addProperty( "absSenDir", absSenDir ).doc("");
-	addProperty( "stepSize", stepSize ).doc("");
-	addProperty( "requireHoming", requireHoming ).doc("");
-	addProperty( "startJoint", strtJnt ).doc("");
+	addProperty( "maxJointErrors", MAX_ERRORS).doc("");
+	addProperty( "enableOutput", ENABLE_PROPERTY ).doc("");
+	addProperty( "jointUpperBounds", UPPERBOUNDS ).doc("");
+	addProperty( "jointLowerBounds", LOWERBOUNDS ).doc("");
+	addProperty( "resetAngles", RESETANGLES ).doc("");
+	addProperty( "homedPos", HOMEDPOS ).doc("");
+	addProperty( "absOrRel", ABS_OR_REL ).doc("");
+	addProperty( "absSenDir", ABS_SEN_DIR ).doc("");
+	addProperty( "stepSize", STEPSIZE ).doc("");
+	addProperty( "requireHoming", REQUIRE_HOMING ).doc("");
+	addProperty( "startJoint", STRT_JNT ).doc("");
 	
 }
 
@@ -58,33 +58,39 @@ bool WATCHDOG::configureHook()
 	jointAngles.resize(7);
 	jointErrors.resize(8);
 	homJntAngles.resize(8);
+	
+	// Set loopcounters to zero initially
 	cntr=0;
 	cntr2=0;
+	
+	// Errors is false by default
 	errors=false;
+	
+	// Reference not yet resetted
 	resetReference=false;
 	
-	enable=enableProperty;
+	// Assign ENABLE_PROPERTY to value enable
+	enable=ENABLE_PROPERTY;
 	
+	// Write enable value to PERA_IO
 	enablePort.write(enable);
+	
+	// goodToGo true means homing can proceed to next joint
 	goodToGo = true;
 	prevJntNr = 4;
 	
 	// Set homed to false by default
-	if(requireHoming){
+	if(REQUIRE_HOMING){
 		homed = false;
 	}
-	else if(!requireHoming){
+	else if(!REQUIRE_HOMING){
 		homed = true;
 	}
 	
 	// Set the initial jnt for homingprocedure
-	jntNr=strtJnt;
+	jntNr=STRT_JNT;
 	
-	/* Pressed is true by default to ensure that the SOEM is running
-	 * upon enabling PERA_USB_IO. Otherwise PERA_USB_IO could be enabled
-	 * while SOEM is not running which will cause undesired behavior of
-	 * the PERA when the eButton is unplugged after pressing it.
-	 */
+	// Pressed is true. No SOEM heartbeat means no amplifier enabling.
 	pressed = true;
 	
 	return true;
@@ -93,17 +99,25 @@ bool WATCHDOG::configureHook()
 bool WATCHDOG::startHook()
 {
 	
+	// Wait for SOEM heartbeat.
 	while(!(eButtonPort.read(eButtonPressed) == NewData)){
 		sleep(1);
 		log(Info)<<"WATCHDOG: Waiting for enable-signal from the emergency button"<<endlog();
 		cntr++;
-		if(cntr == 10){
-			log(Error)<<"WATCHDOG: no signal from emergency button (SOEM). Is SOEM running?"<<endlog();
+		if( cntr == 10 && cntr<3 ){
+			log(Warning)<<"WATCHDOG: no signal from emergency button (SOEM). Is SOEM running?"<<endlog();
 			cntr = 0;
+			cntr2++;
+		}
+		else if( cntr==3 ){
+			log(Error)<<"WATCHDOG: no SOEM hearbeat. Shutting down LPERA."<<endlog();
+			cntr=0;
+			cntr2=0;
+			return false;
 		}
 	}
 		
-	log(Info)<<"WATCHDOG: now running and monitoring: \n - Feasibility requested joint angles \n - Control error"<<endlog();
+	log(Info)<<"WATCHDOG: configured and running."<<endlog();
 
     return true;
 }
@@ -121,7 +135,7 @@ bool WATCHDOG::startHook()
  */
 void WATCHDOG::updateHook()
 {
-	if(enableProperty){
+	if(ENABLE_PROPERTY){
 		// Read emergency-button state
 		eButtonPort.read(eButtonPressed);
 			
@@ -153,16 +167,16 @@ void WATCHDOG::updateHook()
 			// Check if joint angle requested by inv. kin. are within limits.
 			for(unsigned int i = 0;i<7;i++){
 				
-				if(!(jointAngles[i]>=lowerBounds[i] && jointAngles[i]<=upperBounds[i])){ 
+				if(!(jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i])){ 
 									
 					enable=false;
 					
-					if(jointAngles[i]>upperBounds[i] && errors == false){
-						log(Error)<<"WATCHDOG: Joint q"<<i+1<<" exceeded upper limit ("<<upperBounds[i]<<"). PERA output disabled."<<endlog();
+					if(jointAngles[i]>UPPERBOUNDS[i] && errors == false){
+						log(Error)<<"WATCHDOG: Joint q"<<i+1<<" exceeded upper limit ("<<UPPERBOUNDS[i]<<"). PERA output disabled."<<endlog();
 						errors = true;
 					}
-					else if(jointAngles[i]<lowerBounds[i] && errors == false){
-						log(Error)<<"WATCHDOG: Joint q"<<i+1<<" exceeded lower limit ("<<lowerBounds[i]<<"). PERA output disabled."<<endlog();
+					else if(jointAngles[i]<LOWERBOUNDS[i] && errors == false){
+						log(Error)<<"WATCHDOG: Joint q"<<i+1<<" exceeded lower limit ("<<LOWERBOUNDS[i]<<"). PERA output disabled."<<endlog();
 						errors = true;
 					}
 					
@@ -174,12 +188,12 @@ void WATCHDOG::updateHook()
 			for(unsigned int i = 0;i<8;i++){
 
 				// If the error is too large and corresponding joint is NOT being homed -> stop PERA IO
-				if( (fabs(jointErrors[i])>maxErrors[i]) && (jntNr!=i+1) ){
+				if( (fabs(jointErrors[i])>MAX_ERRORS[i]) && (jntNr!=i+1) ){
 					
 					enable = false;
 					
 					if( errors == false ){
-						log(Error)<<"WATCHDOG: Error of joint q"<<i+1<<" exceeded limit ("<<maxErrors[i]<<"). PERA output disabled."<<endlog();
+						log(Error)<<"WATCHDOG: Error of joint q"<<i+1<<" exceeded limit ("<<MAX_ERRORS[i]<<"). PERA output disabled."<<endlog();
 						errors = true;
 					}		
 					
@@ -203,6 +217,7 @@ void WATCHDOG::updateHook()
 				mAbsJntAngPort.read(measAbsJntAngles);
 				
 				if(cntr==0){
+					
 					for(unsigned int i = 0;i<8;i++){
 						homJntAngles[i]=measRelJntAngles[i];
 					}
@@ -219,7 +234,6 @@ void WATCHDOG::updateHook()
 				
 				for(unsigned int i = 0;i<8;i++){
 					homJntAngles[i]=homJntAngTemp[i];
-					//log(Warning)<<"Request homingangle"<<homJntAngles[i]<<" for joint q"<<i+1<<endlog();
 				}
 
 				// Forward computed homing angles to the ReferenceInterpolator
@@ -253,7 +267,7 @@ void WATCHDOG::updateHook()
 			// Reset the ROS inv. kin. topic
 			if( !resetReference ){
 				for(unsigned int i = 0;i<7;i++){
-					jointResetData.pos[i].data=resetAngles[i];
+					jointResetData.pos[i].data=RESETANGLES[i];
 				}
 				resetRefPort.write(jointResetData);
 				resetReference = true;
@@ -265,7 +279,7 @@ void WATCHDOG::updateHook()
 		}	
 
 	}
-	else if(!enableProperty){
+	else if(!ENABLE_PROPERTY){
 		
 		enable = false;
 		enablePort.write(enable);
@@ -279,27 +293,27 @@ doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHom
 	if(jntNr!=0 && goodToGo){
 	
 		// If true the homing will be done using abs sensor
-		if(absOrRel[jntNr-1]==0){
+		if(ABS_OR_REL[jntNr-1]==0){
 			
 			// Homing position not reached yet
-			if(fabs(homedPos[jntNr-1]-absJntAngles[jntNr-1])>=1.0){
+			if(fabs(HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=1.0){
 				
 				// Are positive directions absolute sensors and joints the same?
-				if(absSenDir[jntNr-1]==1.0){
+				if(ABS_SEN_DIR[jntNr-1]==1.0){
 					
-					if((homedPos[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
+					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]+=0.0007; //go forward fast
 						log(Info)<<"WATCHDOG: 1.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
-					else if((homedPos[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
+					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]-=0.0007; //go back fast
 						log(Info)<<"WATCHDOG: 1.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
-					else if((homedPos[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (homedPos[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
+					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]+=0.00017; //go forward slowly
 						log(Info)<<"WATCHDOG: 2.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
-					else if((homedPos[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (homedPos[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
+					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]-=0.00017; //go back slowly
 						log(Info)<<"WATCHDOG: 2.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
@@ -307,21 +321,21 @@ doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHom
 					
 				}
 				// Are positive directions absolute sensors and joints opposite?
-				else if(absSenDir[jntNr-1]==-1.0){
+				else if(ABS_SEN_DIR[jntNr-1]==-1.0){
 								
-					if((homedPos[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
+					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]-=0.0007; //go forward fast 
 						log(Info)<<"WATCHDOG: -1.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
-					else if((homedPos[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
+					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]+=0.0007; //go back fast
 						log(Info)<<"WATCHDOG: -1.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
-					else if((homedPos[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (homedPos[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
+					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]-=0.00017; //go forward slowly
 						log(Info)<<"WATCHDOG: -2.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
-					else if((homedPos[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (homedPos[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
+					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]+=0.00017; //go back slowly
 						log(Info)<<"WATCHDOG: -2.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
 					}
@@ -330,24 +344,24 @@ doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHom
 				
 			}
 			// Homing position reached
-			else if(fabs(homedPos[jntNr-1]-absJntAngles[jntNr-1])<1.0){
+			else if(fabs(HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<1.0){
 				goodToGo = false;
 			}
 			
 		}
 		// If true the homing will be done using rel encoders
-		else if(absOrRel[jntNr-1]==1){
+		else if(ABS_OR_REL[jntNr-1]==1){
 			
 			// If the mechanical endstop is not reached
-			if( fabs(jointErrors[jntNr-1]) < (maxErrors[jntNr-1]-0.0017) ){
-				tempHomJntAngles[jntNr-1]-=stepSize;
+			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]-0.0017) ){
+				tempHomJntAngles[jntNr-1]-=STEPSIZE;
 			}
 
 			// If the mechanical endstop is reached (error to large)
-			else if( fabs(jointErrors[jntNr-1]) >= (maxErrors[jntNr-1]-0.0017) ){
+			else if( fabs(jointErrors[jntNr-1]) >= (MAX_ERRORS[jntNr-1]-0.0017) ){
 				
 				// From the mechanical endstop move back to homing position
-				tempHomJntAngles[jntNr-1]=measRelJntAngles[jntNr-1]+homedPos[jntNr-1];
+				tempHomJntAngles[jntNr-1]=measRelJntAngles[jntNr-1]+HOMEDPOS[jntNr-1];
 				
 				// Reset the interpolator for jnt jntNr to the position it is at
 				doubles resetdata(32,0.0);
@@ -368,24 +382,19 @@ doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHom
 	else if(goodToGo == false){
 		
 		// If joint is homed using abs sens no waiting time is required
-		if(absOrRel[jntNr-1]==0 && jntNr!=1){
-			jntNr--;
-			log(Warning)<<"WATCHDOG: Proceeded to joint "<<jntNr<<"\n"<<endlog();
-			goodToGo = true;
-		}
-		if(absOrRel[jntNr-1]==1 && jntNr==4){
+		if( (ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ){
 			jntNr--;
 			log(Warning)<<"WATCHDOG: Proceeded to joint "<<jntNr<<"\n"<<endlog();
 			goodToGo = true;
 		}
 		// If joint is moved to endstop using rel enc waiting time is required to move to homing position
-		else if(absOrRel[jntNr-1]==1 && cntr2<1500 && jntNr!=1 && jntNr!=4){
+		else if(ABS_OR_REL[jntNr-1]==1 && cntr2<1500 && jntNr!=1 && jntNr!=4){
 			
 			cntr2++;
 			
 		}
 		// If waiting is complete move on to next joint
-		else if(absOrRel[jntNr-1]==1 && cntr2==1500 && jntNr!=1 && jntNr!=4){
+		else if(ABS_OR_REL[jntNr-1]==1 && cntr2==1500 && jntNr!=1 && jntNr!=4){
 			
 			cntr2=0;
 			jntNr--;
