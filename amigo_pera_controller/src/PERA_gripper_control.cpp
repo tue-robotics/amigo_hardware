@@ -67,7 +67,7 @@ using namespace PERA;
 					gripperPos += gripperGain*PI/180;
 				}
 			} else {
-				log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
+				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
 				if (torques[GRIPPER_JOINT_TORQUE_INDEX] > threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE) {
 					log(Warning)<<"Gripper is CLOSED"<<endlog();
 					std_msgs::Bool gripperStatus;
