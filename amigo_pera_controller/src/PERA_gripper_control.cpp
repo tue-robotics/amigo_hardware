@@ -53,10 +53,12 @@ using namespace PERA;
 		}
 		if (!completed) {
 			torqueInPort.read(torques);
-			if(!gripperClose){
+			if(!gripperClose.data){
 				if (torques[GRIPPER_JOINT_TORQUE_INDEX] < threshold_open) {
 					log(Info)<<"Gripper is OPEN"<<endlog();
-					gripperStatusPort.write(false);
+					std_msgs::Bool gripperStatus;
+					gripperStatus.data = false;
+					gripperStatusPort.write(gripperStatus);
 					completed = true;
 				} else {
 					gripperPos += 0.009375*PI/180;
@@ -64,7 +66,9 @@ using namespace PERA;
 			} else {
 				if (torques[GRIPPER_JOINT_TORQUE_INDEX] > threshold_closed) {
 					log(Info)<<"Gripper is CLOSED"<<endlog();
-					gripperStatusPort.write(true);
+					std_msgs::Bool gripperStatus;
+					gripperStatus.data = true;
+					gripperStatusPort.write(gripperStatus);
 					completed = true;
 				} else {
 					gripperPos -= 0.009375*PI/180;

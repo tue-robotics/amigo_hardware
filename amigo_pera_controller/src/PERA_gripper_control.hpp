@@ -9,7 +9,6 @@
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 #include <std_msgs/Bool.h>
-#include <std_msgs/String.h>
 
 #define PI 3.141592654
 #define GRIPPER_JOINT_TORQUE_INDEX		7
@@ -27,15 +26,15 @@ namespace PERA
 	  private:
 	  
 	  //Ports
-	  InputPort<bool> gripperClosePort;
+	  InputPort<std_msgs::Bool> gripperClosePort;
 	  InputPort<doubles> torqueInPort;
 	  OutputPort<double> gripperRefPort;
-	  OutputPort<bool> gripperStatusPort;
+	  OutputPort<std_msgs::Bool> gripperStatusPort;
 	  
 	  doubles torques;
 	  double gripperPos;
 	  bool completed;
-      bool gripperClose;
+      std_msgs::Bool gripperClose;
 	  
 	  double threshold_open;
 	  double threshold_closed;

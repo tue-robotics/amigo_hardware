@@ -51,7 +51,6 @@ LPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.
 loadComponent("LPERA_GripperControl","PERA::Gripper_control")
 LPERA_GripperControl.threshold_open = 23.5;
 LPERA_GripperControl.threshold_closed = 27.5;
-LPERA_GripperControl.encoder_compensation = 1.0;
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.configure
 
@@ -222,6 +221,8 @@ stream("LPERA_ReadReferenceAngles.joint_coordinates",lpera_ROStopics.joint_coord
 ### Ports and streams for gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_ref","LPERA_ReadReferenceAngles.gripper_pos", ConnPolicy() )
+connect ("LPERA_GripperControl.gripper_status","LPERA_Watchdog.gripperStatusPort", ConnPolicy() )
+connect ("LPERA_Watchdog.gripperClosePort","LPERA_GripperControl.gripper_close", ConnPolicy() )
 connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_WriteArmTorquesMsg.in", ConnPolicy() )
 

@@ -296,13 +296,15 @@ doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHom
 	
 	if(!gripperHomed){
 		
-		bool gripperStatus;
+		std_msgs::Bool gripperStatus;
 		gripperStatusPort.read(gripperStatus);
 		
-		if(!gripperStatus){
-			gripperClosePort.write(true);
+		if(!gripperStatus.data){
+			std_msgs::Bool gripperClose;
+			gripperClose.data = true;
+			gripperClosePort.write(gripperClose);
 		}
-		else if(gripperStatus){
+		else{
 			gripperHomed = true;
 		}
 		

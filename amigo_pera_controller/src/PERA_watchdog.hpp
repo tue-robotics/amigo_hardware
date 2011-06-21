@@ -49,7 +49,7 @@ namespace PERA
 		//! Inputport for the emergency button state
 		InputPort<std_msgs::Bool> eButtonPort;
 		//! Inputport for receiving gripper status 
-		InputPort<bool> gripperStatusPort;
+		InputPort<std_msgs::Bool> gripperStatusPort;
 		//! Outputport for enabling/disabling the PERA_USB_IO
 		OutputPort<bool> enablePort;
 		//! Outputport for forwarding homing angles to the ReferenceInterpolator
@@ -63,7 +63,7 @@ namespace PERA
 		//! Outputport for ordering the PERA_IO to renull
 		OutputPort<bool> reNullPort;
 		//! Outputport for ordering gripper to close
-		OutputPort<bool> gripperClosePort;
+		OutputPort<std_msgs::Bool> gripperClosePort;
 		//! Emergency button pressed / released (true/false) (message type bool)
 		std_msgs::Bool eButtonPressed;
 		//! Counters for loopcounting
