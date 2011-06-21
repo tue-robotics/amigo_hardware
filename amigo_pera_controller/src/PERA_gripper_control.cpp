@@ -11,6 +11,9 @@
 
 #include "PERA_gripper_control.hpp"
 
+#define gripperGain 0.040
+#define MAX_TORQUE 100.0
+
 using namespace RTT;
 using namespace PERA;
 
@@ -61,18 +64,18 @@ using namespace PERA;
 					gripperStatusPort.write(gripperStatus);
 					completed = true;
 				} else {
-					gripperPos += 0.009375*PI/180;
+					gripperPos += gripperGain*PI/180;
 				}
 			} else {
-				if (torques[GRIPPER_JOINT_TORQUE_INDEX] > threshold_closed) {
+				log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
+				if (torques[GRIPPER_JOINT_TORQUE_INDEX] > threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE) {
 					log(Warning)<<"Gripper is CLOSED"<<endlog();
 					std_msgs::Bool gripperStatus;
 					gripperStatus.data = true;
 					gripperStatusPort.write(gripperStatus);
 					completed = true;
 				} else {
-					log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
-					gripperPos -= 0.009375*PI/180;
+					gripperPos -= gripperGain*PI/180;
 				}
 			}
 			gripperRefPort.write(gripperPos);

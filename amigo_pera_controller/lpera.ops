@@ -32,7 +32,7 @@ LPERA_Watchdog.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 
 # Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
 LPERA_Watchdog.resetAngles = array ( -0.3, -1.570796325, 0.0, 0.5, 0.0, -1.570796325, 0.0, 0.0 )
 LPERA_Watchdog.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-LPERA_Watchdog.homedPos = array (480.0, 635.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
+LPERA_Watchdog.homedPos = array (481.0, 635.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
 LPERA_Watchdog.stepSize = 0.001570796
 LPERA_Watchdog.absSenDir = array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Watchdog.enableOutput = true
@@ -50,7 +50,7 @@ LPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::Gripper_control")
 LPERA_GripperControl.threshold_open = 23.5;
-LPERA_GripperControl.threshold_closed = 50.0;
+LPERA_GripperControl.threshold_closed = 30.0;
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.configure
 
