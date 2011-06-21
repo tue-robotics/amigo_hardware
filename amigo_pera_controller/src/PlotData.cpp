@@ -63,7 +63,7 @@ void PlotData::updateHook()
 	dataMsg.data[2]=port3Data[selectJoint];
 	dataMsg.data[3]=port4Data[selectJoint];
 	dataMsg.data[4]=port5Data[selectJoint];
-	dataMsg.data[5]=port6Data[selectJoint];
+	dataMsg.data[5]=port7Data[selectJoint];
 	dataMsg.data[6]=port6Data[selectMotor1];
 	dataMsg.data[7]=port6Data[selectMotor2];
 	dataMsg.data[8]=port8Data[selectMotor1];

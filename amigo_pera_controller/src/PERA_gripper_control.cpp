@@ -65,12 +65,13 @@ using namespace PERA;
 				}
 			} else {
 				if (torques[GRIPPER_JOINT_TORQUE_INDEX] > threshold_closed) {
-					log(Info)<<"Gripper is CLOSED"<<endlog();
+					log(Warning)<<"Gripper is CLOSED"<<endlog();
 					std_msgs::Bool gripperStatus;
 					gripperStatus.data = true;
 					gripperStatusPort.write(gripperStatus);
 					completed = true;
 				} else {
+					log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
 					gripperPos -= 0.009375*PI/180;
 				}
 			}

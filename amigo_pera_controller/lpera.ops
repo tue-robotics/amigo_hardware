@@ -50,7 +50,7 @@ LPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::Gripper_control")
 LPERA_GripperControl.threshold_open = 23.5;
-LPERA_GripperControl.threshold_closed = 27.5;
+LPERA_GripperControl.threshold_closed = 50.0;
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.configure
 
@@ -101,7 +101,7 @@ LPERA_JointToMotorTorques.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 
 ### PERA Controllers ###
 loadComponent("LPERA_JointControllers","FILTERS::PIDs")
-LPERA_JointControllers.proportional_coefficient = array (1000.0, 	1000.0, 700.0, 	700.0, 	350.0, 	550.0, 	550.0, 	80.0)
+LPERA_JointControllers.proportional_coefficient = array (1000.0, 	1000.0, 700.0, 	700.0, 	350.0, 	550.0, 	550.0, 	160.0)
 LPERA_JointControllers.integral_coefficient = 	array (80.0, 	80.0, 	16.0, 	32.0, 	12.0, 	32.0, 	32.0, 	2.0)
 LPERA_JointControllers.derivative_coefficient = 	array (40.0, 	40.0, 	16.0, 	20.0, 	16.0, 	4.0, 	4.0, 	0.05)
 LPERA_JointControllers.anti_windup_coefficient = 	array (0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0)
@@ -131,9 +131,9 @@ LPERA_AddFeedForward.configure
 
 ### Saturation on the controller output ###
 loadComponent("LPERA_OutputLimiter","DISCONTINUITIES::Saturation")
-LPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 25000.0 )
+LPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
 #LPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
-LPERA_OutputLimiter.lower_limit = array ( -25000.0,-25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -25000.0 )
+LPERA_OutputLimiter.lower_limit = array ( -25000.0,-25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -32000.0 )
 #LPERA_OutputLimiter.lower_limit = array ( -0.0,-0.0, -0.0, -0.0, -0.0, -0.0, -0.0, -0.0 )
 LPERA_OutputLimiter.vector_size = 8
 LPERA_OutputLimiter.configure
@@ -180,9 +180,9 @@ LPERA_Reporter.configure
 
 ### Component for streaming port data on a rostopic for visualisation with rxplot ###
 loadComponent("LPERA_PlotData","AMIGO::PlotData")
-LPERA_PlotData.selectJoint = 0
-LPERA_PlotData.selectMotor1 = 0
-LPERA_PlotData.selectMotor2 = 1
+LPERA_PlotData.selectJoint = 7
+LPERA_PlotData.selectMotor1 = 7
+LPERA_PlotData.selectMotor2 = 7
 LPERA_PlotData.setPeriod(0.02)
 LPERA_PlotData.configure
 
@@ -260,6 +260,6 @@ LPERA_AddGravComp.start
 LPERA_WriteArmTorquesMsg.start
 LPERA_SensorTorques.start
 LPERA_GripperControl.start
-LPERA_Reporter.start
+#LPERA_Reporter.start
 LPERA_PlotData.start
 
