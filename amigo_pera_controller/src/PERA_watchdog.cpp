@@ -295,19 +295,16 @@ void WATCHDOG::updateHook()
 doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 	
 	if(!gripperHomed){
+		std_msgs::Bool gripperClose;
+		gripperClose.data = true;
+		gripperClosePort.write(gripperClose);
 		
 		std_msgs::Bool gripperStatus;
 		gripperStatusPort.read(gripperStatus);
 		
-		if(!gripperStatus.data){
-			std_msgs::Bool gripperClose;
-			gripperClose.data = true;
-			gripperClosePort.write(gripperClose);
-		}
-		else{
+		if(gripperStatus.data) {
 			gripperHomed = true;
 		}
-		
 	}
 	
 	if(jntNr!=0 && goodToGo && gripperHomed){
