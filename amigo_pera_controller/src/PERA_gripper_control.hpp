@@ -27,21 +27,18 @@ namespace PERA
 	  private:
 	  
 	  //Ports
-	  InputPort<std_msgs::Bool> gripperInPort;
+	  InputPort<bool> gripperClosePort;
 	  InputPort<doubles> torqueInPort;
-	  OutputPort<double> gripperPosOutPort;
-	  OutputPort<std_msgs::String> gripperStatusPort;
+	  OutputPort<double> gripperRefPort;
+	  OutputPort<bool> gripperStatusPort;
 	  
 	  doubles torques;
 	  double gripperPos;
-	  double prevGripperPos;
-      std_msgs::Bool gripperData;
 	  bool completed;
-	  std_msgs::String gripperStatus;
+      bool gripperClose;
 	  
 	  double threshold_open;
 	  double threshold_closed;
-	  double compFactor;
 	  
 	public:
 
