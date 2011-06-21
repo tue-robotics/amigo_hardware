@@ -56,6 +56,12 @@ namespace PERA
     doubles OFFSET_VALUES;
     //! Signs to account for the difference in controller and DH conventio rotational directions
     doubles SIGNAL_SIGNS;
+    //! Vector for storing arm position
+    doubles pos;
+	//! Vector for storing arm velocity
+	doubles vel;
+	//! Vector for storing arm acceleration
+	doubles acc;
     //! Bool to preventing updateHook to perform cycle @ t=0.0
     bool goodtogo;
     //! Bool for receiving enable signal from watchdog

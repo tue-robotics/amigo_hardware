@@ -1,9 +1,5 @@
 import("amigo_pera_controller")
 trigger
-#runScript ("com_left.ops")
-#trigger
-#com_left.start
-#trigger
 
 ### Read reference joint angles ###
 loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
@@ -61,7 +57,8 @@ LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
 loadComponent("LPERA_GravityCompensation","PERA::GRAVCOM")
-LPERA_GravityCompensation.torqueFactors = array ( 3151.0, 3212.0, -8492.0, -9949.0, 0.0, 0.0, 0.0, 0.0 )
+#LPERA_GravityCompensation.torqueFactors = array ( 3151.0, 3212.0, -8492.0, -9949.0, 0.0, 0.0, 0.0, 0.0 )
+LPERA_GravityCompensation.torqueFactors = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
 LPERA_GravityCompensation.configure
 
 ### Adding the gravity compensational term ###
@@ -81,7 +78,8 @@ LPERA_MotorToJointAngles.function4 = array (0.0, 0.0, 0.000003835, 0.000003835, 
 LPERA_MotorToJointAngles.function5 = array (0.0, 0.0, -0.000003835, 0.000003835, 0.0, 0.0, 0.0, 0.0)
 LPERA_MotorToJointAngles.function6 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, 0.00002116, 0.0, 0.0)
 LPERA_MotorToJointAngles.function7 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, -0.00002116, 0.0, 0.0)
-LPERA_MotorToJointAngles.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.00006545)
+# Compensated for lower encoder resolution on left PERA
+LPERA_MotorToJointAngles.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0005236)
 
 ### Compute the errors of the joints wrt reference angles ###
 loadComponent("LPERA_ComputeJointErrors","Substraction")
@@ -134,10 +132,10 @@ LPERA_AddFeedForward.configure
 
 ### Saturation on the controller output ###
 loadComponent("LPERA_OutputLimiter","DISCONTINUITIES::Saturation")
-#LPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 10000.0, 10000.0, 10000.0, 0.0 )
-LPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 10000.0, 10000.0, 25000.0, 0.0 )
-#LPERA_OutputLimiter.lower_limit = array ( -25000.0,-25000.0, -20000.0, -20000.0, -10000.0, -10000.0, -10000.0, -0.0 )
-LPERA_OutputLimiter.lower_limit = array ( -25000.0,-25000.0, -20000.0, -20000.0, -10000.0, -10000.0, -25000.0, -0.0 )
+LPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 25000.0 )
+#LPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+LPERA_OutputLimiter.lower_limit = array ( -25000.0,-25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -25000.0 )
+#LPERA_OutputLimiter.lower_limit = array ( -0.0,-0.0, -0.0, -0.0, -0.0, -0.0, -0.0, -0.0 )
 LPERA_OutputLimiter.vector_size = 8
 LPERA_OutputLimiter.configure
 
@@ -178,14 +176,14 @@ addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
 LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
 addPeer("LPERA_Reporter","LPERA_Watchdog")
 LPERA_Reporter.reportPort("LPERA_Watchdog","enablePort")
-LPERA_Reporter.ReportFile = "/home/amigo/pinksterren_8.dat"
+LPERA_Reporter.ReportFile = "/home/amigo/rpera_test1.dat"
 LPERA_Reporter.configure
 
-### Get the real-time velocity and acceleration ###
+### Component for streaming port data on a rostopic for visualisation with rxplot ###
 loadComponent("LPERA_PlotData","AMIGO::PlotData")
-LPERA_PlotData.selectJoint = 5
-LPERA_PlotData.selectMotor1 = 4
-LPERA_PlotData.selectMotor2 = 5
+LPERA_PlotData.selectJoint = 0
+LPERA_PlotData.selectMotor1 = 0
+LPERA_PlotData.selectMotor2 = 1
 LPERA_PlotData.setPeriod(0.02)
 LPERA_PlotData.configure
 
@@ -217,9 +215,9 @@ connect ("LPERA_Watchdog.enableReadRefPort","LPERA_ReadReferenceAngles.enablePor
 connect ("LPERA_Watchdog.reNullPort","LPERA_IO.reNullPort", ConnPolicy() )
 
 stream("LPERA_Watchdog.eButtonPort",hardware_ROStopics.emergency_switch)
-stream("LPERA_Watchdog.resetRefPort",armleft_ROStopics.joint_coordinates_left)
-stream("LPERA_WriteCurrentJointAngles.joint_coordinates",armleft_ROStopics.arm_angles_left)
-stream("LPERA_ReadReferenceAngles.joint_coordinates",armleft_ROStopics.joint_coordinates_left)
+stream("LPERA_Watchdog.resetRefPort",lpera_ROStopics.joint_coordinates_left)
+stream("LPERA_WriteCurrentJointAngles.joint_coordinates",lpera_ROStopics.arm_angles_left)
+stream("LPERA_ReadReferenceAngles.joint_coordinates",lpera_ROStopics.joint_coordinates_left)
 
 ### Ports and streams for gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
@@ -227,9 +225,9 @@ connect ("LPERA_GripperControl.gripper_ref","LPERA_ReadReferenceAngles.gripper_p
 connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_WriteArmTorquesMsg.in", ConnPolicy() )
 
-stream("LPERA_WriteArmTorquesMsg.out",armleft_ROStopics.joint_torques_left)
-stream("LPERA_GripperControl.gripper_close",armleft_ROStopics.set_gripper_left)
-stream("LPERA_GripperControl.gripper_status",armleft_ROStopics.gripper_status_left)
+stream("LPERA_WriteArmTorquesMsg.out",lpera_ROStopics.joint_torques_left)
+stream("LPERA_GripperControl.gripper_close",lpera_ROStopics.set_gripper_left)
+stream("LPERA_GripperControl.gripper_status",lpera_ROStopics.gripper_status_left)
 
 ### Ports and stream for online data viewing using rxplot ###
 connect ("LPERA_ReferenceInterpolator.posout",	"LPERA_PlotData.port1",					ConnPolicy() )
@@ -241,7 +239,7 @@ connect ("LPERA_OutputLimiter.out",		 	"LPERA_PlotData.port8",					ConnPolicy() 
 
 # Copy this statement into a terminal for online data viewing
 #rxplot /jointDataLeft/data[0],/jointDataLeft/data[1] /jointDataLeft/data[4] /jointDataLeft/data[8],/jointDataLeft/data[9] /jointDataLeft/data[6],/jointDataLeft/data[7]
-stream  ("LPERA_PlotData.dataPort", armleft_ROStopics.jointDataLeft)
+stream  ("LPERA_PlotData.dataPort", lpera_ROStopics.jointDataLeft)
 
 LPERA_Watchdog.start
 LPERA_ReadReferenceAngles.start

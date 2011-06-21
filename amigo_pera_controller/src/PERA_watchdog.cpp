@@ -32,8 +32,9 @@ WATCHDOG::WATCHDOG(const string& name) :
 	addPort("homJntAnglesPort",homJntAngPort).doc("");
 	addPort("reNullPort",reNullPort).doc("");
 	addPort("enableReadRefPort",enableReadRefPort).doc("");
+	addPort("gripperClosePort",gripperClosePort).doc("");
+	addPort("gripperStatusPort",gripperStatusPort).doc("");
 
-	
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("");
 	addProperty( "enableOutput", ENABLE_PROPERTY ).doc("");
 	addProperty( "jointUpperBounds", UPPERBOUNDS ).doc("");
@@ -65,6 +66,9 @@ bool WATCHDOG::configureHook()
 	
 	// Errors is false by default
 	errors=false;
+	
+	// Gripper initially not homed by default
+	gripperHomed = false;
 	
 	// Reference not yet resetted
 	resetReference=false;
@@ -110,7 +114,7 @@ bool WATCHDOG::startHook()
 			cntr2++;
 		}
 		else if( cntr==3 ){
-			log(Error)<<"WATCHDOG: no SOEM hearbeat. Shutting down LPERA."<<endlog();
+			log(Error)<<"WATCHDOG: no SOEM heartbeat. Shutting down LPERA."<<endlog();
 			cntr=0;
 			cntr2=0;
 			return false;
@@ -290,7 +294,21 @@ void WATCHDOG::updateHook()
 
 doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 	
-	if(jntNr!=0 && goodToGo){
+	if(!gripperHomed){
+		
+		bool gripperStatus;
+		gripperStatusPort.read(gripperStatus);
+		
+		if(!gripperStatus){
+			gripperClosePort.write(true);
+		}
+		else if(gripperStatus){
+			gripperHomed = true;
+		}
+		
+	}
+	
+	if(jntNr!=0 && goodToGo && gripperHomed){
 	
 		// If true the homing will be done using abs sensor
 		if(ABS_OR_REL[jntNr-1]==0){
@@ -379,7 +397,7 @@ doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHom
 		
 	}
 	
-	else if(goodToGo == false){
+	else if(!goodToGo && gripperHomed){
 		
 		// If joint is homed using abs sens no waiting time is required
 		if( (ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ){

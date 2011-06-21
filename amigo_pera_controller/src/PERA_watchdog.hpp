@@ -48,6 +48,8 @@ namespace PERA
 		InputPort<ints> mAbsJntAngPort;
 		//! Inputport for the emergency button state
 		InputPort<std_msgs::Bool> eButtonPort;
+		//! Inputport for receiving gripper status 
+		InputPort<bool> gripperStatusPort;
 		//! Outputport for enabling/disabling the PERA_USB_IO
 		OutputPort<bool> enablePort;
 		//! Outputport for forwarding homing angles to the ReferenceInterpolator
@@ -60,7 +62,8 @@ namespace PERA
 		OutputPort<bool> enableReadRefPort;
 		//! Outputport for ordering the PERA_IO to renull
 		OutputPort<bool> reNullPort;
-		
+		//! Outputport for ordering gripper to close
+		OutputPort<bool> gripperClosePort;
 		//! Emergency button pressed / released (true/false) (message type bool)
 		std_msgs::Bool eButtonPressed;
 		//! Counters for loopcounting
@@ -82,6 +85,8 @@ namespace PERA
 		bool errors;
 		//! Indicates if the rostopic /joint_coordinates has been reset
 		bool resetReference;
+		//! Bool for indicating whether gripper is homed (true) or not (false)
+		bool gripperHomed;
 		//! Variable for storing the previous joint nr being homed
 		double prevJntNr;
 		//! Variable for storing the nr of the joint being homed during homing

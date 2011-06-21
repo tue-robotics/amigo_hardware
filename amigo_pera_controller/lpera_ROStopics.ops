@@ -1,4 +1,4 @@
-program armleft_ROStopics{
+program lpera_ROStopics{
 
 var ConnPolicy joint_coordinates_left;
 joint_coordinates_left.size = 1;
@@ -31,5 +31,5 @@ joint_torques_left.transport = 3;
 joint_torques_left.name_id = "joint_torques_left";
 
 }
-armleft_ROStopics.start
+lpera_ROStopics.start
 trigger

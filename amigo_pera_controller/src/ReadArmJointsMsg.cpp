@@ -54,6 +54,10 @@ bool ReadArmJointsMsg::startHook()
       log(Warning)<<"homedPort not connected. No component outcome!"<<endlog();
   }
   
+  pos.resize(8.0,0.0);
+  vel.resize(8.0,0.0);
+  acc.resize(8.0,0.0);
+  
   goodtogo = false;
   enable = false;
   return true;
@@ -79,9 +83,6 @@ void ReadArmJointsMsg::updateHook()
 	  // Read the inputport
 	  amigo_msgs::arm_joints jointdata;
 	  double gripper_pos;
-	  doubles pos(8,0.0);
-	  doubles vel(8,0.0);
-	  doubles acc(8,0.0);
 
 	  if( inport.read(jointdata) == NewData){
 		  for ( uint i = 0; i < 7; i++ ){
