@@ -67,9 +67,6 @@ bool WATCHDOG::configureHook()
 	// Errors is false by default
 	errors=false;
 	
-	// Gripper initially not homed by default
-	gripperHomed = false;
-	
 	// Reference not yet resetted
 	resetReference=false;
 	
@@ -294,22 +291,7 @@ void WATCHDOG::updateHook()
 
 doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 	
-	if(!gripperHomed){
-		//log(Warning)<<"WATCHDOG: 1 gripper not homed"<<endlog();
-		std_msgs::Bool gripperClose;
-		gripperClose.data = true;
-		gripperClosePort.write(gripperClose);
-		
-		std_msgs::Bool gripperStatus;
-		gripperStatusPort.read(gripperStatus);
-		
-		if(gripperStatus.data){
-			log(Warning)<<"WATCHDOG: 2 gripper homed"<<endlog();
-			gripperHomed = true;
-		}
-	}
-	
-	if(jntNr!=0 && goodToGo && gripperHomed){
+	if(jntNr!=0 && goodToGo){
 	
 		// If true the homing will be done using abs sensor
 		if(ABS_OR_REL[jntNr-1]==0){
@@ -398,7 +380,7 @@ doubles WATCHDOG::homing(doubles jointErrors, ints absJntAngles, doubles tempHom
 		
 	}
 	
-	else if(!goodToGo && gripperHomed){
+	else if(!goodToGo){
 		
 		// If joint is homed using abs sens no waiting time is required
 		if( (ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ){
