@@ -16,7 +16,6 @@
   <depend package="rtt_ros_integration_std_msgs"/>
   <depend package="rtt_ros_integration_amigo_msgs"/>
   <depend package="orocos_components"/>
-  <depend package="amigo_filters"/>
 </package>
 
 
