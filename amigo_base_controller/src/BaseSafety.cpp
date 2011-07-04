@@ -41,14 +41,14 @@ BaseSafety::~BaseSafety(){}
 
 bool BaseSafety::configureHook()
 {
-  if ( max_errors.size() < 3 ) //TODO: Compare with array size
+  if ( max_errors.size() < 4 ) //TODO: Compare with array size
   {
-    log(Error)<<"BaseSafety::Maximum errors not specified!"<<endlog();
+    log(Error)<<"BaseSafety::Maximum errors not (well) specified!"<<endlog();
     return false;
   }
   if ( max_velocities.size() != 3 )
   {
-    log(Error)<<"BaseSafety::Maximum velocities not specified!"<<endlog();
+    log(Error)<<"BaseSafety::Maximum velocities not (well) specified!"<<endlog();
     return false;
   }
   if ( max_voltage == 0 )
@@ -105,9 +105,9 @@ void BaseSafety::updateHook()
         log(Error)<<"BaseSafety::Maximum reference velocity exeeded! Disabling hardware!"<<endlog();
       }
 
-    doubles errors(3);
+    doubles errors(4);
     errorport.read( errors );
-    for ( uint i = 0; i < 3; i++ )
+    for ( uint i = 0; i < 4; i++ )
       if ( errors[i] > max_errors[i] )
       {
         safe = false;
@@ -127,11 +127,8 @@ void BaseSafety::updateHook()
   }
   else if ( resetport.read( reset ) == NewData )
 	  safe = true;
-  //if ( laststate != safe )
-  //{
-	  amplifierport.write( safe );
-//	  laststate = safe;
-  //}
+
+  amplifierport.write( safe );
 }
 
 ORO_CREATE_COMPONENT(AMIGO::BaseSafety)
