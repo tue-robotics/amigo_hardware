@@ -271,6 +271,6 @@ LPERA_AddGravComp.start
 LPERA_WriteArmTorquesMsg.start
 LPERA_SensorTorques.start
 LPERA_GripperControl.start
-LPERA_Reporter.start
+#LPERA_Reporter.start
 LPERA_PlotData.start
 
