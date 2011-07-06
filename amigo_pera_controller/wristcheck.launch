@@ -1,0 +1,7 @@
+<launch>
+    <include file="$(find amigo_machine_files)/machines/amigo1.machine" />
+    <include file="$(find amigo_machine_files)/machines/amigo2.machine" />
+    <include file="$(find amigo_machine_files)/machines/amigo3.machine" />
+    
+    <node name="amigo_pera_only" machine="amigo2" pkg="ocl" type="deployer-gnulinux" args="-s $(find amigo_pera_controller)/hardware_ROStopics.ops -s $(find amigo_etherCAT)/soem.ops -s $(find amigo_pera_controller)/lpera_ROStopics.ops -s $(find amigo_pera_controller)/wrist_check.ops --" output="screen"></node>   
+</launch>
