@@ -1,4 +1,4 @@
-import("amigo_pera_controller_dev")
+import("amigo_pera_controller")
 trigger
 
 stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
