@@ -72,7 +72,7 @@ bool WATCHDOG::configureHook()
 	errors=false;
 	
 	// Gripper initially not homed by default
-	gripperHomed = false;
+	gripperHomed = true;
 	
 	// Reference not yet resetted
 	resetReference=false;
@@ -123,6 +123,11 @@ bool WATCHDOG::startHook()
 			cntr2=0;
 			return false;
 		}
+	}
+	
+	if(!REQUIRE_HOMING){
+		bool enableReadRef = true;
+		enableReadRefPort.write(enableReadRef);
 	}
 		
 	log(Info)<<"WATCHDOG: configured and running."<<endlog();
@@ -533,6 +538,8 @@ amigo_msgs::pera_status WATCHDOG::updateStatus(doubles jointErrors){
 	for(unsigned int i = 0;i<8;i++){
 			tempStatus.jnt_errors[i].data=jointErrors[i];
 	}
+	
+	tempStatus.enable.data=enable;
 	
 	return tempStatus;
 	
