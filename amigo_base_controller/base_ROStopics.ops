@@ -18,6 +18,11 @@ var ConnPolicy emergency_switch;
 emergency_switch.size = 1;
 emergency_switch.transport = 3;
 emergency_switch.name_id = "emergency_switch";
+
+var ConnPolicy diagnostics;
+diagnostics.size = 1;
+diagnostics.transport = 3;
+diagnostics.name_id = "diagnostics";
 }
 base_ROStopics.start
 trigger

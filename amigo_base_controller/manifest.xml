@@ -11,7 +11,8 @@
   <depend package="orocos_components"/>
   <depend package="tf"/>
   <depend package="rtt_ros_integration_nav_msgs"/>
-
+  <depend package="rtt_diagnostic_msgs"/>diagnostic_updater
+  <depend package="diagnostic_updater"/>
 </package>
 
 
