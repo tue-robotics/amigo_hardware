@@ -8,6 +8,7 @@ Soem.setPeriod(0.001)
 
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 loadComponent("AnalogOuts","AnalogOuts")
+DigitalIns1.setPeriod(1.0)
 AnalogOuts.configure
 AnalogOuts.max_volt = array ( 2.6, 2.6, 2.6, 2.6, 1.1, 0.0, 0.0, 0.0 )
 connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
@@ -19,7 +20,7 @@ DigitalOuts.configure
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS ###
 loadComponent("DigitalIns1","DigitalIns")
-DigitalIns1.setPeriod(0.1)
+DigitalIns1.setPeriod(1.0)
 connect ("Soem.Slave_1009.bits", "DigitalIns1.in", ConnPolicy() )
 stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
 DigitalIns1.configure

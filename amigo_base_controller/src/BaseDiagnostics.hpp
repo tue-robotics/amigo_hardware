@@ -3,7 +3,7 @@
  * @class BaseDiagnostics
  *
  * \author Tim Clephas
- * \date May, 2011
+ * \date Istanbul, 2011
  * \version 1.0
  *
  */
