@@ -10,6 +10,11 @@ var ConnPolicy diagnostics;
 diagnostics.size = 1;
 diagnostics.transport = 3;
 diagnostics.name_id = "diagnostics";
+
+var ConnPolicy analog_in;
+analog_in.size = 1;
+analog_in.transport = 3;
+analog_in.name_id = "analog_in";
 }
 hardware_ROStopics.start
 trigger
