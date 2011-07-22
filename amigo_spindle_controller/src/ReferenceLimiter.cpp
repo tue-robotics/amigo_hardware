@@ -75,8 +75,8 @@ void ReferenceLimiter::updateHook()
 	}
 	
 	// Calculating circular coordinates of tip
-	double radius_right = sqrt( right_tip.x*right_tip.x + right_tip.y*right_tip.y );
-	double radius_left = sqrt( left_tip.x*left_tip.x + left_tip.y*left_tip.y );
+	//double radius_right = sqrt( right_tip.x*right_tip.x + right_tip.y*right_tip.y );
+	//double radius_left = sqrt( left_tip.x*left_tip.x + left_tip.y*left_tip.y );
 	
 	// Checking if the arms are in the collision zone. 
 	// Limiting references if this is the case. 
