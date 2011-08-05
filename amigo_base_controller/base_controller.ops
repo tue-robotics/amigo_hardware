@@ -122,7 +122,7 @@ BaseSI2Volt.configure
 loadComponent("BaseSafety","AMIGO::BaseSafety")
 BaseSafety.max_velocities = array (1.8, 1.0, 3.1415)
 BaseSafety.max_errors = array ( 6.0, 6.0, 6.0, 6.0 )
-BaseSafety.max_voltage = 3.0
+BaseSafety.max_voltage = 3.5
 connect ("BaseReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
 connect ("BaseCalculateErrors.out", "BaseSafety.error", ConnPolicy() )
 connect ("BaseSI2Volt.out", "BaseSafety.voltage", ConnPolicy() )
@@ -149,27 +149,27 @@ Odometry.setPeriod(0.05)
 
 #Setting up reporting
 loadComponent("BaseReporter", "OCL::FileReporting")
-BaseReporter.ReportFile = "/home/amigo/basereports.dat"
-addPeer("BaseReporter","BaseReset.integratorreset")
-BaseReporter.reportPort("BaseReset","out")
-addPeer("BaseReporter","BaseReadReferenceVelocities")
-BaseReporter.reportPort("BaseReadReferenceVelocities","out")
-addPeer("BaseReporter","BaseVel2Pos")
-BaseReporter.reportPort("BaseVel2Pos","out")
+#BaseReporter.ReportFile = "/home/amigo/basereports.dat"
+#addPeer("BaseReporter","BaseReset.integratorreset")
+#BaseReporter.reportPort("BaseReset","out")
+#addPeer("BaseReporter","BaseReadReferenceVelocities")
+#BaseReporter.reportPort("BaseReadReferenceVelocities","out")
+#addPeer("BaseReporter","BaseVel2Pos")
+#BaseReporter.reportPort("BaseVel2Pos","out")
 #addPeer("BaseReporter","ReadWheelEncoders")
 #BaseReporter.reportPort("ReadWheelEncoders","out")
 #addPeer("BaseReporter","WheelVel")
 #BaseReporter.reportPort("WheelVel","out")
 #addPeer("BaseReporter","BaseDecouplePosition")
 #BaseReporter.reportPort("BaseDecouplePosition","out")
-addPeer("BaseReporter","BaseCalculateErrors")
-BaseReporter.reportPort("BaseCalculateErrors","out")
-addPeer("BaseReporter","BaseSecondOrderLowPass")
-BaseReporter.reportPort("BaseSecondOrderLowPass","out")
-addPeer("BaseReporter","BaseSI2Volt")
-BaseReporter.reportPort("BaseSI2Volt","out")
-BaseReporter.NullSample = "-1"
-BaseReporter.setPeriod(Ts)
+#addPeer("BaseReporter","BaseCalculateErrors")
+#BaseReporter.reportPort("BaseCalculateErrors","out")
+#addPeer("BaseReporter","BaseSecondOrderLowPass")
+#BaseReporter.reportPort("BaseSecondOrderLowPass","out")
+#addPeer("BaseReporter","BaseSI2Volt")
+#BaseReporter.reportPort("BaseSI2Volt","out")
+#BaseReporter.NullSample = "-1"
+#BaseReporter.setPeriod(Ts)
 
 
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
