@@ -15,6 +15,11 @@ var ConnPolicy analog_in;
 analog_in.size = 1;
 analog_in.transport = 3;
 analog_in.name_id = "analog_in";
+
+var ConnPolicy digital_in;
+digital_in.size = 1;
+digital_in.transport = 3;
+digital_in.name_id = "digital_in";
 }
 hardware_ROStopics.start
 trigger

@@ -16,8 +16,8 @@ connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[
 loadComponent("AnalogIns","AnalogIns")
 AnalogIns.configure
 AnalogIns.setPeriod(1.0)
-connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() ); # 4x[volt]
-stream("AnalogIns.out1",hardware_ROStopics.analog_in)
+connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
+
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
 loadComponent("DigitalOuts","DigitalOuts")
@@ -26,7 +26,7 @@ DigitalOuts.configure
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS ###
 loadComponent("DigitalIns1","DigitalIns")
-DigitalIns1.setPeriod(1.0)
+DigitalIns1.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns1.in", ConnPolicy() )
 stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
 DigitalIns1.configure
