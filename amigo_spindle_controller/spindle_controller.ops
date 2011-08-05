@@ -61,11 +61,11 @@ SpindleFirstOrderLowPass.vector_size = 1
 SpindleFirstOrderLowPass.sampling_time = 0.004
 SpindleFirstOrderLowPass.pole_frequency = array (20.0)
 SpindleFirstOrderLowPass.configure
-loadComponent("SpindleIntegrator","FILTERS::WeakIntegrators")
-SpindleIntegrator.zero_frequency = array ( 0.3 )
-SpindleIntegrator.vector_size = 1
-SpindleIntegrator.sampling_time = 0.004
-SpindleIntegrator.configure
+#loadComponent("SpindleIntegrator","FILTERS::WeakIntegrators")
+#SpindleIntegrator.zero_frequency = array ( 0.3 )
+#SpindleIntegrator.vector_size = 1
+#SpindleIntegrator.sampling_time = 0.004
+#SpindleIntegrator.configure
 
 #Loading Safety component
 loadComponent("SpindleSafety","SpindleSafety")
@@ -113,8 +113,9 @@ connect ("SpindleCalculateError.out","SpindleHoming.error_pos", ConnPolicy() )
 connect ("SpindleCalculateError.out","SpindleSafety.error_pos", ConnPolicy() )
 connect ("SpindleGain.out","SpindleLeadLag.in", ConnPolicy() )
 connect ("SpindleLeadLag.out","SpindleFirstOrderLowPass.in", ConnPolicy() )
-connect ("SpindleFirstOrderLowPass.out","SpindleIntegrator.in", ConnPolicy() )
-connect ("SpindleIntegrator.out","SpindleCalculateOutput.in2_event", ConnPolicy() )
+#connect ("SpindleFirstOrderLowPass.out","SpindleIntegrator.in", ConnPolicy() )
+#connect ("SpindleIntegrator.out","SpindleCalculateOutput.in2_event", ConnPolicy() )
+connect ("SpindleFirstOrderLowPass.out","SpindleCalculateOutput.in2_event", ConnPolicy() )
 connect ("SpindleCalculateFFW.FFW_out","SpindleCalculateOutput.in1", ConnPolicy() )
 connect ("SpindleCalculateOutput.out","SpindleOutputLimiter.input", ConnPolicy() )
 connect ("SpindleOutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
@@ -157,7 +158,7 @@ SpindleHoming.start
 SpindleGain.start
 SpindleLeadLag.start
 SpindleFirstOrderLowPass.start
-SpindleIntegrator.start
+#SpindleIntegrator.start
 SpindleCalculateError.start
 SpindleCalculateFFW.start
 SpindleCalculatePosition.start
