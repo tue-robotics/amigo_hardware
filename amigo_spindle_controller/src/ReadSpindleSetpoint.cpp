@@ -7,10 +7,7 @@
 using namespace RTT;
 using namespace MSG;
 
-ReadSpindleSetpoint::ReadSpindleSetpoint(const string& name) : TaskContext(name, PreOperational),
-
-  homed_position_property("homed_pos", "Vector", 0.35 )
-
+ReadSpindleSetpoint::ReadSpindleSetpoint(const string& name) : TaskContext(name, PreOperational)
 {
   // Creating ports:
   addEventPort( "spindle_setpoint", spindle_setpoint_inport );
@@ -18,7 +15,8 @@ ReadSpindleSetpoint::ReadSpindleSetpoint(const string& name) : TaskContext(name,
   addPort( "ref_pos", refpos_outport );
   
   // Creating variables
-  addProperty( homed_position_property );
+  homed_position_property = 0.35;
+  addProperty( "homed_pos", homed_position_property );
 }
 ReadSpindleSetpoint::~ReadSpindleSetpoint(){}
 
@@ -42,7 +40,7 @@ bool ReadSpindleSetpoint::startHook()
 
   // During the startup the position which is desired after homing, 
   // is once published to the ROS topic.
-  double homed_pos = homed_position_property.get();
+  double homed_pos = homed_position_property;
   spindle_setpoint.pos = homed_pos;
   afterhoming_outport.write(spindle_setpoint);
   return true;

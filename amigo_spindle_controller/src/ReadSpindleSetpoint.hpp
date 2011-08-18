@@ -24,7 +24,7 @@ namespace MSG // Just because it looks nice
     OutputPort<double> refpos_outport;
     
     // Declaring property
-    Property<double> homed_position_property;
+    double homed_position_property;
     
     // Declaring message types
     amigo_msgs::spindle_setpoint spindle_setpoint;
