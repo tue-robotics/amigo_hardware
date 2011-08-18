@@ -1,3 +1,4 @@
+scripting.ZeroPeriodWarning=false
 program hardware_ROStopics {
 
 ### Hardware topics

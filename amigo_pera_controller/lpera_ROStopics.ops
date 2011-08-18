@@ -1,3 +1,4 @@
+scripting.ZeroPeriodWarning=false
 program lpera_ROStopics{
 
 var ConnPolicy joint_coordinates_left;
