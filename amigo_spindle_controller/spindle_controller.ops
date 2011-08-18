@@ -130,24 +130,24 @@ stream("SpindleReferenceLimiter.left_tip",spindle_ROStopics.left_tip);
 
 
 ### Setting up reporting ###
-loadComponent("SpindleReporter", "OCL::FileReporting")
-SpindleReporter.ReportFile = "/home/amigo/spindlereports.dat"
-addPeer("SpindleReporter","SpindleOutputLimiter")
-addPeer("SpindleReporter","SpindleCalculatePosition")
-addPeer("SpindleReporter","SpindleReferenceGenerator")
-addPeer("SpindleReporter","SpindleCalculateError")
-addPeer("SpindleReporter","SpindleFirstOrderLowPass")
-addPeer("SpindleReporter","SpindleReadSetpoint")
-addPeer("SpindleReporter","SpindleIntegrator")
-SpindleReporter.reportPort("SpindleReadSetpoint","ref_pos")
-SpindleReporter.reportPort("SpindleOutputLimiter","output")
-SpindleReporter.reportPort("SpindleCalculatePosition","out")
-SpindleReporter.reportPort("SpindleReferenceGenerator","posout")
-SpindleReporter.reportPort("SpindleCalculateError","out")
-SpindleReporter.reportPort("SpindleReferenceGenerator","velout")
-SpindleReporter.reportPort("SpindleReferenceGenerator","accout")
-SpindleReporter.reportPort("SpindleFirstOrderLowPass","out")
-SpindleReporter.reportPort("SpindleIntegrator","out")
+#loadComponent("SpindleReporter", "OCL::FileReporting")
+#SpindleReporter.ReportFile = "/home/amigo/spindlereports.dat"
+#addPeer("SpindleReporter","SpindleOutputLimiter")
+#addPeer("SpindleReporter","SpindleCalculatePosition")
+#addPeer("SpindleReporter","SpindleReferenceGenerator")
+#addPeer("SpindleReporter","SpindleCalculateError")
+#addPeer("SpindleReporter","SpindleFirstOrderLowPass")
+#addPeer("SpindleReporter","SpindleReadSetpoint")
+#addPeer("SpindleReporter","SpindleIntegrator")
+#SpindleReporter.reportPort("SpindleReadSetpoint","ref_pos")
+#SpindleReporter.reportPort("SpindleOutputLimiter","output")
+#SpindleReporter.reportPort("SpindleCalculatePosition","out")
+#SpindleReporter.reportPort("SpindleReferenceGenerator","posout")
+#SpindleReporter.reportPort("SpindleCalculateError","out")
+#SpindleReporter.reportPort("SpindleReferenceGenerator","velout")
+#SpindleReporter.reportPort("SpindleReferenceGenerator","accout")
+#SpindleReporter.reportPort("SpindleFirstOrderLowPass","out")
+#SpindleReporter.reportPort("SpindleIntegrator","out")
 
 
 ### Starting all the components ###
@@ -166,5 +166,5 @@ SpindleCalculateOutput.start
 SpindleOutputLimiter.start
 SpindlePublishPosition.start
 SpindleSafety.start
-SpindleReporter.start
+#SpindleReporter.start
 SpindleReferenceLimiter.start
