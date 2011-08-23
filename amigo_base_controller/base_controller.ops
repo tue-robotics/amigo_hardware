@@ -147,6 +147,24 @@ stream("Odometry.odom",base_ROStopics.odom);
 Odometry.configure
 Odometry.setPeriod(0.05)
 
+#### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
+loadComponent("BaseDiagnostics","ROS::RosDiagnostics")
+stream("BaseDiagnostics.diagnostics",hardware_ROStopics.diagnostics);
+BaseDiagnostics.setPeriod(1)
+BaseDiagnostics.statusname = "BaseController"
+BaseDiagnostics.NumberOfVectorPorts = 3
+BaseDiagnostics.NumberOfBoolPorts = 1
+BaseDiagnostics.configure
+BaseDiagnostics.vecname1 = "Reference"
+connect ("BaseReadReferenceVelocities.out", "BaseDiagnostics.vec1", ConnPolicy() )
+BaseDiagnostics.vecname2 = "Error"
+connect ("BaseCalculateErrors.out", "BaseDiagnostics.vec2", ConnPolicy() )
+BaseDiagnostics.vecname3 = "Voltage"
+connect ("BaseSI2Volt.out", "BaseDiagnostics.vec3", ConnPolicy() )
+BaseDiagnostics.boolname1 = "Amplifiers"
+connect ("BaseSafety.wheel_amplifiers", "BaseDiagnostics.bool1", ConnPolicy() )
+
+
 #Setting up reporting
 loadComponent("BaseReporter", "OCL::FileReporting")
 #BaseReporter.ReportFile = "/home/amigo/basereports.dat"
@@ -173,9 +191,10 @@ loadComponent("BaseReporter", "OCL::FileReporting")
 
 
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
+BaseDiagnostics.start
+BaseReadReferenceVelocities.start
 BaseReset.start
 ReadWheelEncoders.start
-BaseReadReferenceVelocities.start
 BaseVel2Pos.start
 BaseDecoupleReference.start
 BaseCalculateErrors.start
