@@ -17,6 +17,7 @@ loadComponent("AnalogIns","AnalogIns")
 AnalogIns.configure
 AnalogIns.setPeriod(1.0)
 connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
+stream("AnalogIns.out1",hardware_ROStopics.battery)
 
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###

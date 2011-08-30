@@ -7,6 +7,11 @@ emergency_switch.size = 1;
 emergency_switch.transport = 3;
 emergency_switch.name_id = "emergency_switch";
 
+var ConnPolicy battery;
+battery.size = 1;
+battery.transport = 3;
+battery.name_id = "battery_value";
+
 var ConnPolicy diagnostics;
 diagnostics.size = 1;
 diagnostics.transport = 3;
