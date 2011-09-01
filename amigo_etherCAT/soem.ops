@@ -30,6 +30,10 @@ loadComponent("DigitalIns1","DigitalIns")
 DigitalIns1.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns1.in", ConnPolicy() )
 stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
+stream("DigitalIns1.out1",hardware_ROStopics.fuse1)
+stream("DigitalIns1.out1",hardware_ROStopics.fuse2)
+stream("DigitalIns1.out1",hardware_ROStopics.fuse3)
+stream("DigitalIns1.out1",hardware_ROStopics.fuse4)
 DigitalIns1.configure
 
 Soem.start

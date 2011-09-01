@@ -12,10 +12,25 @@ battery.size = 1;
 battery.transport = 3;
 battery.name_id = "battery_value";
 
-var ConnPolicy fuse;
-fuse.size = 1;
-fuse.transport = 3;
-fuse.name_id = "fuse_values";
+var ConnPolicy fuse1;
+fuse1.size = 1;
+fuse1.transport = 3;
+fuse1.name_id = "fuse1";
+
+var ConnPolicy fuse2;
+fuse2.size = 1;
+fuse2.transport = 3;
+fuse2.name_id = "fuse2";
+
+var ConnPolicy fuse3;
+fuse3.size = 1;
+fuse3.transport = 3;
+fuse3.name_id = "fuse3";
+
+var ConnPolicy fuse4;
+fuse4.size = 1;
+fuse4.transport = 3;
+fuse4.name_id = "fuse4";
 
 var ConnPolicy diagnostics;
 diagnostics.size = 1;
