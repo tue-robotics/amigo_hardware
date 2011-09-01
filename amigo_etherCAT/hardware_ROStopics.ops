@@ -12,6 +12,11 @@ battery.size = 1;
 battery.transport = 3;
 battery.name_id = "battery_value";
 
+var ConnPolicy fuse;
+fuse.size = 1;
+fuse.transport = 3;
+fuse.name_id = "fuse_values";
+
 var ConnPolicy diagnostics;
 diagnostics.size = 1;
 diagnostics.transport = 3;
