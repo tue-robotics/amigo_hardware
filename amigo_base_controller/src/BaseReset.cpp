@@ -69,6 +69,7 @@ void BaseReset::updateHook()
 	  doubles pos;
   	  posport.read( pos );
   	  integratorresetport.write( pos );
+  	  resetport.write (true );
   }
 
 
