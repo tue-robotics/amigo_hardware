@@ -47,11 +47,10 @@ bool BaseReset::startHook()
 
 void BaseReset::updateHook()
 {
-  std_msgs::Bool emergency;
-  rosemergencyport.read( emergency );
   safeport.read( safe );
   if ( !safe )
   {
+	  // Set the error of the controller to zero by setting the reference to the output
 	  doubles pos;
   	  posport.read( pos );
   	  integratorresetport.write( pos );
@@ -62,17 +61,18 @@ void BaseReset::updateHook()
   		  log(Info)<<"BaseReset::Received reset command from ROS"<<endlog();
   		  resetport.write( true );
   	  }
+/*
+  	  std_msgs::Bool emergency;
+  	  if (rosemergencyport.read( emergency ) == NewData )
+  	  {
+  		  if ( !emergency.data )
+  		  {
+  			  log(Info)<<"BaseReset::Received reset command from button"<<endlog();
+  			  resetport.write( true );
+  		  }
+  	  }
+*/
   }
-  else if ( emergency.data )
-  {
-	  log(Info)<<"BaseReset::Button pressed"<<endlog();
-	  doubles pos;
-  	  posport.read( pos );
-  	  integratorresetport.write( pos );
-  	  resetport.write (true );
-  }
-
-
 }
 
 ORO_CREATE_COMPONENT(AMIGO::BaseReset)
