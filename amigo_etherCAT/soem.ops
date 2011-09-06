@@ -9,7 +9,7 @@ Soem.setPeriod(0.001)
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 loadComponent("AnalogOuts","AnalogOuts")
 AnalogOuts.configure
-AnalogOuts.max_volt = array ( 2.6, 2.6, 2.6, 2.6, 1.1, 0.0, 0.0, 0.0 )
+AnalogOuts.max_volt = array ( 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0 )
 connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
