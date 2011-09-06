@@ -150,6 +150,7 @@ Odometry.setPeriod(0.05)
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("BaseDiagnostics","ROS::RosDiagnostics")
 stream("BaseDiagnostics.diagnostics",hardware_ROStopics.diagnostics);
+stream("BaseDiagnostics.diagnostics",base_ROStopics.base_diagnostics);
 BaseDiagnostics.setPeriod(1)
 BaseDiagnostics.statusname = "BaseController"
 BaseDiagnostics.NumberOfVectorPorts = 3
