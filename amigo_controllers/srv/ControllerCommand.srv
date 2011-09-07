@@ -1,0 +1,4 @@
+int32 controller_number ## =Base, 1=LeftArm, 2=RightArm, 3=Head
+string command  # Options start, stop, reset, disable, none
+---
+int32 retval # 0 = false, 1=true
