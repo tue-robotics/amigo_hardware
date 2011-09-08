@@ -24,6 +24,11 @@ var ConnPolicy base_diagnostics;
 base_diagnostics.size = 1;
 base_diagnostics.transport = 3;
 base_diagnostics.name_id = "base_diagnostics";
+
+var ConnPolicy base_status;
+base_status.size = 1;
+base_status.transport = 3;
+base_status.name_id = "base_status";
 }
 base_ROStopics.start
 trigger

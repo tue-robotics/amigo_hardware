@@ -165,6 +165,13 @@ connect ("BaseSI2Volt.out", "BaseDiagnostics.vec3", ConnPolicy() )
 BaseDiagnostics.boolname1 = "Amplifiers"
 connect ("BaseSafety.wheel_amplifiers", "BaseDiagnostics.bool1", ConnPolicy() )
 
+#### LOAD COMPONENT TO PUBLISH STATUS ###
+LoadComponent("BaseStatus","ROS::BoolToROS")
+connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", ConnPolicy() )
+stream("BaseStatus.bool_out1",base_ROStopics.base_status);
+BaseStatus.setPeriod(1)
+BaseStatus.configure
+
 
 #Setting up reporting
 loadComponent("BaseReporter", "OCL::FileReporting")
@@ -208,5 +215,6 @@ BaseSI2Volt.start
 BaseSafety.start
 BaseDecouplePosition.start
 Odometry.start
+BaseStatus.start
 
 #BaseReporter.start
