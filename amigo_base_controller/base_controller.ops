@@ -166,7 +166,7 @@ BaseDiagnostics.boolname1 = "Amplifiers"
 connect ("BaseSafety.wheel_amplifiers", "BaseDiagnostics.bool1", ConnPolicy() )
 
 #### LOAD COMPONENT TO PUBLISH STATUS ###
-LoadComponent("BaseStatus","ROS::BoolToROS")
+loadComponent("BaseStatus","ROS::BoolToROS")
 connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", ConnPolicy() )
 stream("BaseStatus.bool_out1",base_ROStopics.base_status);
 BaseStatus.setPeriod(1)
