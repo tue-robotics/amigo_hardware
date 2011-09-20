@@ -1,21 +1,33 @@
+#Import all the dependencies from the amigo_etherCAT package. 
+#This enables you to import components from all these packages.
 import("amigo_etherCAT")
-trigger
+
+#TODO Why is this trigger? Try to remove it and push remove to trunk
+trigger 
+
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
+#This component enables communication with EtherCAT through the SoemMaster component.
 loadComponent("Soem","soem_master::SoemMasterComponent")
+#Configure the component. This looks for connected EtherCAT slaves and creates ports for all of the slaves.
 Soem.configure
-Soem.setPeriod(0.001)
+#Set a realtime priority to this component and run it every 1ms.
+setActivity("Soem",0.001,HighestPriority,ORO_SCHED_RT)
+#TODO What happens if you set the priority to 0.0?
+
 
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
+#This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.7
 loadComponent("AnalogOuts","AnalogOuts")
 AnalogOuts.configure
+setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
 AnalogOuts.max_volt = array ( 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0 )
 connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
 loadComponent("AnalogIns","AnalogIns")
 AnalogIns.configure
-AnalogIns.setPeriod(1.0)
+setActivity("AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
 stream("AnalogIns.out1",hardware_ROStopics.battery)
 
@@ -24,20 +36,22 @@ stream("AnalogIns.out1",hardware_ROStopics.battery)
 loadComponent("DigitalOuts","DigitalOuts")
 connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
+setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS ###
-loadComponent("DigitalIns1","DigitalIns")
-DigitalIns1.setPeriod(0.1)
-connect ("Soem.Slave_1009.bits", "DigitalIns1.in", ConnPolicy() )
-stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
-stream("DigitalIns1.out1",hardware_ROStopics.fuse1)
-stream("DigitalIns1.out2",hardware_ROStopics.fuse2)
-stream("DigitalIns1.out3",hardware_ROStopics.fuse3)
-stream("DigitalIns1.out4",hardware_ROStopics.fuse4)
-DigitalIns1.configure
+loadComponent("DigitalIns","DigitalIns")
+DigitalIns.setPeriod(0.1)
+connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
+stream("DigitalIns.out6",hardware_ROStopics.emergency_switch)
+stream("DigitalIns.out1",hardware_ROStopics.fuse1)
+stream("DigitalIns.out2",hardware_ROStopics.fuse2)
+stream("DigitalIns.out3",hardware_ROStopics.fuse3)
+stream("DigitalIns.out4",hardware_ROStopics.fuse4)
+DigitalIns.configure
+setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
 Soem.start
 AnalogOuts.start
 AnalogIns.start
 DigitalOuts.start
-DigitalIns1.start
+DigitalIns.start
