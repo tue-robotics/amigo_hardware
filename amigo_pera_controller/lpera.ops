@@ -1,7 +1,9 @@
 import("amigo_pera_controller")
 trigger
 
-stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
+# Removed by Tim, was already defined in soem.ops of the package amigo_etherCAT.
+# No clue why double defined
+#stream("DigitalIns1.out6",hardware_ROStopics.emergency_switch)
 
 ### Read reference joint angles ###
 loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
