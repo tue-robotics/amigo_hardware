@@ -91,6 +91,14 @@ SpindleReferenceGenerator.configure
 SpindleReferenceGenerator.interpolator1 = array (0.0, 0.01, 0.1)
 
 
+#### LOAD COMPONENT TO PUBLISH STATUS ###
+loadComponent("SpindleStatus","ROS::BoolToROS")
+SpindleStatus.NumberOfBoolPorts = 1
+SpindleStatus.configure
+SpindleStatus.setPeriod(1)
+
+
+
 ### Setting up the connections between the components ###
 connect ("Soem.Slave_1006.Slave_1006_value","SpindleReadEncoder.enc1_in", ConnPolicy() )
 connect ("SpindleReadEncoder.out","SpindleCalculatePosition.in_minus", ConnPolicy() )
@@ -120,6 +128,7 @@ connect ("SpindleCalculateFFW.FFW_out","SpindleCalculateOutput.in1", ConnPolicy(
 connect ("SpindleCalculateOutput.out","SpindleOutputLimiter.input", ConnPolicy() )
 connect ("SpindleOutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
 connect ("SpindleReadEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
+connect ("SpindleSafety.spindle_break", "SpindleStatus.bool_in1", ConnPolicy() )
 
 #Setting up the connections with ROS-topics
 stream("SpindleReadSetpoint.spindle_setpoint",spindle_ROStopics.spindle_setpoint);
@@ -127,6 +136,7 @@ stream("SpindlePublishPosition.out",spindle_ROStopics.spindle_position);
 stream("SpindleReadSetpoint.afterhoming_pos",spindle_ROStopics.spindle_setpoint);
 stream("SpindleReferenceLimiter.right_tip",spindle_ROStopics.right_tip);
 stream("SpindleReferenceLimiter.left_tip",spindle_ROStopics.left_tip);
+stream("SpindleStatus.bool_out1",spindle_ROStopics.spindle_status);
 
 
 ### Setting up reporting ###
@@ -168,3 +178,4 @@ SpindlePublishPosition.start
 SpindleSafety.start
 #SpindleReporter.start
 SpindleReferenceLimiter.start
+SpindleStatus.start

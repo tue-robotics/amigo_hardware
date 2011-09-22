@@ -11,6 +11,11 @@ spindle_position.size = 1;
 spindle_position.transport = 3;
 spindle_position.name_id = "/spindle_position";
 
+var ConnPolicy spindle_status;
+spindle_status.size = 1;
+spindle_status.transport = 3;
+spindle_status.name_id = "/spindle_status";
+
 var ConnPolicy right_tip;
 right_tip.size = 1;
 right_tip.transport = 3;
