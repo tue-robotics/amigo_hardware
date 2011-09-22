@@ -11,41 +11,40 @@ def enable_controller(req):
 	
 	#RUN LOCALLY ON AMIGO2
 	#preamble="ssh amigo@amigo2 'source /opt/ros/diamondback/setup.bash; ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/ros; ROS_MASTER_URI=http://amigo1:11311; "
-	wheel_controllers_exist = False
-	spindle_controllers_exist = False
-	head_controllers_exist = False
+	controllers_exist = [ False, False, False, False, False ]
+
+	package_names = ("amigo_base_controller", "amigo_spindle_controller", "arm_left", "arm_right", "dynamixel_ethercat")
 	
 	
-	returncode = popen("ps x | grep amigo_base_controller | grep -v grep | awk '{print $1}'").readlines()
+
+	returncode = popen("ps x | grep " + package_names[0] + "| grep -v grep | awk '{print $1}'").readlines()
 	if len(returncode) > 0:
-		wheel_controllers_exist = True
-	print wheel_controllers_exist
+		controllers_exist[0] = True
 	
 	returncode = popen("ps x | grep amigo_spindle_controller | grep -v grep | awk '{print $1}'").readlines()
 	if len(returncode) > 0:
-		spindle_controllers_exist = True
-	print spindle_controllers_exist	
+		controllers_exist[1] = True
 		
 	returncode = popen("ps x | grep dynamixel_ethercat | grep -v grep | awk '{print $1}'").readlines()
 	if len(returncode) > 0:
-		head_controllers_exist = True
-	print head_controllers_exist
+		controllers_exist[4] = True
+	print controllers_exist
 		
-	if ( req.command == "enable" and req.controller_number == 0 ):
-		if ( wheel_controllers_exist ):
-			print "base_controller_start.ops"
+		
+	if ( req.command == "enable" ):
+		if ( controllers_exist[req.controller_number] ):
+			print "start ", req.controller_number
 			#call("rosrun ocl cdeployer-gnulinux -s `rospack find amigo_base_controller`/base_controller_start.ops & sleep 5; kill $!")
 		else:
-			print "all_etherCAT_hardware.launch"
+			print "kill all, load all, start ", req.controller_number
 			#call("roslaunch amigo_launch_files all_etherCAT_hardware.launch")
 
 		
-	if ( req.command == "disable" and req.controller_number == 0 ):
-		if ( wheel_controllers_exist ):
-			print "base_controller_stop.ops"
+	if ( req.command == "disable" and controllers_exist[req.controller_number] ):
+		print "stop", req.controller_number
 	#		call("rosrun ocl cdeployer-gnulinux -s `rospack find amigo_base_controller`/base_controller_stop.ops & sleep 5; kill $!")
 
-
+#ps x | grep amigo_base_controller | grep -v grep | awk '{print $1}' | xargs kill
 
 	
 	
