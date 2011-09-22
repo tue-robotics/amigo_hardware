@@ -128,7 +128,7 @@ connect ("SpindleCalculateFFW.FFW_out","SpindleCalculateOutput.in1", ConnPolicy(
 connect ("SpindleCalculateOutput.out","SpindleOutputLimiter.input", ConnPolicy() )
 connect ("SpindleOutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
 connect ("SpindleReadEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
-connect ("SpindleSafety.spindle_break", "SpindleStatus.bool_in1", ConnPolicy() )
+connect ("SpindleSafety.spindle_brake", "SpindleStatus.bool_in1", ConnPolicy() )
 
 #Setting up the connections with ROS-topics
 stream("SpindleReadSetpoint.spindle_setpoint",spindle_ROStopics.spindle_setpoint);
