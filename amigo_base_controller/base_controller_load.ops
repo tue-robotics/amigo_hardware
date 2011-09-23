@@ -12,12 +12,12 @@ var double TWOPI = 2*3.141592
 
 ### READ WHEEL ENCODERS ###
 loadComponent("ReadWheelEncoders","ReadEncoders")
-ReadWheelEncoders.setPeriod(Ts)
 #loadService("ReadWheelEncoders","rosparam")
 #ReadWheelEncoders.rosparam.refreshProperties()
 ReadWheelEncoders.encoderbits = 65536
 ReadWheelEncoders.enc2SI = array (2.61799388e-4, 2.61799388e-4, 2.61799388e-4, 2.61799388e-4)
 ReadWheelEncoders.configure
+setActivity("ReadWheelEncoders",Ts,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_1002.Slave_1002_value","ReadWheelEncoders.enc1_in", ConnPolicy() ); #enc1[-]
 connect ("Soem.Slave_1003.Slave_1003_value","ReadWheelEncoders.enc2_in", ConnPolicy() ); #enc2[-]
 connect ("Soem.Slave_1004.Slave_1004_value","ReadWheelEncoders.enc3_in", ConnPolicy() ); #enc3[-]
@@ -28,6 +28,7 @@ loadComponent("BaseDecouplePosition","MatrixTransform")
 BaseDecouplePosition.Nrows = 3
 BaseDecouplePosition.Ncolumns = 4
 BaseDecouplePosition.configure
+setActivity("BaseDecouplePosition",0.0,HighestPriority,ORO_SCHED_RT)
 BaseDecouplePosition.function1 = array (-0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2)
 BaseDecouplePosition.function2 = array ( 0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2)
 BaseDecouplePosition.function3 = array ( 0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT)
@@ -42,13 +43,15 @@ BaseReadReferenceVelocities.max_acc = array (0.7, 0.7, 2.0)
 BaseReadReferenceVelocities.max_interval = 1.0
 #Setting up ROS-topics
 stream("BaseReadReferenceVelocities.cmd_vel",base_ROStopics.cmd_vel);
-BaseReadReferenceVelocities.setPeriod(0.01)
 BaseReadReferenceVelocities.configure
+setActivity("BaseReadReferenceVelocities",0.01,LowestPriority,ORO_SCHED_OTHER)
+
     
 ### VELOCITY TO POSITION ###
 loadComponent("BaseVel2Pos","MATH::Integrator")
 BaseVel2Pos.vector_size = 3
 BaseVel2Pos.configure
+setActivity("BaseVel2Pos",0.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("BaseReadReferenceVelocities.out","BaseVel2Pos.in", ConnPolicy() ); #[m/s \n m/s \n rad/s]
 
 ### DECOUPLE REFERENCE ###
@@ -56,6 +59,7 @@ loadComponent("BaseDecoupleReference","MatrixTransform")
 BaseDecoupleReference.Nrows = 4
 BaseDecoupleReference.Ncolumns = 3
 BaseDecoupleReference.configure
+setActivity("BaseDecoupleReference",0.0,LowestPriority,ORO_SCHED_OTHER)
 BaseDecoupleReference.function1 = array ( -HALFSQRT2/WHEELRAD,  HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
 BaseDecoupleReference.function2 = array ( -HALFSQRT2/WHEELRAD, -HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
 BaseDecoupleReference.function3 = array (  HALFSQRT2/WHEELRAD, -HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
@@ -69,6 +73,7 @@ BaseCalculateErrors.vectorsize = 4;
 connect ("BaseDecoupleReference.out","BaseCalculateErrors.in_plus", ConnPolicy() ); #[m \n m \n rad]
 connect ("ReadWheelEncoders.out","BaseCalculateErrors.in_minus", ConnPolicy() ); #[m \n m \n rad]
 BaseCalculateErrors.configure
+setActivity("BaseCalculateErrors",0.0,HighestPriority,ORO_SCHED_RT)
 
 ### GAIN ###
 loadComponent("BaseControllerGains","MATH::Gains")
@@ -76,6 +81,8 @@ connect ("BaseCalculateErrors.out","BaseControllerGains.in", ConnPolicy() )
 BaseControllerGains.vectorsize = 4;
 BaseControllerGains.gain = array (0.5, 0.5, 0.5, 0.5)
 BaseControllerGains.configure
+setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
+
 
 ### LEADLAG ###
 loadComponent("BaseLeadLag","FILTERS::LeadLags")
@@ -85,6 +92,7 @@ BaseLeadLag.sampling_time = Ts
 BaseLeadLag.zero_frequency = array (5.0, 5.0, 5.0, 5.0)
 BaseLeadLag.pole_frequency = array (20.0, 20.0, 20.0, 20.0)
 BaseLeadLag.configure
+setActivity("BaseLeadLag",0.0,HighestPriority,ORO_SCHED_RT)
 
 ### LOWPASS ###
 loadComponent("BaseSecondOrderLowPass","FILTERS::SecondOrderLowPasses")
@@ -94,8 +102,10 @@ BaseSecondOrderLowPass.sampling_time = Ts
 BaseSecondOrderLowPass.pole_frequency = array (250.0, 250.0, 250.0, 250.0)
 BaseSecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7, 0.7)
 BaseSecondOrderLowPass.configure
+setActivity("BaseSecondOrderLowPass",0.0,HighestPriority,ORO_SCHED_RT)
 
-### FEEDFORWARD ###
+
+### FEEDFORWARD ### # Do you want this in case of wheel slip?
 #loadComponent("BaseFeedForward","MATH::Gains")
 #connect ("BaseReadReferenceVelocities.out","BaseFeedForward.in", ConnPolicy() )
 #BaseFeedForward.vectorsize = 3;
@@ -117,6 +127,8 @@ BaseSI2Volt.vectorsize = 4;
 var double SI2V = TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
 BaseSI2Volt.gain = array (SI2V, SI2V, SI2V, SI2V)
 BaseSI2Volt.configure
+setActivity("BaseSI2Volt",0.0,HighestPriority,ORO_SCHED_RT)
+
 
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
@@ -129,6 +141,8 @@ connect ("BaseSI2Volt.out", "BaseSafety.voltage", ConnPolicy() )
 connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.amplifiers", ConnPolicy() ); # amplifiers
 connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.tuelights", ConnPolicy() ); # lights
 BaseSafety.configure
+setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)
+
 
 #### LOAD COMPONENT FOR RESET ###
 loadComponent("BaseReset","AMIGO::BaseReset")
@@ -139,23 +153,25 @@ connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
 stream("BaseReset.rosreset",base_ROStopics.reset);
 stream("BaseReset.rosemergency",base_ROStopics.emergency_switch);
 BaseReset.configure
+setActivity("BaseReset",0.0,LowestPriority,ORO_SCHED_OTHER)
+
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
 loadComponent("Odometry","AMIGO::PublishOdometry")
 connect ("BaseDecouplePosition.out", "Odometry.pos", ConnPolicy() )
 stream("Odometry.odom",base_ROStopics.odom);
 Odometry.configure
-Odometry.setPeriod(0.05)
+setActivity("Odometry",0.05,LowestPriority,ORO_SCHED_OTHER)
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("BaseDiagnostics","ROS::RosDiagnostics")
 stream("BaseDiagnostics.diagnostics",hardware_ROStopics.diagnostics);
 stream("BaseDiagnostics.diagnostics",base_ROStopics.base_diagnostics);
-BaseDiagnostics.setPeriod(1)
 BaseDiagnostics.statusname = "BaseController"
 BaseDiagnostics.NumberOfVectorPorts = 3
 BaseDiagnostics.NumberOfBoolPorts = 1
 BaseDiagnostics.configure
+setActivity("BaseDiagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
 BaseDiagnostics.vecname1 = "Reference"
 connect ("BaseReadReferenceVelocities.out", "BaseDiagnostics.vec1", ConnPolicy() )
 BaseDiagnostics.vecname2 = "Error"
@@ -165,13 +181,14 @@ connect ("BaseSI2Volt.out", "BaseDiagnostics.vec3", ConnPolicy() )
 BaseDiagnostics.boolname1 = "Amplifiers"
 connect ("BaseSafety.wheel_amplifiers", "BaseDiagnostics.bool1", ConnPolicy() )
 
+
 #### LOAD COMPONENT TO PUBLISH STATUS ###
 loadComponent("BaseStatus","ROS::BoolToROS")
 BaseStatus.NumberOfBoolPorts = 1
 BaseStatus.configure
+setActivity("BaseStatus",1.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", ConnPolicy() )
 stream("BaseStatus.bool_out1",base_ROStopics.base_status);
-BaseStatus.setPeriod(1)
 
 
 

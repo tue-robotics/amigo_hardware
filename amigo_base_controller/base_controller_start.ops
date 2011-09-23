@@ -17,5 +17,3 @@ Deployer.BaseSafety.start
 Deployer.BaseDecouplePosition.start
 Deployer.Odometry.start
 Deployer.BaseStatus.start
-
-kickOutAll
