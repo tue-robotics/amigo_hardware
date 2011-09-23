@@ -14,20 +14,13 @@ def enable_controller(req):
 	controllers_exist = [ False, False, False, False, False ]
 
 	package_names = ("amigo_base_controller", "amigo_spindle_controller", "arm_left", "arm_right", "dynamixel_ethercat")
-	
-	
-
-	returncode = popen("ps x | grep " + package_names[0] + "| grep -v grep | awk '{print $1}'").readlines()
-	if len(returncode) > 0:
-		controllers_exist[0] = True
-	
-	returncode = popen("ps x | grep amigo_spindle_controller | grep -v grep | awk '{print $1}'").readlines()
-	if len(returncode) > 0:
-		controllers_exist[1] = True
 		
-	returncode = popen("ps x | grep dynamixel_ethercat | grep -v grep | awk '{print $1}'").readlines()
-	if len(returncode) > 0:
-		controllers_exist[4] = True
+	
+	for (counter, package_name) in enumerate(package_names):	
+		returncode = popen("ps x | grep " + package_name + "| grep -v grep | awk '{print $1}'").readlines()
+		if len(returncode) > 0:
+			controllers_exist[counter] = True
+	
 	print controllers_exist
 		
 		
@@ -37,12 +30,14 @@ def enable_controller(req):
 			#call("rosrun ocl cdeployer-gnulinux -s `rospack find amigo_base_controller`/base_controller_start.ops & sleep 5; kill $!")
 		else:
 			print "kill all, load all, start ", req.controller_number
-			#call("roslaunch amigo_launch_files all_etherCAT_hardware.launch")
+			call("/etc/ros/setup.bash; roslaunch amigo_launch_files all_etherCAT_hardware.launch")
 
 		
-	if ( req.command == "disable" and controllers_exist[req.controller_number] ):
-		print "stop", req.controller_number
-	#		call("rosrun ocl cdeployer-gnulinux -s `rospack find amigo_base_controller`/base_controller_stop.ops & sleep 5; kill $!")
+	if ( req.command == "disable" ):#and controllers_exist[req.controller_number] ):
+		stop_commands = ("base_controller_stop.ops", "spindle_controller_stop.ops", "arm_left_stop.ops", "arm_right_stop.ops", "dynamixel_ethercat_stop.ops")
+		command = "/etc/ros/setup.bash; rosrun ocl cdeployer-gnulinux -s `rospack find " + package_names[req.controller_number] + "`/" + stop_commands[req.controller_number] + " & sleep 5; kill $!"
+		print command
+		call(command)
 
 #ps x | grep amigo_base_controller | grep -v grep | awk '{print $1}' | xargs kill
 
