@@ -1,0 +1,21 @@
+
+
+### stopping all the components ###
+SpindleReadSetpoint.stop
+SpindleReadEncoder.stop
+SpindleReferenceGenerator.stop
+SpindleHoming.stop
+SpindleGain.stop
+SpindleLeadLag.stop
+SpindleFirstOrderLowPass.stop
+#SpindleIntegrator.stop
+SpindleCalculateError.stop
+SpindleCalculateFFW.stop
+SpindleCalculatePosition.stop
+SpindleCalculateOutput.stop
+SpindleOutputLimiter.stop
+SpindlePublishPosition.stop
+SpindleSafety.stop
+#SpindleReporter.stop
+SpindleReferenceLimiter.stop
+SpindleStatus.stop

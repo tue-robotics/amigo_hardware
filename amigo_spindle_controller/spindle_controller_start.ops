@@ -1,0 +1,21 @@
+
+
+### Starting all the components ###
+SpindleReadSetpoint.start
+SpindleReadEncoder.start
+SpindleReferenceGenerator.start
+SpindleHoming.start
+SpindleGain.start
+SpindleLeadLag.start
+SpindleFirstOrderLowPass.start
+#SpindleIntegrator.start
+SpindleCalculateError.start
+SpindleCalculateFFW.start
+SpindleCalculatePosition.start
+SpindleCalculateOutput.start
+SpindleOutputLimiter.start
+SpindlePublishPosition.start
+SpindleSafety.start
+#SpindleReporter.start
+SpindleReferenceLimiter.start
+SpindleStatus.start
