@@ -39,11 +39,11 @@ def enable_controller(req):
 			p = Popen(shlex.split(cmd))
 			cmd = "roslaunch amigo_launch_files load_all_etherCAT_hardware.launch"
 			p = Popen(shlex.split(cmd))
-		else:
-			cmd = "rosrun ocl cdeployer-gnulinux START -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_start.ops & sleep 5; kill $!"
-			p = Popen(cmd, shell=True)
 			sleep(5)
-			p.terminate()
+		cmd = "rosrun ocl cdeployer-gnulinux START -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_start.ops & sleep 5; kill $!"
+		p = Popen(cmd, shell=True)
+		sleep(3)
+		p.terminate()
 		
 	if ( req.command == "disable" and controllers_exist[req.controller_number] ):
 		cmd = "rosrun ocl cdeployer-gnulinux STOP -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_stop.ops & sleep 5; kill $!"
