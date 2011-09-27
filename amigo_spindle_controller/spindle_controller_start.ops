@@ -1,21 +1,23 @@
+import("amigo_spindle_controller")
 
+loadComponent("ETHERCAT_HARDWARE","CORBA")
 
 ### Starting all the components ###
-SpindleReadSetpoint.start
-SpindleReadEncoder.start
-SpindleReferenceGenerator.start
-SpindleHoming.start
-SpindleGain.start
-SpindleLeadLag.start
-SpindleFirstOrderLowPass.start
+ETHERCAT_HARDWARE.SpindleReadSetpoint.start
+ETHERCAT_HARDWARE.SpindleReadEncoder.start
+ETHERCAT_HARDWARE.SpindleReferenceGenerator.start
+ETHERCAT_HARDWARE.SpindleHoming.start
+ETHERCAT_HARDWARE.SpindleGain.start
+ETHERCAT_HARDWARE.SpindleLeadLag.start
+ETHERCAT_HARDWARE.SpindleFirstOrderLowPass.start
 #SpindleIntegrator.start
-SpindleCalculateError.start
-SpindleCalculateFFW.start
-SpindleCalculatePosition.start
-SpindleCalculateOutput.start
-SpindleOutputLimiter.start
-SpindlePublishPosition.start
-SpindleSafety.start
+ETHERCAT_HARDWARE.SpindleCalculateError.start
+ETHERCAT_HARDWARE.SpindleCalculateFFW.start
+ETHERCAT_HARDWARE.SpindleCalculatePosition.start
+ETHERCAT_HARDWARE.SpindleCalculateOutput.start
+ETHERCAT_HARDWARE.SpindleOutputLimiter.start
+ETHERCAT_HARDWARE.SpindlePublishPosition.start
+ETHERCAT_HARDWARE.SpindleSafety.start
 #SpindleReporter.start
-SpindleReferenceLimiter.start
-SpindleStatus.start
+ETHERCAT_HARDWARE.SpindleReferenceLimiter.start
+ETHERCAT_HARDWARE.SpindleStatus.start

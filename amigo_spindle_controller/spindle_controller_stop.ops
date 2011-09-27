@@ -1,21 +1,23 @@
+import("amigo_spindle_controller")
 
+loadComponent("ETHERCAT_HARDWARE","CORBA")
 
-### stopping all the components ###
-SpindleReadSetpoint.stop
-SpindleReadEncoder.stop
-SpindleReferenceGenerator.stop
-SpindleHoming.stop
-SpindleGain.stop
-SpindleLeadLag.stop
-SpindleFirstOrderLowPass.stop
+### stoping all the components ###
+ETHERCAT_HARDWARE.SpindleReadSetpoint.stop
+ETHERCAT_HARDWARE.SpindleReadEncoder.stop
+ETHERCAT_HARDWARE.SpindleReferenceGenerator.stop
+ETHERCAT_HARDWARE.SpindleHoming.stop
+ETHERCAT_HARDWARE.SpindleGain.stop
+ETHERCAT_HARDWARE.SpindleLeadLag.stop
+ETHERCAT_HARDWARE.SpindleFirstOrderLowPass.stop
 #SpindleIntegrator.stop
-SpindleCalculateError.stop
-SpindleCalculateFFW.stop
-SpindleCalculatePosition.stop
-SpindleCalculateOutput.stop
-SpindleOutputLimiter.stop
-SpindlePublishPosition.stop
-SpindleSafety.stop
+ETHERCAT_HARDWARE.SpindleCalculateError.stop
+ETHERCAT_HARDWARE.SpindleCalculateFFW.stop
+ETHERCAT_HARDWARE.SpindleCalculatePosition.stop
+ETHERCAT_HARDWARE.SpindleCalculateOutput.stop
+ETHERCAT_HARDWARE.SpindleOutputLimiter.stop
+ETHERCAT_HARDWARE.SpindlePublishPosition.stop
+ETHERCAT_HARDWARE.SpindleSafety.stop
 #SpindleReporter.stop
-SpindleReferenceLimiter.stop
-SpindleStatus.stop
+ETHERCAT_HARDWARE.SpindleReferenceLimiter.stop
+ETHERCAT_HARDWARE.SpindleStatus.stop

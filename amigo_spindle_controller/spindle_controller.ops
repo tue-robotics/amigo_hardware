@@ -113,7 +113,7 @@ connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", Con
 connect ("SpindleCalculatePosition.out","SpindleCalculateError.in_minus", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindlePublishPosition.in", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindleHoming.current_pos", ConnPolicy() )
-connect ("SpindleCalculatePosition.out","SpindleReferenceLimiter.spindle_position", ConnPolicy() )
+#connect ("SpindleCalculatePosition.out","SpindleReferenceLimiter.spindle_position", ConnPolicy() )
 connect ("SpindleReferenceGenerator.velout","SpindleCalculateFFW.ref_vel", ConnPolicy() )
 connect ("SpindleReferenceGenerator.accout","SpindleCalculateFFW.ref_acc", ConnPolicy() )
 connect ("SpindleCalculateError.out","SpindleGain.in", ConnPolicy() )
@@ -134,8 +134,8 @@ connect ("SpindleSafety.spindle_brake", "SpindleStatus.bool_in1", ConnPolicy() )
 stream("SpindleReadSetpoint.spindle_setpoint",spindle_ROStopics.spindle_setpoint);
 stream("SpindlePublishPosition.out",spindle_ROStopics.spindle_position);
 stream("SpindleReadSetpoint.afterhoming_pos",spindle_ROStopics.spindle_setpoint);
-stream("SpindleReferenceLimiter.right_tip",spindle_ROStopics.right_tip);
-stream("SpindleReferenceLimiter.left_tip",spindle_ROStopics.left_tip);
+#stream("SpindleReferenceLimiter.right_tip",spindle_ROStopics.right_tip);
+#stream("SpindleReferenceLimiter.left_tip",spindle_ROStopics.left_tip);
 stream("SpindleStatus.bool_out1",spindle_ROStopics.spindle_status);
 
 
