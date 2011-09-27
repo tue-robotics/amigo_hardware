@@ -2,9 +2,6 @@
 #This enables you to import components from all these packages.
 import("amigo_etherCAT")
 
-#TODO Why is this trigger? Try to remove it and push remove to trunk
-trigger 
-
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 #This component enables communication with EtherCAT through the SoemMaster component.
