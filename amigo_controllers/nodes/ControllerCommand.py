@@ -3,9 +3,10 @@ import roslib; roslib.load_manifest('amigo_controllers')
 
 from amigo_controllers.srv import *
 import rospy
-#from subprocess import call, Popen
+from subprocess import call, Popen
 #import subprocess as sp
 from os import system, popen
+import shlex
 
 def enable_controller(req):
 	
@@ -37,7 +38,12 @@ def enable_controller(req):
 		else:
 			print "kill all, load all, start ", req.controller_number
 			system("ps x | grep deployer | grep -v grep | awk '{print $1}' | xargs kill")
-			system("roslaunch amigo_launch_files all_etherCAT_hardware.launch")
+			cmd = "roslaunch amigo_launch_files all_etherCAT_hardware.launch"
+			#cmd = "roslaunch amigo_teleop_spacenav start.launch"
+			args = shlex.split(cmd)
+			print args
+			p = Popen(args)
+			#system("roslaunch amigo_launch_files all_etherCAT_hardware.launch")
 
 		
 	if ( req.command == "disable" and controllers_exist[req.controller_number] ):
