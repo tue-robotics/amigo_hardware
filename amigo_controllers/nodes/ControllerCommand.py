@@ -5,7 +5,7 @@ from amigo_controllers.srv import *
 import rospy
 #from subprocess import call, Popen
 #import subprocess as sp
-from os import system
+from os import system, popen
 
 def enable_controller(req):
 	
