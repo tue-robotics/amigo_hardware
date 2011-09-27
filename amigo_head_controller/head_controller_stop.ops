@@ -1,1 +1,5 @@
-PanTiltController.stop
+import("amigo_head_controller")
+
+loadComponent("ETHERCAT_HARDWARE","CORBA")
+
+ETHERCAT_HARDWARE.PanTiltController.stop
