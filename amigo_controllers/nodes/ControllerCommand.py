@@ -7,6 +7,7 @@ from subprocess import call, Popen
 #import subprocess as sp
 from os import system, popen
 import shlex
+from time import sleep
 
 def enable_controller(req):
 	
@@ -15,7 +16,7 @@ def enable_controller(req):
 	controllers_exist = [ False, False, False, False, False ]
 
 	package_names = ("amigo_base_controller", "amigo_spindle_controller", "arm_left", "arm_right", "amigo_head_controller")
-	commands_prefixes = ("base_controller", "spindle_controller", "pera", "pera", "head_controller")
+	command_prefixes = ("base_controller", "spindle_controller", "pera", "pera", "head_controller")
 	allowed_commands = ("enable", "reset", "disable")
 	if not req.command in allowed_commands:
 		print "Command not valid!"
@@ -31,30 +32,31 @@ def enable_controller(req):
 
 		
 	if ( req.command == "enable" ):
-		if ( controllers_exist[req.controller_number] ):
-			print "start ", req.controller_number
-			cmd = "rosrun ocl cdeployer-gnulinux -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_start.ops & sleep 5; kill $!"
-			system(cmd)
+		if ( not controllers_exist[req.controller_number] ):
+			#print "kill all, load all, start ", req.controller_number
+			#system("ps x | grep deployer | grep -v grep | awk '{print $1}' | xargs kill")
+			cmd = "ps x | grep amigo_etherCAT | grep -v grep | awk '{print $1}' | xargs kill"
+			p = Popen(shlex.split(cmd))
+			cmd = "roslaunch amigo_launch_files load_all_etherCAT_hardware.launch"
+			p = Popen(shlex.split(cmd))
 		else:
-			print "kill all, load all, start ", req.controller_number
-			system("ps x | grep deployer | grep -v grep | awk '{print $1}' | xargs kill")
-			cmd = "roslaunch amigo_launch_files all_etherCAT_hardware.launch"
-			#cmd = "roslaunch amigo_teleop_spacenav start.launch"
-			args = shlex.split(cmd)
-			print args
-			p = Popen(args)
-			#system("roslaunch amigo_launch_files all_etherCAT_hardware.launch")
-
+			cmd = "rosrun ocl cdeployer-gnulinux START -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_start.ops & sleep 5; kill $!"
+			p = Popen(cmd, shell=True)
+			sleep(5)
+			p.terminate()
 		
 	if ( req.command == "disable" and controllers_exist[req.controller_number] ):
-		cmd = "rosrun ocl cdeployer-gnulinux -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_stop.ops & sleep 5; kill $!"
-		print cmd
-		system(cmd)
+		cmd = "rosrun ocl cdeployer-gnulinux STOP -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_stop.ops & sleep 5; kill $!"
+		p = Popen(cmd, shell=True)
+		sleep(5)
+		p.terminate()
 
 		
 	if ( req.command == "reset" and controllers_exist[req.controller_number] ):
-			system("ps x | grep deployer | grep -v grep | awk '{print $1}' | xargs kill")
-			system("roslaunch amigo_launch_files all_etherCAT_hardware.launch")
+			cmd = "ps x | grep amigo_etherCAT | grep -v grep | awk '{print $1}' | xargs kill"
+			p = Popen(shlex.split(cmd))
+			cmd = "roslaunch amigo_launch_files load_all_etherCAT_hardware.launch"
+			p = Popen(shlex.split(cmd))
 
 
 		#process = sp.Popen(cmd.split(" "), stdout=sp.PIPE, stderr=sp.PIPE, stdin=sp.PIPE, bufsize=1)
