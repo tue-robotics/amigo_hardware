@@ -1,19 +1,19 @@
 import("amigo_base_controller")
 
-loadComponent("Deployer","CORBA")
+loadComponent("ETHERCAT_HARDWARE","CORBA")
 
-Deployer.BaseDiagnostics.start
-Deployer.BaseReadReferenceVelocities.start
-Deployer.BaseReset.start
-Deployer.ReadWheelEncoders.start
-Deployer.BaseVel2Pos.start
-Deployer.BaseDecoupleReference.start
-Deployer.BaseCalculateErrors.start
-Deployer.BaseControllerGains.start
-Deployer.BaseLeadLag.start
-Deployer.BaseSecondOrderLowPass.start
-Deployer.BaseSI2Volt.start
-Deployer.BaseSafety.start
-Deployer.BaseDecouplePosition.start
-Deployer.Odometry.start
-Deployer.BaseStatus.start
+ETHERCAT_HARDWARE.BaseDiagnostics.start
+ETHERCAT_HARDWARE.BaseReadReferenceVelocities.start
+ETHERCAT_HARDWARE.BaseReset.start
+ETHERCAT_HARDWARE.ReadWheelEncoders.start
+ETHERCAT_HARDWARE.BaseVel2Pos.start
+ETHERCAT_HARDWARE.BaseDecoupleReference.start
+ETHERCAT_HARDWARE.BaseCalculateErrors.start
+ETHERCAT_HARDWARE.BaseControllerGains.start
+ETHERCAT_HARDWARE.BaseLeadLag.start
+ETHERCAT_HARDWARE.BaseSecondOrderLowPass.start
+ETHERCAT_HARDWARE.BaseSI2Volt.start
+ETHERCAT_HARDWARE.BaseSafety.start
+ETHERCAT_HARDWARE.BaseDecouplePosition.start
+ETHERCAT_HARDWARE.Odometry.start
+ETHERCAT_HARDWARE.BaseStatus.start
