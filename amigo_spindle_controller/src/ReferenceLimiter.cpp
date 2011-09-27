@@ -6,8 +6,8 @@
 
 #define STROKE 0.413
 #define SAFETYMARGIN 0.005
-#define TRESHOLDHEIGHT 0.35
-#define BASERADIUS 0.678
+//#define TRESHOLDHEIGHT 0.35
+//#define BASERADIUS 0.678
 
 using namespace RTT;
 using namespace AMIGO;
@@ -17,31 +17,30 @@ ReferenceLimiter::ReferenceLimiter(const string& name) : TaskContext(name, PreOp
 
 {
   // Creating ports:
-  addPort( "right_tip", right_tip_inport );
-  addPort( "left_tip", left_tip_inport ); 
-  addPort( "spindle_position", spindle_position_inport );
+  //addPort( "right_tip", right_tip_inport );
+  //addPort( "left_tip", left_tip_inport );
+  //addPort( "spindle_position", spindle_position_inport );
   addEventPort( "ref_pos_in", refpos_inport );
   addPort( "ref_pos_out", refpos_outport );
-  addPort( "report_right_tip", reporter_port );
   
   // Initialising variables
-  current_position.assign(1,0.0);
-  publish_countera = 0.0;
-  publish_counterb = 0.0;
+  //current_position.assign(1,0.0);
+  //publish_countera = 0.0;
+  //publish_counterb = 0.0;
 }
 ReferenceLimiter::~ReferenceLimiter(){}
 
 bool ReferenceLimiter::configureHook()
 {
-  onceleft = false;
-  onceright = false;
+  //onceleft = false;
+  //onceright = false;
   return true;
 }
 
 bool ReferenceLimiter::startHook()
 {
   // Check validity of Ports:
-  if ( !right_tip_inport.connected() || !left_tip_inport.connected() || !spindle_position_inport.connected() || !refpos_inport.connected() ) {
+  if ( !refpos_inport.connected() ) {
     log(Error)<<"ReferenceLimiter::One or more inputports not connected!"<<endlog();
     // No connection was made, can't do my job !
     return false;
@@ -57,9 +56,9 @@ void ReferenceLimiter::updateHook()
 {
   // Read the inputports
   refpos_inport.read(ref_pos);
-  spindle_position_inport.read(current_position);
-  right_tip_inport.read(right_tip);
-  left_tip_inport.read(left_tip);
+  //spindle_position_inport.read(current_position);
+  //right_tip_inport.read(right_tip);
+  //left_tip_inport.read(left_tip);
  
   double minimum_pos = SAFETYMARGIN;
   double maximum_pos = STROKE - SAFETYMARGIN;
@@ -74,7 +73,7 @@ void ReferenceLimiter::updateHook()
 		ref_pos = maximum_pos;
 	}
 	
-	// Calculating circular coordinates of tip
+/*	// Calculating circular coordinates of tip
 	//double radius_right = sqrt( right_tip.x*right_tip.x + right_tip.y*right_tip.y );
 	//double radius_left = sqrt( left_tip.x*left_tip.x + left_tip.y*left_tip.y );
 	
@@ -105,11 +104,10 @@ void ReferenceLimiter::updateHook()
 			}
 		publish_counterb = 0.0;
 		}
-	}
+	}*/
 	
   // Write data to ports
   refpos_outport.write( ref_pos );
-  reporter_port.write(right_tip);
 }
 
 ORO_CREATE_COMPONENT(ReferenceLimiter)

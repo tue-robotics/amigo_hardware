@@ -24,7 +24,6 @@ namespace AMIGO // Just because it looks nice
     InputPort<doubles> spindle_position_inport;
     InputPort<double> refpos_inport;
     OutputPort<double> refpos_outport;
-    OutputPort<amigo_msgs::tip_ref> reporter_port;
     
     // Declaring message types
     amigo_msgs::tip_ref right_tip;
