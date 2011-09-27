@@ -35,7 +35,8 @@ def enable_controller(req):
 		
 	if ( req.command == "disable" ):#and controllers_exist[req.controller_number] ):
 		stop_commands = ("base_controller_stop.ops", "spindle_controller_stop.ops", "arm_left_stop.ops", "arm_right_stop.ops", "dynamixel_ethercat_stop.ops")
-		command = "/etc/ros/setup.bash; rosrun ocl cdeployer-gnulinux -s `rospack find " + package_names[req.controller_number] + "`/" + stop_commands[req.controller_number] + " & sleep 5; kill $!"
+		command = "rosrun ocl cdeployer-gnulinux -s `rospack find " + package_names[req.controller_number] + "`/" + stop_commands[req.controller_number] + " & sleep 5; kill $!"
+		#command = "roscore"
 		print command
 		call(command)
 
