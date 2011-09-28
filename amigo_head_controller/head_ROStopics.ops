@@ -14,6 +14,11 @@ var ConnPolicy head_tilt_angle;
 head_tilt_angle.size = 1;
 head_tilt_angle.transport = 3;
 head_tilt_angle.name_id = "head_tilt_angle";
+
+var ConnPolicy head_status;
+head_status.size = 1;
+head_status.transport = 3;
+head_status.name_id = "head_status";
 }
 head_ROStopics.start
 trigger

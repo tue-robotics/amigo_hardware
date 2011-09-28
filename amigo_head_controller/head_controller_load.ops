@@ -20,3 +20,4 @@ connect ("Soem.Slave_100f.running", "PanTiltController.serialRunning", ConnPolic
 stream("PanTiltController.goalPos",head_ROStopics.head_goalPos);
 stream("PanTiltController.currentPosPan",head_ROStopics.head_pan_angle);
 stream("PanTiltController.currentPosTilt",head_ROStopics.head_tilt_angle);
+stream("PanTiltController.currentPosTilt",head_ROStopics.head_status);
