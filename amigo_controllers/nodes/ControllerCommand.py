@@ -3,7 +3,7 @@ import roslib; roslib.load_manifest('amigo_controllers')
 
 from amigo_controllers.srv import *
 import rospy
-from subprocess import call, Popen
+from subprocess import call, Popen, PIPE
 #import subprocess as sp
 from os import system, popen
 import shlex
@@ -19,27 +19,35 @@ def enable_controller(req):
 	command_prefixes = ("base_controller", "spindle_controller", "pera", "pera", "head_controller")
 	allowed_commands = ("enable", "reset", "disable")
 	if not req.command in allowed_commands:
-		print "Command not valid!"
+		rospy.logerr("Command not valid!")
+		return 0
+		
+	if not ( call(['ping', '-c1', '-w1', 'amigo2'], stdout = PIPE, stderr = PIPE) == 0 ):
+		rospy.logerr("Amigo2 unreachable") 
 		return 0
 		
 	
 	for (counter, package_name) in enumerate(package_names):	
-		returncode = popen("ps x | grep " + package_name + "| grep -v grep | awk '{print $1}'").readlines()
-		if len(returncode) > 0:
-			controllers_exist[counter] = True
+		cmd = "ssh amigo@amigo2 'pgrep -f " + package_name + "'"
+		controllers_exist[counter] = (call(cmd, shell=True, stdout = PIPE) == 0)
 	
 	print controllers_exist
 
+	if req.controller_number in [2, 3]:
+		rospy.logwarn("Arm controller functionality not yet implemented") 
+		return 0
 		
-	if ( req.command == "enable" ):
-		if ( not controllers_exist[req.controller_number] ):
-			#print "kill all, load all, start ", req.controller_number
-			#system("ps x | grep deployer | grep -v grep | awk '{print $1}' | xargs kill")
-			cmd = "ps x | grep amigo_etherCAT | grep -v grep | awk '{print $1}' | xargs kill"
-			p = Popen(shlex.split(cmd))
-			cmd = "roslaunch amigo_launch_files load_all_etherCAT_hardware.launch"
-			p = Popen(shlex.split(cmd))
-			sleep(5)
+	print 	(not controllers_exist[req.controller_number]) 
+	if ( req.command == "reset" or ((not controllers_exist[req.controller_number]) and req.command == "enable") ):
+		cmd = "ssh amigo@amigo2 'pkill -f amigo_etherCAT'"
+		call(cmd, shell=True) #, stdout = PIPE
+		cmd = "roslaunch amigo_launch_files all_etherCAT_hardware.launch"
+		p = Popen(shlex.split(cmd))
+		
+	return 1	
+		
+	if (req.command == "enable"):
+		
 		cmd = "rosrun ocl cdeployer-gnulinux START -s `rospack find " + package_names[req.controller_number] + "`/" + command_prefixes[req.controller_number] + "_start.ops & sleep 5; kill $!"
 		p = Popen(cmd, shell=True)
 		sleep(3)
