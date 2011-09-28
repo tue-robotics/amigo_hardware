@@ -36,6 +36,11 @@ terminate_io_left.size = 1;
 terminate_io_left.transport = 3;
 terminate_io_left.name_id = "terminate_io_left";
 
+var ConnPolicy pera_status_left;
+pera_status_left.size = 1;
+pera_status_left.transport = 3;
+pera_status_left.name_id = "/arm_left_status";
+
 }
 lpera_ROStopics.start
 trigger

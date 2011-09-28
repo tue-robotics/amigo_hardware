@@ -40,6 +40,7 @@ Supervisor::Supervisor(const string& name) :
 	addPort("gripperStatusPort",gripperStatusPort).doc("Receives gripper status from GripperController");
 	addPort("gripperResetPort",gripperResetPort).doc("Requests for GripperController reset");
 	addPort("controllerOutputPort",controllerOutputPort).doc("Receives motorspace output of the controller");
+	addPort("peraStatusPort",peraStatusPort).doc("For publishing the PERA status to the AMIGO dashboard");
 
 	addProperty( "hardware_id", HARDWARE_ID).doc("Hardware ID");
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("Maximum joint error allowed [rad]");
@@ -360,6 +361,17 @@ void Supervisor::updateHook()
 		enable = false;
 		enablePort.write(enable);
 
+	}
+	
+	std_msgs::Bool statusToDashboard;
+	
+	if(enable==true && homed==true && errors==false){
+		statusToDashboard.data = true;
+		peraStatusPort.write(statusToDashboard);
+	}
+	else{
+		statusToDashboard.data = false;
+		peraStatusPort.write(statusToDashboard);
 	}
 
 }
