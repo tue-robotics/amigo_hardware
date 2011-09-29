@@ -72,7 +72,7 @@ namespace PERA
 		//! Outputport for ordering gripper to reset its positions
 		OutputPort<bool> gripperResetPort;
 		//! Outputport for publishing the PERA status to the AMIGO dashboard
-		OutputPort<std_msgs::Bool> peraStatusPort;
+		OutputPort<std_msgs::UInt8> peraStatusPort;
 		//! Emergency button pressed / released (true/false) (message type bool)
 		std_msgs::Bool eButtonPressed;
 		//! Counters for loopcounting

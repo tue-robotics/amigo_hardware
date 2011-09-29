@@ -11,7 +11,7 @@
 ########################################################################
 
 ### Import amigo_pera_controller package ###
-import("amigo_pera_controller_dev")
+import("amigo_pera_controller")
 trigger
 
 ### Read reference joint angles ###
@@ -273,7 +273,7 @@ stream("LPERA_Supervisor.resetRefPort",lpera_ROStopics.joint_coordinates_left)
 stream("LPERA_WriteCurrentJointAngles.joint_coordinates",lpera_ROStopics.arm_angles_left)
 stream("LPERA_ReadReferenceAngles.joint_coordinates",lpera_ROStopics.joint_coordinates_left)
 stream("LPERA_IO.terminatePort",lpera_ROStopics.terminate_io_left)
-stream("LPERA_IO.peraStatusPort",lpera_ROStopics.pera_status_left)
+stream("LPERA_Supervisor.peraStatusPort",lpera_ROStopics.pera_status_left)
 
 ### Gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
