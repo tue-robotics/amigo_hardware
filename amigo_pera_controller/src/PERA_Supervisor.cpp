@@ -8,6 +8,7 @@
 #include <rtt/Port.hpp>
 #include <ocl/Component.hpp>
 #include <std_msgs/Bool.h>
+#include <std_msgs/UInt8.h>
 #include <amigo_msgs/arm_joints.h>
 #include <amigo_msgs/pera_status.h>
 #include <diagnostic_msgs/DiagnosticArray.h>
@@ -363,14 +364,18 @@ void Supervisor::updateHook()
 
 	}
 	
-	std_msgs::Bool statusToDashboard;
+	std_msgs::UInt8 statusToDashboard;
 	
-	if(enable==true && homed==true && errors==false){
-		statusToDashboard.data = true;
+	if(homed==true && errors==false){
+		statusToDashboard.data = 0;
 		peraStatusPort.write(statusToDashboard);
 	}
-	else{
-		statusToDashboard.data = false;
+	else if(homed==false && errors==false){
+		statusToDashboard.data = 1;
+		peraStatusPort.write(statusToDashboard);
+	}
+	else if(errors==true){
+		statusToDashboard.data = 2;
 		peraStatusPort.write(statusToDashboard);
 	}
 
