@@ -50,7 +50,7 @@ Supervisor::Supervisor(const string& name) :
 	addProperty( "jointLowerBounds", LOWERBOUNDS ).doc("Joint lower mechanical bound wrt zero-pose");
 	addProperty( "motorSaturations", MOTORSAT ).doc("Motor saturation values");
 	addProperty( "maxConSatTime", MAXCONSATTIME ).doc("Maximum time the controller is allowed to be saturated");
-	addProperty( "resetAngles", RESETANGLES ).doc("Joint angles to be published when emergency button is released");
+	addProperty( "offsetAngles", OFFSETANGLES ).doc("Joint angles to be published when emergency button is released");
 	addProperty( "homedPos", HOMEDPOS ).doc("Homing positions for the joints");
 	addProperty( "absOrRel", ABS_OR_REL ).doc("Defines whether joint is homed using absolute sensors or using mechanical endstop");
 	addProperty( "absSenDir", ABS_SEN_DIR ).doc("Defines if absolute sensor has its positive direction the same or opposite to relative sensors");
@@ -117,6 +117,8 @@ bool Supervisor::configureHook()
 
 bool Supervisor::startHook()
 {
+	
+	log(Warning)<<"SUPERVISOR: executing from trunk"<<endlog();
 
 	// Wait for SOEM heartbeat.
 	while(!(eButtonPort.read(eButtonPressed) == NewData)){
@@ -224,9 +226,7 @@ void Supervisor::updateHook()
 
 			reqJntAngPort.read(jointAngles);
 			jointErrorsPort.read(jointErrors);
-			
-			int ii=0;
-			
+
 			/* Check if joint angles requested by the path planning node
 			 * in ROS are within the feasible joint limits.
 			 */
@@ -248,11 +248,9 @@ void Supervisor::updateHook()
 					}
 
 				}
-				else{
-					ii++;
-				}
-				if(ii==7 && errors == false){
-				
+				// If inside the bounds enable the reading of the reference and update the previous position
+				else if((jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i])){
+
 					if(homed){
 						bool enableReadRef = true;
 						enableReadRefPort.write(enableReadRef);
@@ -342,14 +340,17 @@ void Supervisor::updateHook()
 				resetdata[i*4+3]=0.0;
 			}
 
-			// Reset the ROS path planning incoming reference topic
-			if( !resetReference ){
-				for(unsigned int i = 0;i<7;i++){
-					jointResetData.pos[i].data=RESETANGLES[i];
-				}
-				resetRefPort.write(jointResetData);
-				resetReference = true;
-			}
+			jointResetData.pos[0].data=-measRelJntAngles[0];
+			jointResetData.pos[1].data=measRelJntAngles[1]-OFFSETANGLES[1];
+			jointResetData.pos[2].data=measRelJntAngles[2];
+			jointResetData.pos[3].data=measRelJntAngles[3];
+			jointResetData.pos[4].data=measRelJntAngles[4];
+			jointResetData.pos[5].data=measRelJntAngles[5]-OFFSETANGLES[5];
+			jointResetData.pos[6].data=measRelJntAngles[6];
+
+			//log(Error)<<"SUPERVISOR: i wrote q2 = "<<jointResetData.pos[1].data<<"."<<endlog();
+			resetRefPort.write(jointResetData);
+			resetReference = true;
 
 			// Write the new angles to the interpolator for reset such that interpolator will follow the arm position causing no jump in the error
 			resetIntPort.write(resetdata);

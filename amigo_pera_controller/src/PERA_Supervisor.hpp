@@ -117,7 +117,7 @@ namespace PERA
 		//! The stepsize if moving towards mechanical endstop
 		double STEPSIZE;	
 		//! Defines the joint angles for after the reset
-		doubles RESETANGLES;
+		doubles OFFSETANGLES;
 		//! Joint lower bounds
 		doubles LOWERBOUNDS;
 		//! Joint upper bounds
