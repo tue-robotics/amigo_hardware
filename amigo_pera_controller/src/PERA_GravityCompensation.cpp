@@ -47,15 +47,15 @@ using namespace PERA;
 			nrCompensatedJoints = 7;
 			
 			// Gravity Compensation vectors/matrices
-			a.setZero(1,7);
-			d.setZero(1,7);
-			alpha.setZero(1,7);
-			mlist.setZero(1,7);
-			grav.setZero(3,1);
-			q.setZero(7,1);
-			Istore.setZero(3,21);
-			gravComp.setZero(7,1);
-			coglist.setZero(3,7);
+			a.setZero(1,7); // DH parameter a
+			d.setZero(1,7); // DH parameter d
+			alpha.setZero(1,7); // DH parameter alpha
+			mlist.setZero(1,7); // link masses
+			grav.setZero(3,1); // gravity vector
+			q.setZero(7,1); // q vector
+			Istore.setZero(3,21); // inertia matrix
+			gravComp.setZero(7,1); // gravity compensation outcome
+			coglist.setZero(3,7); // centers of gravity vector
 
 	  }
 
@@ -103,8 +103,8 @@ using namespace PERA;
 
 	void GravityCompensation::updateHook(){
 		
-		doubles additionalTorques;
-		doubles jointAngles;
+		doubles additionalTorques; // gravity compensation outcome
+		doubles jointAngles; // measured actual joint angles
 		
 		jointAngles.resize(nrJoints);
 		additionalTorques.resize(nrCompensatedJoints);
@@ -112,7 +112,7 @@ using namespace PERA;
 		jointAnglesPort.read(jointAngles);
 		
 		/// Gravity compensation
-		q << -jointAngles[0], -jointAngles[1]-(PI/2), jointAngles[2], jointAngles[3], jointAngles[4], jointAngles[5]-(PI/2), jointAngles[6];
+		q << -jointAngles[0], jointAngles[1]-(PI/2), jointAngles[2], jointAngles[3], jointAngles[4], jointAngles[5]-(PI/2), jointAngles[6];
 
 		gravComp = ComputeGravity(a,d,alpha,coglist,mlist,Istore,q,grav);
 
@@ -232,12 +232,12 @@ using namespace PERA;
 		   Fm = Eigen::MatrixXd::Zero(3,n);
 		   Nm = Eigen::MatrixXd::Zero(3,n);
 		   pstarm = Eigen::MatrixXd::Zero(3,n);
-		   Rs = Eigen::MatrixXd::Zero(3,3*n);
+		   Rs = Eigen::MatrixXd::Zero(3,3*n); // Rotation matrices
 		   
 		   // Compute link rotation matrices
 		   int j;
 		   for(j=1; j<n+1; j++){
-			 Rs.block(0,3*j-3,3,3) = ComputeRotationMatrix(d(j-1),alpha(j-1),q(j-1));  
+			 Rs.block(0,3*j-3,3,3) = ComputeRotationMatrix(d(j-1),alpha(j-1),q(j-1)); // Fill Rs with the computed rotation matrics
 			 pstarm.block(0,j-1,3,1) << a(j-1), d(j-1)*sin(alpha(j-1)), d(j-1)*cos(alpha(j-1));
 		   }
 
@@ -246,14 +246,21 @@ using namespace PERA;
 		   for(jj=1; jj<n+1; jj++){
 			   R = Rs.block(0,3*jj-3,3,3).transpose();
 			   pstar = pstarm.block(0,jj-1,3,1);
-			   r = coglist.block(0,jj-1,3,1);
+			   r = coglist.block(0,jj-1,3,1); 
+			   // compute omegadot_i wrt base frame (eq 7.152)
 			   wd = R*(wd + z0*qdd(jj-1) + w.cross(z0*qd(jj-1)));
+			   // compute omega_i (eq 7.149 + eq 7.150 but in GC axis of rot. is constantly z0 because of DH)
 			   w = R*(w + z0*qd(jj-1));
+			   // note that the computation of alpha_i (eq 7.153) is missing because it only relies on qd and qdd.
+			   // compute acceleration of link i (eq 7.159)
 			   vd = wd.cross(pstar) + w.cross(w.cross(pstar)) + R*vd;
+			   // compute the acceleration of the end of link i (eq 7.158)
 			   vhat = wd.cross(r) + w.cross(w.cross(r)) + vd;
+			   
 			   F = mlist(0,jj-1)*vhat;
 			   Ii = Istore.block(0,3*jj-3,3,3);
 			   Iiw = Ii*w;
+			   // (eq 7.136)
 			   N = Ii*wd + w.cross(Iiw);
 			   Fm.block(0,jj-1,3,1) = F;
 			   Nm.block(0,jj-1,3,1) = N;
