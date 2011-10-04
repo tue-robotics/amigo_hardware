@@ -256,7 +256,8 @@ using namespace PERA;
 			   vd = wd.cross(pstar) + w.cross(w.cross(pstar)) + R*vd;
 			   // compute the acceleration of the end of link i (eq 7.158)
 			   vhat = wd.cross(r) + w.cross(w.cross(r)) + vd;
-			   
+			   // compute m_{i}*a_{c,i} which is part of eq 7.146 for the backward recursion. Note that this
+			   // includes the gravity component for all links because the first link is given vd = grav.
 			   F = mlist(0,jj-1)*vhat;
 			   Ii = Istore.block(0,3*jj-3,3,3);
 			   Iiw = Ii*w;
@@ -282,8 +283,11 @@ using namespace PERA;
 			   Rtranpos_pstar = R.transpose()*pstar;
 			   Fmi = Fm.block(0,k-1,3,1);
 			   nn = R*(nn + Rtranpos_pstar.cross(f)) + (pstar+r).cross(Fmi) + Nm.block(0,k-1,3,1);
+			   // compute the sum of forces on each link (eq 7.146)
 			   f = R*f + Fm.block(0,k-1,3,1);
 			   R = Rs.block(0,3*k-3,3,3);
+			   // compute the total link torque. In case of gravity compensation this will only be
+			   // the result of the gravitational acceleration.
 			   tau(i-1,k-1) = nn.dot(R.transpose()*z0);
 		   }
 		 }

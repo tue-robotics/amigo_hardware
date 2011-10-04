@@ -55,6 +55,8 @@ namespace PERA
 		InputPort<std_msgs::Bool> gripperStatusPort;
 		//! Inputport for receiving controller motorspace output 
 		InputPort<doubles> controllerOutputPort;
+		//! Inputport for receiving the reference interpolator velocity 
+		InputPort<doubles> measVelPort;
 		//! Outputport for enabling/disabling the PERA_USB_IO
 		OutputPort<bool> enablePort;
 		//! Outputport for forwarding homing angles to the ReferenceInterpolator
@@ -78,6 +80,8 @@ namespace PERA
 		//! Counters for loopcounting
 		int cntr;
 		int cntr2;
+		//! Integer for storing the joint number of the joint that is being stopped
+		uint breaking;
 		//! Emergency button pressed / released (true/false) (memory bool)
 		bool pressed;
 		//! Does the deployerfile require homing
@@ -112,6 +116,8 @@ namespace PERA
 		doubles homJntAngles;
 		//! Vector for storing timeinstance controller saturation was reached
 		doubles timeReachedSaturation;
+		//! Vector for storing positions controller should break towards
+		doubles breakingPos;
 		//! The startingjoint for the homing procedure
 		double STRT_JNT;	
 		//! The stepsize if moving towards mechanical endstop
@@ -134,6 +140,8 @@ namespace PERA
 		doubles ABS_OR_REL;	
 		//! Specifies if the abs sensors measure opposite (-1.0) to the joint angles or in the same direction (1.0)
 		doubles ABS_SEN_DIR;
+		//! Specifies the joint maximum accelerations
+		doubles MAXACCS;
 		//! Defines the hardware ID for diagnostics purposes
 		string HARDWARE_ID;
 		//! Memory array storing if controller saturation was already reached
@@ -154,6 +162,8 @@ namespace PERA
 		void updateHook();
 		//! Function outputting jointangles for homing procedure
 		doubles homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles);
+		//! Function for determining the sign of the input vector
+		doubles signum(doubles a);
 
     };
 }

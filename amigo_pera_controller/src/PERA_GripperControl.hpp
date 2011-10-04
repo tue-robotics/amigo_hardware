@@ -51,8 +51,6 @@ namespace PERA
 	  bool completed;
 	  //! ROS msg bool for outputting gripper status to ROS
       std_msgs::Bool gripperClose;
-	  //! Threshold force value for gripper open
-	  double threshold_open;
 	  //! Threshold force value for gripper closed
 	  double threshold_closed;
 	  

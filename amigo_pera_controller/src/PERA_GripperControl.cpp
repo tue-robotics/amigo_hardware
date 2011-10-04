@@ -33,7 +33,6 @@ using namespace PERA;
 			addPort("gripper_status",gripperStatusPort);
 			
 			/// Thresholds for the gripper force
-			addProperty( "threshold_open", threshold_open);
 			addProperty( "threshold_closed", threshold_closed);			
 					
 	  }

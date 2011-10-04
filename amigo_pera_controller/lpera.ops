@@ -42,7 +42,6 @@ LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 0.4, 0.1)
 
 ### PERA Supervisor ###
 loadComponent("LPERA_Supervisor","PERA::Supervisor")
-LPERA_Supervisor.hardware_id = "LPERA"
 LPERA_Supervisor.setPeriod(0.004)
 LPERA_Supervisor.jointLowerBounds = array ( 0.0, -1.570796327, -1.570796327, 0.0, -1.832595715, -0.954837674, -0.785398164 )
 LPERA_Supervisor.jointUpperBounds = array ( 1.570796327, 1.570796327, 1.570796327, 1.989675348, 1.832595715, 0.954837674, 0.785398164 )

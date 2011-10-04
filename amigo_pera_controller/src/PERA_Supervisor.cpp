@@ -42,8 +42,8 @@ Supervisor::Supervisor(const string& name) :
 	addPort("gripperResetPort",gripperResetPort).doc("Requests for GripperController reset");
 	addPort("controllerOutputPort",controllerOutputPort).doc("Receives motorspace output of the controller");
 	addPort("peraStatusPort",peraStatusPort).doc("For publishing the PERA status to the AMIGO dashboard");
+	addPort("jointVelocity",measVelPort).doc("Receives the reference interpolator joint velocities");
 
-	addProperty( "hardware_id", HARDWARE_ID).doc("Hardware ID");
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("Maximum joint error allowed [rad]");
 	addProperty( "enableOutput", ENABLE_PROPERTY ).doc("Specifies if PERA_IO should be enabled");
 	addProperty( "jointUpperBounds", UPPERBOUNDS ).doc("Joint upper mechanical bound wrt zero-pose");
@@ -57,6 +57,7 @@ Supervisor::Supervisor(const string& name) :
 	addProperty( "stepSize", STEPSIZE ).doc("Speed the joint moves to its mechanical endstop during homing");
 	addProperty( "requireHoming", REQUIRE_HOMING ).doc("Specifies if the arm will home yes or no");
 	addProperty( "startJoint", STRT_JNT ).doc("Joint number to start homing with");
+	addProperty( "maxAccelerations", MAXACCS ).doc("Joint maximum accelerations");
 
 }
 
@@ -72,12 +73,13 @@ bool Supervisor::configureHook()
 	homJntAngles.resize(8);
 	previousAngles.resize(8);
 	timeReachedSaturation.resize(8);
-	
-	firstSatInstance = {0, 0, 0, 0, 0, 0, 0, 0};
+	breakingPos.resize(7);
 
-	// Set loopcounters to zero initially
+	// Set initial values
 	cntr=0;
 	cntr2=0;
+	firstSatInstance = {0, 0, 0, 0, 0, 0, 0, 0};
+	breaking = 0;
 
 	// Errors is false by default
 	errors=false;
@@ -249,7 +251,7 @@ void Supervisor::updateHook()
 
 				}
 				// If inside the bounds enable the reading of the reference and update the previous position
-				else if((jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i])){
+				else if(jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i]){
 
 					if(homed){
 						bool enableReadRef = true;
@@ -276,6 +278,82 @@ void Supervisor::updateHook()
 
 				}
 
+			}
+			
+			if(homed){
+			
+				/* Check whether braking is required to avoid collosion with 
+				 * the mechanical bound. Might interfere with homing sequence,
+				 * because that intends to hit the mechanical bound. Therefor 
+				 * this check is only performed if the homing is completed.
+				 */
+				doubles refIntVelocities(8,0.0);
+				doubles signs(8,0.0);
+				doubles measRelJntAngles(8,0.0);
+				
+				mRelJntAngPort.read(measRelJntAngles);
+				measVelPort.read(refIntVelocities);
+				signs = signum(refIntVelocities);
+				
+				for(unsigned int i = 0;i<7;i++){
+					// Joint moving towards mechanical upperbound to fast
+					if(signs[i]==1.0 && (fabs(refIntVelocities[i])/MAXACCS[i] >= (UPPERBOUNDS[i]-measRelJntAngles[i])) && breaking==0){
+
+						// Disable the reading of the reference
+						bool enableReadRef = false;
+						enableReadRefPort.write(enableReadRef);\
+						// Store which joint is to be stopped
+						breaking = i+1;
+						errors=true;
+					}
+					// Joint moving towards mechanical lowerbound to fast
+					if(signs[i]==-1.0 && (fabs(refIntVelocities[i])/MAXACCS[i] >= (measRelJntAngles[i]-LOWERBOUNDS[i])) && breaking==0){
+
+						// Disable the reading of the reference
+						bool enableReadRef = false;
+						enableReadRefPort.write(enableReadRef);
+						// Store which joint is to be stopped
+						breaking = i+1;
+						errors=true;
+					}
+					if(breaking!=0){
+						// Decelerate all joint with maximum deceleration
+						for(unsigned int j = 0;j<7;j++){
+							if(j!=(breaking-1)){
+								breakingPos[j]=measRelJntAngles[j]+refIntVelocities[j]/MAXACCS[j];
+							}
+							else{
+								if(signs[j]==-1){
+									breakingPos[j]=LOWERBOUNDS[j];
+								}
+								if(signs[j]==1){
+									breakingPos[j]=UPPERBOUNDS[j];
+								}
+							}
+						}
+					}
+				}
+				
+				// Check if normal operation can continue or that breaking is required
+				if(breaking!=0){
+					
+					homJntAngPort.write(breakingPos);
+				
+					uint nrJointsStopped = 0;
+					// Check if all joints slowed down enough
+					for(unsigned int i = 0;i<7;i++){
+						if(refIntVelocities[i]<=0.02){
+							nrJointsStopped++;
+						}
+					}
+					// If all joints slowed down enough resume normal operation
+					if(nrJointsStopped==7){
+						breaking=0;
+						bool enableReadRef = true;
+						errors=false;
+						enableReadRefPort.write(enableReadRef);
+					}			
+				}
 			}
 
 			/* Check if homing is completed. Else, request for homing angles and
@@ -591,6 +669,23 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 
 	return tempHomJntAngles;
 
+}
+
+doubles Supervisor::signum(doubles a){
+	doubles signum;
+	signum.resize(a.size());
+	for(unsigned int i = 0;i<a.size();i++){
+		if (a[i] < 0.0){
+			signum[i]=-1;
+		}
+		if (a[i] >= 0.0){
+			signum[i]=1;
+		}
+		else{
+			signum[i]=1;
+		}
+	}
+	return signum;
 }
 
 ORO_CREATE_COMPONENT(PERA::Supervisor)
