@@ -11,7 +11,7 @@
 ########################################################################
 
 ### Import amigo_pera_controller package ###
-import("amigo_pera_controller_dev")
+import("amigo_pera_controller")
 trigger
 
 ### Read reference joint angles ###
