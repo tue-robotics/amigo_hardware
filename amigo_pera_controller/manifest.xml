@@ -1,0 +1,23 @@
+<package>
+  <description brief="amigo_pera_controller_dev">
+
+     amigo_pera_controller_dev
+
+  </description>
+  <author>Bas Willems</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/amigo_pera_controller</url>
+  <depend package="roscpp"/>
+  <depend package="rtt"/>
+  <depend package="ocl"/>
+  <depend package="eigen"/>
+  <depend package="orocos_components"/>
+  <depend package="PERA_USB_IO"/>
+  <depend package="rtt_ros_integration_std_msgs"/>
+  <depend package="rtt_ros_integration_amigo_msgs"/>
+  <depend package="rtt_diagnostic_msgs"/>
+  <depend package="diagnostic_updater"/>
+
+</package>
+

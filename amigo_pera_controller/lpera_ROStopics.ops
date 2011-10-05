@@ -1,0 +1,51 @@
+scripting.ZeroPeriodWarning=false
+program lpera_ROStopics{
+
+var ConnPolicy joint_coordinates_left;
+joint_coordinates_left.size = 1;
+joint_coordinates_left.transport = 3;
+joint_coordinates_left.name_id = "arm_left_controller/joint_coordinates";
+
+var ConnPolicy set_gripper_left;
+set_gripper_left.size = 1;
+set_gripper_left.transport = 3;
+set_gripper_left.name_id = "arm_left_controller/set_gripper";
+
+var ConnPolicy arm_angles_left;
+arm_angles_left.size = 1;
+arm_angles_left.transport = 3;
+arm_angles_left.name_id = "/arm_position_left";
+
+var ConnPolicy jointDataLeft;
+jointDataLeft.size = 1;
+jointDataLeft.transport = 3;
+jointDataLeft.name_id = "jointDataLeft";
+
+var ConnPolicy gripper_status_left;
+gripper_status_left.size = 1;
+gripper_status_left.transport = 3;
+gripper_status_left.name_id = "gripper_status_left";
+
+var ConnPolicy joint_torques_left;
+joint_torques_left.size = 1;
+joint_torques_left.transport = 3;
+joint_torques_left.name_id = "joint_torques_left";
+
+var ConnPolicy terminate_io_left;
+terminate_io_left.size = 1;
+terminate_io_left.transport = 3;
+terminate_io_left.name_id = "terminate_io_left";
+
+var ConnPolicy pera_status_left;
+pera_status_left.size = 1;
+pera_status_left.transport = 3;
+pera_status_left.name_id = "/arm_left_status";
+
+var ConnPolicy pera_rtd_data;
+pera_rtd_data.size = 1;
+pera_rtd_data.transport = 3;
+pera_rtd_data.name_id = "/lpera_rtd_data";
+
+}
+lpera_ROStopics.start
+trigger
