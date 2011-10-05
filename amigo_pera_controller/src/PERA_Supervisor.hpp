@@ -34,6 +34,10 @@ namespace PERA
    * 
    * 	* Controller saturation -> if the controller motorspace output
    * 	  is not higher than MOTORSAT for MAXCONSATTIME seconds.
+   * 
+   * 	* Active braking -> if the arm is moving towards the mechanical
+   * 	  endstop to fast the supervisor will stop it with maximum
+   * 	  deceleration.
    */
   
   class Supervisor
@@ -144,8 +148,6 @@ namespace PERA
 		doubles ABS_SEN_DIR;
 		//! Specifies the joint maximum accelerations
 		doubles MAXACCS;
-		//! Defines the hardware ID for diagnostics purposes
-		string HARDWARE_ID;
 		//! Memory array storing if controller saturation was already reached
 		int firstSatInstance [8];
 	

@@ -305,7 +305,7 @@ void Supervisor::updateHook()
 					// Joint moving towards mechanical upperbound to fast
 					if(signs[i]==1.0 && (0.5*(refIntVelocities[i]*refIntVelocities[i])/MAXACCS[i] > fabs(UPPERBOUNDS[i]-measRelJntAngles[i]+DYNBREAKEPS)) && fabs(UPPERBOUNDS[i]-measRelJntAngles[i])>DYNBREAKEPS && breaking==0){
 						
-						log(Error)<<"SUPERVISOR: Joint q"<<i+1<<" moving to fast towards upperbound. PERA breaked."<<endlog();
+						log(Error)<<"SUPERVISOR: Joint q"<<i+1<<" moving to fast towards upperbound. PERA slowed down."<<endlog();
 
 						// Disable the reading of the reference
 						bool enableReadRef = false;
@@ -318,11 +318,11 @@ void Supervisor::updateHook()
 							// If breakingpoint outside limits then set it at limit
 							if(breakingPos[j]>=UPPERBOUNDS[j]){
 								breakingPos[j]=UPPERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Breakingpoint joint q"<<j+1<<" outside upperbound."<<endlog();
+								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" outside upperbound."<<endlog();
 							}
 							else if(breakingPos[j]<=LOWERBOUNDS[j]){
 								breakingPos[j]=LOWERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Breakingpoint joint q"<<j+1<<" lowerside upperbound."<<endlog();
+								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" lowerside upperbound."<<endlog();
 							}							
 						}
 						
@@ -331,7 +331,7 @@ void Supervisor::updateHook()
 					// Joint moving towards mechanical lowerbound to fast
 					if(signs[i]==-1.0 && (0.5*(refIntVelocities[i]*refIntVelocities[i])/MAXACCS[i] > (measRelJntAngles[i]-LOWERBOUNDS[i]+DYNBREAKEPS)) && fabs(measRelJntAngles[i]-LOWERBOUNDS[i])>DYNBREAKEPS && breaking==0){
 						
-						log(Error)<<"SUPERVISOR: Joint q"<<i+1<<" moving to fast towards lowerbound. PERA breaked."<<endlog();
+						log(Error)<<"SUPERVISOR: Joint q"<<i+1<<" moving to fast towards lowerbound. PERA slowed down."<<endlog();
 
 						// Disable the reading of the reference
 						bool enableReadRef = false;
@@ -344,11 +344,11 @@ void Supervisor::updateHook()
 							// If breakingpoint outside limits then set it at limit
 							if(breakingPos[j]>=UPPERBOUNDS[j]){
 								breakingPos[j]=UPPERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Breakingpoint joint q"<<j+1<<" outside upperbound."<<endlog();
+								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" outside upperbound."<<endlog();
 							}
 							else if(breakingPos[j]<=LOWERBOUNDS[j]){
 								breakingPos[j]=LOWERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Breakingpoint joint q"<<j+1<<" lowerside upperbound."<<endlog();
+								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" lowerside upperbound."<<endlog();
 							}							
 						}
 					}	
@@ -358,7 +358,7 @@ void Supervisor::updateHook()
 				if(breaking!=0){
 					
 					homJntAngPort.write(breakingPos);
-					log(Error)<<"SUPERVISOR: Breaking!"<<endlog();
+					log(Error)<<"SUPERVISOR: Braking!"<<endlog();
 				
 					uint nrJointsStopped = 0;
 					// Check if all joints slowed down enough
