@@ -1,4 +1,4 @@
-import("dynamixel_ethercat")
+import("amigo_head_controller")
 
 loadComponent("PanTiltController", "PanTiltController")
 PanTiltController.pan_id = 2
