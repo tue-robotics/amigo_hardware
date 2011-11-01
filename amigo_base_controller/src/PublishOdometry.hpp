@@ -5,7 +5,7 @@
 #include <rtt/Port.hpp>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
-#include <ocl/Component.hpp>
+#include <rtt/Component.hpp>
 
 
 using namespace RTT;

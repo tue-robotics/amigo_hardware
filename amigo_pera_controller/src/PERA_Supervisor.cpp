@@ -281,13 +281,13 @@ void Supervisor::updateHook()
 
 			}
 			
-			/* if(homed && !errors){
+			if(homed && !errors){
 			
 				/* Check whether braking is required to avoid collosion with 
 				 * the mechanical bound. Interferes with homing sequence
 				 * because that intends to hit the mechanical bound. Therefor 
 				 * this check is only performed if the homing is completed.
-				 * /
+				 */
 				doubles refIntVelocities(8,0.0);
 				doubles signs(8,0.0);
 				doubles measRelJntAngles(8,0.0);
@@ -375,7 +375,7 @@ void Supervisor::updateHook()
 						enableReadRefPort.write(enableReadRef);
 					}			
 				}
-			}*/
+			}
 
 			/* Check if homing is completed. Else, request for homing angles and
 			 * disable the reading of the reference joint angles from the

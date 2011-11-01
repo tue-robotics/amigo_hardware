@@ -12,8 +12,8 @@
   <depend package="soem_beckhoff_drivers"/>
   <depend package="rtt"/>
   <depend package="ocl"/>
-  <depend package="rtt_ros_integration"/>
-  <depend package="rtt_ros_integration_amigo_msgs"/>
+  <depend package="rtt_rosnode"/>
+  <depend package="rtt_amigo_msgs"/>
   <depend package="amigo_msgs"/>
   <depend package="roscpp"/>
 </package>
