@@ -36,12 +36,12 @@ loadComponent("SpindlePublishPosition","PublishPosition")
 SpindlePublishPosition.configure
 
 #Calculating Spindle Position
-loadComponent("SpindleCalculatePosition","Substraction")
+loadComponent("SpindleCalculatePosition","MATH::Subtraction")
 SpindleCalculatePosition.vectorsize = 1
 SpindleCalculatePosition.configure
 
 #Calculating Errors
-loadComponent("SpindleCalculateError","Substraction")
+loadComponent("SpindleCalculateError","MATH::Subtraction")
 SpindleCalculateError.vectorsize = 1
 SpindleCalculateError.configure
 
@@ -50,13 +50,13 @@ loadComponent("SpindleGain","MATH::Gain")
 SpindleGain.vectorsize = 1
 SpindleGain.gain = 40
 SpindleGain.configure
-loadComponent("SpindleLeadLag","FILTERS::LeadLags")
+loadComponent("SpindleLeadLag","FILTERS::LeadLag")
 SpindleLeadLag.vector_size = 1
 SpindleLeadLag.sampling_time = 0.004
 SpindleLeadLag.zero_frequency = array (1.6)
 SpindleLeadLag.pole_frequency = array (60.0)
 SpindleLeadLag.configure
-loadComponent("SpindleFirstOrderLowPass","FILTERS::FirstOrderLowPasses")
+loadComponent("SpindleFirstOrderLowPass","FILTERS::FirstOrderLowPass")
 SpindleFirstOrderLowPass.vector_size = 1
 SpindleFirstOrderLowPass.sampling_time = 0.004
 SpindleFirstOrderLowPass.pole_frequency = array (20.0)

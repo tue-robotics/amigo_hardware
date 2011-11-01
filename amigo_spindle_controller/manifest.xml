@@ -9,13 +9,15 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/amigo_spindle_controller</url>
   <depend package="rtt"/>
-  <depend package="ocl"/>
   <depend package="rtt_rosnode"/>
   <depend package="geometry_msgs"/>
   <depend package="amigo_ref_interpolator"/>
-  <depend package="rtt_std_msgs"/>
   <depend package="rtt_amigo_msgs"/>
-  <depend package="orocos_components"/>
+  <depend package="rtt_math_components"/>
+  <depend package="rtt_filter_components"/>
+  <depend package="rtt_source_components"/>
+  <depend package="rtt_ROS_interfacing"/>
+
 </package>
 
 
