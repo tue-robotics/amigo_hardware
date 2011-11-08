@@ -12,12 +12,19 @@
   <depend package="rtt"/>
   <depend package="ocl"/>
   <depend package="eigen"/>
-  <depend package="orocos_components"/>
+  <!--depend package="orocos_components"/>-->
   <depend package="PERA_USB_IO"/>
   <depend package="rtt_std_msgs"/>
   <depend package="rtt_amigo_msgs"/>
   <depend package="rtt_diagnostic_msgs"/>
   <depend package="diagnostic_updater"/>
+  
+  <depend package="rtt_math_components"/>
+  <depend package="rtt_filter_components"/>
+  <depend package="rtt_source_components"/>
+  <depend package="rtt_ROS_interfacing"/>
+  <depend package="rtt_matrix_components"/>
+  <depend package="rtt_discontinuity_components"/>
 
 </package>
 
