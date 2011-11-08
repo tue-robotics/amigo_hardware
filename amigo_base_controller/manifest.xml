@@ -8,11 +8,16 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/amigo_base_controller</url>
-  <depend package="orocos_components"/>
   <depend package="tf"/>
   <depend package="rtt_nav_msgs"/>
   <depend package="rtt_diagnostic_msgs"/>diagnostic_updater
   <depend package="diagnostic_updater"/>
+  <depend package="rtt_amigo_msgs"/>
+  <depend package="rtt_math_components"/>
+  <depend package="rtt_filter_components"/>
+  <depend package="rtt_source_components"/>
+  <depend package="rtt_ROS_interfacing"/>
+  <depend package="rtt_matrix_components"/>
 </package>
 
 
