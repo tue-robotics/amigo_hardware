@@ -15,28 +15,27 @@ setActivity("Soem",0.001,HighestPriority,ORO_SCHED_RT)
 
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 #This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.7
-loadComponent("AnalogOuts","AnalogOuts")
+loadComponent("AnalogOuts","SOEM::AnalogOuts")
 AnalogOuts.configure
 setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
 AnalogOuts.max_volt = array ( 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0 )
 connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
-loadComponent("AnalogIns","AnalogIns")
+loadComponent("AnalogIns","SOEM::AnalogIns")
 AnalogIns.configure
 setActivity("AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
 stream("AnalogIns.out1",hardware_ROStopics.battery)
 
-
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
-loadComponent("DigitalOuts","DigitalOuts")
+loadComponent("DigitalOuts","SOEM::DigitalOuts")
 connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
 setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS ###
-loadComponent("DigitalIns","DigitalIns")
+loadComponent("DigitalIns","SOEM::DigitalIns")
 DigitalIns.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
 stream("DigitalIns.out6",hardware_ROStopics.emergency_switch)
