@@ -68,7 +68,7 @@ connect ("BaseVel2Pos.out","BaseDecoupleReference.in", ConnPolicy() ); # [N \n N
     
     
 ### CALCULATE ERRORS ###
-loadComponent("BaseCalculateErrors","Subtraction")
+loadComponent("BaseCalculateErrors","MATH::Subtraction")
 BaseCalculateErrors.vectorsize = 4;
 connect ("BaseDecoupleReference.out","BaseCalculateErrors.in_plus", ConnPolicy() ); #[m \n m \n rad]
 connect ("ReadWheelEncoders.out","BaseCalculateErrors.in_minus", ConnPolicy() ); #[m \n m \n rad]
