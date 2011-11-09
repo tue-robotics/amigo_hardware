@@ -47,21 +47,23 @@ bool BaseReset::startHook()
 
 void BaseReset::updateHook()
 {
+  std_msgs::Bool button;
+  rosemergencyport.read( button );
   safeport.read( safe );
-  if ( !safe )
+  if ( !safe || button.data )
   {
 	  // Set the error of the controller to zero by setting the reference to the output
 	  doubles pos;
   	  posport.read( pos );
   	  integratorresetport.write( pos );
-
+/*
   	  std_msgs::Bool rosboolmsg;
   	  if (rosresetport.read( rosboolmsg ) == NewData )
   	  {
   		  log(Info)<<"BaseReset::Received reset command from ROS"<<endlog();
   		  resetport.write( true );
   	  }
-/*
+
   	  std_msgs::Bool emergency;
   	  if (rosemergencyport.read( emergency ) == NewData )
   	  {
