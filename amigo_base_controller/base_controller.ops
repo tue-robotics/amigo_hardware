@@ -11,7 +11,7 @@ var double GEARRATIO = 1.0/12.0
 var double TWOPI = 2*3.141592
 
 ### READ WHEEL ENCODERS ###
-loadComponent("ReadWheelEncoders","ReadEncoders")
+loadComponent("ReadWheelEncoders","SOEM::ReadEncoders")
 #loadService("ReadWheelEncoders","rosparam")
 #ReadWheelEncoders.rosparam.refreshProperties()
 ReadWheelEncoders.encoderbits = 65536
