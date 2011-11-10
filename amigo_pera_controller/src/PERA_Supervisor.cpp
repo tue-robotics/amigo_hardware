@@ -79,7 +79,14 @@ bool Supervisor::configureHook()
 	// Set initial values
 	cntr=0;
 	cntr2=0;
-	firstSatInstance = {0, 0, 0, 0, 0, 0, 0, 0};
+	firstSatInstance[0] = 0;
+	firstSatInstance[1] = 0;
+	firstSatInstance[2] = 0;
+	firstSatInstance[3] = 0;
+	firstSatInstance[4] = 0;
+	firstSatInstance[5] = 0;
+	firstSatInstance[6] = 0;
+	firstSatInstance[7] = 0;
 	breaking = 0;
 
 	// Errors is false by default
