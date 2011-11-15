@@ -6,8 +6,8 @@
 
 #define STROKE 0.413
 #define SAFETYMARGIN 0.005
-//#define TRESHOLDHEIGHT 0.35
-//#define BASERADIUS 0.678
+#define MAXVEL 1
+#define MAXACC 10
 
 using namespace RTT;
 using namespace AMIGO;
@@ -17,23 +17,17 @@ ReferenceLimiter::ReferenceLimiter(const string& name) : TaskContext(name, PreOp
 
 {
   // Creating ports:
-  //addPort( "right_tip", right_tip_inport );
-  //addPort( "left_tip", left_tip_inport );
-  //addPort( "spindle_position", spindle_position_inport );
-  addEventPort( "ref_pos_in", refpos_inport );
+  addPort( "ref_pos_in", refpos_inport );
+  addPort( "ref_vel_in", refvel_inport );
+  addEventPort( "ref_acc_in", refacc_inport );
   addPort( "ref_pos_out", refpos_outport );
-  
-  // Initialising variables
-  //current_position.assign(1,0.0);
-  //publish_countera = 0.0;
-  //publish_counterb = 0.0;
+  addPort( "ref_vel_out", refvel_outport );
+  addPort( "ref_acc_out", refacc_outport );
 }
 ReferenceLimiter::~ReferenceLimiter(){}
 
 bool ReferenceLimiter::configureHook()
 {
-  //onceleft = false;
-  //onceright = false;
   return true;
 }
 
@@ -54,60 +48,26 @@ bool ReferenceLimiter::startHook()
 
 void ReferenceLimiter::updateHook()
 {
+		double ref_pos;
+			double ref_vel;
+				double ref_acc;
   // Read the inputports
   refpos_inport.read(ref_pos);
-  //spindle_position_inport.read(current_position);
-  //right_tip_inport.read(right_tip);
-  //left_tip_inport.read(left_tip);
+  refvel_inport.read(ref_vel);
+  refacc_inport.read(ref_acc);
  
   double minimum_pos = SAFETYMARGIN;
   double maximum_pos = STROKE - SAFETYMARGIN;
  
-	// Limiting the references to the minimum and maximum if necessary
-    if(ref_pos < minimum_pos)
-	{
-		ref_pos = minimum_pos;
-	}
-	if(ref_pos > maximum_pos)
-	{
-		ref_pos = maximum_pos;
-	}
-	
-/*	// Calculating circular coordinates of tip
-	//double radius_right = sqrt( right_tip.x*right_tip.x + right_tip.y*right_tip.y );
-	//double radius_left = sqrt( left_tip.x*left_tip.x + left_tip.y*left_tip.y );
-	
-	// Checking if the arms are in the collision zone. 
-	// Limiting references if this is the case. 
-	if( NewData != right_tip_inport.read( right_tip ) )
-	{	
-		// Publishing a message after 1500 cycles, which is 6 seconds at 250 Hz
-		publish_countera += 1.0;
-		if( publish_countera == 1500.0)
-		{
-			if(!onceright){
-				log(Warning)<<"No information about right arm received. Use spindle with caution, no arm safety!!"<<endlog();
-				onceright = true;
-			}
-			publish_countera = 0.0;
-		}
-	}
-	if( NewData != left_tip_inport.read( left_tip ) )
-	{
-		// Publishing a message after 1500 cycles, which is 6 seconds at 250 Hz		
-		publish_counterb += 1.0;
-		if( publish_counterb == 1500.0)
-		{
-			if(!onceleft){
-				log(Warning)<<"No information about left arm received. Use spindle with caution, no arm safety!!"<<endlog();
-				onceleft = true;
-			}
-		publish_counterb = 0.0;
-		}
-	}*/
-	
+ 	// Limiting the references to the minimum and maximum if necessary
+	ref_pos = min(maximum_pos,max(minimum_pos,ref_pos));
+	//ref_vel = min(maximum_vel,max(minimum_vel,ref_vel));
+	//ref_acc = min(maximum_acc,max(minimum_acc,ref_acc));
+
   // Write data to ports
   refpos_outport.write( ref_pos );
+  refvel_outport.write( ref_vel );
+  refacc_outport.write( ref_acc );
 }
 
 ORO_CREATE_COMPONENT(ReferenceLimiter)

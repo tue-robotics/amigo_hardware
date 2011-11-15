@@ -13,6 +13,8 @@ ReadSpindleSetpoint::ReadSpindleSetpoint(const string& name) : TaskContext(name,
   addEventPort( "spindle_setpoint", spindle_setpoint_inport );
   addPort( "afterhoming_pos", afterhoming_outport );
   addPort( "ref_pos", refpos_outport );
+  addPort( "ref_vel", refvel_outport );
+  addPort( "ref_acc", refacc_outport );
   
   // Creating variables
   homed_position_property = 0.35;
@@ -64,6 +66,8 @@ void ReadSpindleSetpoint::updateHook()
  	
   // Write data to ports
   refpos_outport.write( ref_pos );
+  refvel_outport.write( ref_vel );
+  refacc_outport.write( ref_acc );
 }
 
 ORO_CREATE_COMPONENT(MSG::ReadSpindleSetpoint)

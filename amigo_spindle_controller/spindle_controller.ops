@@ -107,6 +107,8 @@ connect ("SpindleHoming.reset_generator","SpindleReferenceGenerator.resetValues"
 connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
 connect ("SpindleSafety.safety","SpindleOutputLimiter.safety", ConnPolicy() )
 connect ("SpindleReadSetpoint.ref_pos","SpindleReferenceLimiter.ref_pos_in", ConnPolicy() )
+connect ("SpindleReadSetpoint.ref_vel","SpindleReferenceLimiter.ref_vel_in", ConnPolicy() )
+connect ("SpindleReadSetpoint.ref_acc","SpindleReferenceLimiter.ref_acc_in", ConnPolicy() )
 connect ("SpindleReferenceLimiter.ref_pos_out","SpindleHoming.ref_pos_in", ConnPolicy() )
 connect ("SpindleHoming.ref_pos_out","SpindleReferenceGenerator.posin", ConnPolicy() )
 connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
