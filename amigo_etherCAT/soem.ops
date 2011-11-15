@@ -26,7 +26,7 @@ loadComponent("AnalogIns","SOEM::AnalogIns")
 AnalogIns.configure
 setActivity("AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
-stream("AnalogIns.out1",hardware_ROStopics.battery)
+stream("AnalogIns.out1", ros.topic("/battery_value"))
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
@@ -38,11 +38,11 @@ setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 loadComponent("DigitalIns","SOEM::DigitalIns")
 DigitalIns.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
-stream("DigitalIns.out6",hardware_ROStopics.emergency_switch)
-stream("DigitalIns.out1",hardware_ROStopics.fuse1)
-stream("DigitalIns.out2",hardware_ROStopics.fuse2)
-stream("DigitalIns.out3",hardware_ROStopics.fuse3)
-stream("DigitalIns.out4",hardware_ROStopics.fuse4)
+stream("DigitalIns.out6", ros.topic("/emergency_switch"))
+stream("DigitalIns.out1", ros.topic("/fuse1"))
+stream("DigitalIns.out2", ros.topic("/fuse2"))
+stream("DigitalIns.out3", ros.topic("/fuse3"))
+stream("DigitalIns.out4", ros.topic("/fuse4"))
 DigitalIns.configure
 setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
