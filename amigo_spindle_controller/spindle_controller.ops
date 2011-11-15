@@ -133,12 +133,10 @@ connect ("SpindleReadEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake", "SpindleStatus.bool_in1", ConnPolicy() )
 
 #Setting up the connections with ROS-topics
-stream("SpindleReadSetpoint.spindle_setpoint",spindle_ROStopics.spindle_setpoint);
-stream("SpindlePublishPosition.out",spindle_ROStopics.spindle_position);
-stream("SpindleReadSetpoint.afterhoming_pos",spindle_ROStopics.spindle_setpoint);
-#stream("SpindleReferenceLimiter.right_tip",spindle_ROStopics.right_tip);
-#stream("SpindleReferenceLimiter.left_tip",spindle_ROStopics.left_tip);
-stream("SpindleStatus.bool_out1",spindle_ROStopics.spindle_status);
+stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/spindle_coordinates"));
+stream("SpindlePublishPosition.out", ros.topic("/spindle_position"));
+stream("SpindleReadSetpoint.afterhoming_pos", ros.topic("/spindle_controller/spindle_coordinates"));
+stream("SpindleStatus.bool_out1", ros.topic("/spindle_status"));
 
 
 ### Setting up reporting ###
