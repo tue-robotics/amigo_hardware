@@ -18,9 +18,9 @@ connect ("Soem.Slave_100f.data_tx", "PanTiltController.instruction", ConnPolicy(
 connect ("Soem.Slave_100f.data_rx", "PanTiltController.status", ConnPolicy() )
 connect ("Soem.Slave_100f.ready_rx", "PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "PanTiltController.serialRunning", ConnPolicy() )
-stream("PanTiltController.goalPos",head_ROStopics.head_goalPos);
-stream("PanTiltController.currentPosPan",head_ROStopics.head_pan_angle);
-stream("PanTiltController.currentPosTilt",head_ROStopics.head_tilt_angle);
-stream("PanTiltController.currentPosTilt",head_ROStopics.head_status);
+stream("PanTiltController.goalPos", ros.topic("/head_controller/set_Head"))
+stream("PanTiltController.currentPosPan", ros.topic("/head_pan_angle"))
+stream("PanTiltController.currentPosTilt", ros.topic("/head_tilt_angle"))
+stream("PanTiltController.currentPosTilt", ros.topic("/head_status"))
 
 PanTiltController.start

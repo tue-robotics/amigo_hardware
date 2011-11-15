@@ -1,6 +1,0 @@
-import("amigo_head_controller")
-
-loadComponent("ETHERCAT_HARDWARE","CORBA")
-
-ETHERCAT_HARDWARE.PanTiltController.configure
-ETHERCAT_HARDWARE.PanTiltController.start
