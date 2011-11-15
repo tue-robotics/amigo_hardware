@@ -46,7 +46,7 @@ LPERA_Supervisor.setPeriod(0.004)
 LPERA_Supervisor.jointLowerBounds = array ( 0.0, -1.570796327, -1.570796327, 0.0, -1.832595715, -0.954837674, -0.785398164 )
 LPERA_Supervisor.jointUpperBounds = array ( 1.570796327, 1.570796327, 1.570796327, 1.989675348, 1.832595715, 0.954837674, 0.785398164 )
 LPERA_Supervisor.motorSaturations = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
-LPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 2.0)
+LPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 2.0)
 LPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 LPERA_Supervisor.dynBreakEpsilon = 0.05;
 # Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
@@ -198,7 +198,7 @@ LPERA_SensorTorques.configure
 
 #### Diagnostics ###
 loadComponent("LPERA_Diagnostics","ROS::RosDiagnostics")
-stream("LPERA_Diagnostics.diagnostics",hardware_ROStopics.diagnostics);
+stream("LPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 LPERA_Diagnostics.setPeriod(1)
 LPERA_Diagnostics.statusname = "LPERA"
 LPERA_Diagnostics.NumberOfVectorPorts = 3
@@ -278,13 +278,13 @@ connect ("LPERA_Supervisor.reNullPort","LPERA_IO.reNullPort", ConnPolicy() )
 connect ("LPERA_RTD.ude","LPERA_Supervisor.jointVelocity", ConnPolicy() )
 connect ("LPERA_MotorToJointAngles.out","LPERA_RTD.u", ConnPolicy() )
 
-stream("LPERA_Supervisor.eButtonPort",hardware_ROStopics.emergency_switch)
-stream("LPERA_Supervisor.resetRefPort",lpera_ROStopics.joint_coordinates_left)
-stream("LPERA_WriteCurrentJointAngles.joint_coordinates",lpera_ROStopics.arm_angles_left)
-stream("LPERA_ReadReferenceAngles.joint_coordinates",lpera_ROStopics.joint_coordinates_left)
-stream("LPERA_IO.terminatePort",lpera_ROStopics.terminate_io_left)
-stream("LPERA_Supervisor.peraStatusPort",lpera_ROStopics.pera_status_left)
-stream("LPERA_RTD.derivatives",lpera_ROStopics.pera_rtd_data)
+stream("LPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
+stream("LPERA_Supervisor.resetRefPort", ros.topic("/arm_left_controller/joint_coordinates"))
+stream("LPERA_WriteCurrentJointAngles.joint_coordinates", ros.topic("/arm_position_left"))
+stream("LPERA_ReadReferenceAngles.joint_coordinates", ros.topic("/arm_left_controller/joint_coordinates"))
+stream("LPERA_IO.terminatePort", ros.topic("/terminate_io_left"))
+stream("LPERA_Supervisor.peraStatusPort", ros.topic("/arm_left_status"))
+stream("LPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
 ### Gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
@@ -292,8 +292,8 @@ connect ("LPERA_GripperControl.gripper_status","LPERA_Supervisor.gripperStatusPo
 connect ("LPERA_Supervisor.gripperClosePort","LPERA_GripperControl.gripper_close", ConnPolicy() )
 connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 
-stream("LPERA_GripperControl.gripper_close",lpera_ROStopics.set_gripper_left)
-stream("LPERA_GripperControl.gripper_status",lpera_ROStopics.gripper_status_left)
+stream("LPERA_GripperControl.gripper_close", ros.topic("/arm_left_controller/set_gripper"))
+stream("LPERA_GripperControl.gripper_status", ros.topic("/gripper_status_left"))
 
 LPERA_Supervisor.start
 LPERA_ReadReferenceAngles.start
