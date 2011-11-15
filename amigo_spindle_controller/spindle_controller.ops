@@ -2,7 +2,7 @@ import("amigo_spindle_controller")
 
 ### Loading Components ###
 #Reading Encoders
-loadComponent("SpindleReadEncoder","ReadEncoders")
+loadComponent("SpindleReadEncoder","SOEM::ReadEncoders")
 SpindleReadEncoder.setPeriod(0.004)
 SpindleReadEncoder.encoderbits = 65536
 SpindleReadEncoder.enc2SI = array (4.1666667e-7)

@@ -22,6 +22,9 @@ namespace MSG // Just because it looks nice
     InputPort<amigo_msgs::spindle_setpoint> spindle_setpoint_inport;
     OutputPort<amigo_msgs::spindle_setpoint> afterhoming_outport;
     OutputPort<double> refpos_outport;
+    OutputPort<double> refvel_outport;
+    OutputPort<double> refacc_outport;
+    //OutputPort<bool> refstop_outport;
     
     // Declaring property
     double homed_position_property;
@@ -29,8 +32,6 @@ namespace MSG // Just because it looks nice
     // Declaring message types
     amigo_msgs::spindle_setpoint spindle_setpoint;
     
-	// Declaring variables
-	double ref_pos;
 
     public:
 

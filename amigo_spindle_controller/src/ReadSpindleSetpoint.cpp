@@ -50,7 +50,17 @@ void ReadSpindleSetpoint::updateHook()
 {
   // Read the inputports
   spindle_setpoint_inport.read(spindle_setpoint);
+  
+  	// Declaring variables
+  double ref_pos;
+  double ref_vel;
+  double ref_acc;
+  //int ref_stop;
+
   ref_pos = spindle_setpoint.pos;
+  ref_vel = spindle_setpoint.vel;
+  ref_acc = spindle_setpoint.acc;
+  //ref_stop = spindle_setpoint.stop;
  	
   // Write data to ports
   refpos_outport.write( ref_pos );
