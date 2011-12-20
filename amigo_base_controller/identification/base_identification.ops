@@ -83,7 +83,6 @@ BaseControllerGains.gain = array (0.5, 0.5, 0.5, 0.5)
 BaseControllerGains.configure
 setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
 
-
 ### LEADLAG ###
 loadComponent("BaseLeadLag","FILTERS::LeadLags")
 connect ("BaseControllerGains.out","BaseLeadLag.in", ConnPolicy() )
@@ -105,23 +104,25 @@ BaseSecondOrderLowPass.configure
 setActivity("BaseSecondOrderLowPass",0.0,HighestPriority,ORO_SCHED_RT)
 
 
-### FEEDFORWARD ### # Do you want this in case of wheel slip?
-#loadComponent("BaseFeedForward","MATH::Gains")
-#connect ("BaseReadReferenceVelocities.out","BaseFeedForward.in", ConnPolicy() )
-#BaseFeedForward.vectorsize = 3;
-#BaseFeedForward.gain = array (0.0, 0.0, 0.0, 0.0)
-#BaseFeedForward.configure
+### ADD NOISE ###
+loadComponent("BaseNoise","SOURCES::UniformRandomNumber")
+setActivity("BaseNoise",Ts/3,HighestPriority,ORO_SCHED_RT)
+BaseNoise.vector_size = 4
+BaseNoise.configure
+BaseNoise.minimum = noise_min
+BaseNoise.maximum = noise_max
 
-### ADDITION ###
-#loadComponent("BaseSum","MATH::Addition")
-#connect ("BaseFeedForward.out","BaseSum.in1", ConnPolicy() )
-#connect ("BaseSecondOrderLowPass.out","BaseSum.in2_event", ConnPolicy() )
-#BaseSum.vectorsize = 3;
-#BaseSum.configure
+
+loadComponent("BaseAddNoise","MATH::Addition")
+connect ("BaseNoise.out","BaseAddNoise.in1", ConnPolicy() );
+connect ("BaseSecondOrderLowPass.out","BaseAddNoise.in2_event", ConnPolicy() )
+setActivity("BaseAddNoise",0.0,HighestPriority,ORO_SCHED_RT)
+BaseAddNoise.configure
+
 
 ### SI2VOLT ###
 loadComponent("BaseSI2Volt","MATH::Gains")
-connect ("BaseSecondOrderLowPass.out","BaseSI2Volt.in", ConnPolicy() ); # 4x[Nm]
+connect ("BaseAddNoise.out","BaseSI2Volt.in", ConnPolicy() ); # 4x[Nm]
 connect ("BaseSI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Volt
 BaseSI2Volt.vectorsize = 4;
 var double SI2V = TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
@@ -228,8 +229,8 @@ BaseCalculateErrors.start
 BaseControllerGains.start
 BaseLeadLag.start
 BaseSecondOrderLowPass.start
-#BaseFeedForward.start
-#BaseSum.start
+BaseNoise.start
+BaseAddNoise.start
 BaseSI2Volt.start
 BaseSafety.start
 BaseDecouplePosition.start

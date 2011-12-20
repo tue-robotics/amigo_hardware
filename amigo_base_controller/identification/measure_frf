@@ -1,0 +1,23 @@
+#!/bin/bash
+
+NOISE=0.05
+
+
+for i in {1..4}
+do
+	case $i in
+		1) echo "var array noise_min = array( -$NOISE, 0.0, 0.0, 0.0 )
+var array noise_max = array( $NOISE, 0.0, 0.0, 0.0 )" > noise.ops;;
+		2) echo "var array noise_min = array( 0.0, -$NOISE, 0.0, 0.0 )
+var array noise_max = array( 0.0, $NOISE, 0.0, 0.0 )" > noise.ops;;
+		3) echo "var array noise_min = array( 0.0, 0.0, -$NOISE, 0.0 )
+var array noise_max = array( 0.0, 0.0, $NOISE, 0.0 )" > noise.ops;;
+		4) echo "var array noise_min = array( 0.0, 0.0, 0.0, -$NOISE )
+var array noise_max = array( 0.0, 0.0, 0.0, $NOISE )" > noise.ops;;
+		*) echo 'Error!'; return;;
+	esac
+	cat `rospack find amigo_base_controller`/identification/base_identification.ops >> noise.ops
+
+	timeout 20 rosrun ocl deployer-gnulinux -s `rospack find amigo_etherCAT`/soem.ops -s noise.ops
+	sleep 5
+done
