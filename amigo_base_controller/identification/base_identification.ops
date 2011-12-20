@@ -114,6 +114,7 @@ BaseNoise.maximum = noise_max
 
 
 loadComponent("BaseAddNoise","MATH::Addition")
+BaseAddNoise.vectorsize = 4
 connect ("BaseNoise.out","BaseAddNoise.in1", ConnPolicy() );
 connect ("BaseSecondOrderLowPass.out","BaseAddNoise.in2_event", ConnPolicy() )
 setActivity("BaseAddNoise",0.0,HighestPriority,ORO_SCHED_RT)
@@ -214,8 +215,8 @@ BaseReporter.reportPort("ReadWheelEncoders","out")
 #BaseReporter.reportPort("BaseSecondOrderLowPass","out")
 addPeer("BaseReporter","BaseSI2Volt")
 BaseReporter.reportPort("BaseSI2Volt","out")
-#BaseReporter.NullSample = "-1"
-BaseReporter.setPeriod(Ts)
+BaseReporter.NullSample = "-1"
+#BaseReporter.setPeriod(Ts)
 
 
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NOISE=0.05
+NOISE=0.1
 
 
 for i in {1..4}
