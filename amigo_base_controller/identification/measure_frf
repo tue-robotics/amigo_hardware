@@ -17,6 +17,7 @@ var array noise_max = array( 0.0, 0.0, 0.0, $NOISE )" > noise.ops;;
 		*) echo 'Error!'; return;;
 	esac
 	cat `rospack find amigo_base_controller`/identification/base_identification.ops >> noise.ops
+	sed -i 's/basereports/wheel$i/g' noise.ops
 
 	timeout 20 rosrun ocl deployer-gnulinux -s `rospack find amigo_etherCAT`/soem.ops -s noise.ops
 	sleep 5
