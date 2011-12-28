@@ -3,7 +3,7 @@
 NOISE=0.1
 
 #Create a ramdisk to allow fast writing of the report file.
-sudo mkdir /tmp/ramdisk
+sudo mkdir -p /tmp/ramdisk
 #Allow full acces
 sudo chmod 777 /tmp/ramdisk
 #Mount a piece of ram here
