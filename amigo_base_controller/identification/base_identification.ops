@@ -216,8 +216,8 @@ BaseReporter.reportPort("ReadWheelEncoders","out")
 addPeer("BaseReporter","BaseSI2Volt")
 BaseReporter.reportPort("BaseSI2Volt","out")
 BaseReporter.NullSample = "-1"
-#BaseReporter.setPeriod(Ts)
-
+#BaseReporter.setPeriod(Ts) Don't do this, it will skip a lot of samples
+BaseReporter.Synchronize = 1
 
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
 BaseDiagnostics.start

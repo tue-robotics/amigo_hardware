@@ -2,9 +2,17 @@
 
 NOISE=0.1
 
+#Create a ramdisk to allow fast writing of the report file.
+sudo mkdir /tmp/ramdisk
+#Allow full acces
+sudo chmod 777 /tmp/ramdisk
+#Mount a piece of ram here
+sudo mount -t tmpfs -o size=256M tmpfs /tmp/ramdisk/
 
+#For all wheels
 for i in {1..4}
 do
+	#Create a noise.ops file with the correct parameters
 	case $i in
 		1) echo "var array noise_min = array( -$NOISE, 0.0, 0.0, 0.0 )
 var array noise_max = array( $NOISE, 0.0, 0.0, 0.0 )" > noise.ops;;
@@ -17,8 +25,14 @@ var array noise_max = array( 0.0, 0.0, 0.0, $NOISE )" > noise.ops;;
 		*) echo 'Error!'; return;;
 	esac
 	cat `rospack find amigo_base_controller`/identification/base_identification.ops >> noise.ops
-	sed -i 's/basereports/wheel$i/g' noise.ops
-
+	sed -i 's|"/home/amigo/basereports.dat|/tmp/ramdisk/wheel$i.dat|g' noise.ops
+	
+	#Run the identification with a timeout.
 	timeout 20 rosrun ocl deployer-gnulinux -s `rospack find amigo_etherCAT`/soem.ops -s noise.ops
+	
+	#move .dat file to disk
+	mv /tmp/ramdisk/wheel* /home/amigo/
+	
+	#Sleep a bit so people have time to press ctrl+c
 	sleep 5
 done
