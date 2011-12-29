@@ -18,6 +18,7 @@
   <depend package="rtt_source_components"/>
   <depend package="rtt_ROS_interfacing"/>
   <depend package="rtt_matrix_components"/>
+  <depend package="rtt_custom_components"/>
   <depend package="rtt_routing_components"/>
 </package>
 

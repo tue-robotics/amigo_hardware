@@ -7,15 +7,18 @@ var double DIS2CENT = 0.29072
 var double HALFSQRT2 = 0.7071
 var double TORQUE2CURRENT = 1.0/0.0302; # [Amp/Nm]
 var double CURRENT2VOLT = 1.0/1.0
-var double GEARRATIO = 1.0/43.0
+var double GEARRATIO = 8.0/343.0
 var double TWOPI = 2*3.141592
+var double ENCODERCOUNTS = 500.0*4.0
+
+var double ENC2SI = TWOPI*GEARRATIO/ENCODERCOUNTS
 
 ### READ WHEEL ENCODERS ###
 loadComponent("ReadWheelEncoders","SOEM::ReadEncoders")
 #loadService("ReadWheelEncoders","rosparam")
 #ReadWheelEncoders.rosparam.refreshProperties()
 ReadWheelEncoders.encoderbits = 65536
-ReadWheelEncoders.enc2SI = array (2.61799388e-4, 2.61799388e-4, 2.61799388e-4, 2.61799388e-4)
+ReadWheelEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI, ENC2SI)
 ReadWheelEncoders.configure
 setActivity("ReadWheelEncoders",Ts,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_1002.Slave_1002_value","ReadWheelEncoders.enc1_in", ConnPolicy() ); #enc1[-]
@@ -79,7 +82,7 @@ setActivity("BaseCalculateErrors",0.0,HighestPriority,ORO_SCHED_RT)
 loadComponent("BaseControllerGains","MATH::Gains")
 connect ("BaseCalculateErrors.out","BaseControllerGains.in", ConnPolicy() )
 BaseControllerGains.vectorsize = 4;
-BaseControllerGains.gain = array (0.5, 0.5, 0.5, 0.5)
+BaseControllerGains.gain = array (10.0, 10.0, 10.0, 10.0)
 BaseControllerGains.configure
 setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
 
