@@ -7,7 +7,7 @@ var double DIS2CENT = 0.29072
 var double HALFSQRT2 = 0.7071
 var double TORQUE2CURRENT = 1.0/0.0302; # [Amp/Nm]
 var double CURRENT2VOLT = 1.0/1.0
-var double GEARRATIO = 1.0/12.0
+var double GEARRATIO = 1.0/43.0
 var double TWOPI = 2*3.141592
 
 ### READ WHEEL ENCODERS ###
@@ -195,29 +195,23 @@ stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 
 
 #Setting up reporting
+loadComponent("BaseReporterMux", "SIGNALROUTING::VectorConcatenate")
+BaseReporterMux.number_of_inputs = 3
+BaseReporterMux.configure
+connect ("ReadWheelEncoders.out", "BaseReporterMux.in1", ConnPolicy() )
+connect ("BaseSecondOrderLowPass.out", "BaseReporterMux.in2", ConnPolicy() )
+connect ("BaseAddNoise.out", "BaseReporterMux.in3_event", ConnPolicy() )
+setActivity("BaseReporterMux",0.0,HighestPriority,ORO_SCHED_RT)
+
+
 loadComponent("BaseReporter", "OCL::FileReporting")
 BaseReporter.ReportFile = "/home/amigo/basereports.dat"
-#addPeer("BaseReporter","BaseReset.integratorreset")
-#BaseReporter.reportPort("BaseReset","out")
-#addPeer("BaseReporter","BaseReadReferenceVelocities")
-#BaseReporter.reportPort("BaseReadReferenceVelocities","out")
-#addPeer("BaseReporter","BaseVel2Pos")
-#BaseReporter.reportPort("BaseVel2Pos","out")
-addPeer("BaseReporter","ReadWheelEncoders")
-BaseReporter.reportPort("ReadWheelEncoders","out")
-#addPeer("BaseReporter","WheelVel")
-#BaseReporter.reportPort("WheelVel","out")
-#addPeer("BaseReporter","BaseDecouplePosition")
-#BaseReporter.reportPort("BaseDecouplePosition","out")
-#addPeer("BaseReporter","BaseCalculateErrors")
-#BaseReporter.reportPort("BaseCalculateErrors","out")
-#addPeer("BaseReporter","BaseSecondOrderLowPass")
-#BaseReporter.reportPort("BaseSecondOrderLowPass","out")
-addPeer("BaseReporter","BaseSI2Volt")
-BaseReporter.reportPort("BaseSI2Volt","out")
+addPeer("BaseReporter","BaseReporterMux")
+BaseReporter.reportPort("BaseReporterMux","out")
 BaseReporter.NullSample = "-1"
 #BaseReporter.setPeriod(Ts) Don't do this, it will skip a lot of samples
 BaseReporter.Synchronize = 1
+setActivity("BaseReporter",0.0,HighestPriority,ORO_SCHED_RT)
 
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
 BaseDiagnostics.start
@@ -238,4 +232,5 @@ BaseDecouplePosition.start
 Odometry.start
 BaseStatus.start
 
+BaseReporterMux.start
 BaseReporter.start
