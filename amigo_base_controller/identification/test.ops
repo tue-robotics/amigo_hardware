@@ -1,0 +1,31 @@
+import("rtt_source_components")
+import("rtt_custom_components")
+
+var double Ts = 0.0001
+var ConnPolicy largebuffer;
+largebuffer.type = BUFFER;
+largebuffer.size = 100000;
+
+### READ WHEEL ENCODERS ###
+loadComponent("Source","SOURCES::RampSignal")
+Source.vector_size = 4
+Source.slope = array( 1.0, -1.0, 0.0, 0.0)
+setActivity("Source",Ts,HighestPriority,ORO_SCHED_RT)
+Source.configure
+
+#Setting up reporting
+loadComponent("Reporter", "CUSTOM::Reporter")
+Reporter.number_of_inputs = 1
+Reporter.configure
+connect ("Source.out","Reporter.trigger", largebuffer )
+connect ("Source.out","Reporter.in1", largebuffer )
+Reporter.ReportFile = "/home/tim/reports.dat"
+#addPeer("Reporter","Source")
+#Reporter.reportPort("Source","out")
+#Reporter.NullSample = "-1"
+#BaseReporter.setPeriod(Ts) Don't do this, it will skip a lot of samples
+#Reporter.Synchronize = 1
+
+#Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
+Source.start
+Reporter.start
