@@ -7,21 +7,29 @@ var double DIS2CENT = 0.29072
 var double HALFSQRT2 = 0.7071
 var double TORQUE2CURRENT = 1.0/0.0302; # [Amp/Nm]
 var double CURRENT2VOLT = 1.0/1.0
-var double GEARRATIO = 1.0/43.0
+var double GEARRATIO = 8.0/343.0
 var double TWOPI = 2*3.141592
+var double ENCODERCOUNTS = 500.0*4.0
+
+var double ENC2SI = TWOPI*GEARRATIO/ENCODERCOUNTS
+
+#Setting up reporting
+var ConnPolicy NoBuffer;
+NoBuffer.type = BUFFER;
+NoBuffer.size = 1 # 100 seconds of data
 
 ### READ WHEEL ENCODERS ###
 loadComponent("ReadWheelEncoders","SOEM::ReadEncoders")
 #loadService("ReadWheelEncoders","rosparam")
 #ReadWheelEncoders.rosparam.refreshProperties()
 ReadWheelEncoders.encoderbits = 65536
-ReadWheelEncoders.enc2SI = array (2.61799388e-4, 2.61799388e-4, 2.61799388e-4, 2.61799388e-4)
+ReadWheelEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI, ENC2SI)
 ReadWheelEncoders.configure
 setActivity("ReadWheelEncoders",Ts,HighestPriority,ORO_SCHED_RT)
-connect ("Soem.Slave_1002.Slave_1002_value","ReadWheelEncoders.enc1_in", ConnPolicy() ); #enc1[-]
-connect ("Soem.Slave_1003.Slave_1003_value","ReadWheelEncoders.enc2_in", ConnPolicy() ); #enc2[-]
-connect ("Soem.Slave_1004.Slave_1004_value","ReadWheelEncoders.enc3_in", ConnPolicy() ); #enc3[-]
-connect ("Soem.Slave_1005.Slave_1005_value","ReadWheelEncoders.enc4_in", ConnPolicy() ); #enc4[-]
+connect ("Soem.Slave_1002.Slave_1002_value","ReadWheelEncoders.enc1_in", NoBuffer ); #enc1[-]
+connect ("Soem.Slave_1003.Slave_1003_value","ReadWheelEncoders.enc2_in", NoBuffer ); #enc2[-]
+connect ("Soem.Slave_1004.Slave_1004_value","ReadWheelEncoders.enc3_in", NoBuffer ); #enc3[-]
+connect ("Soem.Slave_1005.Slave_1005_value","ReadWheelEncoders.enc4_in", NoBuffer ); #enc4[-]
 
 ### DECOUPLE POSITION ###
 loadComponent("BaseDecouplePosition","MatrixTransform")
@@ -32,19 +40,14 @@ setActivity("BaseDecouplePosition",0.0,HighestPriority,ORO_SCHED_RT)
 BaseDecouplePosition.function1 = array (-0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2)
 BaseDecouplePosition.function2 = array ( 0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELRAD/HALFSQRT2,  0.25*WHEELRAD/HALFSQRT2)
 BaseDecouplePosition.function3 = array ( 0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT)
-connect ("ReadWheelEncoders.out","BaseDecouplePosition.in", ConnPolicy() ) #4x[rad]
+connect ("ReadWheelEncoders.out","BaseDecouplePosition.in", NoBuffer ) #4x[rad]
 
 ### READ REFERENCE VELOCITIES ###
-loadComponent("BaseReadReferenceVelocities","MSG::ReadTwistMsg")
-#loadService("BaseReadReferenceVelocities","rosparam")
-#BaseReadReferenceVelocities.rosparam.refreshProperties()
-BaseReadReferenceVelocities.max_start_vel = 0.1
-BaseReadReferenceVelocities.max_acc = array (0.7, 0.7, 2.0)
-BaseReadReferenceVelocities.max_interval = 1.0
-#Setting up ROS-topics
-stream("BaseReadReferenceVelocities.cmd_vel", ros.topic("/cmd_vel"));
-BaseReadReferenceVelocities.configure
+loadComponent("BaseReadReferenceVelocities","SOURCES::ConstantSignal")
+BaseReadReferenceVelocities.vector_size = 3
+BaseReadReferenceVelocities.value = array( 0.0, 0.0, 1.0)
 setActivity("BaseReadReferenceVelocities",0.01,LowestPriority,ORO_SCHED_OTHER)
+BaseReadReferenceVelocities.configure
 
     
 ### VELOCITY TO POSITION ###
@@ -52,7 +55,7 @@ loadComponent("BaseVel2Pos","MATH::Integrator")
 BaseVel2Pos.vector_size = 3
 BaseVel2Pos.configure
 setActivity("BaseVel2Pos",0.0,LowestPriority,ORO_SCHED_OTHER)
-connect ("BaseReadReferenceVelocities.out","BaseVel2Pos.in", ConnPolicy() ); #[m/s \n m/s \n rad/s]
+connect ("BaseReadReferenceVelocities.out","BaseVel2Pos.in", NoBuffer ); #[m/s \n m/s \n rad/s]
 
 ### DECOUPLE REFERENCE ###
 loadComponent("BaseDecoupleReference","MatrixTransform")
@@ -64,28 +67,28 @@ BaseDecoupleReference.function1 = array ( -HALFSQRT2/WHEELRAD,  HALFSQRT2/WHEELR
 BaseDecoupleReference.function2 = array ( -HALFSQRT2/WHEELRAD, -HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
 BaseDecoupleReference.function3 = array (  HALFSQRT2/WHEELRAD, -HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
 BaseDecoupleReference.function4 = array (  HALFSQRT2/WHEELRAD,  HALFSQRT2/WHEELRAD,  DIS2CENT/WHEELRAD )
-connect ("BaseVel2Pos.out","BaseDecoupleReference.in", ConnPolicy() ); # [N \n N \n Nm]
+connect ("BaseVel2Pos.out","BaseDecoupleReference.in", NoBuffer ); # [N \n N \n Nm]
     
     
 ### CALCULATE ERRORS ###
 loadComponent("BaseCalculateErrors","MATH::Subtraction")
 BaseCalculateErrors.vectorsize = 4;
-connect ("BaseDecoupleReference.out","BaseCalculateErrors.in_plus", ConnPolicy() ); #[m \n m \n rad]
-connect ("ReadWheelEncoders.out","BaseCalculateErrors.in_minus", ConnPolicy() ); #[m \n m \n rad]
+connect ("BaseDecoupleReference.out","BaseCalculateErrors.in_plus", NoBuffer ); #[m \n m \n rad]
+connect ("ReadWheelEncoders.out","BaseCalculateErrors.in_minus", NoBuffer ); #[m \n m \n rad]
 BaseCalculateErrors.configure
 setActivity("BaseCalculateErrors",0.0,HighestPriority,ORO_SCHED_RT)
 
 ### GAIN ###
 loadComponent("BaseControllerGains","MATH::Gains")
-connect ("BaseCalculateErrors.out","BaseControllerGains.in", ConnPolicy() )
+connect ("BaseCalculateErrors.out","BaseControllerGains.in", NoBuffer )
 BaseControllerGains.vectorsize = 4;
-BaseControllerGains.gain = array (0.5, 0.5, 0.5, 0.5)
+BaseControllerGains.gain = array (1.0, 1.0, 1.0, 1.0)
 BaseControllerGains.configure
 setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
 
 ### LEADLAG ###
 loadComponent("BaseLeadLag","FILTERS::LeadLags")
-connect ("BaseControllerGains.out","BaseLeadLag.in", ConnPolicy() )
+connect ("BaseControllerGains.out","BaseLeadLag.in", NoBuffer )
 BaseLeadLag.vector_size = 4;
 BaseLeadLag.sampling_time = Ts
 BaseLeadLag.zero_frequency = array (5.0, 5.0, 5.0, 5.0)
@@ -95,7 +98,7 @@ setActivity("BaseLeadLag",0.0,HighestPriority,ORO_SCHED_RT)
 
 ### LOWPASS ###
 loadComponent("BaseSecondOrderLowPass","FILTERS::SecondOrderLowPasses")
-connect ("BaseLeadLag.out","BaseSecondOrderLowPass.in", ConnPolicy() )
+connect ("BaseLeadLag.out","BaseSecondOrderLowPass.in", NoBuffer )
 BaseSecondOrderLowPass.vector_size = 4;
 BaseSecondOrderLowPass.sampling_time = Ts
 BaseSecondOrderLowPass.pole_frequency = array (250.0, 250.0, 250.0, 250.0)
@@ -115,16 +118,16 @@ BaseNoise.maximum = noise_max
 
 loadComponent("BaseAddNoise","MATH::Addition")
 BaseAddNoise.vectorsize = 4
-connect ("BaseNoise.out","BaseAddNoise.in1", ConnPolicy() );
-connect ("BaseSecondOrderLowPass.out","BaseAddNoise.in2_event", ConnPolicy() )
+connect ("BaseNoise.out","BaseAddNoise.in1", NoBuffer );
+connect ("BaseSecondOrderLowPass.out","BaseAddNoise.in2_event", NoBuffer )
 setActivity("BaseAddNoise",0.0,HighestPriority,ORO_SCHED_RT)
 BaseAddNoise.configure
 
 
 ### SI2VOLT ###
 loadComponent("BaseSI2Volt","MATH::Gains")
-connect ("BaseAddNoise.out","BaseSI2Volt.in", ConnPolicy() ); # 4x[Nm]
-connect ("BaseSI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Volt
+connect ("BaseAddNoise.out","BaseSI2Volt.in", NoBuffer ); # 4x[Nm]
+connect ("BaseSI2Volt.out", "AnalogOuts.wheels", NoBuffer ); # Volt
 BaseSI2Volt.vectorsize = 4;
 var double SI2V = TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
 BaseSI2Volt.gain = array (SI2V, SI2V, SI2V, SI2V)
@@ -137,21 +140,21 @@ loadComponent("BaseSafety","AMIGO::BaseSafety")
 BaseSafety.max_velocities = array (1.8, 1.0, 3.1415)
 BaseSafety.max_errors = array ( 6.0, 6.0, 6.0, 6.0 )
 BaseSafety.max_voltage = 3.5
-connect ("BaseReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
-connect ("BaseCalculateErrors.out", "BaseSafety.error", ConnPolicy() )
-connect ("BaseSI2Volt.out", "BaseSafety.voltage", ConnPolicy() )
-connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.amplifiers", ConnPolicy() ); # amplifiers
-connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.tuelights", ConnPolicy() ); # lights
+connect ("BaseReadReferenceVelocities.out", "BaseSafety.ref", NoBuffer )
+connect ("BaseCalculateErrors.out", "BaseSafety.error", NoBuffer )
+connect ("BaseSI2Volt.out", "BaseSafety.voltage", NoBuffer )
+connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.amplifiers", NoBuffer ); # amplifiers
+connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.tuelights", NoBuffer ); # lights
 BaseSafety.configure
 setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 
 #### LOAD COMPONENT FOR RESET ###
 loadComponent("BaseReset","AMIGO::BaseReset")
-connect ("BaseReset.integratorreset", "BaseVel2Pos.reset", ConnPolicy() )
-connect ("BaseDecouplePosition.out", "BaseReset.pos", ConnPolicy() )
-connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
-connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
+connect ("BaseReset.integratorreset", "BaseVel2Pos.reset", NoBuffer )
+connect ("BaseDecouplePosition.out", "BaseReset.pos", NoBuffer )
+connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", NoBuffer )
+connect ("BaseReset.reset", "BaseSafety.reset", NoBuffer )
 stream("BaseReset.rosreset", ros.topic("/reset_base"));
 stream("BaseReset.rosemergency", ros.topic("/emergency_switch"));
 BaseReset.configure
@@ -160,7 +163,7 @@ setActivity("BaseReset",0.0,LowestPriority,ORO_SCHED_OTHER)
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
 loadComponent("Odometry","AMIGO::PublishOdometry")
-connect ("BaseDecouplePosition.out", "Odometry.pos", ConnPolicy() )
+connect ("BaseDecouplePosition.out", "Odometry.pos", NoBuffer )
 stream("Odometry.odom", ros.topic("/odom"));
 Odometry.configure
 setActivity("Odometry",0.05,LowestPriority,ORO_SCHED_OTHER)
@@ -175,13 +178,13 @@ BaseDiagnostics.NumberOfBoolPorts = 1
 BaseDiagnostics.configure
 setActivity("BaseDiagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
 BaseDiagnostics.vecname1 = "Reference"
-connect ("BaseReadReferenceVelocities.out", "BaseDiagnostics.vec1", ConnPolicy() )
+connect ("BaseReadReferenceVelocities.out", "BaseDiagnostics.vec1", NoBuffer )
 BaseDiagnostics.vecname2 = "Error"
-connect ("BaseCalculateErrors.out", "BaseDiagnostics.vec2", ConnPolicy() )
+connect ("BaseCalculateErrors.out", "BaseDiagnostics.vec2", NoBuffer )
 BaseDiagnostics.vecname3 = "Voltage"
-connect ("BaseSI2Volt.out", "BaseDiagnostics.vec3", ConnPolicy() )
+connect ("BaseSI2Volt.out", "BaseDiagnostics.vec3", NoBuffer )
 BaseDiagnostics.boolname1 = "Amplifiers"
-connect ("BaseSafety.wheel_amplifiers", "BaseDiagnostics.bool1", ConnPolicy() )
+connect ("BaseSafety.wheel_amplifiers", "BaseDiagnostics.bool1", NoBuffer )
 
 
 #### LOAD COMPONENT TO PUBLISH STATUS ###
@@ -189,29 +192,33 @@ loadComponent("BaseStatus","ROS::BoolToROS")
 BaseStatus.NumberOfBoolPorts = 1
 BaseStatus.configure
 setActivity("BaseStatus",1.0,LowestPriority,ORO_SCHED_OTHER)
-connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", ConnPolicy() )
+connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", NoBuffer )
 stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 
 
 
 #Setting up reporting
+var ConnPolicy LargeBuffer;
+LargeBuffer.type = BUFFER;
+LargeBuffer.size = 100000 # 100 seconds of data
+
 loadComponent("BaseReporterMux", "SIGNALROUTING::VectorConcatenate")
 BaseReporterMux.number_of_inputs = 3
 BaseReporterMux.configure
-connect ("ReadWheelEncoders.out", "BaseReporterMux.in1", ConnPolicy() )
-connect ("BaseSecondOrderLowPass.out", "BaseReporterMux.in2", ConnPolicy() )
-connect ("BaseAddNoise.out", "BaseReporterMux.in3_event", ConnPolicy() )
+connect ("ReadWheelEncoders.out", "BaseReporterMux.in1", NoBuffer )
+connect ("BaseSecondOrderLowPass.out", "BaseReporterMux.in2", NoBuffer )
+connect ("BaseAddNoise.out", "BaseReporterMux.in3_event", NoBuffer )
 setActivity("BaseReporterMux",0.0,HighestPriority,ORO_SCHED_RT)
 
-
-loadComponent("BaseReporter", "OCL::FileReporting")
+loadComponent("BaseReporter", "CUSTOM::Reporter")
 BaseReporter.ReportFile = "/home/amigo/basereports.dat"
-addPeer("BaseReporter","BaseReporterMux")
-BaseReporter.reportPort("BaseReporterMux","out")
-BaseReporter.NullSample = "-1"
-#BaseReporter.setPeriod(Ts) Don't do this, it will skip a lot of samples
-BaseReporter.Synchronize = 1
-setActivity("BaseReporter",0.0,HighestPriority,ORO_SCHED_RT)
+BaseReporter.number_of_inputs = 1
+BaseReporter.FirstLine = "TimeStamp PlantOut1 PlantOut2 PlantOut3 PlantOut4 ControllerOut1 ControllerOut2 ControllerOut3 ControllerOut4 PlantIn1 PlantIn2 PlantIn3 PlantIn4"
+BaseReporter.configure
+connect ("BaseReporterMux.out", "BaseReporter.in1", LargeBuffer )
+connect ("BaseReporterMux.out", "BaseReporter.trigger", LargeBuffer )
+setActivity("BaseReporter",0.0,LowestPriority,ORO_SCHED_OTHER)
+
 
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
 BaseDiagnostics.start

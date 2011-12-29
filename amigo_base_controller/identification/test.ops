@@ -19,7 +19,7 @@ Reporter.number_of_inputs = 1
 Reporter.configure
 connect ("Source.out","Reporter.trigger", largebuffer )
 connect ("Source.out","Reporter.in1", largebuffer )
-Reporter.ReportFile = "/home/tim/reports.dat"
+Reporter.ReportFile = "reports.dat"
 #addPeer("Reporter","Source")
 #Reporter.reportPort("Source","out")
 #Reporter.NullSample = "-1"

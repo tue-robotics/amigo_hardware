@@ -12,7 +12,7 @@ sudo mount -t tmpfs -o size=256M tmpfs /tmp/ramdisk/
 	sed -i 's|/home/tim/reports.dat|/tmp/ramdisk/reports.dat|g' test2.ops
 	
 	#Run the identification with a timeout.
-	timeout -k 6 5 rosrun ocl deployer-gnulinux -s test2.ops
+	timeout 5 rosrun ocl deployer-gnulinux -s test2.ops
 	
 	#move .dat file to disk
 	mv /tmp/ramdisk/reports.dat /home/tim/reportsram.dat
