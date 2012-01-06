@@ -93,7 +93,7 @@ bool Supervisor::configureHook()
 	errors=false;
 
 	// Gripper initially not homed by default
-	gripperHomed = false;
+	gripperHomed = true;
 
 	// Reference not yet resetted
 	resetReference=false;
