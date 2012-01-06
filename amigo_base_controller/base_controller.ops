@@ -82,7 +82,7 @@ setActivity("BaseCalculateErrors",0.0,HighestPriority,ORO_SCHED_RT)
 loadComponent("BaseControllerGains","MATH::Gains")
 connect ("BaseCalculateErrors.out","BaseControllerGains.in", ConnPolicy() )
 BaseControllerGains.vectorsize = 4;
-BaseControllerGains.gain = array (10.0, 10.0, 10.0, 10.0)
+BaseControllerGains.gain = array (1.0, 1.0, 1.0, 1.0)
 BaseControllerGains.configure
 setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
 
@@ -92,7 +92,7 @@ loadComponent("BaseLeadLag","FILTERS::LeadLags")
 connect ("BaseControllerGains.out","BaseLeadLag.in", ConnPolicy() )
 BaseLeadLag.vector_size = 4;
 BaseLeadLag.sampling_time = Ts
-BaseLeadLag.zero_frequency = array (5.0, 5.0, 5.0, 5.0)
+BaseLeadLag.zero_frequency = array (1.0, 1.0, 1.0, 1.0)
 BaseLeadLag.pole_frequency = array (20.0, 20.0, 20.0, 20.0)
 BaseLeadLag.configure
 setActivity("BaseLeadLag",0.0,HighestPriority,ORO_SCHED_RT)
