@@ -4,7 +4,7 @@
       amigo_redundancy_search
 
   </description>
-  <author>N. Dirkx</author>
+  <author>Nic Dirkx</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/arm_kinematics2</url>
