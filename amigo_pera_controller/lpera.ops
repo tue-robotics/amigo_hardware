@@ -20,6 +20,7 @@ trigger
 ### Read reference joint angles ###
 loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
 LPERA_ReadReferenceAngles.offsets = array ( 0.0, 1.570796325, 0.0, 0.0, 0.0, 1.570796325, 0.0, 0.0 )
+###LPERA_ReadReferenceAngles.offsets = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 1.570796325, 0.0, 0.0 )#added by ROBJ & DENNISH for the new TF#
 LPERA_ReadReferenceAngles.signs = array ( -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
 LPERA_ReadReferenceAngles.configure
 
