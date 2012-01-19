@@ -9,8 +9,10 @@ PanTiltController.pan_max = 1032
 PanTiltController.pan_min = 15  	
 # was 131 before 2012-01-18 
 # was 3 before: still needs checking (old)
-PanTiltController.tilt_max = 750
-PanTiltController.tilt_min = 250
+PanTiltController.tilt_max = 700
+#was 750 before 2012-01-19
+PanTiltController.tilt_min = 435
+#was 250 before 2012-01-19
 PanTiltController.pan_speed = 300
 PanTiltController.tilt_speed = 300
 PanTiltController.pan_offset = 490 	
