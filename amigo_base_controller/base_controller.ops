@@ -102,7 +102,7 @@ loadComponent("BaseSecondOrderLowPass","FILTERS::SecondOrderLowPasses")
 connect ("BaseLeadLag.out","BaseSecondOrderLowPass.in", ConnPolicy() )
 BaseSecondOrderLowPass.vector_size = 4;
 BaseSecondOrderLowPass.sampling_time = Ts
-BaseSecondOrderLowPass.pole_frequency = array (250.0, 250.0, 250.0, 250.0)
+BaseSecondOrderLowPass.pole_frequency = array (40.0, 40.0, 40.0, 40.0)
 BaseSecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7, 0.7)
 BaseSecondOrderLowPass.configure
 setActivity("BaseSecondOrderLowPass",0.0,HighestPriority,ORO_SCHED_RT)
@@ -210,8 +210,8 @@ BaseReporter.reportPort("ReadWheelEncoders","out")
 #BaseReporter.reportPort("WheelVel","out")
 #addPeer("BaseReporter","BaseDecouplePosition")
 #BaseReporter.reportPort("BaseDecouplePosition","out")
-#addPeer("BaseReporter","BaseCalculateErrors")
-#BaseReporter.reportPort("BaseCalculateErrors","out")
+addPeer("BaseReporter","BaseCalculateErrors")
+BaseReporter.reportPort("BaseCalculateErrors","out")
 #addPeer("BaseReporter","BaseSecondOrderLowPass")
 #BaseReporter.reportPort("BaseSecondOrderLowPass","out")
 addPeer("BaseReporter","BaseSI2Volt")
@@ -239,4 +239,4 @@ BaseDecouplePosition.start
 Odometry.start
 BaseStatus.start
 
-BaseReporter.start
+#BaseReporter.start

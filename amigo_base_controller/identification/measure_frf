@@ -10,7 +10,7 @@ sudo chmod 777 /tmp/ramdisk
 sudo mount -t tmpfs -o size=256M tmpfs /tmp/ramdisk/
 
 #For all wheels
-for i in {1..4}
+for i in {1..1}
 do
 	#Create a noise.ops file with the correct parameters
 	case $i in
@@ -25,13 +25,13 @@ var array noise_max = array( 0.0, 0.0, 0.0, $NOISE )" > noise.ops;;
 		*) echo 'Error!'; return;;
 	esac
 	cat `rospack find amigo_base_controller`/identification/base_identification.ops >> noise.ops
-	sed -i "s|/home/amigo/basereports.dat|/tmp/ramdisk/wheel$i.dat|g" noise.ops
+	sed -i "s|/home/amigo/basereports.dat|/home/amigo/wheel$i.dat|g" noise.ops
 	
 	#Run the identification with a timeout.
-	timeout 60 rosrun ocl deployer-gnulinux -s `rospack find amigo_etherCAT`/soem.ops -s noise.ops
+	timeout 240 rosrun ocl deployer-gnulinux -s `rospack find amigo_etherCAT`/soem.ops -s noise.ops
 	
 	#move .dat file to disk
-	mv /tmp/ramdisk/wheel* /home/amigo/
+	#mv /tmp/ramdisk/wheel* /home/amigo/
 	
 	#Sleep a bit so people have time to press ctrl+c
 	sleep 1

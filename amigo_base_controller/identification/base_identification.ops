@@ -82,7 +82,7 @@ setActivity("BaseCalculateErrors",0.0,HighestPriority,ORO_SCHED_RT)
 loadComponent("BaseControllerGains","MATH::Gains")
 connect ("BaseCalculateErrors.out","BaseControllerGains.in", NoBuffer )
 BaseControllerGains.vectorsize = 4;
-BaseControllerGains.gain = array (1.0, 1.0, 1.0, 1.0)
+BaseControllerGains.gain = array (0.1, 0.1, 0.1, 0.1)
 BaseControllerGains.configure
 setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
 
@@ -92,7 +92,7 @@ connect ("BaseControllerGains.out","BaseLeadLag.in", NoBuffer )
 BaseLeadLag.vector_size = 4;
 BaseLeadLag.sampling_time = Ts
 BaseLeadLag.zero_frequency = array (5.0, 5.0, 5.0, 5.0)
-BaseLeadLag.pole_frequency = array (20.0, 20.0, 20.0, 20.0)
+BaseLeadLag.pole_frequency = array (5.0, 5.0, 5.0, 5.0)
 BaseLeadLag.configure
 setActivity("BaseLeadLag",0.0,HighestPriority,ORO_SCHED_RT)
 
@@ -200,7 +200,7 @@ stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 #Setting up reporting
 var ConnPolicy LargeBuffer;
 LargeBuffer.type = BUFFER;
-LargeBuffer.size = 100000 # 100 seconds of data
+LargeBuffer.size = 1000000 # 100 seconds of data
 
 loadComponent("BaseReporterMux", "SIGNALROUTING::VectorConcatenate")
 BaseReporterMux.number_of_inputs = 3
