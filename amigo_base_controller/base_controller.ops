@@ -1,7 +1,21 @@
+########################################################################
+#                                                                      #
+# Base controller deployer file to load the controllers for the wheels #
+#                                                                      #
+# Tim Clephas                                                          #
+# Mostly 2011                                                          #
+#                                                                      #
+# Uses the DeployerComponent available within the OCL for deploying    #
+# and connecting components.                                           #
+#                                                                      #
+########################################################################
+
+### Import amigo_base_controller package. All the components in this package,       ###
+### as well as all components from packages mentioned in the manifest can be loaded ###
 import("amigo_base_controller")
 
+### Declare several variables that are typical for this setup ###
 var double Ts = 0.001
-
 var double WHEELRAD = 0.075*0.9825; # Corrected for effective wheel radius
 var double DIS2CENT = 0.29072
 var double HALFSQRT2 = 0.7071
@@ -12,6 +26,7 @@ var double TWOPI = 2*3.141592
 var double ENCODERCOUNTS = 500.0*4.0
 
 var double ENC2SI = TWOPI*GEARRATIO/ENCODERCOUNTS
+
 
 ### READ WHEEL ENCODERS ###
 loadComponent("ReadWheelEncoders","SOEM::ReadEncoders")
