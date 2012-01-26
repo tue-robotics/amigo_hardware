@@ -10,7 +10,7 @@ using namespace PERA;
 ReadArmJointsMsg::ReadArmJointsMsg(const string& name) : TaskContext(name, PreOperational)
 {
   // Creating ports:
-  addEventPort( "joint_coordinates", inport );
+  addEventPort( "joint_references", inport );
   addPort( "pos", posport );
   addPort( "vel", velport );
   addPort( "acc", accport );

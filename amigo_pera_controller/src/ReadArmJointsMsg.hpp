@@ -21,10 +21,10 @@ namespace PERA
 
   /*! \class ReadArmJointsMsg
    *  \brief Defines Orocos component for reading and splitting up the 
-   *         ROS topic joint_coordinates
+   *         ROS topic joint_references
    * 
    * The ReadArmJointsMsg component reads the joint coordinates from the 
-   * ROS topic /joint_coordinates. As this topic publishes joint angles 
+   * ROS topic /joint_references. As this topic publishes joint angles 
    * wrt the Denavit-Hartenberg zero-position an offset is added in 
    * order to account for the difference with the controller 
    * zero-position. The same holds for the rotational direction. Signs 

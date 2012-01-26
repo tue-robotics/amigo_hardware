@@ -327,9 +327,9 @@ connect ("LPERA_Supervisor.enableReadRefPort","LPERA_ReadReferenceAngles.enableP
 connect ("LPERA_Supervisor.reNullPort","LPERA_IO.reNullPort", ConnPolicy() )
 
 stream("LPERA_Supervisor.eButtonPort",hardware_ROStopics.emergency_switch)
-stream("LPERA_Supervisor.resetRefPort",lpera_ROStopics.joint_coordinates_left)
-stream("LPERA_WriteCurrentJointAngles.joint_coordinates",lpera_ROStopics.arm_angles_left)
-stream("LPERA_ReadReferenceAngles.joint_coordinates",lpera_ROStopics.joint_coordinates_left)
+stream("LPERA_Supervisor.resetRefPort",lpera_ROStopics.joint_references)
+stream("LPERA_WriteCurrentJointAngles.joint_measurements",lpera_ROStopics.joint_measurements)
+stream("LPERA_ReadReferenceAngles.joint_references",lpera_ROStopics.joint_references)
 stream("LPERA_IO.terminatePort",lpera_ROStopics.terminate_io_left)
 
 ### Ports and streams for gripper control ###

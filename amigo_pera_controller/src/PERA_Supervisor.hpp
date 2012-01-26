@@ -100,7 +100,7 @@ namespace PERA
 		bool goodToGo;
 		//! An error did occur yes / no (true/false)
 		bool errors;
-		//! Indicates if the rostopic /joint_coordinates has been reset
+		//! Indicates if the rostopic /joint_references has been reset
 		bool resetReference;
 		//! Bool for indicating whether gripper is homed (true) or not (false)
 		bool gripperHomed;

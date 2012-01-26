@@ -21,11 +21,11 @@ namespace PERA
   
   /*! \class WriteArmJointsMsg
    *  \brief Defines Orocos component for writing the measured joint 
-   * 	     angles to the ROS topic joint_coordinates 
+   * 	     angles to the ROS topic joint_references
    * 
    * The component WriteArmJointsMsg receives joint angles from the 
    * operating IO, puts them in the message type amigo_msgs::arm_joints
-   * and publishes them on the ROS topic joint_coordinates. 
+   * and publishes them on the ROS topic joint_references. 
    */
 
   class WriteArmJointsMsg
