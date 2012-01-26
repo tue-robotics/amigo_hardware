@@ -156,7 +156,8 @@ RPERA_JointToMotorTorques.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 ### Kp ###
 loadComponent("RPERA_Gain","MATH::Gains")
 RPERA_Gain.vectorsize = 8
-RPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 00000.0)
+#RPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 00000.0)
+RPERA_Gain.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 RPERA_Gain.configure
 
 ### Lead Lag ###
@@ -188,6 +189,9 @@ RPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15
 RPERA_OutputLimiter.lower_limit = array ( -25000.0, -25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -32000.0 )
 #RPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -32000.0 )
 #RPERA_OutputLimiter.lower_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -32000.0 )
+# For grippertest
+RPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7500.0, 7500.0 )
+RPERA_OutputLimiter.lower_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7500.0, 7500.0 )
 RPERA_OutputLimiter.vector_size = 8
 RPERA_OutputLimiter.configure
 
