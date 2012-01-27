@@ -13,7 +13,7 @@ WriteArmJointsMsg::WriteArmJointsMsg(const string& name) : TaskContext(name, Pre
 {
   // Creating ports:
   addEventPort( "pos", inport );
-  addPort( "joint_references", outport );
+  addPort( "joint_measurements", outport );
   
   // Loading properties
   addProperty ("offsets", OFFSET_VALUES);
