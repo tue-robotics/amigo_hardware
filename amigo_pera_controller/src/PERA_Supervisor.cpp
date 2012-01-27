@@ -51,6 +51,7 @@ Supervisor::Supervisor(const string& name) :
 	addProperty( "motorSaturations", MOTORSAT ).doc("Motor saturation values");
 	addProperty( "maxConSatTime", MAXCONSATTIME ).doc("Maximum time the controller is allowed to be saturated");
 	addProperty( "offsetAngles", OFFSETANGLES ).doc("Joint angles to be published when emergency button is released");
+	addProperty( "signs", SIGNS ).doc("Signs of the angles to be published");
 	addProperty( "homedPos", HOMEDPOS ).doc("Homing positions for the joints");
 	addProperty( "absOrRel", ABS_OR_REL ).doc("Defines whether joint is homed using absolute sensors or using mechanical endstop");
 	addProperty( "absSenDir", ABS_SEN_DIR ).doc("Defines if absolute sensor has its positive direction the same or opposite to relative sensors");
@@ -446,13 +447,11 @@ void Supervisor::updateHook()
 				resetdata[i*4+3]=0.0;
 			}
 
-			jointResetData.pos[0].data=-measRelJntAngles[0];
-			jointResetData.pos[1].data=measRelJntAngles[1]-OFFSETANGLES[1];
-			jointResetData.pos[2].data=measRelJntAngles[2];
-			jointResetData.pos[3].data=measRelJntAngles[3];
-			jointResetData.pos[4].data=measRelJntAngles[4];
-			jointResetData.pos[5].data=measRelJntAngles[5]-OFFSETANGLES[5];
-			jointResetData.pos[6].data=measRelJntAngles[6];
+			// Change sign and add offset (wrt inverse kinematics)
+			for ( uint i = 0; i < 7; i++ )
+			{
+				jointResetData.pos[i].data = measRelJntAngles[i]*SIGNS[i]-OFFSETANGLES[i];
+			}
 
 			//log(Error)<<"SUPERVISOR: i wrote q2 = "<<jointResetData.pos[1].data<<"."<<endlog();
 			resetRefPort.write(jointResetData);

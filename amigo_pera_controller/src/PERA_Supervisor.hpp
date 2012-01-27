@@ -128,6 +128,8 @@ namespace PERA
 		double STEPSIZE;	
 		//! Defines the joint angles for after the reset
 		doubles OFFSETANGLES;
+		//! Defines the signs for publishing the reset reference angles
+		doubles SIGNS;
 		//! Joint lower bounds
 		doubles LOWERBOUNDS;
 		//! Joint upper bounds

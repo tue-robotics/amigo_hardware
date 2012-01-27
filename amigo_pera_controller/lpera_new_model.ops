@@ -62,6 +62,7 @@ LPERA_Supervisor.dynBreakEpsilon = 0.05;
 # Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
 #LPERA_Supervisor.resetAngles = array ( 0.0, -1.570796325, 0.0, 0.5, 0.0, -1.570796325, 0.0, 0.0 )
 LPERA_Supervisor.offsetAngles = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+LPERA_Supervisor.signs = array ( -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 )
 LPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 LPERA_Supervisor.homedPos = array (484.0, 642.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
 LPERA_Supervisor.maxConSatTime = 5.0
