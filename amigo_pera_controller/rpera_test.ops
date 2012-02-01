@@ -1,6 +1,6 @@
 ########################################################################
 #                                                                      #
-# Left Philips Experimental Robotic Arm deployer file.                 #
+# Right Philips Experimental Robotic Arm deployer file.                 #
 #                                                                      #
 # Bas Willems                                                          #
 # September 2011                                                       #
@@ -16,7 +16,7 @@ trigger
 
 ### Read reference joint angles ###
 loadComponent("RPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
-RPERA_ReadReferenceAngles.offsets = array ( 0.0, 1.570796325, 0.0, 0.0, 0.0, 1.570796325, 0.0, 0.0 )
+RPERA_ReadReferenceAngles.offsets = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
 ###RPERA_ReadReferenceAngles.offsets = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 1.570796325, 0.0, 0.0 )#added by ROBJ & DENNISH for the new TF#
 RPERA_ReadReferenceAngles.signs = array ( -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
 RPERA_ReadReferenceAngles.configure
@@ -52,7 +52,8 @@ RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 RPERA_Supervisor.dynBreakEpsilon = 0.05;
 # Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
 #RPERA_Supervisor.resetAngles = array ( 0.0, -1.570796325, 0.0, 0.5, 0.0, -1.570796325, 0.0, 0.0 )
-RPERA_Supervisor.offsetAngles = array ( 0.0, 1.570796325, 0.0, 0.0, 0.0, 1.570796325, 0.0, 0.0 )
+RPERA_Supervisor.offsetAngles = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+RPERA_Supervisor.signs = array ( -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
 RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 RPERA_Supervisor.homedPos = array (484.0, 642.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
 RPERA_Supervisor.maxConSatTime = 5.0
@@ -71,7 +72,7 @@ RPERA_IO.absSenJumpPosProperty = array (1024.0, 732.0, 721.0, 1024.0, 706.0, 102
 RPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.0)
 RPERA_IO.gripperbits = 23000.0
 RPERA_IO.grippersecs = 5.0
-stream("RPERA_IO.gripperPort", ros.topic("/arm_left_controller/set_gripper"));
+stream("RPERA_IO.gripperPort", ros.topic("/arm_right_controller/set_gripper"));
 
 ### Velocity and acceleration estimator ###
 loadComponent("RPERA_RTD","AMIGO::RealTimeDerivator")
@@ -130,6 +131,7 @@ RPERA_MotorToJointAngles.function5 = array (0.0, 0.0, -0.000003835, 0.000003835,
 RPERA_MotorToJointAngles.function6 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, 0.00002116, 0.0, 0.0)
 RPERA_MotorToJointAngles.function7 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, -0.00002116, 0.0, 0.0)
 # Compensated for lower encoder resolution on left PERA
+# Ask Bas
 RPERA_MotorToJointAngles.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0005236)
 
 ### Compute tracking error ###
@@ -185,19 +187,19 @@ RPERA_WeakIntegrator1.configure
 
 ### Saturation on the controller output ###
 loadComponent("RPERA_OutputLimiter","DISCONTINUITIES::Saturation")
-RPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
-RPERA_OutputLimiter.lower_limit = array ( -25000.0, -25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -32000.0 )
+#RPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
+#RPERA_OutputLimiter.lower_limit = array ( -25000.0, -25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -32000.0 )
 #RPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -32000.0 )
 #RPERA_OutputLimiter.lower_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -32000.0 )
 # For grippertest
-RPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7500.0, 7500.0 )
-RPERA_OutputLimiter.lower_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7500.0, 7500.0 )
+RPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+RPERA_OutputLimiter.lower_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
 RPERA_OutputLimiter.vector_size = 8
 RPERA_OutputLimiter.configure
 
 ### Publishing joint angles on ROS-topic ###
 loadComponent("RPERA_WriteCurrentJointAngles","PERA::WriteArmJointsMsg")
-RPERA_WriteCurrentJointAngles.offsets = array ( 0.0, 1.570796325, 0.0, 0.0, 0.0, 1.570796325, 0.0, 0.0 )
+RPERA_WriteCurrentJointAngles.offsets = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
 RPERA_WriteCurrentJointAngles.signs = array ( -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
 RPERA_WriteCurrentJointAngles.configure
 
@@ -215,7 +217,7 @@ RPERA_SensorTorques.configure
 loadComponent("RPERA_Diagnostics","ROS::RosDiagnostics")
 stream("RPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 RPERA_Diagnostics.setPeriod(1)
-RPERA_Diagnostics.statusname = "LPERA"
+RPERA_Diagnostics.statusname = "RPERA"
 RPERA_Diagnostics.NumberOfVectorPorts = 3
 RPERA_Diagnostics.NumberOfBoolPorts = 2
 RPERA_Diagnostics.configure
@@ -294,11 +296,11 @@ connect ("RPERA_RTD.ude","RPERA_Supervisor.jointVelocity", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
 
 stream("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
-stream("RPERA_Supervisor.resetRefPort", ros.topic("/arm_left_controller/joint_references"))
-stream("RPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_left_controller/joint_measurements"))
-stream("RPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_left_controller/joint_references"))
-stream("RPERA_IO.terminatePort", ros.topic("/terminate_io_left"))
-stream("RPERA_Supervisor.peraStatusPort", ros.topic("/arm_left_status"))
+stream("RPERA_Supervisor.resetRefPort", ros.topic("/arm_right_controller/joint_references"))
+stream("RPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_right_controller/joint_measurements"))
+stream("RPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_right_controller/joint_references"))
+stream("RPERA_IO.terminatePort", ros.topic("/terminate_io_right"))
+stream("RPERA_Supervisor.peraStatusPort", ros.topic("/arm_right_status"))
 stream("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
 ### Gripper control ###
@@ -307,8 +309,8 @@ connect ("RPERA_GripperControl.gripper_status","RPERA_Supervisor.gripperStatusPo
 connect ("RPERA_Supervisor.gripperClosePort","RPERA_GripperControl.gripper_close", ConnPolicy() )
 connect ("RPERA_IO.forceSen","RPERA_SensorTorques.voltage_in", ConnPolicy() )
 
-stream("RPERA_GripperControl.gripper_close", ros.topic("/arm_left_controller/set_gripper"))
-stream("RPERA_GripperControl.gripper_status", ros.topic("/gripper_status_left"))
+stream("RPERA_GripperControl.gripper_close", ros.topic("/arm_right_controller/set_gripper"))
+stream("RPERA_GripperControl.gripper_status", ros.topic("/gripper_status_right"))
 
 RPERA_Supervisor.start
 RPERA_ReadReferenceAngles.start
