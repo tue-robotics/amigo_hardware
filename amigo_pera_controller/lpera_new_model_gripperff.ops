@@ -70,7 +70,7 @@ LPERA_Supervisor.maxConSatTime = 5.0
 LPERA_Supervisor.stepSize = 0.001570796
 LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput = true
-LPERA_Supervisor.requireHoming = true
+LPERA_Supervisor.requireHoming = false
 LPERA_Supervisor.startJoint = 5
 LPERA_Supervisor.configure
 
@@ -189,6 +189,19 @@ LPERA_WeakIntegrator1.sampling_time = 0.004
 LPERA_WeakIntegrator1.configure
 
 ### Feedforward (kfs on gripper) ###
+### Derivative ###
+loadComponent("LPERA_FF_Derivative","MATH::Derivative")
+LPERA_FF_Derivative.vector_size = 8
+LPERA_FF_Derivative.sampling_time = 0.004
+LPERA_FF_Derivative.configure
+
+### Deadzone ###
+loadComponent("LPERA_FF_Deadzone","DISCONTINUITIES::Deadzone")
+LPERA_FF_Deadzone.vector_size = 8
+LPERA_FF_Deadzone.start_deadzone = array(-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -0.1)
+LPERA_FF_Deadzone.end_deadzone = array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.1)
+LPERA_FF_Deadzone.configure
+
 ### Sign ###
 loadComponent("LPERA_FF_Sign","MATH::Sign")
 LPERA_FF_Sign.number_of_inputs = 1
@@ -198,7 +211,8 @@ LPERA_FF_Sign.configure
 ### Kfs ###
 loadComponent("LPERA_FF_kfs","MATH::Gains")
 LPERA_FF_kfs.vectorsize = 8
-LPERA_FF_kfs.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+LPERA_FF_kfs.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 30000.0)
+#LPERA_FF_kfs.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 LPERA_FF_kfs.configure
 
 ### Addition
@@ -283,7 +297,7 @@ connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
 connect ("LPERA_Gain.out","LPERA_LeadLag.in", ConnPolicy() )
 connect ("LPERA_LeadLag.out","LPERA_Lowpass.in", ConnPolicy() )
 connect ("LPERA_Lowpass.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
-connect ("LPERA_WeakIntegrator1.out","LPERA_AddFF.in2_event", ConnPolicy() )
+connect ("LPERA_WeakIntegrator1.out","LPERA_AddFF.in1", ConnPolicy() )
 connect ("LPERA_AddGravComp.out","LPERA_JointToMotorTorques.in", ConnPolicy() )
 connect ("LPERA_JointToMotorTorques.out","LPERA_OutputLimiter.in", ConnPolicy() )
 connect ("LPERA_OutputLimiter.out","LPERA_IO.cmdTorqueIn", ConnPolicy() )
@@ -299,9 +313,13 @@ connect ("LPERA_GC_Gains.out","LPERA_Polynomials.in", ConnPolicy() )
 connect ("LPERA_Polynomials.out","LPERA_AddGravComp.in1", ConnPolicy() )
 
 ### Feedforward part ###
-connect("LPERA_ReferenceInterpolator.velout","LPERA_FF_Sign.in1", ConnPolicy() )
+#connect("LPERA_ReferenceInterpolator.velout","LPERA_FF_Derivative.in", ConnPolicy() )
+#connect("LPERA_FF_Derivative.out","LPERA_FF_Deadzone.in", ConnPolicy() )
+connect("LPERA_ReferenceInterpolator.velout","LPERA_FF_Deadzone.in", ConnPolicy() )
+connect("LPERA_FF_Derivative.out","LPERA_FF_Deadzone.in", ConnPolicy() )
+connect("LPERA_FF_Deadzone.out","LPERA_FF_Sign.in1", ConnPolicy() )
 connect("LPERA_FF_Sign.out1","LPERA_FF_kfs.in", ConnPolicy() )
-connect("LPERA_FF_kfs.out","LPERA_AddFF.in2", ConnPolicy() )
+connect("LPERA_FF_kfs.out","LPERA_AddFF.in2_event", ConnPolicy() )
 connect("LPERA_AddFF.out","LPERA_AddGravComp.in2_event", ConnPolicy() )
 
 ### Supervisor ###
@@ -357,7 +375,9 @@ LPERA_AddGravComp.start
 LPERA_SensorTorques.start
 LPERA_GripperControl.start
 LPERA_Diagnostics.start
+LPERA_FF_Derivative.start
 LPERA_FF_Sign.start
 LPERA_FF_kfs.start
 LPERA_AddFF.start
+LPERA_FF_Deadzone.start
 #LPERA_Reporter.start
