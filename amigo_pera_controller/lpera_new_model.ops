@@ -6,19 +6,15 @@
 # September 2011                                                       #
 #                                                                      #
 # Uses the DeploymentComponent available within the OCL for deploying  #
-# and connecting components.   
-#
-# Januari 2012: Adapted for new robot model
-#                                        #
+# and connecting components.                                           #
+#                                                                      #
+# Januari 2012: Adapted for new robot model                            #
 #                                                                      #
 ########################################################################
 
 ### Import amigo_pera_controller package ###
 import("amigo_pera_controller")
 trigger
-
-
-
 
 ### Read reference joint angles ###
 loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
@@ -79,9 +75,9 @@ LPERA_IO.setPeriod(0.004)
 LPERA_IO.configure
 LPERA_IO.absSenJumpPosProperty = array (1024.0, 732.0, 721.0, 1024.0, 706.0, 1024.0, 1024.0)
 LPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.0)
-LPERA_IO.gripperbits = 23000.0
-LPERA_IO.grippersecs = 5.0
-stream("LPERA_IO.gripperPort", ros.topic("/arm_left_controller/set_gripper"));
+#LPERA_IO.gripperbits = 23000.0
+#LPERA_IO.grippersecs = 5.0
+#stream("LPERA_IO.gripperPort", ros.topic("/arm_left_controller/set_gripper"));
 
 ### Velocity and acceleration estimator ###
 loadComponent("LPERA_RTD","AMIGO::RealTimeDerivator")
@@ -92,8 +88,10 @@ LPERA_RTD.configure
 
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
-LPERA_GripperControl.threshold_closed = 25.0;
+LPERA_GripperControl.threshold_closed = 25.0
 LPERA_GripperControl.setPeriod(0.004)
+RPERA_GripperControl.max_pos = 3.5
+RPERA_GripperControl.gripper_gain = 0.040
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -161,7 +159,7 @@ LPERA_JointToMotorTorques.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 ### Kp ###
 loadComponent("LPERA_Gain","MATH::Gains")
 LPERA_Gain.vectorsize = 8
-LPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 00000.0)
+LPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 900000.0)
 LPERA_Gain.configure
 
 ### Lead Lag ###
