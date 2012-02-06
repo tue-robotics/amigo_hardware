@@ -56,12 +56,12 @@ RPERA_Supervisor.dynBreakEpsilon = 0.05;
 RPERA_Supervisor.offsetAngles = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
 RPERA_Supervisor.signs = array ( -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
 RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-RPERA_Supervisor.homedPos = array (484.0, 642.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
+RPERA_Supervisor.homedPos = array (328.0, 154.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
 RPERA_Supervisor.maxConSatTime = 5.0
 RPERA_Supervisor.stepSize = 0.001570796
 RPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
-RPERA_Supervisor.requireHoming = false
+RPERA_Supervisor.requireHoming = true
 RPERA_Supervisor.startJoint = 5
 RPERA_Supervisor.configure
 
@@ -84,8 +84,10 @@ RPERA_RTD.configure
 
 ### Gripper force controller ###
 loadComponent("RPERA_GripperControl","PERA::GripperControl")
-RPERA_GripperControl.threshold_closed = 25.0;
+RPERA_GripperControl.threshold_closed = 25.0
 RPERA_GripperControl.setPeriod(0.004)
+RPERA_GripperControl.max_pos = 20
+RPERA_GripperControl.gripper_gain = 0.24
 RPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -162,7 +164,7 @@ RPERA_Gain.vectorsize = 8
 # Original left arm:
 #RPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 00000.0)
 # Working copy:
-RPERA_Gain.gain = array (625000.0, 725000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 00000.0)
+RPERA_Gain.gain = array (625000.0, 725000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 540000.0)
 # Zeros:
 #RPERA_Gain.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
@@ -194,12 +196,12 @@ RPERA_WeakIntegrator1.configure
 
 ### Saturation on the controller output ###
 loadComponent("RPERA_OutputLimiter","DISCONTINUITIES::Saturation")
-RPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
-RPERA_OutputLimiter.lower_limit = array ( -25000.0, -25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -32000.0 )
-#RPERA_OutputLimiter.upper_limit = array ( 1.0, 1.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
-#RPERA_OutputLimiter.lower_limit = array ( 1.0, 1.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -32000.0 )
-#RPERA_OutputLimiter.upper_limit = array ( 2500.0, 2500.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
-#RPERA_OutputLimiter.lower_limit = array ( 2500.0, 2500.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+RPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 25000.0 )
+RPERA_OutputLimiter.lower_limit = array ( -25000.0, -25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -25000.0 )
+#PERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 0.0 )
+#RPERA_OutputLimiter.lower_limit = array ( 0.0, 0.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, 0.0 )
+#RPERA_OutputLimiter.upper_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 10000.0 )
+#RPERA_OutputLimiter.lower_limit = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 10000.0 )
 RPERA_OutputLimiter.vector_size = 8
 RPERA_OutputLimiter.configure
 
@@ -248,7 +250,7 @@ loadComponent("RPERA_Source","SOURCES::StepSignal")
 RPERA_Source.vector_size = 8
 RPERA_Source.init_value = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 RPERA_Source.final_value = array (0.0, 5000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-RPERA_Source.step_time = array (20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0)
+RPERA_Source.step_time = array (5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0)
 RPERA_Source.configure
 
 ### Setting up reporting ###
@@ -287,8 +289,8 @@ connect ("RPERA_LeadLag.out","RPERA_Lowpass.in", ConnPolicy() )
 connect ("RPERA_Lowpass.out","RPERA_WeakIntegrator1.in", ConnPolicy() )
 #connect ("RPERA_Lowpass.out","RPERA_AddGravComp.in2_event", ConnPolicy() )
 connect ("RPERA_WeakIntegrator1.out","RPERA_AddGravComp.in2_event", ConnPolicy() )
-#connect ("RPERA_AddGravComp.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
-connect ("RPERA_Source.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
+connect ("RPERA_AddGravComp.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
+#connect ("RPERA_Source.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
 connect ("RPERA_JointToMotorTorques.out","RPERA_OutputLimiter.in", ConnPolicy() )
 connect ("RPERA_OutputLimiter.out","RPERA_IO.cmdTorqueIn", ConnPolicy() )
 connect ("RPERA_ReadReferenceAngles.pos","RPERA_VectorConcatenate.in1", ConnPolicy() )
@@ -332,6 +334,8 @@ connect ("RPERA_IO.forceSen","RPERA_SensorTorques.voltage_in", ConnPolicy() )
 
 stream("RPERA_GripperControl.gripper_close", ros.topic("/arm_right_controller/set_gripper"))
 stream("RPERA_GripperControl.gripper_status", ros.topic("/gripper_status_right"))
+#stream("RPERA_MotorToJointAngles.out", ros.topic("/motor_to_joint_out"))
+stream("RPERA_GripperControl.gripper_ref", ros.topic("/arm_right_controller/gripper_ref"))
 
 RPERA_Supervisor.start
 RPERA_ReadReferenceAngles.start
@@ -355,5 +359,5 @@ RPERA_AddGravComp.start
 RPERA_SensorTorques.start
 RPERA_GripperControl.start
 RPERA_Diagnostics.start
-RPERA_Source.start
+#PERA_Source.start
 #RPERA_Reporter.start

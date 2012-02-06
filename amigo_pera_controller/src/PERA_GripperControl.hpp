@@ -47,6 +47,10 @@ namespace PERA
 	  doubles torques;
 	  //! Vector containing gripper desired value
 	  doubles gripperPos;
+	  //! Maximum gripper position
+	  double maxPos;
+	  //! Constant defining the speed the gripper opens/closes with
+	  double gripperGain;
 	  //! Bool for storing gripper status
 	  bool completed;
 	  //! ROS msg bool for outputting gripper status to ROS

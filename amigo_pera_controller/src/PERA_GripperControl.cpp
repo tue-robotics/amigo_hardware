@@ -11,7 +11,8 @@
 
 #include "PERA_GripperControl.hpp"
 
-#define gripperGain 0.040
+//#define gripperGain 0.040 // Original
+//#define gripperGain 0.40
 #define MAX_TORQUE 100.0
 
 using namespace RTT;
@@ -33,7 +34,9 @@ using namespace PERA;
 			addPort("gripper_status",gripperStatusPort);
 			
 			/// Thresholds for the gripper force
-			addProperty( "threshold_closed", threshold_closed);			
+			addProperty( "threshold_closed", threshold_closed);	
+			addProperty( "gripper_gain", gripperGain);		
+			addProperty( "max_pos", maxPos);
 					
 	  }
 
@@ -67,7 +70,7 @@ using namespace PERA;
 		if (!completed){
 			torqueInPort.read(torques);
 			if(!gripperClose.data){
-				if (gripperPos[0] >= 3.5){
+				if (gripperPos[0] >= maxPos){
 					log(Info)<<"Gripper is OPEN"<<endlog();
 					std_msgs::Bool gripperStatus;
 					gripperStatus.data = false;
