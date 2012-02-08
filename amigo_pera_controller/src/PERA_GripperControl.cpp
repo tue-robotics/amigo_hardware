@@ -25,13 +25,13 @@ using namespace PERA;
 			// Creating the ports
 			
 			/// Inports
-			addPort("gripper_close", gripperClosePort);
+			addPort("gripper_command", gripperCommandPort);
 			addPort("torque_in", torqueInPort);
 			addEventPort("resetGripperPort",resetGripperPort);
 			
 			/// Outports
 			addPort("gripper_ref",gripperRefPort);
-			addPort("gripper_status",gripperStatusPort);
+			addPort("gripper_measurement",gripperMeasurementPort);
 			
 			/// Thresholds for the gripper force
 			addProperty( "threshold_closed", threshold_closed);	
@@ -63,18 +63,22 @@ using namespace PERA;
 			}
 		}
 		
-		if (gripperClosePort.read(gripperClose) == NewData){
+		if (gripperCommandPort.read(gripperCommand) == NewData){
 			completed = false;
 		}
-		
+
 		if (!completed){
+			amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
+			gripperMeasurement.direction = gripperCommand.direction;
+			gripperMeasurement.torque = torques[GRIPPER_JOINT_TORQUE_INDEX];
+			gripperMeasurement.end_position_reached = false;
+			gripperMeasurement.max_torque_reached = false;
+
 			torqueInPort.read(torques);
-			if(!gripperClose.data){
+			if(gripperCommand.direction == amigo_msgs::AmigoGripperCommand::OPEN){
 				if (gripperPos[0] >= maxPos){
 					log(Info)<<"Gripper is OPEN"<<endlog();
-					std_msgs::Bool gripperStatus;
-					gripperStatus.data = false;
-					gripperStatusPort.write(gripperStatus);
+					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
 				else{
@@ -85,9 +89,7 @@ using namespace PERA;
 				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
 				if (torques[GRIPPER_JOINT_TORQUE_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE){
 					log(Warning)<<"Gripper is CLOSED"<<endlog();
-					std_msgs::Bool gripperStatus;
-					gripperStatus.data = true;
-					gripperStatusPort.write(gripperStatus);
+					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
 				else if(torques[GRIPPER_JOINT_TORQUE_INDEX] < threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE){
@@ -96,6 +98,7 @@ using namespace PERA;
 				}
 			}
 			gripperRefPort.write(gripperPos);
+			gripperMeasurementPort.write(gripperMeasurement);
 		}
 	}
 

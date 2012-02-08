@@ -74,7 +74,7 @@ RPERA_IO.absSenJumpPosProperty = array (1024.0, 732.0, 721.0, 1024.0, 706.0, 102
 RPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.0)
 RPERA_IO.gripperbits = 23000.0
 RPERA_IO.grippersecs = 5.0
-stream("RPERA_IO.gripperPort", ros.topic("/arm_right_controller/set_gripper"));
+# stream("RPERA_IO.gripperPort", ros.topic("/arm_right_controller/set_gripper"));
 
 ### Velocity and acceleration estimator ###
 loadComponent("RPERA_RTD","AMIGO::RealTimeDerivator")
@@ -333,12 +333,15 @@ stream("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
 ### Gripper control ###
 connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque_in", ConnPolicy() )
-connect ("RPERA_GripperControl.gripper_status","RPERA_Supervisor.gripperStatusPort", ConnPolicy() )
-connect ("RPERA_Supervisor.gripperClosePort","RPERA_GripperControl.gripper_close", ConnPolicy() )
+connect ("RPERA_GripperControl.gripper_measurement","RPERA_Supervisor.gripperMeasurementPort", ConnPolicy() )
+connect ("RPERA_Supervisor.gripperCommandPort","RPERA_GripperControl.gripper_command", ConnPolicy() )
 connect ("RPERA_IO.forceSen","RPERA_SensorTorques.voltage_in", ConnPolicy() )
 
-stream("RPERA_GripperControl.gripper_close", ros.topic("/arm_right_controller/set_gripper"))
-stream("RPERA_GripperControl.gripper_status", ros.topic("/gripper_status_right"))
+# stream("RPERA_GripperControl.gripper_close", ros.topic("/arm_right_controller/set_gripper"))
+# stream("RPERA_GripperControl.gripper_status", ros.topic("/gripper_status_right"))
+
+stream("RPERA_GripperControl.gripper_measurement", ros.topic("/arm_right_controller/gripper_measurement"))
+stream("RPERA_GripperControl.gripper_command", ros.topic("/arm_right_controller/gripper_command"))
 
 RPERA_Supervisor.start
 RPERA_ReadReferenceAngles.start

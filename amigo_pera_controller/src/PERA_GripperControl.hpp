@@ -9,6 +9,8 @@
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 #include <std_msgs/Bool.h>
+#include <amigo_msgs/AmigoGripperCommand.h>
+#include <amigo_msgs/AmigoGripperMeasurement.h>
 
 #define PI 3.141592654
 #define GRIPPER_JOINT_TORQUE_INDEX		5
@@ -33,7 +35,8 @@ namespace PERA
 	  private:
 	  
 	  //! Inputport for receiving gripper commands
-	  InputPort<std_msgs::Bool> gripperClosePort;
+	  //InputPort<std_msgs::Bool> gripperClosePort;
+	  InputPort<amigo_msgs::AmigoGripperCommand> gripperCommandPort;
 	  //! Inputport for receving torques from PERA_USB_IO
 	  InputPort<doubles> torqueInPort;
 	  //! Inputport for resetting the gripper position
@@ -41,7 +44,8 @@ namespace PERA
 	  //! Outputport for writing the desired gripper position
 	  OutputPort<doubles> gripperRefPort;
 	  //! Outputport for outputting the gripper status to ROS
-	  OutputPort<std_msgs::Bool> gripperStatusPort;
+	  //OutputPort<std_msgs::Bool> gripperStatusPort;
+	  OutputPort<amigo_msgs::AmigoGripperMeasurement> gripperMeasurementPort;
 	  
 	  //! Vector for the read torques
 	  doubles torques;
@@ -54,7 +58,8 @@ namespace PERA
 	  //! Bool for storing gripper status
 	  bool completed;
 	  //! ROS msg bool for outputting gripper status to ROS
-      std_msgs::Bool gripperClose;
+      //std_msgs::Bool gripperClose;
+      amigo_msgs::AmigoGripperCommand gripperCommand;
 	  //! Threshold force value for gripper closed
 	  double threshold_closed;
 	  

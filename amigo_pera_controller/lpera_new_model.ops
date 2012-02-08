@@ -301,12 +301,16 @@ stream("LPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
 ### Gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
-connect ("LPERA_GripperControl.gripper_status","LPERA_Supervisor.gripperStatusPort", ConnPolicy() )
-connect ("LPERA_Supervisor.gripperClosePort","LPERA_GripperControl.gripper_close", ConnPolicy() )
+connect ("LPERA_GripperControl.gripper_measurement","LPERA_Supervisor.gripperMeasurementPort", ConnPolicy() )
+connect ("LPERA_Supervisor.gripperCommandPort","LPERA_GripperControl.gripper_command", ConnPolicy() )
 connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 
-stream("LPERA_GripperControl.gripper_close", ros.topic("/arm_left_controller/set_gripper"))
-stream("LPERA_GripperControl.gripper_status", ros.topic("/gripper_status_left"))
+# stream("LPERA_GripperControl.gripper_close", ros.topic("/arm_left_controller/set_gripper"))
+# stream("LPERA_GripperControl.gripper_status", ros.topic("/gripper_status_left"))
+
+stream("LPERA_GripperControl.gripper_command", ros.topic("/arm_left_controller/gripper_command"))
+stream("LPERA_GripperControl.gripper_measurement", ros.topic("/arm_left_controller/gripper_measurement"))
+
 
 LPERA_Supervisor.start
 LPERA_ReadReferenceAngles.start

@@ -9,6 +9,8 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
+#include <amigo_msgs/AmigoGripperCommand.h>
+#include <amigo_msgs/AmigoGripperMeasurement.h>
 
 using namespace RTT;
 
@@ -56,7 +58,8 @@ namespace PERA
 		//! Inputport for the emergency button state
 		InputPort<std_msgs::Bool> eButtonPort;
 		//! Inputport for receiving gripper status 
-		InputPort<std_msgs::Bool> gripperStatusPort;
+		//InputPort<std_msgs::Bool> gripperStatusPort;
+		InputPort<amigo_msgs::AmigoGripperMeasurement> gripperMeasurementPort;
 		//! Inputport for receiving controller motorspace output 
 		InputPort<doubles> controllerOutputPort;
 		//! Inputport for receiving the reference interpolator velocity 
@@ -74,7 +77,8 @@ namespace PERA
 		//! Outputport for ordering the PERA_IO to renull
 		OutputPort<bool> reNullPort;
 		//! Outputport for ordering gripper to close
-		OutputPort<std_msgs::Bool> gripperClosePort;
+		//OutputPort<std_msgs::Bool> gripperClosePort;
+		OutputPort<amigo_msgs::AmigoGripperCommand> gripperCommandPort;
 		//! Outputport for ordering gripper to reset its positions
 		OutputPort<bool> gripperResetPort;
 		//! Outputport for publishing the PERA status to the AMIGO dashboard

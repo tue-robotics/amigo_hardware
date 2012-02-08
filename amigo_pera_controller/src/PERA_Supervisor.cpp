@@ -37,8 +37,8 @@ Supervisor::Supervisor(const string& name) :
 	addPort("homJntAnglesPort",homJntAngPort).doc("Sends the requested angles for homing to the ReferenceInterpolator");
 	addPort("reNullPort",reNullPort).doc("Sends signal to PERA_IO to renull at actual position");
 	addPort("enableReadRefPort",enableReadRefPort).doc("Sends enable signal to ReadReference allow reading of joint angles from ROS topic");
-	addPort("gripperClosePort",gripperClosePort).doc("Requests gripper open/close at GripperController");
-	addPort("gripperStatusPort",gripperStatusPort).doc("Receives gripper status from GripperController");
+	addPort("gripper_command", gripperCommandPort);
+	addPort("gripper_measurement",gripperMeasurementPort);
 	addPort("gripperResetPort",gripperResetPort).doc("Requests for GripperController reset");
 	addPort("controllerOutputPort",controllerOutputPort).doc("Receives motorspace output of the controller");
 	addPort("peraStatusPort",peraStatusPort).doc("For publishing the PERA status to the AMIGO dashboard");
@@ -495,17 +495,19 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 
 	if(!gripperHomed){
 
-		std_msgs::Bool gripperClose;
-		gripperClose.data = true;
-		gripperClosePort.write(gripperClose);
+		amigo_msgs::AmigoGripperCommand gripperCommand;
+		gripperCommand.direction = amigo_msgs::AmigoGripperCommand::CLOSE;
+		gripperCommand.max_torque = 1000;
 
-		std_msgs::Bool gripperStatus;
-		gripperStatusPort.read(gripperStatus);
+		gripperCommandPort.write(gripperCommand);
 
-		if(gripperStatus.data){
+		amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
+		gripperMeasurementPort.read(gripperMeasurement);
+
+		if(gripperMeasurement.end_position_reached){
 			log(Warning)<<"SUPERVISOR: gripper homed"<<endlog();
 			gripperHomed = true;
-			jntNr=STRT_JNT;
+			jntNr = STRT_JNT;
 		}
 
 	}
