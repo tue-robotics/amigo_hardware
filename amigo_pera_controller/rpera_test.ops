@@ -38,7 +38,8 @@ RPERA_ReferenceInterpolator.interpolator4 = array (0.0, 0.8, 0.5)
 RPERA_ReferenceInterpolator.interpolator5 = array (0.0, 0.8, 0.5)
 RPERA_ReferenceInterpolator.interpolator6 = array (0.0, 1.0, 0.5)
 RPERA_ReferenceInterpolator.interpolator7 = array (0.0, 1.0, 0.5)
-RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 0.4, 0.1)
+#RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 0.4, 0.1)
+RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 10.0, 100.0)
 
 ### PERA Supervisor ###
 loadComponent("RPERA_Supervisor","PERA::Supervisor")
@@ -61,7 +62,7 @@ RPERA_Supervisor.maxConSatTime = 5.0
 RPERA_Supervisor.stepSize = 0.001570796
 RPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
-RPERA_Supervisor.requireHoming = true
+RPERA_Supervisor.requireHoming = false
 RPERA_Supervisor.startJoint = 5
 RPERA_Supervisor.configure
 
@@ -84,10 +85,11 @@ RPERA_RTD.configure
 
 ### Gripper force controller ###
 loadComponent("RPERA_GripperControl","PERA::GripperControl")
-RPERA_GripperControl.threshold_closed = 25.0
+#RPERA_GripperControl.threshold_closed = 25.0
+RPERA_GripperControl.threshold_closed = 5.0
 RPERA_GripperControl.setPeriod(0.004)
-RPERA_GripperControl.max_pos = 20
-RPERA_GripperControl.gripper_gain = 0.24
+RPERA_GripperControl.max_pos = 30
+RPERA_GripperControl.gripper_gain = 2.4
 RPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -162,9 +164,9 @@ RPERA_JointToMotorTorques.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 loadComponent("RPERA_Gain","MATH::Gains")
 RPERA_Gain.vectorsize = 8
 # Original left arm:
-RPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 540000.0)
+RPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 27000.0)
 # Working copy:
-#RPERA_Gain.gain = array (625000.0, 725000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 540000.0)
+#RPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 0.0)
 # Zeros:
 #RPERA_Gain.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
@@ -174,7 +176,7 @@ RPERA_Gain.configure
 loadComponent("RPERA_LeadLag","FILTERS::LeadLags")
 RPERA_LeadLag.vector_size = 8
 RPERA_LeadLag.sampling_time = 0.004
-RPERA_LeadLag.zero_frequency = array (3.0, 3.0, 3.0, 3.0, 4.5, 4.5, 4.0, 4.5)
+#RPERA_LeadLag.zero_frequency = array (3.0, 3.0, 3.0, 3.0, 4.5, 4.5, 4.0, 4.5)
 RPERA_LeadLag.zero_frequency = array (1.0, 1.0, 3.0, 3.0, 4.5, 4.5, 4.0, 4.5)
 RPERA_LeadLag.pole_frequency = array (80.0, 80.0, 50.0, 100.0, 100.0, 45.0, 40.0, 45.0)
 RPERA_LeadLag.configure
@@ -254,24 +256,27 @@ RPERA_Source.step_time = array (5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0)
 RPERA_Source.configure
 
 ### Setting up reporting ###
-#loadComponent("RPERA_Reporter", "OCL::FileReporting")
+loadComponent("RPERA_Reporter", "OCL::FileReporting")
 ##RPERA_Reporter.NullSample="-1 -1 -1 -1 -1 -1 -1 -1 "
-#addPeer("RPERA_Reporter","RPERA_ReferenceInterpolator")
-#RPERA_Reporter.reportPort("RPERA_ReferenceInterpolator","posout")
+addPeer("RPERA_Reporter","RPERA_ReferenceInterpolator")
+RPERA_Reporter.reportPort("RPERA_ReferenceInterpolator","posout")
+## log the output
+addPeer("RPERA_Reporter","RPERA_MotorToJointAngles")
+RPERA_Reporter.reportPort("RPERA_MotorToJointAngles","out")
 ## log the errors
-#addPeer("RPERA_Reporter","RPERA_ComputeJointErrors")
-#RPERA_Reporter.reportPort("RPERA_ComputeJointErrors","out")
+addPeer("RPERA_Reporter","RPERA_ComputeJointErrors")
+RPERA_Reporter.reportPort("RPERA_ComputeJointErrors","out")
 ## log the total control u_tot
-#addPeer("RPERA_Reporter","RPERA_AddGravComp")
-#RPERA_Reporter.reportPort("RPERA_AddGravComp","out")
+addPeer("RPERA_Reporter","RPERA_AddGravComp")
+RPERA_Reporter.reportPort("RPERA_AddGravComp","out")
 ## log the controller output u_c
 #addPeer("RPERA_Reporter","RPERA_WeakIntegrator1")
 #RPERA_Reporter.reportPort("RPERA_WeakIntegrator1","out")
 ## log the measured joint angles
 #addPeer("RPERA_Reporter","RPERA_MotorToJointAngles")
 #RPERA_Reporter.reportPort("RPERA_MotorToJointAngles","out")
-#RPERA_Reporter.ReportFile = "/home/amigo/undefined.dat"
-#RPERA_Reporter.configure
+RPERA_Reporter.ReportFile = "/home/amigo/RPERA.dat"
+RPERA_Reporter.configure
 
 ########################################################################
 # Connecting all the ports and streams. Be carefull with making        #
@@ -360,4 +365,4 @@ RPERA_SensorTorques.start
 RPERA_GripperControl.start
 RPERA_Diagnostics.start
 #PERA_Source.start
-#RPERA_Reporter.start
+RPERA_Reporter.start
