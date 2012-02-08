@@ -62,7 +62,7 @@ RPERA_Supervisor.maxConSatTime = 5.0
 RPERA_Supervisor.stepSize = 0.001570796
 RPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
-RPERA_Supervisor.requireHoming = false
+RPERA_Supervisor.requireHoming = true
 RPERA_Supervisor.startJoint = 5
 RPERA_Supervisor.configure
 
@@ -339,8 +339,6 @@ connect ("RPERA_IO.forceSen","RPERA_SensorTorques.voltage_in", ConnPolicy() )
 
 stream("RPERA_GripperControl.gripper_close", ros.topic("/arm_right_controller/set_gripper"))
 stream("RPERA_GripperControl.gripper_status", ros.topic("/gripper_status_right"))
-#stream("RPERA_MotorToJointAngles.out", ros.topic("/motor_to_joint_out"))
-stream("RPERA_GripperControl.gripper_ref", ros.topic("/arm_right_controller/gripper_ref"))
 
 RPERA_Supervisor.start
 RPERA_ReadReferenceAngles.start
