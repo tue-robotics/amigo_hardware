@@ -42,7 +42,7 @@ LPERA_ReferenceInterpolator.interpolator4 = array (0.0, 0.8, 0.5)
 LPERA_ReferenceInterpolator.interpolator5 = array (0.0, 0.8, 0.5)
 LPERA_ReferenceInterpolator.interpolator6 = array (0.0, 1.0, 0.5)
 LPERA_ReferenceInterpolator.interpolator7 = array (0.0, 1.0, 0.5)
-LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 0.4, 0.1)
+LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 1.0, 10.0)
 
 ### PERA Supervisor ###
 loadComponent("LPERA_Supervisor","PERA::Supervisor")
@@ -66,6 +66,7 @@ LPERA_Supervisor.stepSize = 0.001570796
 LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput = true
 LPERA_Supervisor.requireHoming = true
+LPERA_Supervisor.requireGripperHoming = true
 LPERA_Supervisor.startJoint = 5
 LPERA_Supervisor.configure
 
@@ -88,10 +89,10 @@ LPERA_RTD.configure
 
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
-LPERA_GripperControl.threshold_closed = 25.0
+LPERA_GripperControl.threshold_closed = 20.0
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.max_pos = 3.5
-LPERA_GripperControl.gripper_gain = 0.040
+LPERA_GripperControl.gripper_gain = 0.30
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -159,15 +160,16 @@ LPERA_JointToMotorTorques.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
 ### Kp ###
 loadComponent("LPERA_Gain","MATH::Gains")
 LPERA_Gain.vectorsize = 8
-LPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 900000.0)
+#LPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 900000.0)
+LPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 135000.0)
 LPERA_Gain.configure
 
 ### Lead Lag ###
 loadComponent("LPERA_LeadLag","FILTERS::LeadLags")
 LPERA_LeadLag.vector_size = 8
 LPERA_LeadLag.sampling_time = 0.004
-LPERA_LeadLag.zero_frequency = array (3.0, 3.0, 3.0, 3.0, 4.5, 4.5, 4.0, 4.5)
-LPERA_LeadLag.pole_frequency = array (80.0, 80.0, 50.0, 100.0, 100.0, 45.0, 40.0, 45.0)
+LPERA_LeadLag.zero_frequency = array (3.0, 3.0, 3.0, 3.0, 4.5, 4.5, 4.0, 1.5)
+LPERA_LeadLag.pole_frequency = array (80.0, 80.0, 50.0, 100.0, 100.0, 45.0, 40.0, 30.0)
 LPERA_LeadLag.configure
 
 ### 2nd Order Lowpass ###
@@ -180,7 +182,7 @@ LPERA_Lowpass.configure
 
 ### Weak Integrators ###
 loadComponent("LPERA_WeakIntegrator1","FILTERS::WeakIntegrators")
-LPERA_WeakIntegrator1.zero_frequency = array(0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 1.0, 1.0, 1.5)
+LPERA_WeakIntegrator1.zero_frequency = array(0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 1.0, 1.0, 0.9)
 LPERA_WeakIntegrator1.vector_size = 8
 LPERA_WeakIntegrator1.sampling_time = 0.004
 LPERA_WeakIntegrator1.configure
@@ -229,24 +231,28 @@ LPERA_Diagnostics.boolname2 = "ReadRef Enable"
 connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPolicy() )
 
 ### Setting up reporting ###
-#loadComponent("LPERA_Reporter", "OCL::FileReporting")
+loadComponent("LPERA_Reporter", "OCL::FileReporting")
 ##LPERA_Reporter.NullSample="-1 -1 -1 -1 -1 -1 -1 -1 "
-#addPeer("LPERA_Reporter","LPERA_ReferenceInterpolator")
-#LPERA_Reporter.reportPort("LPERA_ReferenceInterpolator","posout")
+addPeer("LPERA_Reporter","LPERA_GripperControl")
+LPERA_Reporter.reportPort("LPERA_GripperControl","gripper_ref")
+##LPERA_ReferenceInterpolator
+addPeer("LPERA_Reporter","LPERA_ReferenceInterpolator")
+LPERA_Reporter.reportPort("LPERA_ReferenceInterpolator","posout")
+## log the measured joint angles
+addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
+LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
 ## log the errors
-#addPeer("LPERA_Reporter","LPERA_ComputeJointErrors")
-#LPERA_Reporter.reportPort("LPERA_ComputeJointErrors","out")
+addPeer("LPERA_Reporter","LPERA_ComputeJointErrors")
+LPERA_Reporter.reportPort("LPERA_ComputeJointErrors","out")
 ## log the total control u_tot
-#addPeer("LPERA_Reporter","LPERA_AddGravComp")
-#LPERA_Reporter.reportPort("LPERA_AddGravComp","out")
+addPeer("LPERA_Reporter","LPERA_AddGravComp")
+LPERA_Reporter.reportPort("LPERA_AddGravComp","out")
 ## log the controller output u_c
 #addPeer("LPERA_Reporter","LPERA_WeakIntegrator1")
 #LPERA_Reporter.reportPort("LPERA_WeakIntegrator1","out")
-## log the measured joint angles
-#addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
-#LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
-#LPERA_Reporter.ReportFile = "/home/amigo/undefined.dat"
-#LPERA_Reporter.configure
+
+LPERA_Reporter.ReportFile = "/home/amigo/LPERA.dat"
+LPERA_Reporter.configure
 
 ########################################################################
 # Connecting all the ports and streams. Be carefull with making        #
@@ -301,8 +307,8 @@ stream("LPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
 ### Gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
-connect ("LPERA_GripperControl.gripper_measurement","LPERA_Supervisor.gripperMeasurementPort", ConnPolicy() )
-connect ("LPERA_Supervisor.gripperCommandPort","LPERA_GripperControl.gripper_command", ConnPolicy() )
+connect ("LPERA_GripperControl.gripper_measurement","LPERA_Supervisor.gripper_measurement", ConnPolicy() )
+connect ("LPERA_Supervisor.gripper_command","LPERA_GripperControl.gripper_command", ConnPolicy() )
 connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 
 # stream("LPERA_GripperControl.gripper_close", ros.topic("/arm_left_controller/set_gripper"))
@@ -334,4 +340,4 @@ LPERA_AddGravComp.start
 LPERA_SensorTorques.start
 LPERA_GripperControl.start
 LPERA_Diagnostics.start
-#LPERA_Reporter.start
+LPERA_Reporter.start
