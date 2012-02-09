@@ -505,7 +505,7 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 		amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
 		gripperMeasurementPort.read(gripperMeasurement);
 
-		if(gripperMeasurement.end_position_reached){
+		if(gripperMeasurement.end_position_reached || gripperMeasurement.max_torque_reached){
 			log(Warning)<<"SUPERVISOR: gripper homed"<<endlog();
 			gripperHomed = true;
 			jntNr = STRT_JNT;

@@ -96,6 +96,11 @@ using namespace PERA;
 					//log(Warning)<<"GRIPPERCON: closing with torque = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
 					gripperPos[0] -= gripperGain*PI/180;
 				}
+				else {
+					log(Error)<<"Gripper torque "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<" exceeds maximum torque of "<<MAX_TORQUE<<" abort close_gripper"<<endlog();
+					completed = true;
+					gripperMeasurement.max_torque_reached = true;
+				}
 			}
 			gripperRefPort.write(gripperPos);
 			gripperMeasurementPort.write(gripperMeasurement);
