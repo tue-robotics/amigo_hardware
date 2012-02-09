@@ -60,6 +60,7 @@ Supervisor::Supervisor(const string& name) :
 	addProperty( "startJoint", STRT_JNT ).doc("Joint number to start homing with");
 	addProperty( "maxAccelerations", MAXACCS ).doc("Joint maximum accelerations");
 	addProperty( "dynBreakEpsilon", DYNBREAKEPS ).doc("Tuning epsilon for dynamical breaking (margin on minimum breaking distance)");
+	addProperty( "requireGripperHoming", REQUIRE_GRIPPER_HOMING ).doc("Defines whether the gripper is homed upon startup");
 
 }
 
@@ -94,7 +95,7 @@ bool Supervisor::configureHook()
 	errors=false;
 
 	// Gripper initially not homed by default
-	gripperHomed = true;
+	gripperHomed = !REQUIRE_GRIPPER_HOMING;
 
 	// Reference not yet resetted
 	resetReference=false;

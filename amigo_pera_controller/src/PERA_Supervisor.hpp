@@ -107,7 +107,9 @@ namespace PERA
 		//! Indicates if the rostopic /joint_references has been reset
 		bool resetReference;
 		//! Bool for indicating whether gripper is homed (true) or not (false)
-		bool gripperHomed;
+		bool gripperHomed; 
+		//! Property to define whether homing of the gripper is desired
+		bool REQUIRE_GRIPPER_HOMING;
 		//! Variable for storing the previous joint nr being homed
 		double prevJntNr;
 		//! Variable for storing the nr of the joint being homed during homing
