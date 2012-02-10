@@ -37,7 +37,7 @@ PanTiltController::PanTiltController(const std::string& name) :
 	addProperty( "tilt_speed", tilt_speed).doc("Tilt speed, 0 to 1023");
 	addProperty( "pan_offset", pan_offset).doc("Pan offset angle, 0 to 1023");
 	addProperty( "tilt_offset", tilt_offset).doc("Tilt offset angle, 0 to 1023");
-	
+	// ToDO: Add status port, check http://www.google.com/url?q=http://www.electronickits.com/robot/BioloidAX-12(english).pdf&sa=U&ei=xYA1T5r6IYLBhAfHlZnqAQ&ved=0CAQQFjAA&client=internal-uds-cse&usg=AFQjCNFq1o8ghhtWNHEBkxUA5kbnz17hpw
 	log(Debug) << "PanTiltController constructor done." << endlog();
 }
 
