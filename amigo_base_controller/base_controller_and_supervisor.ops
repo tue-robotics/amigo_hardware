@@ -122,21 +122,6 @@ BaseSecondOrderLowPass.pole_damping = array (0.7, 0.7, 0.7, 0.7)
 BaseSecondOrderLowPass.configure
 setActivity("BaseSecondOrderLowPass",0.0,HighestPriority,ORO_SCHED_RT)
 
-
-### FEEDFORWARD ### # Do you want this in case of wheel slip?
-#loadComponent("BaseFeedForward","MATH::Gains")
-#connect ("BaseReadReferenceVelocities.out","BaseFeedForward.in", ConnPolicy() )
-#BaseFeedForward.vectorsize = 3;
-#BaseFeedForward.gain = array (0.0, 0.0, 0.0, 0.0)
-#BaseFeedForward.configure
-
-### ADDITION ###
-#loadComponent("BaseSum","MATH::Addition")
-#connect ("BaseFeedForward.out","BaseSum.in1", ConnPolicy() )
-#connect ("BaseSecondOrderLowPass.out","BaseSum.in2_event", ConnPolicy() )
-#BaseSum.vectorsize = 3;
-#BaseSum.configure
-
 ### SI2VOLT ###
 loadComponent("BaseSI2Volt","MATH::Gains")
 connect ("BaseSecondOrderLowPass.out","BaseSI2Volt.in", ConnPolicy() ); # 4x[Nm]
@@ -163,15 +148,28 @@ setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 
 #### LOAD COMPONENT FOR RESET ###
-loadComponent("BaseReset","AMIGO::BaseReset")
-connect ("BaseReset.integratorreset", "BaseVel2Pos.reset", ConnPolicy() )
-connect ("BaseDecouplePosition.out", "BaseReset.pos", ConnPolicy() )
-connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
-connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
-stream("BaseReset.rosreset", ros.topic("/reset_base"));
-stream("BaseReset.rosemergency", ros.topic("/emergency_switch"));
-BaseReset.configure
-setActivity("BaseReset",0.0,LowestPriority,ORO_SCHED_OTHER)
+loadComponent("BaseSupervisor","AMIGO::BaseSupervisor")
+addPeer("BaseSupervisor","BaseReadReferenceVelocities")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseReadReferenceVelocities")
+addPeer("BaseSupervisor","ReadWheelEncoders")
+BaseSupervisor.AddBaseSupervisoredPeer ("ReadWheelEncoders")
+addPeer("BaseSupervisor","BaseDecoupleReference")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseDecoupleReference")
+addPeer("BaseSupervisor","BaseCalculateErrors")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseCalculateErrors")
+addPeer("BaseSupervisor","BaseControllerGains")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseControllerGains")
+addPeer("BaseSupervisor","BaseLeadLag")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseLeadLag")
+addPeer("BaseSupervisor","BaseSecondOrderLowPass")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseSecondOrderLowPass")
+addPeer("BaseSupervisor","BaseSI2Volt")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseSI2Volt")
+addPeer("BaseSupervisor","BaseSafety")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseSafety")
+stream("BaseSupervisor.rosreset", ros.topic("/reset_base"));
+BaseSupervisor.configure
+setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
@@ -213,8 +211,8 @@ stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 #Setting up reporting
 loadComponent("BaseReporter", "OCL::FileReporting")
 BaseReporter.ReportFile = "/home/amigo/basereports.dat"
-#addPeer("BaseReporter","BaseReset.integratorreset")
-#BaseReporter.reportPort("BaseReset","out")
+#addPeer("BaseReporter","BaseSupervisor.integratorreset")
+#BaseReporter.reportPort("BaseSupervisor","out")
 #addPeer("BaseReporter","BaseReadReferenceVelocities")
 #BaseReporter.reportPort("BaseReadReferenceVelocities","out")
 #addPeer("BaseReporter","BaseVel2Pos")
@@ -235,10 +233,9 @@ BaseReporter.reportPort("BaseSI2Volt","out")
 BaseReporter.setPeriod(Ts)
 
 
-#Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
 BaseDiagnostics.start
 BaseReadReferenceVelocities.start
-BaseReset.start
+BaseSupervisor.start
 ReadWheelEncoders.start
 BaseVel2Pos.start
 BaseDecoupleReference.start
