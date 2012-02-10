@@ -89,7 +89,7 @@ LPERA_RTD.configure
 
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
-LPERA_GripperControl.threshold_closed = 27.0
+LPERA_GripperControl.threshold_closed = 30.0
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.max_pos = 3.5
 LPERA_GripperControl.gripper_gain = 0.30
@@ -189,8 +189,8 @@ LPERA_WeakIntegrator1.configure
 
 ### Saturation on the controller output ###
 loadComponent("LPERA_OutputLimiter","DISCONTINUITIES::Saturation")
-LPERA_OutputLimiter.upper_limit = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
-LPERA_OutputLimiter.lower_limit = array ( -25000.0, -25000.0, -20000.0, -20000.0, -15000.0, -15000.0, -25000.0, -32000.0 )
+LPERA_OutputLimiter.upper_limit = array ( 30000.0, 30000.0, 20000.0, 20000.0, 15000.0, 25000.0, 25000.0, 32000.0 )
+LPERA_OutputLimiter.lower_limit = array ( -30000.0, -30000.0, -20000.0, -20000.0, -15000.0, -25000.0, -25000.0, -32000.0 )
 LPERA_OutputLimiter.vector_size = 8
 LPERA_OutputLimiter.configure
 
