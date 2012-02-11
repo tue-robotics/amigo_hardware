@@ -41,6 +41,8 @@ namespace PERA
 	  InputPort<doubles> torqueInPort;
 	  //! Inputport for resetting the gripper position
 	  InputPort<bool> resetGripperPort;
+	  //! Inputport for nulling the gripper reference
+	  InputPort<bool> reNullPort;
 	  //! Outputport for writing the desired gripper position
 	  OutputPort<doubles> gripperRefPort;
 	  //! Outputport for outputting the gripper status to ROS
@@ -62,6 +64,8 @@ namespace PERA
       amigo_msgs::AmigoGripperCommand gripperCommand;
 	  //! Threshold force value for gripper closed
 	  double threshold_closed;
+	  //! Bool for gripper homed
+	  bool gripperHomed;
 	  
 	public:
 

@@ -27,6 +27,7 @@ using namespace PERA;
 			/// Inports
 			addPort("gripper_command", gripperCommandPort);
 			addPort("torque_in", torqueInPort);
+			addPort("reNullPort",reNullPort);
 			addEventPort("resetGripperPort",resetGripperPort);
 			
 			/// Outports
@@ -37,6 +38,8 @@ using namespace PERA;
 			addProperty( "threshold_closed", threshold_closed);	
 			addProperty( "gripper_gain", gripperGain);		
 			addProperty( "max_pos", maxPos);
+			
+			gripperHomed = false;
 					
 	  }
 
@@ -66,6 +69,22 @@ using namespace PERA;
 		if (gripperCommandPort.read(gripperCommand) == NewData){
 			completed = false;
 		}
+			
+		// Check whether supervisor specifies nulling of the relative encoders
+		bool reNull;
+		if(NewData == reNullPort.read(reNull)){
+			if(reNull == true){
+				log(Warning)<<"Grippercontrol received reNull signal"<<endlog();
+				// Increase threshold after the gripper has homed
+				threshold_closed = threshold_closed*2;
+				// Renull the gripperPos after homing
+				gripperPos[0] = 0;
+				gripperRefPort.write(gripperPos);
+				// gripperHomed = true if all joints are homed
+				gripperHomed = true;
+			}
+		}
+				
 
 		if (!completed){
 			amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
@@ -87,7 +106,7 @@ using namespace PERA;
 			} 
 			else{
 				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
-				if (torques[GRIPPER_JOINT_TORQUE_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE){
+				if ( (torques[GRIPPER_JOINT_TORQUE_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0) ) ){
 					log(Warning)<<"Gripper is CLOSED"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
