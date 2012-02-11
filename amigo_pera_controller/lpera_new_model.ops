@@ -45,6 +45,7 @@ LPERA_ReferenceInterpolator.interpolator7 = array (0.0, 1.0, 0.5)
 LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 1.0, 10.0)
 
 ### Reference limiter ###
+# References are only clipped before publishing them, NOT before being fed into the feedback loop
 loadComponent("LPERA_ReferenceLimiter","DISCONTINUITIES::Saturation")
 LPERA_ReferenceLimiter.upper_limit = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
 LPERA_ReferenceLimiter.lower_limit = array ( -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
@@ -296,7 +297,7 @@ connect ("LPERA_GripperControl.gripper_ref","LPERA_VectorConcatenate.in2", ConnP
 connect ("LPERA_VectorConcatenate.out","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
 connect ("LPERA_ReferenceInterpolator.posout","LPERA_ReferenceLimiter.in", ConnPolicy() )
 connect ("LPERA_ReferenceLimiter.out","LPERA_WriteReferencesInterpolated.pos", ConnPolicy() )
-connect ("LPERA_ReferenceLimiter.out","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
 
 ### Gravity compensation part ###
 connect ("LPERA_ReferenceInterpolator.posout","LPERA_GravityCompensation.in", ConnPolicy() )
