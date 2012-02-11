@@ -78,8 +78,8 @@ LPERA_Supervisor.maxConSatTime = 5.0
 LPERA_Supervisor.stepSize = 0.001570796
 LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput = true
-LPERA_Supervisor.requireHoming = false
-LPERA_Supervisor.requireGripperHoming = false
+LPERA_Supervisor.requireHoming = true
+LPERA_Supervisor.requireGripperHoming = true
 LPERA_Supervisor.startJoint = 5
 LPERA_Supervisor.configure
 

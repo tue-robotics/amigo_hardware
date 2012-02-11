@@ -41,6 +41,20 @@ RPERA_ReferenceInterpolator.interpolator7 = array (0.0, 1.0, 0.5)
 #RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 0.4, 0.1)
 RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 10.0, 100.0)
 
+### Reference limiter ###
+loadComponent("RPERA_ReferenceLimiter","DISCONTINUITIES::Saturation")
+RPERA_ReferenceLimiter.upper_limit = array ( 1.57,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  40.0 )
+RPERA_ReferenceLimiter.lower_limit = array (  0.0, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -40.0 )
+RPERA_ReferenceLimiter.vector_size = 8
+RPERA_ReferenceLimiter.configure
+
+### Publishing joint angles on ROS-topic ###
+loadComponent("RPERA_WriteReferencesInterpolated","PERA::WriteArmJointsMsg")
+RPERA_WriteReferencesInterpolated.offsets = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+RPERA_WriteReferencesInterpolated.signs = array ( -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 )
+RPERA_WriteReferencesInterpolated.configure
+
+
 ### PERA Supervisor ###
 loadComponent("RPERA_Supervisor","PERA::Supervisor")
 RPERA_Supervisor.setPeriod(0.004)
@@ -62,8 +76,8 @@ RPERA_Supervisor.maxConSatTime = 5.0
 RPERA_Supervisor.stepSize = 0.001570796
 RPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
-RPERA_Supervisor.requireHoming = true
-RPERA_Supervisor.requireGripperHoming = true
+RPERA_Supervisor.requireHoming = false
+RPERA_Supervisor.requireGripperHoming = false
 RPERA_Supervisor.startJoint = 5
 RPERA_Supervisor.configure
 
@@ -302,7 +316,10 @@ connect ("RPERA_OutputLimiter.out","RPERA_IO.cmdTorqueIn", ConnPolicy() )
 connect ("RPERA_ReadReferenceAngles.pos","RPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_ref","RPERA_VectorConcatenate.in2", ConnPolicy() )
 connect ("RPERA_VectorConcatenate.out","RPERA_ReferenceInterpolator.posin", ConnPolicy() )
-connect ("RPERA_ReferenceInterpolator.posout","RPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+connect ("RPERA_ReferenceInterpolator.posout","RPERA_ReferenceLimiter.in", ConnPolicy() )
+connect ("RPERA_ReferenceLimiter.out","RPERA_WriteReferencesInterpolated.pos", ConnPolicy() )
+connect ("RPERA_ReferenceLimiter.out","RPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+
 
 ### Gravity compensation part ###
 connect ("RPERA_ReferenceInterpolator.posout","RPERA_GravityCompensation.in", ConnPolicy() )
@@ -327,6 +344,7 @@ connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
 stream("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
 stream("RPERA_Supervisor.resetRefPort", ros.topic("/arm_right_controller/joint_references"))
 stream("RPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_right_controller/joint_measurements"))
+stream("RPERA_WriteReferencesInterpolated.joint_measurements", ros.topic("/arm_right_controller/joint_references_interpolated"))
 stream("RPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_right_controller/joint_references"))
 stream("RPERA_IO.terminatePort", ros.topic("/terminate_io_right"))
 stream("RPERA_Supervisor.peraStatusPort", ros.topic("/arm_right_status"))
@@ -348,11 +366,13 @@ RPERA_Supervisor.start
 RPERA_ReadReferenceAngles.start
 RPERA_VectorConcatenate.start
 RPERA_ReferenceInterpolator.start
+RPERA_ReferenceLimiter.start
 RPERA_MotorToJointAngles.start
 RPERA_ComputeJointErrors.start
 RPERA_JointToMotorTorques.start
 RPERA_OutputLimiter.start
 RPERA_WriteCurrentJointAngles.start
+RPERA_WriteReferencesInterpolated.start
 RPERA_IO.start
 RPERA_RTD.start
 RPERA_Gain.start
