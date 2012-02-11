@@ -15,10 +15,12 @@ PanTiltController.tilt_min = 435
 #was 250 before 2012-01-19
 PanTiltController.pan_speed = 300
 PanTiltController.tilt_speed = 300
-PanTiltController.pan_offset = 490 	
+PanTiltController.pan_offset = 480
+# was 490 before 2012-02-11 	
 # was 606 before 2012-01-18
 # was 478 before: still needs checking (old)
-PanTiltController.tilt_offset = 498
+PanTiltController.tilt_offset = 503
+# Was 498 before 2012-02-11
 PanTiltController.setPeriod(0.022)
 PanTiltController.configure
 
