@@ -65,7 +65,7 @@ LPERA_Supervisor.setPeriod(0.004)
 #LPERA_Supervisor.jointUpperBounds = array ( 1.570796327, 1.570796327, 1.570796327, 1.989675348, 1.832595715, 0.954837674, 0.785398164 )
 LPERA_Supervisor.jointLowerBounds = array ( -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
 LPERA_Supervisor.jointUpperBounds = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
-LPERA_Supervisor.motorSaturations = array ( 30000.0, 30000.0, 20000.0, 20000.0, 15000.0, 15000.0, 30000.0, 32000.0 )
+LPERA_Supervisor.motorSaturations = array ( 30000.0, 30000.0, 20000.0, 20000.0, 25000.0, 25000.0, 30000.0, 32000.0 )
 LPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 20.0)
 LPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 LPERA_Supervisor.dynBreakEpsilon = 0.05;
@@ -296,7 +296,8 @@ connect ("LPERA_OutputLimiter.out","LPERA_IO.cmdTorqueIn", ConnPolicy() )
 connect ("LPERA_ReadReferenceAngles.pos","LPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_ref","LPERA_VectorConcatenate.in2", ConnPolicy() )
 connect ("LPERA_VectorConcatenate.out","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
-connect ("LPERA_ReferenceInterpolator.posout","LPERA_ReferenceLimiter.in", ConnPolicy() )
+#connect ("LPERA_ReferenceInterpolator.posout","LPERA_ReferenceLimiter.in", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_ReferenceLimiter.in", ConnPolicy() )
 connect ("LPERA_ReferenceLimiter.out","LPERA_WriteReferencesInterpolated.pos", ConnPolicy() )
 connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
 
@@ -369,4 +370,4 @@ LPERA_AddGravComp.start
 LPERA_SensorTorques.start
 LPERA_GripperControl.start
 LPERA_Diagnostics.start
-LPERA_Reporter.start
+#LPERA_Reporter.start
