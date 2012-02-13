@@ -197,7 +197,7 @@ LPERA_Lowpass.configure
 ### Weak Integrators ###
 loadComponent("LPERA_WeakIntegrator1","FILTERS::WeakIntegrators")
 #LPERA_WeakIntegrator1.zero_frequency = array(0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 1.0, 1.0, 0.9)
-LPERA_WeakIntegrator1.zero_frequency = array(0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 1.0, 1.0, .01)
+LPERA_WeakIntegrator1.zero_frequency = array(0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 1.0, 1.0, 0.00000000000000000000001)
 LPERA_WeakIntegrator1.vector_size = 8
 LPERA_WeakIntegrator1.sampling_time = 0.004
 LPERA_WeakIntegrator1.configure

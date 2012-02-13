@@ -76,7 +76,7 @@ using namespace PERA;
 			if(reNull == true){
 				log(Warning)<<"Grippercontrol received reNull signal"<<endlog();
 				// Increase threshold after the gripper has homed
-				threshold_closed = threshold_closed*2;
+				threshold_closed = threshold_closed*1.25;
 				// Renull the gripperPos after homing
 				gripperPos[0] = 0;
 				gripperRefPort.write(gripperPos);
