@@ -13,7 +13,7 @@ PanTiltController.tilt_max = 700
 #was 750 before 2012-01-19
 PanTiltController.tilt_min = 435
 #was 250 before 2012-01-19
-PanTiltController.pan_speed = 25
+PanTiltController.pan_speed = 50
 PanTiltController.tilt_speed = 25
 # Was 300 before 2012-02-11
 PanTiltController.pan_offset = 480
