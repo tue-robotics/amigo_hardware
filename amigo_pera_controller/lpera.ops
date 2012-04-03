@@ -99,7 +99,7 @@ LPERA_RTD.configure
 
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
-LPERA_GripperControl.threshold_closed = 28.0
+LPERA_GripperControl.threshold_closed = 14.0
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.max_pos = 4.0
 LPERA_GripperControl.gripper_gain = 0.30
