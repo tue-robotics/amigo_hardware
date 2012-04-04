@@ -1,0 +1,19 @@
+<package>
+  <description brief="amigo_amplifier_enabler">
+
+     Package that can enable/disable hardware amplifiers 
+     based on emergency switch status and battery status
+
+  </description>
+  <author>Janno Lunenburg</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/amigo_amplifier_enabler</url>
+  <depend package="std_msgs"/>
+  <depend package="diagnostic_msgs"/>
+  <depend package="amigo_etherCAT"/>
+  <depend package="amigo_battery_manager"/>
+
+</package>
+
+
