@@ -351,7 +351,8 @@ connect ("RPERA_Supervisor.reNullPort","RPERA_GripperControl.reNullPort", ConnPo
 connect ("RPERA_RTD.ude","RPERA_Supervisor.jointVelocity", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
 
-stream("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
+#stream("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
+stream("RPERA_Supervisor.eButtonPort", ros.topic("/disable_amplifiers"))
 stream("RPERA_Supervisor.resetRefPort", ros.topic("/arm_right_controller/joint_references"))
 stream("RPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_right_controller/joint_measurements_raw"))
 stream("RPERA_WriteReferencesInterpolated.joint_measurements", ros.topic("/arm_right_controller/joint_measurements"))
