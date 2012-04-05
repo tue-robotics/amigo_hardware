@@ -31,14 +31,14 @@ void diagnosticCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& msg)
 	
 	if (!strcmp(diagnostic_status.name.c_str(),"Batteries")){
 			
-		ROS_WARN("Status level = %i",diagnostic_status.level);
+		//ROS_WARN("Status level = %i",diagnostic_status.level);
 		battery_status = diagnostic_status.level;
 	}
-	else {
+	/*else {
 		
-		ROS_WARN("Diagnostic message does not concern batteries");
+		//ROS_WARN("Diagnostic message does not concern batteries");
 		
-	}
+	}*/
 	
 }
 
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 
 	time_init = ros::Time::now();	
 
-	ros::Rate loop_rate(500.0);
+	ros::Rate loop_rate(250.0);
 	
 	while(n.ok())
 	{
@@ -67,12 +67,12 @@ int main(int argc, char **argv)
 		
 		// Disable amplifiers when emergency switch is pushed or battery status equals 2 (= Voltage is too low)
 		if (battery_status != 2 && emergency_switch_status == false){
-			disable_amplifiers.data = true;
-			ROS_WARN("Enable amplifiers");
+			disable_amplifiers.data = false;
+			//ROS_WARN("Enable amplifiers");
 		}
 		else{
-			disable_amplifiers.data = false;
-			ROS_WARN("Disable amplifiers");
+			disable_amplifiers.data = true;
+			//ROS_WARN("Disable amplifiers");
 		}
 		amplifier_pub.publish(disable_amplifiers);
 		
