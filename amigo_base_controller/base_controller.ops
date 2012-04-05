@@ -169,7 +169,8 @@ connect ("BaseDecouplePosition.out", "BaseReset.pos", ConnPolicy() )
 connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
 connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
 stream("BaseReset.rosreset", ros.topic("/reset_base"));
-stream("BaseReset.rosemergency", ros.topic("/emergency_switch"));
+#stream("BaseReset.rosemergency", ros.topic("/emergency_switch"));
+stream("BaseReset.rosemergency", ros.topic("/disable_amplifiers"));
 BaseReset.configure
 setActivity("BaseReset",0.0,LowestPriority,ORO_SCHED_OTHER)
 

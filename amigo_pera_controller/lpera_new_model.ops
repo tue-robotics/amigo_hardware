@@ -323,7 +323,8 @@ connect ("LPERA_Supervisor.reNullPort","LPERA_GripperControl.reNullPort", ConnPo
 connect ("LPERA_RTD.ude","LPERA_Supervisor.jointVelocity", ConnPolicy() )
 connect ("LPERA_MotorToJointAngles.out","LPERA_RTD.u", ConnPolicy() )
 
-stream("LPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
+#stream("LPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
+stream("LPERA_Supervisor.eButtonPort", ros.topic("/disable_amplifiers"))
 stream("LPERA_Supervisor.resetRefPort", ros.topic("/arm_left_controller/joint_references"))
 # ToDo: make nice
 stream("LPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_left_controller/joint_measurements_raw"))
