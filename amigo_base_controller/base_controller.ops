@@ -25,6 +25,9 @@ var double GEARRATIO = 8.0/343.0
 var double TWOPI = 2*3.141592
 var double ENCODERCOUNTS = 500.0*4.0
 
+var array MAX_VEL = array ( 0.3, 0.3, 0.5 )
+var array MIN_VEL = array ( -0.3, -0.3, -0.5 )
+
 var double ENC2SI = TWOPI*GEARRATIO/ENCODERCOUNTS
 
 
@@ -64,13 +67,20 @@ stream("BaseReadReferenceVelocities.cmd_vel", ros.topic("/cmd_vel"));
 BaseReadReferenceVelocities.configure
 setActivity("BaseReadReferenceVelocities",0.01,LowestPriority,ORO_SCHED_OTHER)
 
-    
+### Reference velocity limiter ###
+loadComponent("BaseRefVelLimiter","DISCONTINUITIES::Saturation")
+BaseRefVelLimiter.upper_limit = MAX_VEL
+BaseRefVelLimiter.lower_limit = MIN_VEL
+BaseRefVelLimiter.vector_size = 3
+BaseRefVelLimiter.configure
+connect("BaseReadReferenceVelocities.out","BaseRefVelLimiter.in", ConnPolicy() )
+
 ### VELOCITY TO POSITION ###
 loadComponent("BaseVel2Pos","MATH::Integrator")
 BaseVel2Pos.vector_size = 3
 BaseVel2Pos.configure
 setActivity("BaseVel2Pos",0.0,LowestPriority,ORO_SCHED_OTHER)
-connect ("BaseReadReferenceVelocities.out","BaseVel2Pos.in", ConnPolicy() ); #[m/s \n m/s \n rad/s]
+connect ("BaseRefVelLimiter.out","BaseVel2Pos.in", ConnPolicy() ); #[m/s \n m/s \n rad/s]
 
 ### DECOUPLE REFERENCE ###
 loadComponent("BaseDecoupleReference","MatrixTransform")
@@ -220,8 +230,8 @@ BaseReporter.ReportFile = "/home/amigo/basereports.dat"
 #BaseReporter.reportPort("BaseReadReferenceVelocities","out")
 #addPeer("BaseReporter","BaseVel2Pos")
 #BaseReporter.reportPort("BaseVel2Pos","out")
-addPeer("BaseReporter","ReadWheelEncoders")
-BaseReporter.reportPort("ReadWheelEncoders","out")
+#addPeer("BaseReporter","ReadWheelEncoders")
+#BaseReporter.reportPort("ReadWheelEncoders","out")
 #addPeer("BaseReporter","WheelVel")
 #BaseReporter.reportPort("WheelVel","out")
 #addPeer("BaseReporter","BaseDecouplePosition")
@@ -239,6 +249,7 @@ BaseReporter.setPeriod(Ts)
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
 BaseDiagnostics.start
 BaseReadReferenceVelocities.start
+BaseRefVelLimiter.start
 BaseReset.start
 ReadWheelEncoders.start
 BaseVel2Pos.start
@@ -255,4 +266,4 @@ BaseDecouplePosition.start
 Odometry.start
 BaseStatus.start
 
-#BaseReporter.start
+BaseReporter.start
