@@ -12,6 +12,7 @@
 #include <amigo_msgs/AmigoGripperCommand.h>
 #include <amigo_msgs/AmigoGripperMeasurement.h>
 
+using namespace std;
 using namespace RTT;
 
 //! Philips Experimental Robotic Arm namespace

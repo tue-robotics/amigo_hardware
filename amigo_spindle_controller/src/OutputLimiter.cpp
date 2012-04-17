@@ -7,6 +7,7 @@
 
 #define VOLTLIMIT 1.0
 
+using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 

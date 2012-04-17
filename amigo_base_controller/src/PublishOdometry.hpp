@@ -8,6 +8,7 @@
 #include <rtt/Component.hpp>
 
 
+using namespace std;
 using namespace RTT;
 
 namespace AMIGO

@@ -11,6 +11,7 @@
 #include <rtt/Port.hpp>
 #include <amigo_msgs/arm_joints.h>
 
+using namespace std;
 using namespace RTT;
 
 //! Philips Experimental Robotic Arm namespace

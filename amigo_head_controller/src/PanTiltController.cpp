@@ -14,6 +14,7 @@
 #include <ocl/Component.hpp>
 #include "PanTiltController.hpp"
 
+using namespace std;
 using namespace RTT;
 using namespace soem_beckhoff_drivers;
 using namespace AMIGO;

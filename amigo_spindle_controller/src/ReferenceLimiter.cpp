@@ -9,6 +9,7 @@
 #define MAXVEL 1
 #define MAXACC 10
 
+using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 

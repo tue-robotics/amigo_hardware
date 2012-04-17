@@ -15,6 +15,7 @@
 //#define gripperGain 0.40
 #define MAX_TORQUE 100.0
 
+using namespace std;
 using namespace RTT;
 using namespace PERA;
 

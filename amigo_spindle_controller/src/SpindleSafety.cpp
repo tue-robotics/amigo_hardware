@@ -8,6 +8,7 @@
 #define BRAKEON	false
 #define ERRORMARGIN 0.02
 
+using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 

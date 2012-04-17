@@ -15,6 +15,7 @@
 #define PI 3.141592654
 #define GRIPPER_JOINT_TORQUE_INDEX		5
 
+using namespace std;
 using namespace RTT;
 
 namespace PERA

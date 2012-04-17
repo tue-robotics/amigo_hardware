@@ -24,6 +24,7 @@
 #define RAD_TO_STEP             195.37860814
 #define TRIAL_MAX 				20
 
+using namespace std;
 using namespace RTT;
 using namespace soem_beckhoff_drivers;
 

@@ -9,6 +9,7 @@
 #include <rtt/Component.hpp>
 #include "BaseSupervisor.hpp"
 
+using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 

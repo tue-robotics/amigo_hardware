@@ -13,6 +13,7 @@
 
 #include "PERA_VectorConcatenate.hpp"
 
+using namespace std;
 using namespace RTT;
 using namespace PERA;
 

@@ -27,6 +27,7 @@
 #define c5y 0.140
 #define c7x 0.150
 
+using namespace std;
 using namespace RTT;
 using namespace PERA;
 

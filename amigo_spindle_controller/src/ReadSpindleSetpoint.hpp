@@ -6,6 +6,7 @@
 #include <amigo_msgs/spindle_setpoint.h>
 
 
+using namespace std;
 using namespace RTT;
 
 namespace MSG // Just because it looks nice

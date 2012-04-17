@@ -6,6 +6,7 @@
 #include <std_msgs/Float32MultiArray.h>
 
 
+using namespace std;
 using namespace RTT;
 
 namespace PERA

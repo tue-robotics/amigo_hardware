@@ -12,6 +12,7 @@
 #include <vector>
 #include <math.h>
 
+using namespace std;
 using namespace RTT;
 
 //! Philips Experimental Robotic Arm namespace

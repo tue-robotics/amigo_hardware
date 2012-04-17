@@ -10,6 +10,7 @@
 #define RESET 1.0
 #define NORESET 0.0
 
+using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 

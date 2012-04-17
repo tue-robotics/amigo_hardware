@@ -4,6 +4,7 @@
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 
+using namespace std;
 using namespace RTT;
 
 namespace AMIGO // Just because it looks nice

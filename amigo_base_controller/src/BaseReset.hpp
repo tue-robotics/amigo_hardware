@@ -15,6 +15,7 @@
 #include <rtt/Port.hpp>
 #include <std_msgs/Bool.h>
 
+using namespace std;
 using namespace RTT;
 
 namespace AMIGO

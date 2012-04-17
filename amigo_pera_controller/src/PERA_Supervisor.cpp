@@ -19,6 +19,7 @@
 
 #define PI 3.1415926535897932384626433
 
+using namespace std;
 using namespace RTT;
 using namespace PERA;
 using namespace std;
