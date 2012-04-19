@@ -41,7 +41,8 @@ class BaseWheelReset
     InputPort<doubles> inputRefPort;
     InputPort<doubles> measuredPosPort;
 
-    OutputPort<doubles> outputRefPort;
+    OutputPort<doubles> outputPosPort; 	// Output port for feedback loop
+    OutputPort<doubles> outputOdomPort; // Output port for odometry
 
     /* Declaring global variables */
     bool safe;
@@ -57,10 +58,12 @@ class BaseWheelReset
     Status previousStatus;
 
     doubles correctionPos;
+    doubles correctionOdom;
 
     doubles measInPos;
     doubles refInPos;
     doubles OutPos;
+    doubles OutOdom;
 
     public:
 

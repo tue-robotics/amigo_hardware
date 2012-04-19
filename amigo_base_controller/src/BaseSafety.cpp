@@ -75,13 +75,15 @@ bool BaseSafety::startHook()
   }
 
   safe = true;
+  previousSafe = true;
 
   return true;
 }
 
 void BaseSafety::updateHook()
 {
-  if (safe) //Safetychecks only usefull if safe is true
+  //Safetychecks only usefull if safe is true
+  if (safe) 
   {
 
     // Check validity of Ports
@@ -128,8 +130,12 @@ void BaseSafety::updateHook()
   }
   else if ( resetport.read( reset ) == NewData )
 	  safe = true;
-
-  amplifierport.write( safe );
+	
+  // One sample delay is build in to make sure the errors are resetted before enabling the amplifiers
+  amplifierport.write( safe&&previousSafe );
+  
+  previousSafe = safe;
+  
 }
 
 ORO_CREATE_COMPONENT(AMIGO::BaseSafety)
