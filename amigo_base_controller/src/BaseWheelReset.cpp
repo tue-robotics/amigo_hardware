@@ -60,6 +60,7 @@ void BaseWheelReset::updateHook()
 
         // In case of emergency button or unsafe situation:
         // Use the measured position as input position for the feedback loop to ensure zero tracking error
+        ///log(Warning)<<"BaseWheelReset: Resetting wheel position"<<endlog();
         measuredPosPort.read( refPos );
 
     }
@@ -70,6 +71,7 @@ void BaseWheelReset::updateHook()
         // During normal operation:
         // Use the input reference position for the feedback loop
         inputRefPort.read( refPos );
+        ///log(Warning)<<"BaseWheelReset: Normal operation"<<endlog();
 
     }
     outputRefPort.write( refPos );

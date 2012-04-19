@@ -28,7 +28,7 @@ namespace AMIGO
    * @param No parameters
    */
 
-  class BaseReset
+  class BaseWheelReset
   : public RTT::TaskContext
     {
     private:
