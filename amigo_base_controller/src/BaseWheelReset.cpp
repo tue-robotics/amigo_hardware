@@ -23,10 +23,10 @@ BaseWheelReset::BaseWheelReset(const string& name) :
 {
 
     // Adding ports
-    addEventPort( "safe", safePort );
-    addEventPort( "emergency", rosEmergencyPort );
-    addEventPort( "inputRef", inputRefPort) ;
-    addPort( "measuredPos", measuredPosPort );
+    addPort( "safe", safePort );
+    addPort( "emergency", rosEmergencyPort );
+    addPort( "inputRef", inputRefPort) ;
+    addEventPort( "measuredPos", measuredPosPort );
 
     addPort( "outputRef", outputRefPort );
 
@@ -43,6 +43,9 @@ bool BaseWheelReset::configureHook()
 bool BaseWheelReset::startHook()
 {
 
+    currentStatus = NO_INFO;
+    previousStatus = NO_INFO;
+    correctionPos.assign(3,0.0);
 
     return true;
 }
@@ -52,29 +55,27 @@ void BaseWheelReset::updateHook()
     std_msgs::Bool button;
     rosEmergencyPort.read( button );
     safePort.read( safe );
-
-    doubles refPos;
-
     if ( !safe || button.data )
-    {
-
-        // In case of emergency button or unsafe situation:
-        // Use the measured position as input position for the feedback loop to ensure zero tracking error
-        ///log(Warning)<<"BaseWheelReset: Resetting wheel position"<<endlog();
-        measuredPosPort.read( refPos );
-
-    }
-
+        currentStatus = UNSAFE;
     else
+        currentStatus = OK;
+
+    measuredPosPort.read( measInPos );
+
+    // Only update correction pos when released from an unsafe situation
+    if (currentStatus == OK && previousStatus != OK)
     {
-
-        // During normal operation:
-        // Use the input reference position for the feedback loop
-        inputRefPort.read( refPos );
-        ///log(Warning)<<"BaseWheelReset: Normal operation"<<endlog();
-
+        inputRefPort.read( refInPos );
+        for ( uint i = 0; i < 3; i++ ){
+            correctionPos[i] = refInPos[i] - measInPos[i];
+        }
     }
-    outputRefPort.write( refPos );
+
+    for ( uint i = 0; i < 3; i++){
+        OutPos[i] = measInPos[i] + correctionPos[i];
+    }
+    outputRefPort.write( OutPos );
+
 }
 
 ORO_CREATE_COMPONENT(AMIGO::BaseWheelReset)
