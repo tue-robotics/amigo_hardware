@@ -111,6 +111,7 @@ connect ("SpindleReadSetpoint.ref_vel","SpindleReferenceLimiter.ref_vel_in", Con
 connect ("SpindleReadSetpoint.ref_acc","SpindleReferenceLimiter.ref_acc_in", ConnPolicy() )
 connect ("SpindleReferenceLimiter.ref_pos_out","SpindleHoming.ref_pos_in", ConnPolicy() )
 connect ("SpindleHoming.ref_pos_out","SpindleReferenceGenerator.posin", ConnPolicy() )
+connect ("SpindleSafety.safety","SpindleHoming.safe", ConnPolicy() )
 connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindleCalculateError.in_minus", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindlePublishPosition.in", ConnPolicy() )
@@ -137,6 +138,7 @@ stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/sp
 stream("SpindlePublishPosition.out", ros.topic("/spindle_position"));
 stream("SpindleReadSetpoint.afterhoming_pos", ros.topic("/spindle_controller/spindle_coordinates"));
 stream("SpindleStatus.bool_out1", ros.topic("/spindle_status"));
+stream("SpindleHoming.ros_emergency", ros.topic("/disable_amplifiers"));
 
 
 ### Setting up reporting ###

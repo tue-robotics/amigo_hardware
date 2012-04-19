@@ -26,6 +26,9 @@ SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperatio
   addPort( "error_pos", errorpos_inport );
   addPort( "ref_pos_in", refpos_inport );
   addPort( "current_pos", currentpos_inport );
+  addEventPort( "safe", safe_inport );
+  addEventPort( "ros_emergency", ros_emergency_inport );
+
   addPort( "ref_pos_out", refpos_outport );
   addPort( "correction_out", correction_outport );
   addPort( "reset_generator", reset_generator_outport );
@@ -76,8 +79,18 @@ void SpindleHoming::updateHook()
 	refpos_inport.read(refpos);
 	ref_pos[0] = refpos;
 	generator_reset[0] = NORESET;
+	currentpos_inport.read(current_pos);
+
+	safe_inport.read( safe );
+	ros_emergency_inport.read(emergency_button);
 	
-	if(abs(error_pos[0]) > HOMINGERROR && homed == false)
+	// Error or emergency button pressed
+	if ( !safe || emergency_button.data )
+	{
+	    ref_pos[0] = current_pos[0];
+	}
+	//Homing finished
+	else if(abs(error_pos[0]) > HOMINGERROR && homed == false)
 	{
 		log(Info)<<"Spindle is homed."<<endlog();
 		homed = true;
@@ -86,13 +99,14 @@ void SpindleHoming::updateHook()
 		
 		// a variable used once to reset the reference generator after homing
 		homing_correction = correction[0] + HOMINGERROR;
-		currentpos_inport.read(current_pos);
 		generator_reset[0] = RESET;
 		generator_reset[1] = current_pos[0] + homing_correction;
 		generator_reset[2] = maxvel;
 		generator_reset[3] = maxacc;
 	}
-	if(homed == false)
+
+	//Homing
+	else if(homed == false)
 	{
 		ref_pos[0] = 0.5;
 	}

@@ -3,7 +3,7 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
-
+#include <std_msgs/Bool.h>
 
 using namespace std;
 using namespace RTT;
@@ -23,6 +23,9 @@ namespace AMIGO // Just because it looks nice
     InputPort<doubles> errorpos_inport;
     InputPort<double> refpos_inport;
     InputPort<doubles> currentpos_inport;
+    InputPort<bool> safe_inport;
+    InputPort<std_msgs::Bool> ros_emergency_inport;
+
     OutputPort<doubles> refpos_outport;
     OutputPort<doubles> correction_outport;
     OutputPort<doubles> reset_generator_outport;
@@ -42,7 +45,10 @@ namespace AMIGO // Just because it looks nice
     doubles generator_reset;
     double maxvel;
     double maxacc;
-	double homing_correction;
+    double homing_correction;
+
+    std_msgs::Bool emergency_button;
+    bool safe;
 	
     public:
 
