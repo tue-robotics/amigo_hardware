@@ -6,7 +6,8 @@ PanTiltController.tilt_id = 1
 PanTiltController.pan_max = 1032 	
 # was 1148 before 2012-01-18 
 # was 1020 before: still needs checking (old)
-PanTiltController.pan_min = 15  	
+PanTiltController.pan_min = 100
+# was 15 before 2012-04-20  	
 # was 131 before 2012-01-18 
 # was 3 before: still needs checking (old)
 PanTiltController.tilt_max = 700
