@@ -25,8 +25,12 @@ var double GEARRATIO = 8.0/343.0
 var double TWOPI = 2*3.141592
 var double ENCODERCOUNTS = 500.0*4.0
 
+## Old
 var array MAX_VEL = array ( 0.3, 0.3, 0.5 )
 var array MIN_VEL = array ( -0.3, -0.3, -0.5 )
+## RDO 2012
+var array MAX_VEL = array ( 0.5, 0.5, 0.5 )
+var array MIN_VEL = array ( -0.5, -0.5, -0.5 )
 
 #var array WHEEL_INTERPOLATOR_ARRAY = array( 0.0, 0.1, 1.0)
 #var array WHEEL_INTERPOLATOR_ARRAY = array( 0.0, 30.0, 300.0)
