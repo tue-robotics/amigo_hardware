@@ -7,7 +7,7 @@
  **************************************************************************/
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
-#include <ocl/Component.hpp>
+#include <rtt/Component.hpp>
 
 #include "PERA_GripperControl.hpp"
 

@@ -7,7 +7,7 @@
 //TODO: make general component -> outputs for given DH-parameters
 
 #include <rtt/TaskContext.hpp>
-#include <ocl/Component.hpp>
+#include <rtt/Component.hpp>
 #include <rtt/os/TimeService.hpp>
 #include <rtt/Port.hpp>
 #include <ros/ros.h>

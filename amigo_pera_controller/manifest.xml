@@ -11,7 +11,9 @@
   <depend package="roscpp"/>
   <depend package="rtt"/>
   <depend package="ocl"/>
-  <depend package="eigen"/>
+  <depend package="common_rosdeps" />
+  <rosdep name="eigen" />
+
   <!--depend package="orocos_components"/>-->
   <depend package="PERA_USB_IO"/>
   <depend package="rtt_std_msgs"/>

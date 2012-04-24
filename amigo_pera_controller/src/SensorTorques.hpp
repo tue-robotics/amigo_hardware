@@ -3,7 +3,7 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
-#include <ocl/Component.hpp>
+#include <rtt/Component.hpp>
 
 #define N 8
 using namespace std;
