@@ -15,7 +15,7 @@
 import("amigo_base_controller")
 
 ### Declare several variables that are typical for this setup ###
-var double Ts = 0.001
+#var double Ts = ? #Already declared in soem.ops
 var double WHEELRAD = 0.075*0.9825; # Corrected for effective wheel radius
 var double DIS2CENT = 0.29072
 var double HALFSQRT2 = 0.7071
@@ -154,6 +154,16 @@ setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 #### LOAD COMPONENT FOR RESET ###
 loadComponent("BaseSupervisor","AMIGO::BaseSupervisor")
+addPeer("BaseSupervisor","Soem")
+BaseSupervisor.AddBaseSupervisoredPeer ("Soem")
+addPeer("BaseSupervisor","AnalogOuts")
+BaseSupervisor.AddBaseSupervisoredPeer ("AnalogOuts")
+addPeer("BaseSupervisor","AnalogIns")
+BaseSupervisor.AddBaseSupervisoredPeer ("AnalogIns")
+addPeer("BaseSupervisor","DigitalOuts")
+BaseSupervisor.AddBaseSupervisoredPeer ("DigitalOuts")
+addPeer("BaseSupervisor","DigitalIns")
+BaseSupervisor.AddBaseSupervisoredPeer ("DigitalIns")
 addPeer("BaseSupervisor","BaseReadReferenceVelocities")
 BaseSupervisor.AddBaseSupervisoredPeer ("BaseReadReferenceVelocities")
 addPeer("BaseSupervisor","ReadWheelEncoders")
