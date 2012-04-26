@@ -30,7 +30,8 @@ namespace AMIGO
       {
       public:
 
-        InputPort<std_msgs::Bool> rosresetport;
+        InputPort<std_msgs::Bool> rosstopport;
+        InputPort<std_msgs::Bool> rosstartport;
 
         /** Constructeur pour définir le chemin vers le projet. Utile pour ROS*/
         BaseSupervisor(const std::string& name);

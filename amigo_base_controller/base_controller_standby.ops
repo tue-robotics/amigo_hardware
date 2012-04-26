@@ -200,6 +200,31 @@ connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", ConnPolicy() )
 stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 
 
+#### LOAD COMPONENT THATS STOPS THE CONTROLLER IF REQUESTED OR REQUIRED ###
+loadComponent("BaseSupervisor","AMIGO::BaseSupervisor")
+addPeer("BaseSupervisor","BaseReadReferenceVelocities")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseReadReferenceVelocities")
+addPeer("BaseSupervisor","BaseDecoupleVelReference")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseDecoupleVelReference")
+addPeer("BaseSupervisor","BaseWheelVel2WheelPos")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseWheelVel2WheelPos")
+addPeer("BaseSupervisor","BaseCalculateErrors")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseCalculateErrors")
+addPeer("BaseSupervisor","BaseControllerGains")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseControllerGains")
+addPeer("BaseSupervisor","BaseLeadLag")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseLeadLag")
+addPeer("BaseSupervisor","BaseSecondOrderLowPass")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseSecondOrderLowPass")
+addPeer("BaseSupervisor","BaseSI2Volt")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseSI2Volt")
+addPeer("BaseSupervisor","BaseSafety")
+stream("BaseSupervisor.rosstop", ros.topic("/stop_base"));
+stream("BaseSupervisor.rosstart", ros.topic("/start_base"));
+BaseSupervisor.configure
+setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
+
+
 #Setting up reporting
 loadComponent("BaseReporter", "OCL::FileReporting")
 BaseReporter.ReportFile = "/home/amigo/basereports.dat"
@@ -238,3 +263,4 @@ BaseSI2Volt.start
 BaseSafety.start
 BaseDiagnostics.start
 BaseStatus.start
+BaseSupervisor.start

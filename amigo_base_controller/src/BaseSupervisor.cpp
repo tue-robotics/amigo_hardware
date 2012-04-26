@@ -25,7 +25,8 @@ BaseSupervisor::BaseSupervisor(const string& name) :
 
     addOperation("DisplayBaseSupervisoredPeers", &BaseSupervisor::displayBaseSupervisoredPeers, this, ClientThread)
                .doc("Display the list of peers");
-  addEventPort( "rosreset", rosresetport );
+  addEventPort( "rosstop", rosstopport );
+  addEventPort( "rosstart", rosstartport );
 
 }
 
@@ -47,10 +48,10 @@ bool BaseSupervisor::startHook()
 
 void BaseSupervisor::updateHook()
 {
-    std_msgs::Bool rosboolmsg;
-    if (rosresetport.read( rosboolmsg ) == NewData )
+    std_msgs::Bool rosboolstopmsg;
+    if (rosstopport.read( rosboolstopmsg ) == NewData )
     {
-      log(Warning) << "Restarting components" << endlog();
+      log(Warning) << "Stopping components" << endlog();
       vector<TaskContext*>::iterator i;
       for ( i = m_BaseSupervisoredList.begin() ; i != m_BaseSupervisoredList.end() ; i++ )
       {
@@ -67,24 +68,13 @@ void BaseSupervisor::updateHook()
               tc->stop();
           }
       }
-      for ( i = m_BaseSupervisoredList.begin() ; i != m_BaseSupervisoredList.end() ; i++ )
-      {
-          TaskContext* tc = (*i);
-
-          if( tc == NULL )
-          {
-              log(Error) << "m_BaseSupervisoredList should not contain null values ! (update)" << endlog();
-              error();
-          }
-          else
-          {
-              if( !tc->isConfigured() )
-              {
-				  log(Warning) << "BaseSupervisor: Configuring: " << tc->getName() << endlog();
-                  tc->configure();
-              }
-          }
-      }
+    }
+    
+    std_msgs::Bool rosboolstartmsg;
+    if (rosstartport.read( rosboolstartmsg ) == NewData )
+    {
+      log(Warning) << "Starting components" << endlog();
+      vector<TaskContext*>::iterator i;
       for ( i = m_BaseSupervisoredList.begin() ; i != m_BaseSupervisoredList.end() ; i++ )
       {
           TaskContext* tc = (*i);
@@ -101,6 +91,7 @@ void BaseSupervisor::updateHook()
           }
       }
     }
+      
 }
 
 void BaseSupervisor::stopHook()
