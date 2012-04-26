@@ -219,8 +219,9 @@ BaseSupervisor.AddBaseSupervisoredPeer ("BaseSecondOrderLowPass")
 addPeer("BaseSupervisor","BaseSI2Volt")
 BaseSupervisor.AddBaseSupervisoredPeer ("BaseSI2Volt")
 addPeer("BaseSupervisor","BaseSafety")
-stream("BaseSupervisor.rosstop", ros.topic("/stop_base"));
-stream("BaseSupervisor.rosstart", ros.topic("/start_base"));
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseSafety")
+stream("BaseSupervisor.rosemergency", ros.topic("/emergency_switch"));
+stream("BaseSupervisor.rosstandby", ros.topic("/base_standby"));
 BaseSupervisor.configure
 setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 

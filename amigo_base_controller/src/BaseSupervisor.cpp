@@ -25,8 +25,8 @@ BaseSupervisor::BaseSupervisor(const string& name) :
 
     addOperation("DisplayBaseSupervisoredPeers", &BaseSupervisor::displayBaseSupervisoredPeers, this, ClientThread)
                .doc("Display the list of peers");
-  addEventPort( "rosstop", rosstopport );
-  addEventPort( "rosstart", rosstartport );
+  addEventPort( "rosemergency", rosemergencyport );
+  addEventPort( "rosstandby", rosstandbyport );
 
 }
 
@@ -43,13 +43,20 @@ bool BaseSupervisor::configureHook()
 
 bool BaseSupervisor::startHook()
 {
+	started = true;
     return true;
 }
 
 void BaseSupervisor::updateHook()
 {
-    std_msgs::Bool rosboolstopmsg;
-    if (rosstopport.read( rosboolstopmsg ) == NewData )
+    std_msgs::Bool rosemergencymsg;
+    std_msgs::Bool rosstandbymsg;
+    rosemergencyport.read( rosemergencymsg );
+    rosstandbyport.read( rosstandbymsg );
+    bool emergency = rosemergencymsg.data;
+    bool standby = rosstandbymsg.data;
+    
+    if ( ( emergency || standby ) && started )
     {
       log(Warning) << "Stopping components" << endlog();
       vector<TaskContext*>::iterator i;
@@ -68,10 +75,9 @@ void BaseSupervisor::updateHook()
               tc->stop();
           }
       }
-    }
-    
-    std_msgs::Bool rosboolstartmsg;
-    if (rosstartport.read( rosboolstartmsg ) == NewData )
+      started = false;
+    }  
+    else if ( !( emergency || standby ) && !started )
     {
       log(Warning) << "Starting components" << endlog();
       vector<TaskContext*>::iterator i;
@@ -90,6 +96,7 @@ void BaseSupervisor::updateHook()
               tc->start();
           }
       }
+      started = true;
     }
       
 }
