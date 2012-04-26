@@ -73,7 +73,7 @@ stream("Odometry.odom", ros.topic("/odom"));
 loadComponent("BaseReadReferenceVelocities","MSG::ReadTwistMsg")
 #loadService("BaseReadReferenceVelocities","rosparam")
 #BaseReadReferenceVelocities.rosparam.refreshProperties()
-BaseReadReferenceVelocities.max_start_vel = 0.1
+BaseReadReferenceVelocities.max_start_vel = 0.7
 BaseReadReferenceVelocities.max_acc = array (0.7, 0.7, 2.0)
 BaseReadReferenceVelocities.max_interval = 1.0
 BaseReadReferenceVelocities.configure
