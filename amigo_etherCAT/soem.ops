@@ -2,6 +2,7 @@
 #This enables you to import components from all these packages.
 import("amigo_etherCAT")
 
+var double Ts = 0.001
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 #This component enables communication with EtherCAT through the SoemMaster component.
@@ -9,7 +10,7 @@ loadComponent("Soem","soem_master::SoemMasterComponent")
 #Configure the component. This looks for connected EtherCAT slaves and creates ports for all of the slaves.
 Soem.configure
 #Set a realtime priority to this component and run it every 1ms.
-setActivity("Soem",0.001,HighestPriority,ORO_SCHED_RT)
+setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
 #TODO What happens if you set the priority to 0.0?
 
 
