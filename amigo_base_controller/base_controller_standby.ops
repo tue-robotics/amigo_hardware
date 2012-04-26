@@ -95,7 +95,7 @@ connect ("BaseReadReferenceVelocities.out","BaseDecoupleVelReference.in", ConnPo
 
 ### VELOCITY TO POSITION ###
 loadComponent("BaseWheelVel2WheelPos","MATH::Integrator")
-BaseWheelVel2WheelPos.vector_size = 3
+BaseWheelVel2WheelPos.vector_size = 4
 BaseWheelVel2WheelPos.configure
 setActivity("BaseWheelVel2WheelPos",0.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("BaseDecoupleVelReference.out","BaseWheelVel2WheelPos.in", ConnPolicy() )
@@ -239,8 +239,8 @@ BaseReporter.ReportFile = "/home/amigo/basereports.dat"
 #BaseReporter.reportPort("BaseCalculateErrors","out")
 #addPeer("BaseReporter","BaseSecondOrderLowPass")
 #BaseReporter.reportPort("BaseSecondOrderLowPass","out")
-#addPeer("BaseReporter","BaseSI2Volt")
-#BaseReporter.reportPort("BaseSI2Volt","out")
+addPeer("BaseReporter","BaseSI2Volt")
+BaseReporter.reportPort("BaseSI2Volt","out")
 BaseReporter.setPeriod(Ts)
 
 
@@ -265,3 +265,5 @@ BaseSafety.start
 BaseDiagnostics.start
 BaseStatus.start
 BaseSupervisor.start
+
+BaseReporter.start
