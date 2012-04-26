@@ -15,7 +15,7 @@
 import("amigo_base_controller")
 
 ### Declare several variables that are typical for this setup ###
-#var double Ts = ? #Already declared in soem.ops
+var double Ts = 0.001
 var double WHEELRAD = 0.075*0.9825; # Corrected for effective wheel radius
 var double DIS2CENT = 0.29072
 var double HALFSQRT2 = 0.7071
@@ -153,6 +153,18 @@ setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 
 #### LOAD COMPONENT FOR RESET ###
+loadComponent("BaseReset","AMIGO::BaseReset")
+BaseReset.configure
+setActivity("BaseReset",0.0,LowestPriority,ORO_SCHED_OTHER)
+connect ("BaseReset.integratorreset", "BaseVel2Pos.reset", ConnPolicy() )
+connect ("BaseDecouplePosition.out", "BaseReset.pos", ConnPolicy() )
+connect ("BaseSafety.wheel_amplifiers", "BaseReset.safe", ConnPolicy() )
+connect ("BaseReset.reset", "BaseSafety.reset", ConnPolicy() )
+stream ("BaseReset.rosreset", ros.topic("/reset_base"));
+stream ("BaseReset.rosemergency", ros.topic("/disable_amplifiers"));
+connect ("ReadWheelEncoders.out","BaseWheelReset.measuredPos", ConnPolicy() )
+
+#### LOAD COMPONENT FOR SUPERVISION ###
 loadComponent("BaseSupervisor","AMIGO::BaseSupervisor")
 addPeer("BaseSupervisor","Soem")
 BaseSupervisor.AddBaseSupervisoredPeer ("Soem")
@@ -224,9 +236,7 @@ stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 connect ("ReadWheelEncoders.out","BaseWheelReset.measuredPos", ConnPolicy() );
 connect ("BaseWheelReset.outputOdom", "BaseDecouplePosition.in", ConnPolicy() );
 connect ("BaseDecoupleReference.out","BaseWheelReset.inputRef", ConnPolicy() );
-#connect ("BaseWheelReset.outputRef","WheelVelocityInterpolator.posin", ConnPolicy() );
 connect ("BaseWheelReset.outputPos","BaseCalculateErrors.in_minus", ConnPolicy() ); #[m \n m \n rad]
-connect ("ReadWheelEncoders.out","BaseWheelReset.measuredPos", ConnPolicy() )
 connect ("BaseSafety.wheel_amplifiers", "BaseWheelReset.safe", ConnPolicy() )
 stream ("BaseWheelReset.emergency",ros.topic("/disable_amplifiers"));
 
@@ -257,7 +267,7 @@ BaseReporter.setPeriod(Ts)
 
 BaseDiagnostics.start
 BaseReadReferenceVelocities.start
-BaseSupervisor.start
+#BaseSupervisor.start
 ReadWheelEncoders.start
 BaseWheelReset.start
 BaseVel2Pos.start
@@ -270,6 +280,7 @@ BaseSecondOrderLowPass.start
 #BaseSum.start
 BaseSI2Volt.start
 BaseSafety.start
+BaseReset.start
 BaseDecouplePosition.start
 Odometry.start
 BaseStatus.start

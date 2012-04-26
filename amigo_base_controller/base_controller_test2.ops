@@ -72,13 +72,6 @@ BaseReadReferenceVelocities.max_interval = 1.0
 BaseReadReferenceVelocities.configure
 setActivity("BaseReadReferenceVelocities",0.01,LowestPriority,ORO_SCHED_OTHER)
 
-### REFERENCE VELOCITY LIMITER ###
-loadComponent("BaseRefVelLimiter","DISCONTINUITIES::Saturation")
-BaseRefVelLimiter.upper_limit = MAX_VEL
-BaseRefVelLimiter.lower_limit = MIN_VEL
-BaseRefVelLimiter.vector_size = 3
-BaseRefVelLimiter.configure
-
 ### VELOCITY TO POSITION ###
 loadComponent("BaseVel2Pos","MATH::Integrator")
 BaseVel2Pos.vector_size = 3
@@ -211,8 +204,7 @@ connect ("BaseDecouplePosition.out", "Odometry.pos", ConnPolicy() );
 stream("Odometry.odom", ros.topic("/odom"));
 
 stream ("BaseReadReferenceVelocities.cmd_vel", ros.topic("/cmd_vel"));
-connect ("BaseReadReferenceVelocities.out","BaseRefVelLimiter.in", ConnPolicy() )
-connect ("BaseRefVelLimiter.out","BaseVel2Pos.in", ConnPolicy() ); #[m/s \n m/s \n rad/s]
+connect ("BaseReadReferenceVelocities.out","BaseVel2Pos.in", ConnPolicy() )
 connect ("BaseVel2Pos.out","BaseDecoupleReference.in", ConnPolicy() ); # [N \n N \n Nm]
 connect ("BaseDecoupleReference.out","BaseWheelReset.inputRef", ConnPolicy() );
 #connect ("WheelVelocityInterpolator.posout","BaseCalculateErrors.in_plus", ConnPolicy() );
@@ -292,7 +284,6 @@ BaseReporter.setPeriod(Ts)
 #Starting components (BaseReset should(might) be started BEFORE BaseVel2Pos)
 BaseDiagnostics.start
 BaseReadReferenceVelocities.start
-BaseRefVelLimiter.start
 BaseReset.start
 ReadWheelEncoders.start
 BaseWheelReset.start

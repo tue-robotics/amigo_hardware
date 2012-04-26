@@ -63,11 +63,40 @@ void BaseSupervisor::updateHook()
           }
           else
           {
+			  log(Warning) << "BaseSupervisor: Stopping: " << tc->getName() << endlog();
               tc->stop();
+          }
+      }
+      for ( i = m_BaseSupervisoredList.begin() ; i != m_BaseSupervisoredList.end() ; i++ )
+      {
+          TaskContext* tc = (*i);
+
+          if( tc == NULL )
+          {
+              log(Error) << "m_BaseSupervisoredList should not contain null values ! (update)" << endlog();
+              error();
+          }
+          else
+          {
               if( !tc->isConfigured() )
               {
+				  log(Warning) << "BaseSupervisor: Configuring: " << tc->getName() << endlog();
                   tc->configure();
               }
+          }
+      }
+      for ( i = m_BaseSupervisoredList.begin() ; i != m_BaseSupervisoredList.end() ; i++ )
+      {
+          TaskContext* tc = (*i);
+
+          if( tc == NULL )
+          {
+              log(Error) << "m_BaseSupervisoredList should not contain null values ! (update)" << endlog();
+              error();
+          }
+          else
+          {
+			  log(Warning) << "BaseSupervisor: Starting: " << tc->getName() << endlog();
               tc->start();
           }
       }
