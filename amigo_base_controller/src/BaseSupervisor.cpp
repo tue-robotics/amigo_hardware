@@ -80,6 +80,7 @@ void BaseSupervisor::updateHook()
     else if ( !( emergency || standby ) && !started )
     {
       log(Warning) << "Starting components" << endlog();
+      sleep(1); // Very very ugly hack, please remove this line if you come across it! Regards, Tim C.
       vector<TaskContext*>::iterator i;
       for ( i = m_BaseSupervisoredList.begin() ; i != m_BaseSupervisoredList.end() ; i++ )
       {
