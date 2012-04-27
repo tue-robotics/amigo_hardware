@@ -26,8 +26,8 @@ SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperatio
   addPort( "error_pos", errorpos_inport );
   addPort( "ref_pos_in", refpos_inport );
   addPort( "current_pos", currentpos_inport );
-  addEventPort( "safe", safe_inport );
-  addEventPort( "ros_emergency", ros_emergency_inport );
+  addPort( "safe", safe_inport );
+  addPort( "ros_emergency", ros_emergency_inport );
 
   addPort( "ref_pos_out", refpos_outport );
   addPort( "correction_out", correction_outport );
@@ -64,8 +64,12 @@ bool SpindleHoming::startHook()
   if ( !refpos_outport.connected() || !correction_outport.connected() || !reset_generator_outport.connected() ) {
     log(Warning)<<"SpindleHoming:One or more outputports not connected!"<<endlog();
   }
+  if (!safe_inport.connected() || !ros_emergency_inport.connected() ){
+	  log(Warning)<<"SpindleHoming: Safe inport or emergency button inport not connected!"<<endlog();
+  }
 
   homed = false;
+  safe = false;
   maxvel = maxvel_property.get();
   maxacc = maxacc_property.get();
   log(Info)<<"Spindle is not homed. Homing procedure started."<<endlog();  
@@ -89,6 +93,7 @@ void SpindleHoming::updateHook()
 	{
 	    ref_pos[0] = current_pos[0];
 	}
+	
 	//Homing finished
 	else if(abs(error_pos[0]) > HOMINGERROR && homed == false)
 	{
@@ -103,6 +108,8 @@ void SpindleHoming::updateHook()
 		generator_reset[1] = current_pos[0] + homing_correction;
 		generator_reset[2] = maxvel;
 		generator_reset[3] = maxacc;
+		
+		reset_generator_outport.write(generator_reset);	
 	}
 
 	//Homing
@@ -114,6 +121,8 @@ void SpindleHoming::updateHook()
 	// Write to output ports
 	refpos_outport.write(ref_pos);
 	correction_outport.write(correction);
+	
+	// Commented 19-04-2012
 	reset_generator_outport.write(generator_reset);	
 }
 
