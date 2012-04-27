@@ -166,7 +166,6 @@ stream("SpindleHoming.ros_emergency", ros.topic("/disable_amplifiers"));
 SpindleReadSetpoint.start
 SpindleReadEncoder.start
 SpindleReferenceGenerator.start
-SpindleHoming.start
 SpindleGain.start
 SpindleLeadLag.start
 SpindleFirstOrderLowPass.start
@@ -177,6 +176,7 @@ SpindleCalculatePosition.start
 SpindleCalculateOutput.start
 SpindleOutputLimiter.start
 SpindlePublishPosition.start
+SpindleHoming.start
 SpindleSafety.start
 #SpindleReporter.start
 SpindleReferenceLimiter.start
