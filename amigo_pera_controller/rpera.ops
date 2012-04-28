@@ -384,4 +384,4 @@ RPERA_AddGravComp.start
 RPERA_SensorTorques.start
 RPERA_GripperControl.start
 RPERA_Diagnostics.start
-RPERA_Reporter.start
+#RPERA_Reporter.start
