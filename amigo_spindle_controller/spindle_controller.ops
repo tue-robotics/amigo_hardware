@@ -16,7 +16,7 @@ import("amigo_spindle_controller")
 
 
 ### Declare several variables that are typical for this setup ###
-var double Ts = Ts
+var double Ts = 0.004
 var double ENC2SI = 4.1666667e-7
 
 
