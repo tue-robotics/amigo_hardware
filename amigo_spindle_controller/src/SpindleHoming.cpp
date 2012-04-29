@@ -79,7 +79,6 @@ bool SpindleHoming::startHook()
 void SpindleHoming::updateHook()
 {   	
 	errorpos_inport.read(error_pos);
-	//double refpos_old = ref_pos[0];
 	refpos_inport.read(refpos);
 	ref_pos[0] = refpos;
 	generator_reset[0] = NORESET;
