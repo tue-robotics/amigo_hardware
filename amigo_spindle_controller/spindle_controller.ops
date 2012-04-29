@@ -1,35 +1,11 @@
-########################################################################
-#                                                                      #
-# Base controller deployer file to load the controllers for the wheels #
-#                                                                      #
-# Tim Clephas                                                          #
-# Mostly 2011                                                          #
-#                                                                      #
-# Uses the DeployerComponent available within the OCL for deploying    #
-# and connecting components.                                           #
-#                                                                      #
-########################################################################
-
-### Import amigo_base_controller package. All the components in this package,       ###
-### as well as all components from packages mentioned in the manifest can be loaded ###
 import("amigo_spindle_controller")
 
-
-### Declare several variables that are typical for this setup ###
-var double Ts = 0.004
-var double ENC2SI = 4.1666667e-7
-
-
-
-
-### We start by reading the encoders and sending the position information to ROS: ###
-
-
-### READ ENCODER ###
+### Loading Components ###
+#Reading Encoders
 loadComponent("SpindleReadEncoder","SOEM::ReadEncoders")
-SpindleReadEncoder.setPeriod(Ts)
+SpindleReadEncoder.setPeriod(0.004)
 SpindleReadEncoder.encoderbits = 65536
-SpindleReadEncoder.enc2SI = array (ENC2SI)
+SpindleReadEncoder.enc2SI = array (4.1666667e-7)
 SpindleReadEncoder.configure
 
 #Loading Homing component
@@ -50,6 +26,10 @@ SpindleCalculateFFW.configure
 loadComponent("SpindleCalculateOutput","MATH::Addition")
 SpindleCalculateOutput.vectorsize = 1
 SpindleCalculateOutput.configure
+
+#Limiting the Output
+loadComponent("SpindleOutputLimiter","OutputLimiter")
+SpindleOutputLimiter.configure
 
 #Publishing the spindle position to ROS
 loadComponent("SpindlePublishPosition","PublishPosition")
@@ -72,19 +52,19 @@ SpindleGain.gain = 40
 SpindleGain.configure
 loadComponent("SpindleLeadLag","FILTERS::LeadLag")
 SpindleLeadLag.vector_size = 1
-SpindleLeadLag.sampling_time = Ts
+SpindleLeadLag.sampling_time = 0.004
 SpindleLeadLag.zero_frequency = array (1.6)
 SpindleLeadLag.pole_frequency = array (60.0)
 SpindleLeadLag.configure
 loadComponent("SpindleFirstOrderLowPass","FILTERS::FirstOrderLowPass")
 SpindleFirstOrderLowPass.vector_size = 1
-SpindleFirstOrderLowPass.sampling_time = Ts
+SpindleFirstOrderLowPass.sampling_time = 0.004
 SpindleFirstOrderLowPass.pole_frequency = array (20.0)
 SpindleFirstOrderLowPass.configure
 #loadComponent("SpindleIntegrator","FILTERS::WeakIntegrators")
 #SpindleIntegrator.zero_frequency = array ( 0.3 )
 #SpindleIntegrator.vector_size = 1
-#SpindleIntegrator.sampling_time = Ts
+#SpindleIntegrator.sampling_time = 0.004
 #SpindleIntegrator.configure
 
 #Loading Safety component
@@ -93,7 +73,7 @@ SpindleSafety.configure
 
 #Reading spindle setpoints 
 loadComponent("SpindleReadSetpoint","MSG::ReadSpindleSetpoint")
-SpindleReadSetpoint.setPeriod(Ts)
+SpindleReadSetpoint.setPeriod(0.004)
 SpindleReadSetpoint.homed_pos = 0.35
 SpindleReadSetpoint.configure
 
@@ -103,9 +83,9 @@ SpindleReferenceLimiter.configure
 
 #Loading Reference Generator
 loadComponent("SpindleReferenceGenerator","ReferenceGenerator")
-SpindleReferenceGenerator.setPeriod(Ts)
+SpindleReferenceGenerator.setPeriod(0.004)
 SpindleReferenceGenerator.NrInterpolators = 1
-SpindleReferenceGenerator.InterpolatorDt = Ts
+SpindleReferenceGenerator.InterpolatorDt = 0.004
 SpindleReferenceGenerator.InterpolatorEps = 1.0
 SpindleReferenceGenerator.configure
 SpindleReferenceGenerator.interpolator1 = array (0.0, 0.01, 0.1)
@@ -125,6 +105,7 @@ connect ("SpindleReadEncoder.out","SpindleCalculatePosition.in_minus", ConnPolic
 connect ("SpindleHoming.correction_out","SpindleCalculatePosition.in_plus", ConnPolicy() )
 connect ("SpindleHoming.reset_generator","SpindleReferenceGenerator.resetValues", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
+connect ("SpindleSafety.safety","SpindleOutputLimiter.safety", ConnPolicy() )
 connect ("SpindleReadSetpoint.ref_pos","SpindleReferenceLimiter.ref_pos_in", ConnPolicy() )
 connect ("SpindleReadSetpoint.ref_vel","SpindleReferenceLimiter.ref_vel_in", ConnPolicy() )
 connect ("SpindleReadSetpoint.ref_acc","SpindleReferenceLimiter.ref_acc_in", ConnPolicy() )
@@ -147,7 +128,8 @@ connect ("SpindleLeadLag.out","SpindleFirstOrderLowPass.in", ConnPolicy() )
 #connect ("SpindleIntegrator.out","SpindleCalculateOutput.in2_event", ConnPolicy() )
 connect ("SpindleFirstOrderLowPass.out","SpindleCalculateOutput.in2_event", ConnPolicy() )
 connect ("SpindleCalculateFFW.FFW_out","SpindleCalculateOutput.in1", ConnPolicy() )
-connect ("SpindleCalculateOutput.out","AnalogOuts.spindle", ConnPolicy() )
+connect ("SpindleCalculateOutput.out","SpindleOutputLimiter.input", ConnPolicy() )
+connect ("SpindleOutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
 connect ("SpindleReadEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake", "SpindleStatus.bool_in1", ConnPolicy() )
 
@@ -162,6 +144,7 @@ stream("SpindleHoming.ros_emergency", ros.topic("/disable_amplifiers"));
 ### Setting up reporting ###
 #loadComponent("SpindleReporter", "OCL::FileReporting")
 #SpindleReporter.ReportFile = "/home/amigo/spindlereports.dat"
+#addPeer("SpindleReporter","SpindleOutputLimiter")
 #addPeer("SpindleReporter","SpindleCalculatePosition")
 #addPeer("SpindleReporter","SpindleReferenceGenerator")
 #addPeer("SpindleReporter","SpindleCalculateError")
@@ -169,6 +152,7 @@ stream("SpindleHoming.ros_emergency", ros.topic("/disable_amplifiers"));
 #addPeer("SpindleReporter","SpindleReadSetpoint")
 #addPeer("SpindleReporter","SpindleIntegrator")
 #SpindleReporter.reportPort("SpindleReadSetpoint","ref_pos")
+#SpindleReporter.reportPort("SpindleOutputLimiter","output")
 #SpindleReporter.reportPort("SpindleCalculatePosition","out")
 #SpindleReporter.reportPort("SpindleReferenceGenerator","posout")
 #SpindleReporter.reportPort("SpindleCalculateError","out")
@@ -190,6 +174,7 @@ SpindleCalculateError.start
 SpindleCalculateFFW.start
 SpindleCalculatePosition.start
 SpindleCalculateOutput.start
+SpindleOutputLimiter.start
 SpindlePublishPosition.start
 SpindleHoming.start
 SpindleSafety.start
