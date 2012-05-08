@@ -71,7 +71,7 @@ RPERA_Supervisor.setPeriod(0.004)
 RPERA_Supervisor.jointLowerBounds = array (  0.0, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
 RPERA_Supervisor.jointUpperBounds = array ( 1.57,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
 RPERA_Supervisor.motorSaturations = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
-RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 20.0)
+RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 120.0)
 RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 RPERA_Supervisor.dynBreakEpsilon = 0.05;
 # Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
@@ -96,8 +96,6 @@ RPERA_IO.setPeriod(0.004)
 RPERA_IO.configure
 RPERA_IO.absSenJumpPosProperty = array (1024.0, 732.0, 721.0, 1024.0, 706.0, 1024.0, 1024.0)
 RPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.0)
-RPERA_IO.gripperbits = 23000.0
-RPERA_IO.grippersecs = 5.0
 
 ### Velocity and acceleration estimator ###
 loadComponent("RPERA_RTD","AMIGO::RealTimeDerivator")
@@ -271,8 +269,8 @@ loadComponent("RPERA_Reporter", "OCL::FileReporting")
 #addPeer("RPERA_Reporter","RPERA_GripperControl")
 #RPERA_Reporter.reportPort("RPERA_GripperControl","gripper_ref")
 ## Reference interpolator
-#addPeer("RPERA_Reporter","RPERA_ReferenceInterpolator")
-#RPERA_Reporter.reportPort("RPERA_ReferenceInterpolator","posout")
+addPeer("RPERA_Reporter","RPERA_ReferenceInterpolator")
+RPERA_Reporter.reportPort("RPERA_ReferenceInterpolator","posout")
 ## log the output
 #addPeer("RPERA_Reporter","RPERA_MotorToJointAngles")
 #RPERA_Reporter.reportPort("RPERA_MotorToJointAngles","out")
@@ -283,8 +281,8 @@ RPERA_Reporter.reportPort("RPERA_ComputeJointErrors","out")
 addPeer("RPERA_Reporter","RPERA_AddGravComp")
 RPERA_Reporter.reportPort("RPERA_AddGravComp","out")
 ## log the measured force
-#addPeer("RPERA_Reporter","RPERA_SensorTorques")
-#RPERA_Reporter.reportPort("RPERA_SensorTorques","measured_torques_out")
+addPeer("RPERA_Reporter","RPERA_SensorTorques")
+RPERA_Reporter.reportPort("RPERA_SensorTorques","measured_torques_out")
 ## log the controller output u_c
 #addPeer("RPERA_Reporter","RPERA_WeakIntegrator1")
 #RPERA_Reporter.reportPort("RPERA_WeakIntegrator1","out")
