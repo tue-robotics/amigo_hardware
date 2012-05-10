@@ -19,7 +19,8 @@
   <depend package="rtt_source_components"/>
   <depend package="rtt_ROS_interfacing"/>
   <depend package="rtt_soem_interfacing"/>
-
+  <depend package="rtt_discontinuity_components"/>
+  
 </package>
 
 
