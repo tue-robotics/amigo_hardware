@@ -353,6 +353,7 @@ stream("LPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
 ### Gripper control ###
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out", "LPERA_GripperControl.position_in", ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_measurement","LPERA_Supervisor.gripper_measurement", ConnPolicy() )
 connect ("LPERA_Supervisor.gripper_command","LPERA_GripperControl.gripper_command", ConnPolicy() )
 connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )

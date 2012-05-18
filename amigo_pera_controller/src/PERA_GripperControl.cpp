@@ -28,6 +28,7 @@ using namespace PERA;
 			/// Inports
 			addPort("gripper_command", gripperCommandPort);
 			addPort("torque_in", torqueInPort);
+			addPort("position_in", positionInPort);
 			addPort("reNullPort",reNullPort);
 			addEventPort("resetGripperPort",resetGripperPort);
 			
@@ -88,13 +89,16 @@ using namespace PERA;
 				
 
 		if (!completed){
+			torqueInPort.read(torques);
+			positionInPort.read(measPos);
+			
 			amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
 			gripperMeasurement.direction = gripperCommand.direction;
 			gripperMeasurement.torque = torques[GRIPPER_JOINT_TORQUE_INDEX];
+			gripperMeasurement.position = measPos[GRIPPER_JOINT_POSITION_INDEX]/maxPos;
 			gripperMeasurement.end_position_reached = false;
 			gripperMeasurement.max_torque_reached = false;
 
-			torqueInPort.read(torques);
 			if(gripperCommand.direction == amigo_msgs::AmigoGripperCommand::OPEN){
 				if (gripperPos[0] >= maxPos){
 					log(Info)<<"Gripper is OPEN"<<endlog();

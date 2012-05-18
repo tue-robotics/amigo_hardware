@@ -14,6 +14,7 @@
 
 #define PI 3.141592654
 #define GRIPPER_JOINT_TORQUE_INDEX		5
+#define GRIPPER_JOINT_POSITION_INDEX	7
 
 using namespace std;
 using namespace RTT;
@@ -40,6 +41,8 @@ namespace PERA
 	  InputPort<amigo_msgs::AmigoGripperCommand> gripperCommandPort;
 	  //! Inputport for receving torques from PERA_USB_IO
 	  InputPort<doubles> torqueInPort;
+	  //! Inputport for receiving positions from PERA_USB_IO
+	  InputPort<doubles> positionInPort;
 	  //! Inputport for resetting the gripper position
 	  InputPort<bool> resetGripperPort;
 	  //! Inputport for nulling the gripper reference
@@ -52,6 +55,8 @@ namespace PERA
 	  
 	  //! Vector for the read torques
 	  doubles torques;
+	  //! Vector for the measured positions
+	  doubles measPos;
 	  //! Vector containing gripper desired value
 	  doubles gripperPos;
 	  //! Maximum gripper position
