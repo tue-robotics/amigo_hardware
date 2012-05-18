@@ -39,11 +39,14 @@ setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 loadComponent("DigitalIns","SOEM::DigitalIns")
 DigitalIns.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
-stream("DigitalIns.out6", ros.topic("/emergency_switch"))
 stream("DigitalIns.out1", ros.topic("/fuse1"))
 stream("DigitalIns.out2", ros.topic("/fuse2"))
 stream("DigitalIns.out3", ros.topic("/fuse3"))
 stream("DigitalIns.out4", ros.topic("/fuse4"))
+DigitalIns.flip_out5 = true
+stream("DigitalIns.out5", ros.topic("/runstop"))
+DigitalIns.flip_out6 = true
+stream("DigitalIns.out6", ros.topic("/emergency_switch"))
 DigitalIns.configure
 setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
