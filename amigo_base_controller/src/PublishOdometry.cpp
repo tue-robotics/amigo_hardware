@@ -84,7 +84,7 @@ void PublishOdometry::updateHook()
   odom.twist.twist.linear.y = vel[1];
   odom.twist.twist.angular.z = vel[2];
 
-  ///btQuaternion quat_trans;
+  ///tf::Quaternion quat_trans;
   ///quat_trans.setRPY(0.0, 0.0, current_pos_corr_phi);
 
   //populate tf msg
