@@ -112,7 +112,8 @@ setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed = 14.0
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.max_pos = 4.0
-LPERA_GripperControl.gripper_gain = 0.30
+#LPERA_GripperControl.gripper_gain = 0.30
+LPERA_GripperControl.gripper_gain = 0.60
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
