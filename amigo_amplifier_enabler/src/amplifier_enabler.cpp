@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 		
 		// Disable amplifiers when emergency switch is pushed or battery status equals 2 (= Voltage is too low)
 		//if (battery_status != 2 && emergency_switch_status == false){
-		if (battery_status != 2 && ebutton_safe == true){
+		if (battery_status != 1 && ebutton_safe == true){
 			disable_amplifiers.data = false;
 			//ROS_WARN("Enable amplifiers");
 		}
