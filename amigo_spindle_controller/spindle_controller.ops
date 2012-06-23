@@ -10,8 +10,8 @@ SpindleReadEncoder.configure
 
 #Loading Homing component
 loadComponent("SpindleHoming","SpindleHoming")
-SpindleHoming.max_vel = 0.05
-SpindleHoming.max_acc = 0.02
+SpindleHoming.max_vel = 0.07
+SpindleHoming.max_acc = 0.04
 SpindleHoming.configure
 
 #Calculating Feed Forward
