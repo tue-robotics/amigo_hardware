@@ -49,7 +49,6 @@ bool SpindleSafety::startHook()
 
 void SpindleSafety::updateHook()
 {
-	safety = true;
 	
 	// Measuring safety
 	errorpos_inport.read(error_pos);
