@@ -105,7 +105,7 @@ void BaseSafety::updateHook()
       if ( refs[i] > max_velocities[i] )
       {
         safe = false;
-        log(Error)<<"BaseSafety::Maximum reference velocity exeeded! Disabling hardware!"<<endlog();
+        log(Error)<<"BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] <<" Disabling hardware!"<<endlog();
       }
 
     doubles errors(4);
@@ -114,7 +114,7 @@ void BaseSafety::updateHook()
       if ( errors[i] > max_errors[i] )
       {
         safe = false;
-        log(Error)<<"BaseSafety::Maximum errors exeeded! Disabling hardware!"<<endlog();
+        log(Error)<<"BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!"<<endlog();
       }
 
     doubles voltage(4);

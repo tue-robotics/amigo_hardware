@@ -114,6 +114,7 @@ connect ("ReadWheelEncoders.out","BaseCalculateErrors.in_minus", ConnPolicy() );
 ### GAIN ###
 loadComponent("BaseControllerGains","MATH::Gains")
 BaseControllerGains.vectorsize = 4;
+#BaseControllerGains.gain = array (0.4, 0.4, 0.4, 0.4) # 10-08-12
 BaseControllerGains.gain = array (1.0, 1.0, 1.0, 1.0)
 BaseControllerGains.configure
 setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
@@ -161,8 +162,8 @@ connect ("BaseSI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Send to Soem 
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
 BaseSafety.max_velocities = array (1.8, 1.0, 3.1415)
-BaseSafety.max_errors = array ( 6.0, 6.0, 6.0, 6.0 )
-BaseSafety.max_voltage = 3.5
+BaseSafety.max_errors = array ( 8.0, 8.0, 8.0, 8.0 )
+BaseSafety.max_voltage = 9.9
 BaseSafety.configure
 setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)
 connect ("BaseReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
@@ -226,25 +227,6 @@ BaseSupervisor.configure
 setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 
 
-#Setting up reporting
-loadComponent("BaseReporter", "OCL::FileReporting")
-BaseReporter.ReportFile = "/home/amigo/basereports.dat"
-#addPeer("BaseReporter","BaseReadReferenceVelocities")
-#BaseReporter.reportPort("BaseReadReferenceVelocities","out")
-#addPeer("BaseReporter","BaseWheelVel2WheelPos")
-#BaseReporter.reportPort("BaseWheelVel2WheelPos","out")
-#addPeer("BaseReporter","ReadWheelEncoders")
-#BaseReporter.reportPort("ReadWheelEncoders","out")
-#addPeer("BaseReporter","BaseCalculateErrors")
-#BaseReporter.reportPort("BaseCalculateErrors","out")
-#addPeer("BaseReporter","BaseSecondOrderLowPass")
-#BaseReporter.reportPort("BaseSecondOrderLowPass","out")
-addPeer("BaseReporter","BaseSI2Volt")
-BaseReporter.reportPort("BaseSI2Volt","out")
-BaseReporter.setPeriod(Ts)
-
-
-
 ### We start by reading the encoders and sending the position information to ROS: ###
 ReadWheelEncoders.start
 BaseDecouplePosition.start
@@ -266,4 +248,3 @@ BaseDiagnostics.start
 BaseStatus.start
 BaseSupervisor.start
 
-BaseReporter.start
