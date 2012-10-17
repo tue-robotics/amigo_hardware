@@ -21,6 +21,7 @@
   <depend package="rtt_custom_components"/>
   <depend package="rtt_routing_components"/>
   <depend package="rtt_discontinuity_components"/>
+  <depend package="rtt_tracing"/>
 </package>
 
 
