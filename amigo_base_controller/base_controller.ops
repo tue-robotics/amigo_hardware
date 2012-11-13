@@ -121,6 +121,16 @@ setActivity("BaseControllerGains",0.0,HighestPriority,ORO_SCHED_RT)
 connect ("BaseCalculateErrors.out","BaseControllerGains.in", ConnPolicy() )
 
 
+### INTEGRATOR ###
+loadComponent("BaseIntegrator","FILTERS::WeakIntegrator")
+BaseIntegrator.vector_size = 4;
+BaseIntegrator.sampling_time = Ts
+BaseIntegrator.zero_frequency = array (0.0001, 0.0001, 0.0001, 0.0001)
+BaseIntegrator.configure
+setActivity("BaseIntegrator",0.0,HighestPriority,ORO_SCHED_RT)
+connect ("BaseControllerGains.out","BaseIntegrator.in", ConnPolicy() )
+
+
 ### LEADLAG ###
 loadComponent("BaseLeadLag","FILTERS::LeadLags")
 BaseLeadLag.vector_size = 4;
@@ -129,7 +139,7 @@ BaseLeadLag.zero_frequency = array (15.0, 15.0, 15.0, 15.0)
 BaseLeadLag.pole_frequency = array (50.0, 50.0, 50.0, 50.0)
 BaseLeadLag.configure
 setActivity("BaseLeadLag",0.0,HighestPriority,ORO_SCHED_RT)
-connect ("BaseControllerGains.out","BaseLeadLag.in", ConnPolicy() )
+connect ("BaseIntegrator.out","BaseLeadLag.in", ConnPolicy() )
 
 
 ### LOWPASS ###
@@ -212,6 +222,8 @@ addPeer("BaseSupervisor","BaseCalculateErrors")
 BaseSupervisor.AddBaseSupervisoredPeer ("BaseCalculateErrors")
 addPeer("BaseSupervisor","BaseControllerGains")
 BaseSupervisor.AddBaseSupervisoredPeer ("BaseControllerGains")
+addPeer("BaseSupervisor","BaseIntegrator")
+BaseSupervisor.AddBaseSupervisoredPeer ("BaseIntegrator")
 addPeer("BaseSupervisor","BaseLeadLag")
 BaseSupervisor.AddBaseSupervisoredPeer ("BaseLeadLag")
 addPeer("BaseSupervisor","BaseSecondOrderLowPass")
@@ -238,6 +250,7 @@ BaseWheelVel2WheelPos.start
 BaseCalculateErrors.start
 BaseControllerGains.start
 BaseLeadLag.start
+BaseIntegrator.start
 BaseSecondOrderLowPass.start
 BaseSI2Volt.start
 
