@@ -23,6 +23,11 @@ var array noise_max = array( 0.0, 0.0, 0.0, $NOISE )" > noise.ops;;
 	#Run the identification
 	rosrun ocl deployer-gnulinux -s `rospack find amigo_etherCAT`/soem.ops -s `rospack find amigo_base_controller`/base_controller.ops -s `rospack find amigo_base_controller`/identification/noise.ops 
 	
+	#Workaround until a decent tracing naming is implemented:
+	sed -i "s|in1|Pout|g" /tmp/wheel*.dat
+	sed -i "s|in2|Cout|g" /tmp/wheel*.dat
+	sed -i "s|in3|Cout_noise|g" /tmp/wheel*.dat
+	
 	#Sleep a bit so people have time to press ctrl+c
 	sleep 1
 done
