@@ -109,6 +109,7 @@ LPERA_RTD.configure
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
 setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
+#LPERA_GripperControl.threshold_closed = 14.0
 LPERA_GripperControl.threshold_closed = 14.0
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.max_pos = 4.0
@@ -306,9 +307,9 @@ connect ("LPERA_MotorToJointAngles.out","LPERA_WriteCurrentJointAngles.pos", Con
 connect ("LPERA_MotorToJointAngles.out","LPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
 connect ("LPERA_Gain.out","LPERA_LeadLag.in", ConnPolicy() )
-connect ("LPERA_LeadLag.out","LPERA_Lowpass.in", ConnPolicy() )
-connect ("LPERA_Lowpass.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
-connect ("LPERA_WeakIntegrator1.out","LPERA_AddGravComp.in2_event", ConnPolicy() )
+connect ("LPERA_LeadLag.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
+connect ("LPERA_WeakIntegrator1.out","LPERA_Lowpass.in", ConnPolicy() )
+connect ("LPERA_Lowpass.out","LPERA_AddGravComp.in2_event", ConnPolicy() )
 connect ("LPERA_AddGravComp.out","LPERA_JointToMotorTorques.in", ConnPolicy() )
 connect ("LPERA_JointToMotorTorques.out","LPERA_OutputLimiter.in", ConnPolicy() )
 connect ("LPERA_OutputLimiter.out","LPERA_IO.cmdTorqueIn", ConnPolicy() )
@@ -378,8 +379,8 @@ LPERA_IO.start
 LPERA_RTD.start
 LPERA_Gain.start
 LPERA_LeadLag.start
-LPERA_Lowpass.start
 LPERA_WeakIntegrator1.start
+LPERA_Lowpass.start
 LPERA_GravityCompensation.start
 LPERA_GC_Gains.start
 LPERA_Polynomials.start
