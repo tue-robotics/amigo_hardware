@@ -3,26 +3,14 @@ import("amigo_head_controller")
 loadComponent("PanTiltController", "PanTiltController")
 PanTiltController.pan_id = 2
 PanTiltController.tilt_id = 1
-PanTiltController.pan_max = 1032 	
-# was 1148 before 2012-01-18 
-# was 1020 before: still needs checking (old)
-PanTiltController.pan_min = 100
-# was 15 before 2012-04-20  	
-# was 131 before 2012-01-18 
-# was 3 before: still needs checking (old)
+PanTiltController.pan_max = 952 	
+PanTiltController.pan_min = 268
 PanTiltController.tilt_max = 700
-#was 750 before 2012-01-19
 PanTiltController.tilt_min = 435
-#was 250 before 2012-01-19
 PanTiltController.pan_speed = 50
 PanTiltController.tilt_speed = 25
-# Was 300 before 2012-02-11
-PanTiltController.pan_offset = 480
-# was 490 before 2012-02-11 	
-# was 606 before 2012-01-18
-# was 478 before: still needs checking (old)
+PanTiltController.pan_offset = 610
 PanTiltController.tilt_offset = 503
-# Was 498 before 2012-02-11
 PanTiltController.setPeriod(0.022)
 PanTiltController.configure
 
