@@ -108,9 +108,10 @@ RPERA_RTD.configure
 ### Gripper force controller ###
 loadComponent("RPERA_GripperControl","PERA::GripperControl")
 setActivity("RPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_GripperControl.threshold_closed = 5.0
+#RPERA_GripperControl.threshold_closed = 5.0
+RPERA_GripperControl.threshold_closed = 7.5
 RPERA_GripperControl.setPeriod(0.004)
-RPERA_GripperControl.max_pos = 30
+RPERA_GripperControl.max_pos = 28
 RPERA_GripperControl.gripper_gain = 2.4
 RPERA_GripperControl.configure
 
@@ -269,20 +270,20 @@ loadComponent("RPERA_Reporter", "OCL::FileReporting")
 #addPeer("RPERA_Reporter","RPERA_GripperControl")
 #RPERA_Reporter.reportPort("RPERA_GripperControl","gripper_ref")
 ## Reference interpolator
-addPeer("RPERA_Reporter","RPERA_ReferenceInterpolator")
-RPERA_Reporter.reportPort("RPERA_ReferenceInterpolator","posout")
+#addPeer("RPERA_Reporter","RPERA_ReferenceInterpolator")
+#RPERA_Reporter.reportPort("RPERA_ReferenceInterpolator","posout")
 ## log the output
-#addPeer("RPERA_Reporter","RPERA_MotorToJointAngles")
-#RPERA_Reporter.reportPort("RPERA_MotorToJointAngles","out")
+addPeer("RPERA_Reporter","RPERA_MotorToJointAngles")
+RPERA_Reporter.reportPort("RPERA_MotorToJointAngles","out")
 ## log the errors
-addPeer("RPERA_Reporter","RPERA_ComputeJointErrors")
-RPERA_Reporter.reportPort("RPERA_ComputeJointErrors","out")
+#addPeer("RPERA_Reporter","RPERA_ComputeJointErrors")
+#RPERA_Reporter.reportPort("RPERA_ComputeJointErrors","out")
 ## log the total control u_tot
-addPeer("RPERA_Reporter","RPERA_AddGravComp")
-RPERA_Reporter.reportPort("RPERA_AddGravComp","out")
+#addPeer("RPERA_Reporter","RPERA_AddGravComp")
+#RPERA_Reporter.reportPort("RPERA_AddGravComp","out")
 ## log the measured force
-addPeer("RPERA_Reporter","RPERA_SensorTorques")
-RPERA_Reporter.reportPort("RPERA_SensorTorques","measured_torques_out")
+#addPeer("RPERA_Reporter","RPERA_SensorTorques")
+#RPERA_Reporter.reportPort("RPERA_SensorTorques","measured_torques_out")
 ## log the controller output u_c
 #addPeer("RPERA_Reporter","RPERA_WeakIntegrator1")
 #RPERA_Reporter.reportPort("RPERA_WeakIntegrator1","out")
