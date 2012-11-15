@@ -110,7 +110,7 @@ LPERA_RTD.configure
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
 setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 #LPERA_GripperControl.threshold_closed = 14.0
-LPERA_GripperControl.threshold_closed = 14.0
+LPERA_GripperControl.threshold_closed = 16.0
 LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.max_pos = 4.0
 #LPERA_GripperControl.gripper_gain = 0.30
@@ -268,26 +268,26 @@ connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPo
 ### Setting up reporting ###
 loadComponent("LPERA_Reporter", "OCL::FileReporting")
 ##LPERA_Reporter.NullSample="-1 -1 -1 -1 -1 -1 -1 -1 "
-addPeer("LPERA_Reporter","LPERA_GripperControl")
-LPERA_Reporter.reportPort("LPERA_GripperControl","gripper_ref")
+#addPeer("LPERA_Reporter","LPERA_GripperControl")
+#LPERA_Reporter.reportPort("LPERA_GripperControl","gripper_ref")
 ##LPERA_ReferenceInterpolator
-addPeer("LPERA_Reporter","LPERA_ReferenceInterpolator")
-LPERA_Reporter.reportPort("LPERA_ReferenceInterpolator","posout")
+#addPeer("LPERA_Reporter","LPERA_ReferenceInterpolator")
+#LPERA_Reporter.reportPort("LPERA_ReferenceInterpolator","posout")
 ## log the measured joint angles
 addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
 LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
 ## log the errors
-addPeer("LPERA_Reporter","LPERA_ComputeJointErrors")
-LPERA_Reporter.reportPort("LPERA_ComputeJointErrors","out")
+#addPeer("LPERA_Reporter","LPERA_ComputeJointErrors")
+#LPERA_Reporter.reportPort("LPERA_ComputeJointErrors","out")
 ## log the total control u_tot
-addPeer("LPERA_Reporter","LPERA_AddGravComp")
-LPERA_Reporter.reportPort("LPERA_AddGravComp","out")
+#addPeer("LPERA_Reporter","LPERA_AddGravComp")
+#LPERA_Reporter.reportPort("LPERA_AddGravComp","out")
 ## log the output_limiter
-addPeer("LPERA_Reporter","LPERA_OutputLimiter")
-LPERA_Reporter.reportPort("LPERA_OutputLimiter","out")
+#addPeer("LPERA_Reporter","LPERA_OutputLimiter")
+#LPERA_Reporter.reportPort("LPERA_OutputLimiter","out")
 ## log the measured force
-addPeer("LPERA_Reporter","LPERA_SensorTorques")
-LPERA_Reporter.reportPort("LPERA_SensorTorques","measured_torques_out")
+#addPeer("LPERA_Reporter","LPERA_SensorTorques")
+#LPERA_Reporter.reportPort("LPERA_SensorTorques","measured_torques_out")
 ## log the controller output u_c
 #addPeer("LPERA_Reporter","LPERA_WeakIntegrator1")
 #LPERA_Reporter.reportPort("LPERA_WeakIntegrator1","out")
