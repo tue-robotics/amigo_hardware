@@ -88,7 +88,7 @@ using namespace PERA;
 		}
 				
 
-		if (!completed){
+		//if (!completed){
 			torqueInPort.read(torques);
 			positionInPort.read(measPos);
 			
@@ -101,7 +101,7 @@ using namespace PERA;
 
 			if(gripperCommand.direction == amigo_msgs::AmigoGripperCommand::OPEN){
 				if (gripperPos[0] >= maxPos){
-					log(Info)<<"Gripper is OPEN"<<endlog();
+					//log(Info)<<"Gripper is OPEN"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
@@ -112,7 +112,7 @@ using namespace PERA;
 			else{
 				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
 				if ( (torques[GRIPPER_JOINT_TORQUE_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0) ) ){
-					log(Warning)<<"Gripper is CLOSED"<<endlog();
+					//log(Warning)<<"Gripper is CLOSED"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
@@ -128,7 +128,7 @@ using namespace PERA;
 			}
 			gripperRefPort.write(gripperPos);
 			gripperMeasurementPort.write(gripperMeasurement);
-		}
+		//}
 	}
 
 void GripperControl::stopHook(){}
