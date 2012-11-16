@@ -80,14 +80,14 @@ LPERA_Supervisor.dynBreakEpsilon = 0.05;
 LPERA_Supervisor.offsetAngles = OFFSETS
 LPERA_Supervisor.signs = SIGNS
 LPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-LPERA_Supervisor.homedPos = array (485.0, 635.0, 1.5708, 0.0, 1.8326, 0.7857, 0.7854)
+LPERA_Supervisor.homedPos = array (485.0, 635.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
 LPERA_Supervisor.maxConSatTime = 5.0
 LPERA_Supervisor.stepSize = 0.001570796
 LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput = true
 LPERA_Supervisor.requireHoming = true
 LPERA_Supervisor.requireGripperHoming = true
-LPERA_Supervisor.startJoint = 5
+LPERA_Supervisor.startJoint = 6
 LPERA_Supervisor.configure
 
 ### PERA USB IO ###
