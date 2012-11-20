@@ -15,7 +15,7 @@
 
    <export>
     <cpp cflags="-I${prefix}/include -I${prefix}/include/amigo_redundancy_search"
-         lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lshared_redundancy_search_lib" />
+         lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lshared_redundancy_search_lib" />
   </export>
 
 </package>
