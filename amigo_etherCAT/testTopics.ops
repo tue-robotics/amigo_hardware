@@ -1,0 +1,32 @@
+program testTopics {
+	var ConnPolicy positionsData;	
+	positionsData.size = 1;	
+	positionsData.transport = 3;
+	positionsData.name_id = "positionsData";
+	
+	var ConnPolicy forcesData;	
+	forcesData.size = 1;	
+	forcesData.transport = 3;
+	forcesData.name_id = "forcesData";
+	
+	var ConnPolicy supplyData;	
+	supplyData.size = 1;	
+	supplyData.transport = 3;
+	supplyData.name_id = "supplyData";
+
+	var ConnPolicy spareanalogData;	
+	spareanalogData.size = 1;	
+	spareanalogData.transport = 3;
+	spareanalogData.name_id = "spareanalogData";	
+	
+	var ConnPolicy encoderData;	
+	encoderData.size = 1;	
+	encoderData.transport = 3;
+	encoderData.name_id = "encoderData";
+	
+	var ConnPolicy currentsData;	
+	currentsData.size = 1;	
+	currentsData.transport = 3;
+	currentsData.name_id = "currentsData";
+	
+}

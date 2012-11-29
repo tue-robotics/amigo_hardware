@@ -1,0 +1,45 @@
+#Import all the dependencies from the amigo_etherCAT package. 
+#This enables you to import components from all these packages.
+import("Sava")
+trigger
+import("amigo_etherCAT")
+trigger
+runScript ("testTopics.ops")
+trigger
+testTopics.start
+trigger
+
+
+var double Ts = 0.001
+
+### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
+#This component enables communication with EtherCAT through the SoemMaster component.
+loadComponent("Soem","soem_master::SoemMasterComponent")
+#Configure the component. This looks for connected EtherCAT slaves and creates ports for all of the slaves.
+Soem.configure
+#Set a realtime priority to this component and run it every 1ms.
+setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
+
+loadComponent("SineWave","SOURCES::SineWave")
+SineWave.frequency = array (1.0, 1.0, 1.0)
+SineWave.phase = array (0.0, 0.0, 0.0)
+SineWave.amplitude = array (20.0, 20.0, 20.0)
+SineWave.bias = array (0.0, 0.0, 0.0)
+SineWave.vector_size = 3
+SineWave.setPeriod(Ts)
+SineWave.configure
+
+stream("Soem.Slave_1002.positionSensors",testTopics.positionsData)
+stream("Soem.Slave_1002.forceSensors",testTopics.forcesData)
+stream("Soem.Slave_1002.supplyVoltages",testTopics.supplyData)
+stream("Soem.Slave_1002.spareAnalogIns",testTopics.spareanalogData)
+stream("Soem.Slave_1002.encoderAngles",testTopics.encoderData)
+#stream("Soem.Slave_1002.motorCurrents",testTopics.motorCurrentsData)
+connect("SineWave.out","Soem.Slave_1002.pwmDutyMotorsIn", ConnPolicy() )
+
+Soem.start
+SineWave.start
+
+#Soem.Slave_1008.write(0,1)
+#Soem.Slave_1007.read(0)
+#Soem.Slave_1002.write_pwm(15,0,0)
