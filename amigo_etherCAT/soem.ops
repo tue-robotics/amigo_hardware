@@ -35,7 +35,7 @@ connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
 setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 
-#### LOAD COMPONENT TO ENABLE DIGITAL INS ###
+#### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_1009) ###
 loadComponent("DigitalIns","SOEM::DigitalIns")
 DigitalIns.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
@@ -43,15 +43,25 @@ stream("DigitalIns.out1", ros.topic("/fuse1"))
 stream("DigitalIns.out2", ros.topic("/fuse2"))
 stream("DigitalIns.out3", ros.topic("/fuse3"))
 stream("DigitalIns.out4", ros.topic("/fuse4"))
-DigitalIns.flip_out5 = true
+DigitalIns.flip_out5 = 1
 stream("DigitalIns.out5", ros.topic("/runstop"))
-DigitalIns.flip_out6 = true
+DigitalIns.flip_out6 = 1
 stream("DigitalIns.out6", ros.topic("/emergency_switch"))
 DigitalIns.configure
 setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
-Soem.start
+#### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_100a) ###
+loadComponent("DigitalIns2","SOEM::DigitalIns")
+DigitalIns2.setPeriod(0.1)
+connect ("Soem.Slave_100a.bits", "DigitalIns2.in", ConnPolicy() )
+DigitalIns2.configure
+setActivity("DigitalIns2",0.1,LowestPriority,ORO_SCHED_OTHER)
+# Temp
+stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
+
 AnalogOuts.start
-AnalogIns.start
 DigitalOuts.start
+Soem.start
+AnalogIns.start
 DigitalIns.start
+DigitalIns2.start
