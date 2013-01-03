@@ -4,9 +4,7 @@
 
 #include "SpindleHoming.hpp"
 
-#define HOMINGERROR 0.005
-#define HOMEDPOSITION 0.35
-#define STROKE 0.413
+//#define HOMINGERROR 0.005
 #define RESET 1.0
 #define NORESET 0.0
 
@@ -28,14 +26,17 @@ SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperatio
   addPort( "current_pos", currentpos_inport );
   addPort( "safe", safe_inport );
   addPort( "ros_emergency", ros_emergency_inport );
+  addPort( "endswitch", endswitch_inport );
 
   addPort( "ref_pos_out", refpos_outport );
   addPort( "correction_out", correction_outport );
   addPort( "reset_generator", reset_generator_outport );
+  addPort( "enable_endswitch_safety", enable_endswitch_safety_outport );
   
   // Creating variables
   addProperty( maxvel_property );
   addProperty( maxacc_property ); 
+  addProperty( "stroke", stroke );
   
   // Initialising variables
   ref_pos.assign(1,0.0);
@@ -61,7 +62,7 @@ bool SpindleHoming::startHook()
     // No connection was made, can't do my job !
     return false;
   }
-  if ( !refpos_outport.connected() || !correction_outport.connected() || !reset_generator_outport.connected() ) {
+  if ( !refpos_outport.connected() || !correction_outport.connected() || !reset_generator_outport.connected() || !endswitch_inport.connected() || !enable_endswitch_safety_outport.connected() ) {
     log(Warning)<<"SpindleHoming:One or more outputports not connected!"<<endlog();
   }
   if (!safe_inport.connected() || !ros_emergency_inport.connected() ){
@@ -70,6 +71,7 @@ bool SpindleHoming::startHook()
 
   homed = false;
   safe = false;
+  sent_enable_endswitch_safety = false;
   maxvel = maxvel_property.get();
   maxacc = maxacc_property.get();
   log(Info)<<"Spindle is not homed. Homing procedure started."<<endlog();  
@@ -86,6 +88,7 @@ void SpindleHoming::updateHook()
 
 	safe_inport.read( safe );
 	ros_emergency_inport.read(emergency_button);
+	endswitch_inport.read(endswitch);
 	
 	// Error or emergency button pressed
 	if ( !safe || emergency_button.data )
@@ -94,15 +97,16 @@ void SpindleHoming::updateHook()
 	}
 	
 	//Homing finished
-	else if(abs(error_pos[0]) > HOMINGERROR && homed == false)
+	//else if(abs(error_pos[0]) > HOMINGERROR && homed == false)
+	else if ( !endswitch.data && homed == false )
 	{
 		log(Info)<<"Spindle is homed."<<endlog();
 		homed = true;
 		encoder_inport.read(input);
-		correction[0] = STROKE + input[0];
+		correction[0] = stroke + input[0];
 		
 		// a variable used once to reset the reference generator after homing
-		homing_correction = correction[0] + HOMINGERROR;
+		homing_correction = correction[0];// + HOMINGERROR;
 		generator_reset[0] = RESET;
 		generator_reset[1] = current_pos[0] + homing_correction;
 		generator_reset[2] = maxvel;
@@ -115,6 +119,14 @@ void SpindleHoming::updateHook()
 	else if(homed == false)
 	{
 		ref_pos[0] = 0.5;
+	}
+	
+	// Send a bool to SpindleSafety to enable endswitch safety
+	if (homed && endswitch.data && !sent_enable_endswitch_safety) 
+	{
+		log(Info)<<"Sending enable_endswitch_safety"<<endlog();
+		sent_enable_endswitch_safety = true;
+		enable_endswitch_safety_outport.write(true);
 	}
 	
 	// Write to output ports

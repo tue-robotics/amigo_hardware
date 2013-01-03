@@ -25,10 +25,12 @@ namespace AMIGO // Just because it looks nice
     InputPort<doubles> currentpos_inport;
     InputPort<bool> safe_inport;
     InputPort<std_msgs::Bool> ros_emergency_inport;
+    InputPort<std_msgs::Bool> endswitch_inport;
 
     OutputPort<doubles> refpos_outport;
     OutputPort<doubles> correction_outport;
     OutputPort<doubles> reset_generator_outport;
+    OutputPort<bool> enable_endswitch_safety_outport;
     
     // Declaring properties
     Property<double> maxvel_property;
@@ -36,6 +38,8 @@ namespace AMIGO // Just because it looks nice
     
     // Declaring variables
     bool homed;
+    std_msgs::Bool endswitch;
+    bool sent_enable_endswitch_safety;
     doubles ref_pos;
     double refpos;
     doubles input;
@@ -45,6 +49,7 @@ namespace AMIGO // Just because it looks nice
     doubles generator_reset;
     double maxvel;
     double maxacc;
+    double stroke;
     double homing_correction;
 
     std_msgs::Bool emergency_button;

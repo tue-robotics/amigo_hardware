@@ -1,6 +1,7 @@
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
+#include <std_msgs/Bool.h>
 
 #include "SpindleSafety.hpp"
 
@@ -16,6 +17,8 @@ SpindleSafety::SpindleSafety(const string& name) : TaskContext(name, PreOperatio
 {
   // Creating ports:
   addEventPort( "error_pos", errorpos_inport );
+  addPort( "enable_endswitch_safety", enable_endswitch_safety_inport );
+  addPort( "endswitch_inport", endswitch_inport );
   addPort( "spindle_brake", spindle_brake_outport );
   addPort( "safety", safety_outport );
   
@@ -44,6 +47,7 @@ bool SpindleSafety::startHook()
   }
   	 
   safety = true;
+  enable_endswitch_safety = false;
   return true;
 }
 
@@ -66,6 +70,18 @@ void SpindleSafety::updateHook()
 			}
 			publish_counter = 0.0;
 		}
+	}
+	
+	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
+	if (enable_endswitch_safety_inport.read(enable_endswitch_safety) == NewData) log(Info)<<"Endswitch safety enabled"<<endlog();
+	
+	// If endswitch safety is enabled and the endswitch port reads false, the spindle is out of range which is not safe
+	std_msgs::Bool endswitch;
+	endswitch_inport.read(endswitch);
+	if (enable_endswitch_safety && !endswitch.data) 
+	{
+		if (safety) log(Error)<<"Spindle out of range, endswitch data is false"<<endlog();
+		safety = false;
 	}
 	
 	// Applying brake if necessary

@@ -12,6 +12,7 @@ SpindleReadEncoder.configure
 loadComponent("SpindleHoming","SpindleHoming")
 SpindleHoming.max_vel = 0.07
 SpindleHoming.max_acc = 0.04
+SpindleHoming.stroke  = 0.413
 SpindleHoming.configure
 
 #Calculating Feed Forward
@@ -104,6 +105,9 @@ connect ("Soem.Slave_1006.Slave_1006_value","SpindleReadEncoder.enc1_in", ConnPo
 connect ("SpindleReadEncoder.out","SpindleCalculatePosition.in_minus", ConnPolicy() )
 connect ("SpindleHoming.correction_out","SpindleCalculatePosition.in_plus", ConnPolicy() )
 connect ("SpindleHoming.reset_generator","SpindleReferenceGenerator.resetValues", ConnPolicy() )
+connect ("DigitalIns2.out2", "SpindleHoming.endswitch", ConnPolicy() )
+connect ("DigitalIns2.out2", "SpindleSafety.endswitch_inport", ConnPolicy() )
+connect ("SpindleHoming.enable_endswitch_safety", "SpindleSafety.enable_endswitch_safety", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
 connect ("SpindleSafety.safety","SpindleOutputLimiter.safety", ConnPolicy() )
 connect ("SpindleReadSetpoint.ref_pos","SpindleReferenceLimiter.ref_pos_in", ConnPolicy() )

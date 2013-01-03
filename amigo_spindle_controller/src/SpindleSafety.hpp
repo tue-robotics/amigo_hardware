@@ -20,11 +20,14 @@ namespace AMIGO // Just because it looks nice
 
     // Declaring input- and output_ports
     InputPort<doubles> errorpos_inport;
+    InputPort<bool> enable_endswitch_safety_inport;
+    InputPort<std_msgs::Bool> endswitch_inport;
     OutputPort<bool> spindle_brake_outport;
     OutputPort<bool> safety_outport;
     
     // Declaring variables
     bool safety;
+    bool enable_endswitch_safety;
     bool once;
     doubles error_pos;
     double publish_counter;
