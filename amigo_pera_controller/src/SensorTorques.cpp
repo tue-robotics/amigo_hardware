@@ -15,8 +15,11 @@ SensorTorques::SensorTorques(const string& name) : TaskContext(name, PreOperatio
 	addProperty( "Xoffset", Xoffset).doc("Xoffset [m]");
 	addProperty( "Stiffness", Stiffness).doc("Stiffness [N/m]");
 	addProperty( "PivotDistance", PivotDistance).doc("Distance from the force act point to the pivot point [m]");
+	addProperty( "SlaveLayout", SlaveLayout).doc("The layout of the connection of the motors to the slaves [-]");
 	
-	addEventPort("voltage_in", voltage_inport).doc("Optical sensors voltage [V]");
+	addEventPort("voltage_in1", voltage_inport1).doc("Optical sensors voltage1 [V]");
+	addEventPort("voltage_in2", voltage_inport2).doc("Optical sensors voltage2 [V]");
+	addEventPort("voltage_in3", voltage_inport3).doc("Optical sensors voltage3 [V]");	
 	addPort("joint_torques_out", joint_torques_outport).doc("Joint torques [Nm]");
 	addPort("measured_torques_out", measured_torques_outport).doc("Differential (gear) torques [Nm]");
 	
@@ -25,6 +28,19 @@ SensorTorques::~SensorTorques(){}
 
 bool SensorTorques::configureHook()
 {	
+	// This finds out some parameters needed to make the code generic. 
+	NS = SlaveLayout.size(); // uncorrected size of the slavelayout (in our case this is 9 (3 slaves x 3 motor positions))
+
+	uint counter = 0; 	
+	
+	for (uint i=0; i<N; i++)
+	  if (SlaveLayout[i] == 1)
+	    counter++;
+	    
+	N = counter; // corrected size of the slavelayout (in our case this is 8 (9 - 1) since we use only two motors on the first slave
+	
+	log(Info)<< "Creating " << N << "inputs for SensorTorques " <<endlog();
+	    	  
 	return true;
 }
 
@@ -36,8 +52,20 @@ bool SensorTorques::startHook()
 		log(Error)<<"Parameters missing! Check the sizes of Ksensor, Voffset, Stiffness and PivotDistance arrays."<< endlog();
 		return false;
 	}	
-	if (!voltage_inport.connected()) {
-		log(Error)<<"Inputport not connected!"<<endlog();
+	if (!voltage_inport1.connected()) {
+		log(Error)<<"Inputport1 not connected!"<<endlog();
+		return false;
+	}
+		if (!voltage_inport2.connected()) {
+		log(Error)<<"Inputport2 not connected!"<<endlog();
+		return false;
+	}
+		if (!voltage_inport3.connected()) {
+		log(Error)<<"Inputport3 not connected!"<<endlog();
+		return false;
+	}
+		if (NS > 9) {
+		log(Error)<<"Size of the SlaveLayout is higher than 9. Either your SlaveLayout parameter is wrong or you are trying to connect more than 3 slaves wich is hardcoded in SensorTorques"<<endlog();
 		return false;
 	}
 	if (!joint_torques_outport.connected()) {
@@ -51,8 +79,21 @@ bool SensorTorques::startHook()
 
 void SensorTorques::updateHook()
 {
-	voltage_inport.read(Vmeasured);
+	// Unpacking of 3 AnalogMsg Ports to a doubles (Vmeasured)
+	voltage_inport1.read(Vmeasured_1);
+	voltage_inport2.read(Vmeasured_2);
+	voltage_inport3.read(Vmeasured_3);
 	
+	
+	// To Do: make this fully generic for more than 3 slaves and for empty slots on slaves.
+    // Slave 1002, this loop goes to 2, since there are only two ports on this slave
+    for ( uint i = 0; i < 2; i++)
+      Vmeasured[i] = Vmeasured_1.values[i];
+    for ( uint i = 0; i < 3; i++)
+      Vmeasured[i+2] = Vmeasured_2.values[i];
+    for ( uint i = 0; i < 3; i++)
+      Vmeasured[i+5] = Vmeasured_3.values[i];
+
 	for (unsigned int i=0; i<N; i++) {
 		Tmeasured[i] = (Ksensor[i]/(Vmeasured[i] + Voffset[i])-Xoffset[i])*Stiffness[i]*PivotDistance[i]; // Differential (gear) torques
 	}

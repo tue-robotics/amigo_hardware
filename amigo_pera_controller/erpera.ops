@@ -48,6 +48,7 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM		
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
+var double SlaveLayout               = array (1 1 0 1 1 1 1 1 1) ## this array can be used to sent the layout of motors connection to components, The third zero means that the last motor of the first board is not connected
 
 ### Read reference joint angles ###
 loadComponent("RPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
@@ -278,6 +279,7 @@ RPERA_SensorTorques.Voffset = array (0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2)
 RPERA_SensorTorques.Xoffset = array (0.00025, 0.00025, 0.0013875, 0.0013875, 0.00025, 0.00268, 0.0034488, 0.0048276)
 RPERA_SensorTorques.Stiffness = array (777777.7, 777777.7, 2009211.0, 2009211.0, 700.0, 12935.0, 60739.73, 37274.25)
 RPERA_SensorTorques.PivotDistance = array (0.03, 0.03, 0.025, 0.025, 1.0, 1.0, 0.017, 0.017)
+RPERA_SensorTorques.SlaveLayout = SlaveLayout
 RPERA_SensorTorques.setPeriod(0.02)
 RPERA_SensorTorques.configure
 
