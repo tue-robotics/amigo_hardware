@@ -13,7 +13,6 @@
   <depend package="ocl"/>
   <depend package="common_rosdeps" />
   <rosdep name="eigen" />
-  <depend package="soem_beckhoff_drivers"/>
 
   <!--depend package="orocos_components"/>-->
   <depend package="PERA_USB_IO"/>

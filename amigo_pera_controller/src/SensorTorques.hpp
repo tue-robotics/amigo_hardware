@@ -4,8 +4,8 @@
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
-#include <soem_beckhoff_drivers/AnalogMsg.h>
 
+#define N 8
 using namespace std;
 using namespace RTT;
 
@@ -18,22 +18,14 @@ namespace AMIGO
     {
     private:
 
-    InputPort<soem_beckhoff_drivers::AnalogMsg> voltage_inport1;
-    InputPort<soem_beckhoff_drivers::AnalogMsg> voltage_inport2;
-    InputPort<soem_beckhoff_drivers::AnalogMsg> voltage_inport3;
+    InputPort<doubles> voltage_inport;
     OutputPort<doubles> joint_torques_outport;
     OutputPort<doubles> measured_torques_outport;
-	
-	uint N;
-	uint NS;
+
 	doubles Ksensor;
 	doubles Voffset;
 	doubles Xoffset;
 	doubles Stiffness;
-	doubles SlaveLayout;
-	soem_beckhoff_drivers::AnalogMsg Vmeasured_1;
-	soem_beckhoff_drivers::AnalogMsg Vmeasured_2;
-	soem_beckhoff_drivers::AnalogMsg Vmeasured_3;
 	doubles Vmeasured;
 	doubles Tmeasured;
 	doubles Tjoint;
