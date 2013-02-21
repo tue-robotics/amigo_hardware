@@ -48,7 +48,7 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM		
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
-var double SlaveLayout               = array (1 1 0 1 1 1 1 1 1) ## this array can be used to sent the layout of motors connection to components, The third zero means that the last motor of the first board is not connected
+var double SlaveLayout          = array (1 1 0 1 1 1 1 1 1) ## this array can be used to send the layout of motors connection to components, The third zero means that the last motor of the first board is not connected
 
 ### Read reference joint angles ###
 loadComponent("RPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
@@ -317,7 +317,8 @@ connect ("Soem.Slave_1003.encoderAngle1","LMAX_ReadEncoders.enc4_in" , ConnPolic
 connect ("Soem.Slave_1003.encoderAngle2","LMAX_ReadEncoders.enc5_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1004.encoderAngle0","LMAX_ReadEncoders.enc6_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1004.encoderAngle1","LMAX_ReadEncoders.enc7_in" , ConnPolicy() );
-connect ("Soem.Slave_1004.encoderAngle2","LMAX_ReadEncoders.enc8_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1004.encoderAngle2","LMAX_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("LMAX_ReadEncoders.out","RPERA_MotorToJointAngles.in" , ConnPolicy() ); 
 connect ("RPERA_MotorToJointAngles.out","RPERA_WriteCurrentJointAngles.pos", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("RPERA_ComputeJointErrors.out","RPERA_Gain.in", ConnPolicy() )
@@ -328,7 +329,7 @@ connect ("RPERA_Lowpass.out","RPERA_WeakIntegrator1.in", ConnPolicy() )
 connect ("RPERA_WeakIntegrator1.out","RPERA_AddGravComp.in2_event", ConnPolicy() )
 connect ("RPERA_AddGravComp.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
 connect ("RPERA_JointToMotorTorques.out","RPERA_OutputLimiter.in", ConnPolicy() )
-connect ("RPERA_OutputLimiter.out","AnalogOuts.wheels", ConnPolicy() )
+
 connect ("RPERA_ReadReferenceAngles.pos","RPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_ref","RPERA_VectorConcatenate.in2", ConnPolicy() )
 connect ("RPERA_VectorConcatenate.out","RPERA_ReferenceInterpolator.posin", ConnPolicy() )
@@ -373,8 +374,7 @@ connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque
 connect ("RPERA_MotorToJointAngles.out", "RPERA_GripperControl.position_in", ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_measurement","RPERA_Supervisor.gripper_measurement", ConnPolicy() )
 connect ("RPERA_Supervisor.gripper_command","RPERA_GripperControl.gripper_command", ConnPolicy() )
-connect ("RPERA_IO.forceSen","RPERA_SensorTorques.voltage_in", ConnPolicy() )                                   # This component has to be edited to work with 3 ports with analog msgs instead of one port with doubles
-
+ 
 stream("RPERA_GripperControl.gripper_measurement", ros.topic("/arm_right_controller/gripper_measurement"))
 stream("RPERA_GripperControl.gripper_command", ros.topic("/arm_right_controller/gripper_command"))
 
