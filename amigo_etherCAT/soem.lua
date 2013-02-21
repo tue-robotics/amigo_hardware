@@ -24,9 +24,7 @@ Soem:configure()
 -- #Set a realtime priority to this component and run it every 1ms.
 -- Soem:setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
 depl:setActivity("Soem",Ts,HighestPriority,rtt.globals.ORO_SCHED_RT)
-
--- #TODO What happens if you set the priority to 0.0?
--- 
+rtt.logl('Info', "Soem Deployment complete!")
 
 -- #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 -- #This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.7
@@ -36,6 +34,7 @@ AnalogOuts:configure()
 depl:setActivity("AnalogOuts",0.0,HighestPriority,rtt.globals.ORO_SCHED_RT)
 -- AnalogOuts.max_volt = array ( 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0 )
 depl:connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", cp )
+rtt.logl('Info', "AnalogOuts Deployment complete!")
 
 -- #### LOAD COMPONENT TO ENABLE ANALOG INS ###
 depl:loadComponent("AnalogIns","SOEM::AnalogIns")
@@ -44,7 +43,7 @@ AnalogIns:configure()
 depl:setActivity("AnalogIns",1.0,LowestPriority,rtt.globals.ORO_SCHED_OTHER)
 depl:connect ("AnalogIns.in","Soem.Slave_100e.values", cp );
 depl:stream("AnalogIns.out1", rtt.provides("ros"):topic("/battery_value"))
-
+rtt.logl('Info', "AnalogIns Deployment complete!")
 
 -- #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
 -- loadComponent("DigitalOuts","SOEM::DigitalOuts")
