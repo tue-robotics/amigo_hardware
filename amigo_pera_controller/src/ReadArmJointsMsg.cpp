@@ -41,10 +41,10 @@ bool ReadArmJointsMsg::startHook()
       log(Warning)<<"Outputport posport not connected!"<<endlog();
   }
   if ( !velport.connected() ) {
-      log(Warning)<<"Outputport velport not connected!"<<endlog();
+      log(Info)<<"Outputport velport not connected!"<<endlog();
   }
   if ( !accport.connected() ) {
-      log(Warning)<<"Outputport accport not connected!"<<endlog();
+      log(Info)<<"Outputport accport not connected!"<<endlog();
   }
   if ( !enablePort.connected() ) {
       log(Warning)<<"Enableport not connected. No component outcome!"<<endlog();

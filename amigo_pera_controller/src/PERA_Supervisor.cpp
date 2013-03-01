@@ -101,11 +101,11 @@ bool Supervisor::configureHook()
 	// Reference not yet resetted
 	resetReference=false;
 
-	// Assign ENABLE_PROPERTY to value enable
+    // Assign_PROPERTY to value enable
 	enable=ENABLE_PROPERTY;
 
 	// Write enable value to PERA_IO
-	enablePort.write(enable);
+    // enablePort.write(enable);
 
 	// goodToGo true means homing can proceed to next joint
 	goodToGo = true;
@@ -130,12 +130,12 @@ bool Supervisor::configureHook()
 bool Supervisor::startHook()
 {
 	
-	log(Warning)<<"SUPERVISOR: executing from trunk"<<endlog();
+    log(Info)<<"SUPERVISOR: executing from trunk"<<endlog();
 
 	// Wait for SOEM heartbeat.
 	while(!(eButtonPort.read(eButtonPressed) == NewData)){
 		sleep(1);
-		log(Info)<<"SUPERVISOR: Waiting for enable-signal from the emergency button"<<endlog();
+        log(Info)<<"SUPERVISOR: Waiting for enable-signal from the emergency button"<<endlog();
 		cntr++;
 		if( cntr == 10 && cntr<3 ){
 			log(Warning)<<"SUPERVISOR: no signal from emergency button (SOEM). Is SOEM running?"<<endlog();
@@ -146,16 +146,16 @@ bool Supervisor::startHook()
 			log(Error)<<"SUPERVISOR: no SOEM heartbeat. Shutting down LPERA."<<endlog();
 			cntr=0;
 			cntr2=0;
-			return false;
+            return false;
 		}
 	}
 
 	if(!REQUIRE_HOMING){
-		bool enableReadRef = true;
+        bool enableReadRef = true;
 		enableReadRefPort.write(enableReadRef);
 	}
 
-	log(Info)<<"SUPERVISOR: configured and running."<<endlog();
+    log(Info)<<"SUPERVISOR: configured and running."<<endlog();
 
 	return true;
 }
@@ -201,7 +201,6 @@ void Supervisor::updateHook()
 				enable = true;
 			}
 			
-			
 			/* When a controller reaches its saturation value it is
 			 * monitored how long this continues. After MAXCONSATTIME
 			 * the PERA_IO is disabled.
@@ -230,7 +229,7 @@ void Supervisor::updateHook()
 				}
 			}
 
-			/* Set the value to false, otherwise if eButtonPressed.data
+            /* Set the value to false, otherwise if eButtonPressed.data
 			 * becomes false it will still keep resetting the reference
 			 * interpolator
 			 */
@@ -395,7 +394,7 @@ void Supervisor::updateHook()
 			if(enable && !homed && !errors){
 
 				doubles measRelJntAngles(8,0.0);
-				ints measAbsJntAngles(7,0.0);
+                doubles measAbsJntAngles(7,0.0);
 				doubles homJntAngTemp(7,0.0);
 
 				// Measure the abs en rel angles.
@@ -412,11 +411,11 @@ void Supervisor::updateHook()
 					bool enableReadRef = false;
 					enableReadRefPort.write(enableReadRef);
 
-					cntr++;
+                    cntr++;
 				}
 
 				// Compute the joint angles for the homing procedure.
-				homJntAngTemp = homing(jointErrors,measAbsJntAngles,homJntAngles,measRelJntAngles);
+                homJntAngTemp = homing(jointErrors,measAbsJntAngles,homJntAngles,measRelJntAngles);
 
 				for(unsigned int i = 0;i<8;i++){
 					homJntAngles[i]=homJntAngTemp[i];
@@ -427,7 +426,7 @@ void Supervisor::updateHook()
 
 			}
 
-			enablePort.write(enable);
+        //	enablePort.write(enable);
 
 		}
 		else if(pressed){
@@ -438,7 +437,7 @@ void Supervisor::updateHook()
 
 			// Set enable to false and write it to the PERA_IO component.
 			enable = false;
-			enablePort.write(enable);
+            //enablePort.write(enable);
 
 			// Read angles from PERA angles from IO
 			mRelJntAngPort.read(measRelJntAngles);
@@ -470,7 +469,7 @@ void Supervisor::updateHook()
 	else if(!ENABLE_PROPERTY){
 
 		enable = false;
-		enablePort.write(enable);
+        //enablePort.write(enable);
 
 	}
 	
@@ -495,7 +494,7 @@ void Supervisor::updateHook()
  * homed. Given the current angles this function returns the next set
  * of reference joint angles for the homing procedure.
  */
-doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
+doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 
 	if(!gripperHomed){
 
@@ -633,7 +632,7 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 			if(cntr2>=0 && cntr2<5){
 				cntr2++;
 				enable = false;
-				enablePort.write(enable);
+                //enablePort.write(enable);
 			}
 
 			else if(cntr2==5){
@@ -678,7 +677,7 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 
 				// Enable PERA IO
 				enable = true;
-				enablePort.write(enable);
+                //enablePort.write(enable);
 
 				// Enable homing for next joint
 				goodToGo = true;

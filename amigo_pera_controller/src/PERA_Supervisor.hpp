@@ -54,8 +54,8 @@ namespace PERA
 		InputPort<doubles> jointErrorsPort;
 		//! Inputport for the measured joint rel angles
 		InputPort<doubles> mRelJntAngPort;
-		//! Inputport for the measured joint abs angles
-		InputPort<ints> mAbsJntAngPort;
+        //! Inputport for the measured joint abs angles                                              // changed from ints to doubles
+        InputPort<doubles> mAbsJntAngPort;
 		//! Inputport for the emergency button state
 		InputPort<std_msgs::Bool> eButtonPort;
 		//! Inputport for receiving gripper status 
@@ -174,7 +174,7 @@ namespace PERA
 		//! Update sequence, performed at specified rate
 		void updateHook();
 		//! Function outputting jointangles for homing procedure
-		doubles homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles);
+        doubles homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles);           // changed from ints to doubles
 		//! Function for determining the sign of the input vector
 		doubles signum(doubles a);
 
