@@ -105,7 +105,7 @@ bool Supervisor::configureHook()
 	enable=ENABLE_PROPERTY;
 
 	// Write enable value to PERA_IO
-    // enablePort.write(enable);
+    enablePort.write(enable);
 
 	// goodToGo true means homing can proceed to next joint
 	goodToGo = true;
@@ -179,13 +179,13 @@ void Supervisor::updateHook()
 
 		if(!eButtonPressed.data){
 			if(pressed!=false){
-				log(Info)<<"SUPERVISOR: Emergency Button Released"<<endlog();
+                log(Warning)<<"SUPERVISOR: Emergency Button Released"<<endlog();
 			}
 			pressed = false;
 		}
 		else if(eButtonPressed.data){
 			if(pressed!=true){
-				log(Info)<<"SUPERVISOR: Emergency Button Pressed"<<endlog();
+                log(Warning)<<"SUPERVISOR: Emergency Button Pressed"<<endlog();
 			}
 			pressed = true;
 		}	
@@ -198,6 +198,7 @@ void Supervisor::updateHook()
 			 * true after unplugging the eButton.
 			 */
 			if(!errors){
+                log(Warning)<<"errors detected naar"<< endlog();
 				enable = true;
 			}
 			
@@ -426,7 +427,7 @@ void Supervisor::updateHook()
 
 			}
 
-        //	enablePort.write(enable);
+        enablePort.write(enable);
 
 		}
 		else if(pressed){
@@ -437,7 +438,7 @@ void Supervisor::updateHook()
 
 			// Set enable to false and write it to the PERA_IO component.
 			enable = false;
-            //enablePort.write(enable);
+            enablePort.write(enable);
 
 			// Read angles from PERA angles from IO
 			mRelJntAngPort.read(measRelJntAngles);
@@ -469,7 +470,7 @@ void Supervisor::updateHook()
 	else if(!ENABLE_PROPERTY){
 
 		enable = false;
-        //enablePort.write(enable);
+        enablePort.write(enable);
 
 	}
 	
@@ -632,7 +633,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 			if(cntr2>=0 && cntr2<5){
 				cntr2++;
 				enable = false;
-                //enablePort.write(enable);
+                enablePort.write(enable);
 			}
 
 			else if(cntr2==5){
@@ -677,7 +678,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 				// Enable PERA IO
 				enable = true;
-                //enablePort.write(enable);
+                enablePort.write(enable);
 
 				// Enable homing for next joint
 				goodToGo = true;
