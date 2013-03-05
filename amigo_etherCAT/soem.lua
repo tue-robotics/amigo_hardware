@@ -5,6 +5,9 @@ tc = rtt.getTC()
 depl = tc:getPeer("Deployer")
 cp=rtt.Variable("ConnPolicy")
 
+
+
+
 -- #Import all the dependencies from the amigo_etherCAT package. 
 -- #This enables you to import components from all these packages.
 -- depl:import("amigo_etherCAT")
@@ -81,3 +84,39 @@ Soem:start()
 AnalogIns:start()
 -- DigitalIns.start
 -- DigitalIns2.start
+
+
+            
+-- load Lua service into the HelloWorld Component
+depl:loadService("AnalogOuts", "Lua")
+ 
+mon_state = [[
+      -- service-eehook.lua
+      require("rttlib")
+      tc=rtt.getTC() -- this is the Hello Component
+      last_state = "not-running"
+      out = rtt.OutputPort("string")
+      tc:addPort(out, "tc_state", "currently active state of TaskContext")
+ 
+      function check_state()
+         local cur_state = tc:getState()
+         if cur_state ~= last_state then
+            rtt.logl('Warning', "Component " .. tc:getName() .. " chanced state!")
+            last_state = cur_state
+         end
+         return true -- returning false will disable EEHook
+      end
+ 
+      -- register check_state function to be called periodically and
+      -- enable it. Important: variables like eehook below or the
+      -- function check_state which shall not be garbage-collected
+      -- after the first run must be declared global (by not declaring
+      -- them local with the local keyword)
+      eehook=rtt.EEHook('check_state')
+      eehook:enable()
+]]
+ 
+-- execute the mon_state program
+AnalogOuts:provides("Lua"):exec_str(mon_state)
+
+
