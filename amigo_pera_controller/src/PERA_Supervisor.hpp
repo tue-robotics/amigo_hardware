@@ -65,9 +65,9 @@ namespace PERA
 		InputPort<doubles> controllerOutputPort;
 		//! Inputport for receiving the reference interpolator velocity 
 		InputPort<doubles> measVelPort;
-		//! Outputport for enabling/disabling the PERA_USB_IO
-		OutputPort<bool> enablePort;
-		//! Outputport for forwarding homing angles to the ReferenceInterpolator
+        //! Outputport for enabling/disabling the PERA_USB_IO Slave 1
+        OutputPort<bool> enablePort;
+        //! Outputport for forwarding homing angles to the ReferenceInterpolator
 		OutputPort<doubles> homJntAngPort;
 		//! Outputport for resetting the ReferenceInterpolator
 		OutputPort<doubles> resetIntPort;

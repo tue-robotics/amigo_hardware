@@ -28,8 +28,8 @@ Supervisor::Supervisor(const string& name) :
 							TaskContext(name, PreOperational)
 {
 	addPort("requestedJointAnglesPort",reqJntAngPort).doc("Receives joint coordinates from a ROS topic");
-	addPort("enablePort",enablePort).doc("Sends enablesignal to PERA_IO");
-	addPort("errorPort",jointErrorsPort).doc("Receives joint control errors");
+    addPort("enablePort",enablePort).doc("Sends enablesignal to PERA_IO");
+    addPort("errorPort",jointErrorsPort).doc("Receives joint control errors");
 	addPort("measRelJointAnglesPort",mRelJntAngPort).doc("Receives measured relative joint angles");
 	addPort("measAbsJointAnglesPort",mAbsJntAngPort).doc("Receives measured absolute joint angles");
 	addPort("eButtonPort",eButtonPort).doc("Receives emergency button signal from Soem");
@@ -107,7 +107,7 @@ bool Supervisor::configureHook()
 	// Write enable value to PERA_IO
     enablePort.write(enable);
 
-	// goodToGo true means homing can proceed to next joint
+    // goodToGo true means homing can proceed to next joint
 	goodToGo = true;
 
 	// Set homed to false by default
@@ -171,6 +171,7 @@ bool Supervisor::startHook()
  * they are within the feasible range of the joints. If either of these 
  * go outside their bounds the amplifiers are disabled. 
  */
+
 void Supervisor::updateHook()
 {
 	if(ENABLE_PROPERTY){
@@ -197,8 +198,11 @@ void Supervisor::updateHook()
 			 * can NEVER become true once an error has occured but CAN become
 			 * true after unplugging the eButton.
 			 */
-			if(!errors){
-                log(Warning)<<"errors detected naar"<< endlog();
+
+            //  log(Warning)<<"SUPERVISOR: errors : [" << errors << "] enable : [" << enable << "]"   <<endlog();
+
+
+            if(!errors){
 				enable = true;
 			}
 			
@@ -228,7 +232,7 @@ void Supervisor::updateHook()
 						errors = true;
 					}
 				}
-			}
+            }
 
             /* Set the value to false, otherwise if eButtonPressed.data
 			 * becomes false it will still keep resetting the reference
@@ -283,7 +287,7 @@ void Supervisor::updateHook()
 
 					enable = false;
 
-					if( errors == false ){ // This check makes sure it is printed only once.
+                    if( errors == false ){ // This check makes sure it is printed only once.
 						log(Error)<<"SUPERVISOR: Error of joint q"<<i+1<<" exceeded limit ("<<MAX_ERRORS[i]<<"). PERA output disabled."<<endlog();
 						errors = true;
 					}		
@@ -429,7 +433,7 @@ void Supervisor::updateHook()
 
         enablePort.write(enable);
 
-		}
+        }
 		else if(pressed){
 			
 			doubles resetdata(32,0.0);
@@ -632,7 +636,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 			if(cntr2>=0 && cntr2<5){
 				cntr2++;
-				enable = false;
+                enable = false;
                 enablePort.write(enable);
 			}
 
