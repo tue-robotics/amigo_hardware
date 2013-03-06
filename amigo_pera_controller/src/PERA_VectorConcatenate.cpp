@@ -25,7 +25,7 @@ using namespace PERA;
 			
 			/// Inports
 			addEventPort("in1", invector1Port);
-            addPort("in2", invector2Port);  //EventPort watch out!!!!!!! put back
+			addEventPort("in2", invector2Port);
 			
 			/// Outports
 			addPort("out",outPort);
@@ -57,7 +57,7 @@ using namespace PERA;
 		outvector[4]=invector1[4];
 		outvector[5]=invector1[5];
 		outvector[6]=invector1[6];
-        outvector[7]= 0.0;  //invector2[0]; watch out!!!!!!! put back
+		outvector[7]=invector2[0];
 		
 		outPort.write(outvector);
 		

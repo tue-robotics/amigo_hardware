@@ -41,10 +41,10 @@ bool SensorTorques::startHook()
 		return false;
 	}
 	if (!joint_torques_outport.connected()) {
-        log(Info)<<"Outputport1 not connected!"<<endlog();
+		log(Warning)<<"Outputport1 not connected!"<<endlog();
 	}
 	if (!measured_torques_outport.connected()) {
-        log(Warning)<<"Outputport2 not connected!"<<endlog();
+		log(Warning)<<"Outputport2 not connected!"<<endlog();
 	}
 	return true;
 }

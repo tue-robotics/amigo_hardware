@@ -48,13 +48,13 @@ bool WriteArmJointsMsg::startHook()
 
 void WriteArmJointsMsg::updateHook()
 {
-
+  
   // Define vector for inport reading
   doubles angles(8,0.0);
   
   // Read the inputport  
   inport.read(angles);
-
+  
   // Define ROS message to be filled up and published
   amigo_msgs::arm_joints jointdata;
   
@@ -67,7 +67,7 @@ void WriteArmJointsMsg::updateHook()
   // Write data to port (ie publishing on ROS topic)
   outport.write( jointdata );
 
-
+  
 }
 
 ORO_CREATE_COMPONENT(PERA::WriteArmJointsMsg)

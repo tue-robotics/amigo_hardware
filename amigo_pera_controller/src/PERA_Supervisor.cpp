@@ -28,8 +28,8 @@ Supervisor::Supervisor(const string& name) :
 							TaskContext(name, PreOperational)
 {
 	addPort("requestedJointAnglesPort",reqJntAngPort).doc("Receives joint coordinates from a ROS topic");
-    addPort("enablePort",enablePort).doc("Sends enablesignal to PERA_IO");
-    addPort("errorPort",jointErrorsPort).doc("Receives joint control errors");
+	addPort("enablePort",enablePort).doc("Sends enablesignal to PERA_IO");
+	addPort("errorPort",jointErrorsPort).doc("Receives joint control errors");
 	addPort("measRelJointAnglesPort",mRelJntAngPort).doc("Receives measured relative joint angles");
 	addPort("measAbsJointAnglesPort",mAbsJntAngPort).doc("Receives measured absolute joint angles");
 	addPort("eButtonPort",eButtonPort).doc("Receives emergency button signal from Soem");
@@ -101,13 +101,13 @@ bool Supervisor::configureHook()
 	// Reference not yet resetted
 	resetReference=false;
 
-    // Assign_PROPERTY to value enable
+	// Assign ENABLE_PROPERTY to value enable
 	enable=ENABLE_PROPERTY;
 
 	// Write enable value to PERA_IO
-    enablePort.write(enable);
+	enablePort.write(enable);
 
-    // goodToGo true means homing can proceed to next joint
+	// goodToGo true means homing can proceed to next joint
 	goodToGo = true;
 
 	// Set homed to false by default
@@ -130,12 +130,12 @@ bool Supervisor::configureHook()
 bool Supervisor::startHook()
 {
 	
-    log(Info)<<"SUPERVISOR: executing from trunk"<<endlog();
+	log(Warning)<<"SUPERVISOR: executing from trunk"<<endlog();
 
 	// Wait for SOEM heartbeat.
 	while(!(eButtonPort.read(eButtonPressed) == NewData)){
 		sleep(1);
-        log(Info)<<"SUPERVISOR: Waiting for enable-signal from the emergency button"<<endlog();
+		log(Info)<<"SUPERVISOR: Waiting for enable-signal from the emergency button"<<endlog();
 		cntr++;
 		if( cntr == 10 && cntr<3 ){
 			log(Warning)<<"SUPERVISOR: no signal from emergency button (SOEM). Is SOEM running?"<<endlog();
@@ -146,16 +146,16 @@ bool Supervisor::startHook()
 			log(Error)<<"SUPERVISOR: no SOEM heartbeat. Shutting down LPERA."<<endlog();
 			cntr=0;
 			cntr2=0;
-            return false;
+			return false;
 		}
 	}
 
 	if(!REQUIRE_HOMING){
-        bool enableReadRef = true;
+		bool enableReadRef = true;
 		enableReadRefPort.write(enableReadRef);
 	}
 
-    log(Info)<<"SUPERVISOR: configured and running."<<endlog();
+	log(Info)<<"SUPERVISOR: configured and running."<<endlog();
 
 	return true;
 }
@@ -171,7 +171,6 @@ bool Supervisor::startHook()
  * they are within the feasible range of the joints. If either of these 
  * go outside their bounds the amplifiers are disabled. 
  */
-
 void Supervisor::updateHook()
 {
 	if(ENABLE_PROPERTY){
@@ -180,13 +179,13 @@ void Supervisor::updateHook()
 
 		if(!eButtonPressed.data){
 			if(pressed!=false){
-                log(Warning)<<"SUPERVISOR: Emergency Button Released"<<endlog();
+				log(Info)<<"SUPERVISOR: Emergency Button Released"<<endlog();
 			}
 			pressed = false;
 		}
 		else if(eButtonPressed.data){
 			if(pressed!=true){
-                log(Warning)<<"SUPERVISOR: Emergency Button Pressed"<<endlog();
+				log(Info)<<"SUPERVISOR: Emergency Button Pressed"<<endlog();
 			}
 			pressed = true;
 		}	
@@ -198,13 +197,10 @@ void Supervisor::updateHook()
 			 * can NEVER become true once an error has occured but CAN become
 			 * true after unplugging the eButton.
 			 */
-
-            //  log(Warning)<<"SUPERVISOR: errors : [" << errors << "] enable : [" << enable << "]"   <<endlog();
-
-
-            if(!errors){
+			if(!errors){
 				enable = true;
 			}
+			
 			
 			/* When a controller reaches its saturation value it is
 			 * monitored how long this continues. After MAXCONSATTIME
@@ -232,9 +228,9 @@ void Supervisor::updateHook()
 						errors = true;
 					}
 				}
-            }
+			}
 
-            /* Set the value to false, otherwise if eButtonPressed.data
+			/* Set the value to false, otherwise if eButtonPressed.data
 			 * becomes false it will still keep resetting the reference
 			 * interpolator
 			 */
@@ -287,7 +283,7 @@ void Supervisor::updateHook()
 
 					enable = false;
 
-                    if( errors == false ){ // This check makes sure it is printed only once.
+					if( errors == false ){ // This check makes sure it is printed only once.
 						log(Error)<<"SUPERVISOR: Error of joint q"<<i+1<<" exceeded limit ("<<MAX_ERRORS[i]<<"). PERA output disabled."<<endlog();
 						errors = true;
 					}		
@@ -399,7 +395,7 @@ void Supervisor::updateHook()
 			if(enable && !homed && !errors){
 
 				doubles measRelJntAngles(8,0.0);
-                doubles measAbsJntAngles(7,0.0);
+				ints measAbsJntAngles(7,0.0);
 				doubles homJntAngTemp(7,0.0);
 
 				// Measure the abs en rel angles.
@@ -416,11 +412,11 @@ void Supervisor::updateHook()
 					bool enableReadRef = false;
 					enableReadRefPort.write(enableReadRef);
 
-                    cntr++;
+					cntr++;
 				}
 
 				// Compute the joint angles for the homing procedure.
-                homJntAngTemp = homing(jointErrors,measAbsJntAngles,homJntAngles,measRelJntAngles);
+				homJntAngTemp = homing(jointErrors,measAbsJntAngles,homJntAngles,measRelJntAngles);
 
 				for(unsigned int i = 0;i<8;i++){
 					homJntAngles[i]=homJntAngTemp[i];
@@ -431,9 +427,9 @@ void Supervisor::updateHook()
 
 			}
 
-        enablePort.write(enable);
+			enablePort.write(enable);
 
-        }
+		}
 		else if(pressed){
 			
 			doubles resetdata(32,0.0);
@@ -442,7 +438,7 @@ void Supervisor::updateHook()
 
 			// Set enable to false and write it to the PERA_IO component.
 			enable = false;
-            enablePort.write(enable);
+			enablePort.write(enable);
 
 			// Read angles from PERA angles from IO
 			mRelJntAngPort.read(measRelJntAngles);
@@ -474,7 +470,7 @@ void Supervisor::updateHook()
 	else if(!ENABLE_PROPERTY){
 
 		enable = false;
-        enablePort.write(enable);
+		enablePort.write(enable);
 
 	}
 	
@@ -499,7 +495,7 @@ void Supervisor::updateHook()
  * homed. Given the current angles this function returns the next set
  * of reference joint angles for the homing procedure.
  */
-doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
+doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 
 	if(!gripperHomed){
 
@@ -636,8 +632,8 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 			if(cntr2>=0 && cntr2<5){
 				cntr2++;
-                enable = false;
-                enablePort.write(enable);
+				enable = false;
+				enablePort.write(enable);
 			}
 
 			else if(cntr2==5){
@@ -682,7 +678,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 				// Enable PERA IO
 				enable = true;
-                enablePort.write(enable);
+				enablePort.write(enable);
 
 				// Enable homing for next joint
 				goodToGo = true;
