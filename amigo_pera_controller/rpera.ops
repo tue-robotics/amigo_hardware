@@ -154,14 +154,14 @@ setActivity("RPERA_MotorToJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_MotorToJointAngles.Nrows = 8
 RPERA_MotorToJointAngles.Ncolumns = 8
 RPERA_MotorToJointAngles.configure
-RPERA_MotorToJointAngles.function1 = array (-0.00000563, 0.00000563, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-RPERA_MotorToJointAngles.function2 = array (0.00000563, 0.00000563, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-RPERA_MotorToJointAngles.function3 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.00001653, 0.0)
-RPERA_MotorToJointAngles.function4 = array (0.0, 0.0, 0.000003835, 0.000003835, 0.0, 0.0, 0.0, 0.0)
-RPERA_MotorToJointAngles.function5 = array (0.0, 0.0, -0.000003835, 0.000003835, 0.0, 0.0, 0.0, 0.0)
-RPERA_MotorToJointAngles.function6 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, 0.00002116, 0.0, 0.0)
-RPERA_MotorToJointAngles.function7 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, -0.00002116, 0.0, 0.0)
-RPERA_MotorToJointAngles.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0005236)
+RPERA_MotorToJointAngles.function1 = array (-0.00000563, 	0.00000563, 0.0, 			0.0, 		 0.0, 			0.0, 		0.0, 		0.0)
+RPERA_MotorToJointAngles.function2 = array (0.00000563, 	0.00000563, 0.0, 			0.0, 		 0.0,      		0.0, 		0.0, 		0.0)
+RPERA_MotorToJointAngles.function3 = array (0.0, 			0.0, 		0.0, 			0.0, 		 0.0, 			0.0, 		0.00001653, 0.0)
+RPERA_MotorToJointAngles.function4 = array (0.0, 			0.0, 		0.000003835, 	0.000003835, 0.0, 			0.0, 		0.0, 		0.0)
+RPERA_MotorToJointAngles.function5 = array (0.0, 			0.0, 	   -0.000003835, 	0.000003835, 0.0, 			0.0, 		0.0, 		0.0)
+RPERA_MotorToJointAngles.function6 = array (0.0, 			0.0, 		0.0, 			0.0, 		 0.00002116, 	0.00002116, 0.0, 		0.0)
+RPERA_MotorToJointAngles.function7 = array (0.0, 			0.0, 		0.0, 			0.0, 		 0.00002116,   -0.00002116, 0.0, 		0.0)
+RPERA_MotorToJointAngles.function8 = array (0.0, 			0.0, 		0.0, 			0.0, 		 0.0, 			0.0, 		0.0, 		0.0005236)
 
 ### Compute tracking error ###
 loadComponent("RPERA_ComputeJointErrors","MATH::Subtraction")
@@ -176,13 +176,13 @@ RPERA_JointToMotorTorques.Nrows = 8
 RPERA_JointToMotorTorques.Ncolumns = 8
 RPERA_JointToMotorTorques.configure
 RPERA_JointToMotorTorques.function1 = array (-0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-RPERA_JointToMotorTorques.function2 = array (0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-RPERA_JointToMotorTorques.function3 = array (0.0, 0.0, 0.0, 0.5, -0.5, 0.0, 0.0, 0.0)
-RPERA_JointToMotorTorques.function4 = array (0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0)
-RPERA_JointToMotorTorques.function5 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0)
-RPERA_JointToMotorTorques.function6 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.5, -0.5, 0.0)
-RPERA_JointToMotorTorques.function7 = array (0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-RPERA_JointToMotorTorques.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+RPERA_JointToMotorTorques.function2 = array ( 0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+RPERA_JointToMotorTorques.function3 = array ( 0.0, 0.0, 0.0, 0.5,-0.5, 0.0, 0.0, 0.0)
+RPERA_JointToMotorTorques.function4 = array ( 0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0)
+RPERA_JointToMotorTorques.function5 = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0)
+RPERA_JointToMotorTorques.function6 = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.5,-0.5, 0.0)
+RPERA_JointToMotorTorques.function7 = array ( 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+RPERA_JointToMotorTorques.function8 = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0)
 
 ### Kp ###
 loadComponent("RPERA_Gain","MATH::Gains")
@@ -326,7 +326,7 @@ connect ("RPERA_GC_Gains.out","RPERA_Polynomials.in", ConnPolicy() )
 connect ("RPERA_Polynomials.out","RPERA_AddGravComp.in1", ConnPolicy() )
 
 ### Supervisor ###
-connect ("RPERA_JointToMotorTorques.out","RPERA_Supervisor.controllerOutputPort", ConnPolicy() )
+connect ("RPERA_JointToMotorTorques.out","RPERA_Supervisor.controllerOutputPort", ConnPolicy() )                     
 connect ("RPERA_ReadReferenceAngles.pos","RPERA_Supervisor.requestedJointAnglesPort", ConnPolicy() )
 connect ("RPERA_Supervisor.enablePort","RPERA_IO.enablePort", ConnPolicy() )
 connect ("RPERA_ComputeJointErrors.out","RPERA_Supervisor.errorPort", ConnPolicy() )
