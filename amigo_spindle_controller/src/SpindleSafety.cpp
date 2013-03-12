@@ -65,7 +65,7 @@ void SpindleSafety::updateHook()
 		if( publish_counter == 500.0)
 		{
 			if(!once){
-				log(Warning)<<"Error too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
+				log(Warning)<<"Error ( "<< error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
 				once = true;
 			}
 			publish_counter = 0.0;
