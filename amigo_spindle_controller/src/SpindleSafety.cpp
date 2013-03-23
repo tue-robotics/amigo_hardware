@@ -62,14 +62,14 @@ void SpindleSafety::updateHook()
 		
 		// Publishing a message after 500 cycles, which is 2 seconds at 250 Hz
 		publish_counter += 1.0;
-		if( publish_counter == 500.0)
-		{
+		//if( publish_counter == 500.0)
+		//{
 			if(!once){
 				log(Warning)<<"Error ( "<< error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
 				once = true;
 			}
-			publish_counter = 0.0;
-		}
+		//	publish_counter = 0.0;
+		//}
 	}
 	
 	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
@@ -91,7 +91,9 @@ void SpindleSafety::updateHook()
 	}
 	else
 	{
-		spindle_brake_outport.write(BRAKEOFF);  
+		spindle_brake_outport.write(BRAKEOFF);
+		// Make sure the error message is printed every time a new safety issue occurs.
+		once = false;  
 	}
 	
 	// Writing boolean safety to port
