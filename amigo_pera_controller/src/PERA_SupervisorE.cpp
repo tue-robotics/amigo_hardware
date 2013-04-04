@@ -15,7 +15,7 @@
 #include <vector>
 #include <math.h>
 #include <cstdlib>
-#include "PERA_Supervisor.hpp"
+#include "PERA_SupervisorE.hpp"
 
 #define PI 3.1415926535897932384626433
 
@@ -394,7 +394,7 @@ void Supervisor::updateHook()
 			if(enable && !homed && !errors){
 
 				doubles measRelJntAngles(8,0.0);
-				ints measAbsJntAngles(7,0.0);
+                doubles measAbsJntAngles(7,0.0);
 				doubles homJntAngTemp(7,0.0);
 
 				// Measure the abs en rel angles.
@@ -494,8 +494,8 @@ void Supervisor::updateHook()
  * homed. Given the current angles this function returns the next set
  * of reference joint angles for the homing procedure.
  */
-doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
-
+doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
+	
 	if(!gripperHomed){
 
 		amigo_msgs::AmigoGripperCommand gripperCommand;
@@ -519,7 +519,7 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 
 		// If true the homing will be done using abs sensor
 		if(ABS_OR_REL[jntNr-1]==0){
-
+			
 			// Homing position not reached yet
 			if(fabs(HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=1.0){
 
@@ -612,13 +612,13 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 			goodToGo = true;
 		}
 		// If joint is moved to endstop using rel enc waiting time is required to move to homing position
-		else if(ABS_OR_REL[jntNr-1]==1 && cntr2<1500 && jntNr!=1 && jntNr!=4){
+		else if(ABS_OR_REL[jntNr-1]==1 && cntr2<6000 && jntNr!=1 && jntNr!=4){
 
 			cntr2++;
 
 		}
 		// If waiting is complete move on to next joint
-		else if(ABS_OR_REL[jntNr-1]==1 && cntr2==1500 && jntNr!=1 && jntNr!=4){
+		else if(ABS_OR_REL[jntNr-1]==1 && cntr2==6000 && jntNr!=1 && jntNr!=4){
 
 			cntr2=0;
 			jntNr--;

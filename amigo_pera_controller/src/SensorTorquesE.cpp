@@ -2,7 +2,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#include "SensorTorques.hpp"
+#include "SensorTorquesE.hpp"
 
 using namespace std;
 using namespace RTT;

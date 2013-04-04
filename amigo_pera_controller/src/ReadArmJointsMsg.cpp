@@ -17,7 +17,7 @@ ReadArmJointsMsg::ReadArmJointsMsg(const string& name) : TaskContext(name, PreOp
   addPort( "acc", accport );
   addPort( "enablePort", enablePort );
   
-  // Loading properties;
+  // Loading properties
   addProperty( "offsets", OFFSET_VALUES );
   addProperty( "signs", SIGNAL_SIGNS );
 }

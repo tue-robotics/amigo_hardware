@@ -29,7 +29,7 @@ using namespace PERA;
 			
 			/// Outports
 			addPort("out",outPort);
-		
+	
 	  }
 
 	Concatenate::~Concatenate(){}
