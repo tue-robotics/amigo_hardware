@@ -19,7 +19,7 @@ using namespace std;
 using namespace RTT;
 using namespace PERA;
 
-	GripperControl::GripperControl(const std::string& name)
+	GripperControlE::GripperControlE(const std::string& name)
         : TaskContext(name, PreOperational)
 
 		{
@@ -45,20 +45,20 @@ using namespace PERA;
 					
 	  }
 
-	GripperControl::~GripperControl(){}
+	GripperControlE::~GripperControlE(){}
 
-	bool GripperControl::configureHook(){
+	bool GripperControlE::configureHook(){
 		torques.resize(8);
 		gripperPos.resize(1,0.0);
 		completed = true;
 		return true;
 	}
 
-	bool GripperControl::startHook(){
+	bool GripperControlE::startHook(){
 		return true;
 	}
 
-	void GripperControl::updateHook(){
+	void GripperControlE::updateHook(){
 		
 		bool resetGripper;
 		
@@ -131,7 +131,7 @@ using namespace PERA;
 		//}
 	}
 
-void GripperControl::stopHook(){}
+void GripperControlE::stopHook(){}
 
-ORO_CREATE_COMPONENT(PERA::GripperControl)
+ORO_CREATE_COMPONENT(PERA::GripperControlE)
 

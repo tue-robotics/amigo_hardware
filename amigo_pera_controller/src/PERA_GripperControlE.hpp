@@ -30,7 +30,7 @@ namespace PERA
 	 * opens the gripper to a predefined position.
 	 */
 	
-	class GripperControl : 
+	class GripperControlE : 
 
 	  public RTT::TaskContext
 	  {
@@ -75,9 +75,9 @@ namespace PERA
 	  
 	public:
 
-	  GripperControl(const std::string& name);
+	  GripperControlE(const std::string& name);
 	  
-	  ~GripperControl();
+	  ~GripperControlE();
 	  
 	  //! Configuration sequence, executed before startHook()
 	  bool configureHook();

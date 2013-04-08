@@ -13,7 +13,7 @@ namespace AMIGO
 {
   typedef vector<double> doubles;
   
-  class SensorTorques
+  class SensorTorquesE
   : public RTT::TaskContext
     {
     private:
@@ -33,8 +33,8 @@ namespace AMIGO
 	
     public:
 
-    SensorTorques(const string& name);
-    ~SensorTorques();
+    SensorTorquesE(const string& name);
+    ~SensorTorquesE();
 
     bool configureHook();
     bool startHook();

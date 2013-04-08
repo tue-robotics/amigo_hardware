@@ -24,7 +24,7 @@ using namespace RTT;
 using namespace PERA;
 using namespace std;
 
-Supervisor::Supervisor(const string& name) : 
+SupervisorE::SupervisorE(const string& name) : 
 							TaskContext(name, PreOperational)
 {
 	addPort("requestedJointAnglesPort",reqJntAngPort).doc("Receives joint coordinates from a ROS topic");
@@ -65,9 +65,9 @@ Supervisor::Supervisor(const string& name) :
 
 }
 
-Supervisor::~Supervisor(){}
+SupervisorE::~SupervisorE(){}
 
-bool Supervisor::configureHook()
+bool SupervisorE::configureHook()
 {
 
 	Logger::In in("SUPERVISOR"); 
@@ -127,7 +127,7 @@ bool Supervisor::configureHook()
 	return true;
 }
 
-bool Supervisor::startHook()
+bool SupervisorE::startHook()
 {
 	
 	log(Warning)<<"SUPERVISOR: executing from trunk"<<endlog();
@@ -171,7 +171,7 @@ bool Supervisor::startHook()
  * they are within the feasible range of the joints. If either of these 
  * go outside their bounds the amplifiers are disabled. 
  */
-void Supervisor::updateHook()
+void SupervisorE::updateHook()
 {
 	if(ENABLE_PROPERTY){
 		// Read emergency-button state
@@ -494,7 +494,7 @@ void Supervisor::updateHook()
  * homed. Given the current angles this function returns the next set
  * of reference joint angles for the homing procedure.
  */
-doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
+doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 	
 	if(!gripperHomed){
 
@@ -703,7 +703,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 }
 
-doubles Supervisor::signum(doubles a){
+doubles SupervisorE::signum(doubles a){
 	doubles signum(8,1.0);
 	for(unsigned int i = 0;i<8;i++){
 		if (a[i] < 0.0){
@@ -716,4 +716,4 @@ doubles Supervisor::signum(doubles a){
 	return signum;
 }
 
-ORO_CREATE_COMPONENT(PERA::Supervisor)
+ORO_CREATE_COMPONENT(PERA::SupervisorE)

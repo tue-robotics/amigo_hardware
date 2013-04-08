@@ -43,7 +43,7 @@ namespace PERA
    * 	  deceleration.
    */
   
-  class Supervisor
+  class SupervisorE
   : public RTT::TaskContext
     {
     private:
@@ -163,9 +163,9 @@ namespace PERA
     public:
 
 		//! Class constructor
-		Supervisor(const string& name);
+		SupervisorE(const string& name);
 		//! Class destructor
-		~Supervisor();
+		~SupervisorE();
 
 		//! Configuration sequence, executed before startHook()
 		bool configureHook();

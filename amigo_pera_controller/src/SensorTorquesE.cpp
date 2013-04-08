@@ -8,7 +8,7 @@ using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 
-SensorTorques::SensorTorques(const string& name) : TaskContext(name, PreOperational), Vmeasured(N, 0.0), Tmeasured(N, 0.0), Tjoint(N, 0.0)
+SensorTorquesE::SensorTorquesE(const string& name) : TaskContext(name, PreOperational), Vmeasured(N, 0.0), Tmeasured(N, 0.0), Tjoint(N, 0.0)
 {
 	addProperty( "Ksensor", Ksensor).doc("Ksensor [Vm]");
 	addProperty( "Voffset", Voffset).doc("Voffset [V]");
@@ -21,14 +21,14 @@ SensorTorques::SensorTorques(const string& name) : TaskContext(name, PreOperatio
 	addPort("measured_torques_out", measured_torques_outport).doc("Differential (gear) torques [Nm]");
 	
 }
-SensorTorques::~SensorTorques(){}
+SensorTorquesE::~SensorTorquesE(){}
 
-bool SensorTorques::configureHook()
+bool SensorTorquesE::configureHook()
 {	
 	return true;
 }
 
-bool SensorTorques::startHook()
+bool SensorTorquesE::startHook()
 {
 	Logger::In in("SensorTorques::startHook()");
 	
@@ -49,7 +49,7 @@ bool SensorTorques::startHook()
 	return true;
 }
 
-void SensorTorques::updateHook()
+void SensorTorquesE::updateHook()
 {
 	voltage_inport.read(Vmeasured);
 	
@@ -71,4 +71,4 @@ void SensorTorques::updateHook()
     joint_torques_outport.write(Tjoint);
 }
 
-ORO_CREATE_COMPONENT(SensorTorques)
+ORO_CREATE_COMPONENT(SensorTorquesE)
