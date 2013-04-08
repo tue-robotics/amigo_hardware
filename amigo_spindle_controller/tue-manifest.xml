@@ -1,0 +1,8 @@
+<deps>
+    <stack name="soem"
+           type="git"
+           source="http://git.mech.kuleuven.be/robotics/soem.git"
+           local-path="kul-ros-pkg"/>
+</deps>
+
+
