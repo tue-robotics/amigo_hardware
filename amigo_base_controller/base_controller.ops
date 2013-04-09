@@ -171,7 +171,7 @@ connect ("BaseSI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Send to Soem 
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
 BaseSafety.max_velocities = array (1.8, 1.0, 3.1415)
-BaseSafety.max_errors = array ( 8.0, 8.0, 8.0, 8.0 )
+BaseSafety.max_errors = array ( 2.2, 2.2, 2.2, 2.2 )
 BaseSafety.max_voltage = 9.9
 BaseSafety.configure
 setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)

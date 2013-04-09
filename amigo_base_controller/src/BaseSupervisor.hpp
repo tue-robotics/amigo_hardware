@@ -32,6 +32,7 @@ namespace AMIGO
 
         InputPort<std_msgs::Bool> rosemergencyport;
         InputPort<std_msgs::Bool> rosstandbyport;
+        OutputPort<std_msgs::Bool> rosstartedport;
         bool started; //Keep track if components are on or off
 
         /** Constructeur pour définir le chemin vers le projet. Utile pour ROS*/

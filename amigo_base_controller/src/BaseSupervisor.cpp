@@ -27,7 +27,7 @@ BaseSupervisor::BaseSupervisor(const string& name) :
                .doc("Display the list of peers");
   addEventPort( "rosemergency", rosemergencyport );
   addEventPort( "rosstandby", rosstandbyport );
-
+  addPort( "base_started", rosstartedport );
 }
 
 BaseSupervisor::~BaseSupervisor()
@@ -76,6 +76,8 @@ void BaseSupervisor::updateHook()
           }
       }
       started = false;
+      std_msgs::Bool rosstartedmsg;
+      rosstartedport.write( rosstartedmsg );
     }  
     else if ( !( emergency || standby ) && !started )
     {
@@ -97,6 +99,8 @@ void BaseSupervisor::updateHook()
           }
       }
       started = true;
+      std_msgs::Bool rosstartedmsg;
+      rosstartedport.write( rosstartedmsg );
     }
       
 }
