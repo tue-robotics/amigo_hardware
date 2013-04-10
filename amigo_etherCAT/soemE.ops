@@ -1,6 +1,7 @@
 #Import all the dependencies from the amigo_etherCAT package. 
 #This enables you to import components from all these packages.
 import("amigo_etherCAT")
+
 var double Ts = 0.001
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
@@ -30,7 +31,7 @@ stream("AnalogIns.out1", ros.topic("/battery_value"))
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
-connect ("Soem.Slave_100b.bits", "DigitalOuts.digital_out", ConnPolicy() )
+connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
 setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 
@@ -67,9 +68,6 @@ AnalogOutsPera.max_volt = array ( 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 1
 connect ("AnalogOutsPera.out1","Soem.Slave_1011.pwmDutyMotorsIn", ConnPolicy() );
 connect ("AnalogOutsPera.out2","Soem.Slave_1012.pwmDutyMotorsIn", ConnPolicy() );
 connect ("AnalogOutsPera.out3","Soem.Slave_1013.pwmDutyMotorsIn", ConnPolicy() );
-stream ("AnalogOutsPera.out1", ros.topic("/arm_right_controller/control_signals_1002"));
-stream ("AnalogOutsPera.out2", ros.topic("/arm_right_controller/control_signals_1003"));
-stream ("AnalogOutsPera.out3", ros.topic("/arm_right_controller/control_signals_1004"));
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
 #This component aggregates all the signals from the Soem Slaves and puts them into a doubles for the position 
@@ -92,28 +90,3 @@ AnalogIns.start
 DigitalIns.start
 DigitalIns2.start
 AnalogInsPera.start
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
