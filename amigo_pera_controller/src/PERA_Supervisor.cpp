@@ -44,6 +44,7 @@ Supervisor::Supervisor(const string& name) :
 	addPort("controllerOutputPort",controllerOutputPort).doc("Receives motorspace output of the controller");
 	addPort("peraStatusPort",peraStatusPort).doc("For publishing the PERA status to the AMIGO dashboard");
 	addPort("jointVelocity",measVelPort).doc("Receives the reference interpolator joint velocities");
+	addPort("IODiagnostic", IODiagnosticPort).doc("Receives the return value of the I/O cycle for diagnostic purposes");
 
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("Maximum joint error allowed [rad]");
 	addProperty( "enableOutput", ENABLE_PROPERTY ).doc("Specifies if PERA_IO should be enabled");
@@ -123,6 +124,10 @@ bool Supervisor::configureHook()
 
 	// Pressed is true. No SOEM heartbeat means no amplifier enabling.
 	pressed = true;
+	
+	// Start assuming I/O status is good
+	prevIOStatus = 0;
+	IOStatus = 0;
 
 	return true;
 }
@@ -153,6 +158,10 @@ bool Supervisor::startHook()
 	if(!REQUIRE_HOMING){
 		bool enableReadRef = true;
 		enableReadRefPort.write(enableReadRef);
+	}
+	
+	if ( !IODiagnosticPort.connected() ){
+		log(Warning)<<"IODiagnosticPort not connected"<<endlog();
 	}
 
 	log(Info)<<"SUPERVISOR: configured and running."<<endlog();
@@ -188,7 +197,16 @@ void Supervisor::updateHook()
 				log(Info)<<"SUPERVISOR: Emergency Button Pressed"<<endlog();
 			}
 			pressed = true;
-		}	
+		}
+		
+		IODiagnosticPort.read(IOStatus);
+		if (IOStatus != 0 && prevIOStatus == 0){
+			log(Error)<<"IO Status: "<<IOStatus<<endlog();	
+		}
+		else if (IOStatus == 0 && prevIOStatus != 0){
+			log(Info)<<"IO Status: "<<IOStatus<<", meaning back to normal"<<endlog();
+		}
+		prevIOStatus = IOStatus;
 
 		if(!pressed){
 
@@ -475,15 +493,15 @@ void Supervisor::updateHook()
 	
 	std_msgs::UInt8 statusToDashboard;
 	
-	if(homed==true && errors==false && breaking==0){
+	if(homed==true && errors==false && breaking==0 && IOStatus==0){
 		statusToDashboard.data = 0;
 		peraStatusPort.write(statusToDashboard);
 	}
-	else if(homed==false && errors==false && breaking==0){
+	else if(homed==false && errors==false && breaking==0 && IOStatus==0){
 		statusToDashboard.data = 1;
 		peraStatusPort.write(statusToDashboard);
 	}
-	else if(errors==true || breaking!=0){
+	else if(errors==true || breaking!=0 || IOStatus!=0){
 		statusToDashboard.data = 2;
 		peraStatusPort.write(statusToDashboard);
 	}

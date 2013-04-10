@@ -65,6 +65,8 @@ namespace PERA
 		InputPort<doubles> controllerOutputPort;
 		//! Inputport for receiving the reference interpolator velocity 
 		InputPort<doubles> measVelPort;
+		//! Inputport for receiving the return value of the I/0 Cycle for diagnostic purposes
+		InputPort<int> IODiagnosticPort;
 		//! Outputport for enabling/disabling the PERA_USB_IO
 		OutputPort<bool> enablePort;
 		//! Outputport for forwarding homing angles to the ReferenceInterpolator
@@ -159,6 +161,8 @@ namespace PERA
 		doubles MAXACCS;
 		//! Memory array storing if controller saturation was already reached
 		int firstSatInstance [8];
+		//! Integer specifying I/O status: 0 is good, any other value is bad
+		int IOStatus, prevIOStatus;
 	
     public:
 
