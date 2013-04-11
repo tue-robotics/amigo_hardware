@@ -74,7 +74,7 @@ connect ("AnalogOutsPera.out3","Soem.Slave_1013.pwmDutyMotorsIn", ConnPolicy() )
 # and a doubles for the force and then sends these doubles to the right component
 loadComponent("AnalogInsPera","SOEM::AnalogInsPera")
 AnalogInsPera.configure
-setActivity("AnalogInsPera",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("AnalogInsPera",Ts,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_1011.forceSensors","AnalogInsPera.in_for1", ConnPolicy() )  
 connect ("Soem.Slave_1012.forceSensors","AnalogInsPera.in_for2", ConnPolicy() )  
 connect ("Soem.Slave_1013.forceSensors","AnalogInsPera.in_for3", ConnPolicy() )   

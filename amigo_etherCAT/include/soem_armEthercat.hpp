@@ -100,6 +100,7 @@ typedef struct PACKED {
         uint16 cntr2;
         uint16 cntr3;
         bool enable;
+        bool enablestatus;
         bool setOutputToZero;
         uint8 heart_beat_source;
         uint16 initRelEnc1;
