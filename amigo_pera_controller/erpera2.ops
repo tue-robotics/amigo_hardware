@@ -96,14 +96,14 @@ RPERA_Supervisor.dynBreakEpsilon = 0.05;
 RPERA_Supervisor.offsetAngles = OFFSETS
 RPERA_Supervisor.signs = SIGNS
 RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-RPERA_Supervisor.homedPos = array (328.0, 154.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
+RPERA_Supervisor.homedPos = array (682.0, 322.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
 RPERA_Supervisor.maxConSatTime = 5.0
 RPERA_Supervisor.stepSize = 0.001570796
 RPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
-RPERA_Supervisor.requireHoming = false
+RPERA_Supervisor.requireHoming = true
 RPERA_Supervisor.requireGripperHoming = false
-RPERA_Supervisor.startJoint = 6
+RPERA_Supervisor.startJoint = 5
 RPERA_Supervisor.configure
 
 ### LOAD READENCODERS

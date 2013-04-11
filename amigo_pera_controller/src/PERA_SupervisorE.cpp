@@ -125,6 +125,7 @@ bool SupervisorE::configureHook()
 	pressed = true;
 
 	return true;
+
 }
 
 bool SupervisorE::startHook()
@@ -155,7 +156,7 @@ bool SupervisorE::startHook()
 		enableReadRefPort.write(enableReadRef);
 	}
 
-	log(Info)<<"SUPERVISOR: configured and running."<<endlog();
+	log(Warning)<<"SUPERVISOR: configured and running."<<endlog();
 
 	return true;
 }
@@ -400,11 +401,14 @@ void SupervisorE::updateHook()
 				// Measure the abs en rel angles.
 				mRelJntAngPort.read(measRelJntAngles);
 				mAbsJntAngPort.read(measAbsJntAngles);
+				
+				
 
 				if(cntr==0){
 
 					for(unsigned int i = 0;i<7;i++){
 						homJntAngles[i]=measRelJntAngles[i];
+						log(Warning)<<"measRelJntAngles :"<<measRelJntAngles[jntNr-1]<<endlog(); 
 					}
 
 					// Disable the reading of the reference joint angles.
@@ -516,7 +520,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 	}
 
 	if(jntNr!=0 && goodToGo && gripperHomed){
-
+		
 		// If true the homing will be done using abs sensor
 		if(ABS_OR_REL[jntNr-1]==0){
 			
@@ -608,7 +612,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		// If joint is homed using abs sens no waiting time is required
 		if( (ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ){
 			jntNr--;
-			log(Info)<<"SUPERVISOR: Proceeded to joint "<<jntNr<<"\n"<<endlog();
+			log(Warning)<<"SUPERVISOR: Proceeded to joint "<<jntNr<<"\n"<<endlog();
 			goodToGo = true;
 		}
 		// If joint is moved to endstop using rel enc waiting time is required to move to homing position
@@ -622,7 +626,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 			cntr2=0;
 			jntNr--;
-			log(Info)<<"SUPERVISOR: Proceeded to joint "<<jntNr<<"\n"<<endlog();
+			log(Warning)<<"SUPERVISOR: Proceeded to joint "<<jntNr<<"\n"<<endlog();
 			goodToGo=true;
 
 		}
@@ -647,7 +651,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 				// Null the PERA_IO.
 				bool reNull = true;
 				reNullPort.write(reNull);
-				log(Info)<<"SUPERVISOR: Renulled PERA_IO \n"<<endlog();
+				log(Warning)<<"SUPERVISOR: Renulled PERA_IO \n"<<endlog();
 
 				// Enable the reading of the reference joint angles.
 				bool enableReadRef = true;
