@@ -30,6 +30,7 @@ namespace AMIGO
 	doubles Tmeasured;
 	doubles Tjoint;
 	doubles PivotDistance;
+	int cnt;
 	
     public:
 

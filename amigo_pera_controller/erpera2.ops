@@ -88,18 +88,18 @@ RPERA_Supervisor.setPeriod(0.001)
 RPERA_Supervisor.jointLowerBounds = array (  0.0, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
 RPERA_Supervisor.jointUpperBounds = array ( 1.57,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
 RPERA_Supervisor.motorSaturations = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
-RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 500.0)
+RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 120.0)
 RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 RPERA_Supervisor.dynBreakEpsilon = 0.05;
 # Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
 #RPERA_Supervisor.resetAngles = array ( 0.0, -1.570796325, 0.0, 0.5, 0.0, -1.570796325, 0.0, 0.0 )
 RPERA_Supervisor.offsetAngles = OFFSETS
 RPERA_Supervisor.signs = SIGNS
-RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0)  ;## put q1 and q2 also to endstop homing.
-RPERA_Supervisor.homedPos = array (1.22, 1.04, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
+RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+RPERA_Supervisor.homedPos = array (328.0, 154.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
 RPERA_Supervisor.maxConSatTime = 5.0
 RPERA_Supervisor.stepSize = 0.001570796
-RPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+RPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
 RPERA_Supervisor.requireHoming = false
 RPERA_Supervisor.requireGripperHoming = false
@@ -243,13 +243,21 @@ RPERA_WriteCurrentJointAngles.configure
 ### Conversion analog PERA_IO values to torques ###
 loadComponent("RPERA_SensorTorques","SensorTorquesE")
 setActivity("RPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_SensorTorques.Ksensor 		= array (0.0025		,0.0025		,0.0025		,0.0025		,0.0025		,0.0025		,0.0025		,0.0025		)
-RPERA_SensorTorques.Voffset 		= array (0.2		, 0.2		, 0.2		, 0.2		, 0.2		, 0.2 		, 0.2		, 0.2		)
-RPERA_SensorTorques.Xoffset 		= array (0.00025	, 0.00025	, 0.0013875	, 0.0013875	, 0.00025	, 0.00268	, 0.0034488	, 0.0048276	)
-RPERA_SensorTorques.Stiffness 		= array (777777.7	, 777777.7	, 2009211.0	, 2009211.0	, 700.0		, 12935.0	, 60739.73	, 37274.25	)
-RPERA_SensorTorques.PivotDistance 	= array (0.03		, 0.03		, 0.025		, 0.025		, 1.0		, 1.0		, 0.017		, 0.017		)
+#												SM1 		SM2			SM3 		EM1 			EM2 		WM1 		WM2 		HM
+RPERA_SensorTorques.Ksensor = array 			(0.0025		, 0.0025	, 0.0025	, 0.0025		, 0.0025	, 0.0025	, 0.0025	, 0.0025)
+RPERA_SensorTorques.Voffset = array 			(0.2		, 0.2		, 0.2		, 0.2			, 0.2		, 0.2		, 0.2		, 0.2		)
+RPERA_SensorTorques.Xoffset = array 			(0.00025	, 0.00025	, 0.00025	, 0.0013875		, 0.0013875	, 0.0034488	, 0.0048276	, 0.00268	)
+RPERA_SensorTorques.Stiffness = array 			(777777.7	, 777777.7	, 700.0		, 2009211.0		, 2009211.0	, 60739.73	, 37274.25	, 12935.0	)
+RPERA_SensorTorques.PivotDistance = array 		(0.03		, 0.03		, 1.0		, 0.025			, 0.025		, 0.017		, 0.017		, 1.0		)
 RPERA_SensorTorques.setPeriod(0.005)
 RPERA_SensorTorques.configure
+
+## old values :
+#												SM1 		SM2 		EM1 		EM2				SM3 		HM			WM1 		WM2
+#RPERA_SensorTorques.Xoffset = array 			(0.00025	, 0.00025	, 0.0013875	, 0.0013875		, 0.00025	, 0.00268	, 0.0034488	, 0.0048276)
+#RPERA_SensorTorques.Stiffness = array 			(777777.7	, 777777.7	, 2009211.0	, 2009211.0		, 700.0		, 12935.0	, 60739.73	, 37274.25)
+#RPERA_SensorTorques.PivotDistance = array 		(0.03		, 0.03		, 0.025		, 0.025			, 1.0		, 1.0		, 0.017		, 0.017)
+#
 
 #### Diagnostics ###
 loadComponent("RPERA_Diagnostics","ROS::RosDiagnostics")
@@ -341,7 +349,7 @@ connect ("RPERA_Supervisor.enableReadRefPort","RPERA_ReadReferenceAngles.enableP
 connect ("RPERA_Supervisor.reNullPort","Soem.Slave_1011.reNullPort", ConnPolicy() )                     
 connect ("RPERA_Supervisor.reNullPort","Soem.Slave_1012.reNullPort", ConnPolicy() )                     
 connect ("RPERA_Supervisor.reNullPort","Soem.Slave_1013.reNullPort", ConnPolicy() )                     
-connect ("RPERA_Supervisor.reNullPort","RPERA_GripperControl.reNullPort", ConnPolicy() )
+#connect ("RPERA_Supervisor.reNullPort","RPERA_GripperControl.reNullPort", ConnPolicy() )
 connect ("RPERA_RTD.ude","RPERA_Supervisor.jointVelocity", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
 

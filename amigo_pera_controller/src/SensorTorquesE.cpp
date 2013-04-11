@@ -40,35 +40,47 @@ bool SensorTorquesE::startHook()
 		log(Error)<<"Inputport not connected!"<<endlog();
 		return false;
 	}
-	if (!joint_torques_outport.connected()) {
-        log(Info)<<"Outputport1 not connected!"<<endlog();
-	}
+	//if (!joint_torques_outport.connected()) {
+    //    log(Info)<<"Outputport1 not connected!"<<endlog();
+	//}
 	if (!measured_torques_outport.connected()) {
         log(Warning)<<"Outputport2 not connected!"<<endlog();
 	}
+	cnt = 0;
 	return true;
+	
 }
 
 void SensorTorquesE::updateHook()
 {
 	voltage_inport.read(Vmeasured);
 	
-	for (unsigned int i=0; i<N; i++) {
+	for (unsigned int i=0; i<8; i++) {
         Tmeasured[i] = (Ksensor[i]/(Vmeasured[i] + Voffset[i])-Xoffset[i])*Stiffness[i]*PivotDistance[i]; // Differential (gear) torques
 	}
 	
+	if (cnt == 5000) { 
+		log(Warning)<<"Vmeasured: ["<< Vmeasured[0] << ","<< Vmeasured[1] << ","<< Vmeasured[2] << ","<< Vmeasured[3] << ","<< Vmeasured[4] << ","<< Vmeasured[5] << ","<< Vmeasured[6] << ","<< Vmeasured[7] << "]"  <<endlog();
+		log(Warning)<<"Tmeasured: ["<< Tmeasured[0] << ","<< Tmeasured[1] << ","<< Tmeasured[2] << ","<< Tmeasured[3] << ","<< Tmeasured[4] << ","<< Tmeasured[5] << ","<< Tmeasured[6] << ","<< Tmeasured[7] << "]"  <<endlog();
+		cnt = 0;
+	}
+	cnt++;
+	
+	
+	
+	
     // Joint torques                                     // TO DO: check these values, but better way would be to multiply the sensor torques with the same matrix as in erpera.ops
-    Tjoint[0] = -Tmeasured[0] + Tmeasured[1];
-    Tjoint[1] =  Tmeasured[0] + Tmeasured[1];
-    Tjoint[3] =  Tmeasured[3];
-    Tjoint[4] =  Tmeasured[4] + Tmeasured[5];
-    Tjoint[5] = -Tmeasured[4] + Tmeasured[5];
-    Tjoint[6] =  Tmeasured[6] + Tmeasured[7];
-    Tjoint[7] =  Tmeasured[6] - Tmeasured[7];
-    Tjoint[8] =  Tmeasured[8];
-		
+    //Tjoint[0] = -Tmeasured[0] + Tmeasured[1];
+    //Tjoint[1] =  Tmeasured[0] + Tmeasured[1];
+    //Tjoint[2] =  Tmeasured[3];
+    //Tjoint[3] =  Tmeasured[4] + Tmeasured[5];
+    //Tjoint[4] = -Tmeasured[4] + Tmeasured[5];
+    //Tjoint[5] =  Tmeasured[6] + Tmeasured[7];
+    //Tjoint[6] =  Tmeasured[6] - Tmeasured[7];
+    //Tjoint[7] =  Tmeasured[8];
+       
 	measured_torques_outport.write(Tmeasured);
-    joint_torques_outport.write(Tjoint);
+    //joint_torques_outport.write(Tjoint);
 }
 
 ORO_CREATE_COMPONENT(SensorTorquesE)
