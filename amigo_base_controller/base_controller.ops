@@ -262,19 +262,23 @@ Supervisor.AddAllwaysOnPeer ("Odometry")
 
 
 ### Now we read the reference velocities from ROS and close the control loop:
-BaseReadReferenceVelocities.start
-BaseDecoupleVelReference.start
-BaseWheelVel2WheelPos.start
-BaseCalculateErrors.start
-BaseControllerGains.start
-BaseLeadLag.start
-BaseIntegrator.start
-BaseSecondOrderLowPass.start
-BaseSI2Volt.start
+#### THESE COMPONENTS CAN BE STOPPED BY THE SUPERVISOR ####
+Supervisor.NameBodyPart( 1, "base")
+stream( "Supervisor.base_fireup", ros.topic("/base_fireup") )
+stream( "Supervisor.base_enabled", ros.topic("/base_enabled"));
+Supervisor.AddPeerToBodyPart ("BaseReadReferenceVelocities.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseDecoupleVelReference.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseWheelVel2WheelPos.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseCalculateErrors.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseControllerGains.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseLeadLag.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseIntegrator.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseSecondOrderLowPass.start",1 )
+Supervisor.AddPeerToBodyPart ("BaseSI2Volt.start",1 )
 
 ### Now the whole control loop is closed. Lets add some aditional components for fun and safety:
-BaseSafety.start
-BaseDiagnostics.start
-BaseStatus.start
-BaseSupervisor.start
+Supervisor.AddPeerToBodyPart ("BaseSafety.start",1 )
+Supervisor.AddAllwaysOnPeer ("BaseDiagnostics.start",1 )
+Supervisor.AddAllwaysOnPeer ("BaseStatus.start",1 )
+#Supervisor.AddAllwaysOnPeer ("BaseSupervisor.start",1 ) # To be removed?
 

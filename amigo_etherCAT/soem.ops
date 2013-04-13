@@ -9,9 +9,9 @@ var double Ts = 0.001
 loadComponent("Supervisor","AMIGO::Supervisor")
 Supervisor.configure
 setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
-stream("Supervisor.rosemergency", ros.topic("/emergency_switch")); 
-stream("Supervisor.rosstandby", ros.topic("/base_standby")); 
-stream("Supervisor.base_started", ros.topic("/base_started"));
+Supervisor.start
+#stream("Supervisor.rosemergency", ros.topic("/emergency_switch")); 
+#stream("Supervisor.rosstandby", ros.topic("/base_standby")); 
 
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
