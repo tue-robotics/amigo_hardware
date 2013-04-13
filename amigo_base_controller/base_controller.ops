@@ -34,6 +34,7 @@ var double ENC2SI = TWOPI*GEARRATIO/ENCODERCOUNTS
 
 ### READ WHEEL ENCODERS ###
 loadComponent("ReadWheelEncoders","SOEM::ReadEncoders")
+addPeer("Supervisor","ReadWheelEncoders")
 ReadWheelEncoders.encoderbits = 65536
 ReadWheelEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI, ENC2SI)
 ReadWheelEncoders.configure
@@ -46,6 +47,7 @@ connect ("Soem.Slave_1005.Slave_1005_value","ReadWheelEncoders.enc4_in", ConnPol
 
 ### DECOUPLE POSITION ###
 loadComponent("BaseDecouplePosition","MatrixTransform")
+addPeer("Supervisor","BaseDecouplePosition")
 BaseDecouplePosition.Nrows = 3
 BaseDecouplePosition.Ncolumns = 4
 BaseDecouplePosition.configure
@@ -58,6 +60,7 @@ connect ("ReadWheelEncoders.out","BaseDecouplePosition.in", ConnPolicy() )
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
 loadComponent("Odometry","AMIGO::PublishOdometry")
+addPeer("Supervisor","Odometry")
 Odometry.configure
 setActivity("Odometry",0.05,LowestPriority,ORO_SCHED_OTHER)
 connect ("BaseDecouplePosition.out", "Odometry.pos", ConnPolicy() );
@@ -71,6 +74,7 @@ stream("Odometry.odom", ros.topic("/odom"));
 
 ### READ REFERENCE VELOCITIES ###
 loadComponent("BaseReadReferenceVelocities","MSG::ReadTwistMsg")
+addPeer("Supervisor","BaseReadReferenceVelocities")
 #loadService("BaseReadReferenceVelocities","rosparam")
 #BaseReadReferenceVelocities.rosparam.refreshProperties()
 BaseReadReferenceVelocities.max_start_vel = 0.7
@@ -82,6 +86,7 @@ stream ("BaseReadReferenceVelocities.cmd_vel", ros.topic("/cmd_vel"));
 
 ### DECOUPLE REFERENCE ###
 loadComponent("BaseDecoupleVelReference","MatrixTransform")
+addPeer("Supervisor","BaseDecoupleVelReference")
 BaseDecoupleVelReference.Nrows = 4
 BaseDecoupleVelReference.Ncolumns = 3
 BaseDecoupleVelReference.configure
@@ -95,6 +100,7 @@ connect ("BaseReadReferenceVelocities.out","BaseDecoupleVelReference.in", ConnPo
 
 ### VELOCITY TO POSITION ###
 loadComponent("BaseWheelVel2WheelPos","MATH::Integrator")
+addPeer("Supervisor","BaseWheelVel2WheelPos")
 BaseWheelVel2WheelPos.vector_size = 4
 BaseWheelVel2WheelPos.configure
 setActivity("BaseWheelVel2WheelPos",0.0,LowestPriority,ORO_SCHED_OTHER)
@@ -104,6 +110,7 @@ connect ("ReadWheelEncoders.out","BaseWheelVel2WheelPos.initial", ConnPolicy() )
 
 ### CALCULATE ERRORS ###
 loadComponent("BaseCalculateErrors","MATH::Subtraction")
+addPeer("Supervisor","BaseCalculateErrors")
 BaseCalculateErrors.vectorsize = 4;
 BaseCalculateErrors.configure
 setActivity("BaseCalculateErrors",0.0,HighestPriority,ORO_SCHED_RT)
@@ -113,6 +120,7 @@ connect ("ReadWheelEncoders.out","BaseCalculateErrors.in_minus", ConnPolicy() );
 
 ### GAIN ###
 loadComponent("BaseControllerGains","MATH::Gains")
+addPeer("Supervisor","BaseControllerGains")
 BaseControllerGains.vectorsize = 4;
 #BaseControllerGains.gain = array (0.4, 0.4, 0.4, 0.4) # 10-08-12
 BaseControllerGains.gain = array (5.0, 5.0, 5.0, 5.0)
@@ -123,6 +131,7 @@ connect ("BaseCalculateErrors.out","BaseControllerGains.in", ConnPolicy() )
 
 ### INTEGRATOR ###
 loadComponent("BaseIntegrator","FILTERS::WeakIntegrator")
+addPeer("Supervisor","BaseIntegrator")
 BaseIntegrator.vector_size = 4;
 BaseIntegrator.sampling_time = Ts
 BaseIntegrator.zero_frequency = array (0.0001, 0.0001, 0.0001, 0.0001)
@@ -133,6 +142,7 @@ connect ("BaseControllerGains.out","BaseIntegrator.in", ConnPolicy() )
 
 ### LEADLAG ###
 loadComponent("BaseLeadLag","FILTERS::LeadLags")
+addPeer("Supervisor","BaseLeadLag")
 BaseLeadLag.vector_size = 4;
 BaseLeadLag.sampling_time = Ts
 BaseLeadLag.zero_frequency = array (15.0, 15.0, 15.0, 15.0)
@@ -144,6 +154,7 @@ connect ("BaseIntegrator.out","BaseLeadLag.in", ConnPolicy() )
 
 ### LOWPASS ###
 loadComponent("BaseSecondOrderLowPass","FILTERS::SecondOrderLowPasses")
+addPeer("Supervisor","BaseSecondOrderLowPass")
 BaseSecondOrderLowPass.vector_size = 4;
 BaseSecondOrderLowPass.sampling_time = Ts
 BaseSecondOrderLowPass.pole_frequency = array (100.0, 100.0, 100.0, 100.0)
@@ -155,6 +166,7 @@ connect ("BaseLeadLag.out","BaseSecondOrderLowPass.in", ConnPolicy() )
 
 ### SI2VOLT ###
 loadComponent("BaseSI2Volt","MATH::Gains")
+addPeer("Supervisor","BaseSI2Volt")
 BaseSI2Volt.vectorsize = 4;
 var double SI2V = TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
 BaseSI2Volt.gain = array (SI2V, SI2V, SI2V, SI2V)
@@ -170,6 +182,7 @@ connect ("BaseSI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Send to Soem 
 
 #### LOAD COMPONENT FOR SAFETY ###
 loadComponent("BaseSafety","AMIGO::BaseSafety")
+addPeer("Supervisor","BaseSafety")
 BaseSafety.max_velocities = array (1.8, 1.0, 3.1415)
 BaseSafety.max_errors = array ( 2.2, 2.2, 2.2, 2.2 )
 BaseSafety.max_voltage = 9.9
@@ -184,6 +197,7 @@ connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.tuelights", ConnPolicy() );
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("BaseDiagnostics","ROS::RosDiagnostics")
+addPeer("Supervisor","BaseDiagnostics")
 BaseDiagnostics.statusname = "BaseController"
 BaseDiagnostics.NumberOfVectorPorts = 3
 BaseDiagnostics.NumberOfBoolPorts = 1
@@ -203,6 +217,7 @@ stream("BaseDiagnostics.diagnostics", ros.topic("/base_diagnostics"));
 
 #### LOAD COMPONENT TO PUBLISH STATUS ###
 loadComponent("BaseStatus","ROS::BoolToROS")
+addPeer("Supervisor","BaseStatus")
 BaseStatus.NumberOfBoolPorts = 1
 BaseStatus.configure
 setActivity("BaseStatus",1.0,LowestPriority,ORO_SCHED_OTHER)
@@ -241,11 +256,8 @@ setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 
 ### We start by reading the encoders and sending the position information to ROS: ###
 #### START COMPONENTS ####
-addPeer("Supervisor","ReadWheelEncoders")
 Supervisor.AddAllwaysOnPeer ("ReadWheelEncoders")
-addPeer("Supervisor","BaseDecouplePosition")
 Supervisor.AddAllwaysOnPeer ("BaseDecouplePosition")
-addPeer("Supervisor","Odometry")
 Supervisor.AddAllwaysOnPeer ("Odometry")
 
 

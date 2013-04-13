@@ -4,9 +4,20 @@ import("amigo_etherCAT")
 
 var double Ts = 0.001
 
+
+#### LOAD SUPERVISOR ###
+loadComponent("Supervisor","AMIGO::Supervisor")
+Supervisor.configure
+setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
+stream("Supervisor.rosemergency", ros.topic("/emergency_switch")); 
+stream("Supervisor.rosstandby", ros.topic("/base_standby")); 
+stream("Supervisor.base_started", ros.topic("/base_started"));
+
+
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 #This component enables communication with EtherCAT through the SoemMaster component.
 loadComponent("Soem","soem_master::SoemMasterComponent")
+addPeer("Supervisor","Soem")
 #Configure the component. This looks for connected EtherCAT slaves and creates ports for all of the slaves.
 Soem.configure
 #Set a realtime priority to this component and run it every 1ms.
@@ -17,6 +28,7 @@ setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 #This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.7
 loadComponent("AnalogOuts","SOEM::AnalogOuts")
+addPeer("Supervisor","AnalogOuts")
 AnalogOuts.configure
 setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
 AnalogOuts.max_volt = array ( 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0 )
@@ -24,6 +36,7 @@ connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
 loadComponent("AnalogIns","SOEM::AnalogIns")
+addPeer("Supervisor","AnalogIns")
 AnalogIns.configure
 setActivity("AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
@@ -31,12 +44,14 @@ stream("AnalogIns.out1", ros.topic("/battery_value"))
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
+addPeer("Supervisor","DigitalOuts")
 connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
 setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_1009) ###
 loadComponent("DigitalIns","SOEM::DigitalIns")
+addPeer("Supervisor","DigitalIns")
 DigitalIns.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
 stream("DigitalIns.out1", ros.topic("/fuse1"))
@@ -52,6 +67,7 @@ setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_100a) ###
 loadComponent("DigitalIns2","SOEM::DigitalIns")
+addPeer("Supervisor","DigitalIns2")
 DigitalIns2.setPeriod(0.1)
 connect ("Soem.Slave_100a.bits", "DigitalIns2.in", ConnPolicy() )
 DigitalIns2.configure
@@ -67,27 +83,13 @@ stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
 #DigitalIns2.start
 
 
-#### LOAD SUPERVISOR ###
-loadComponent("Supervisor","AMIGO::Supervisor")
-Supervisor.configure
-setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
-stream("Supervisor.rosemergency", ros.topic("/emergency_switch")); 
-stream("Supervisor.rosstandby", ros.topic("/base_standby")); 
-stream("Supervisor.base_started", ros.topic("/base_started"));
-
 
 #### START COMPONENTS ####
-addPeer("Supervisor","AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("AnalogOuts")
-addPeer("Supervisor","DigitalOuts")
 Supervisor.AddAllwaysOnPeer ("DigitalOuts")
-addPeer("Supervisor","Soem")
 Supervisor.AddAllwaysOnPeer ("Soem")
-addPeer("Supervisor","AnalogIns")
 Supervisor.AddAllwaysOnPeer ("AnalogIns")
-addPeer("Supervisor","DigitalIns")
 Supervisor.AddAllwaysOnPeer ("DigitalIns")
-addPeer("Supervisor","DigitalIns2")
 Supervisor.AddAllwaysOnPeer ("DigitalIns2")
 
 
