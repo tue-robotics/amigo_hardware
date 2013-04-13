@@ -43,6 +43,7 @@ bool BaseSupervisor::configureHook()
 
 bool BaseSupervisor::startHook()
 {
+	//started = false; // Always start in standby state
 	started = true;
     return true;
 }
@@ -75,9 +76,7 @@ void BaseSupervisor::updateHook()
               tc->stop();
           }
       }
-      started = false;
-      std_msgs::Bool rosstartedmsg;
-      rosstartedport.write( rosstartedmsg );
+      started = false;    
     }  
     else if ( !( emergency || standby ) && !started )
     {
@@ -99,10 +98,10 @@ void BaseSupervisor::updateHook()
           }
       }
       started = true;
-      std_msgs::Bool rosstartedmsg;
-      rosstartedport.write( rosstartedmsg );
     }
-      
+    std_msgs::Bool rosstartedmsg;
+    rosstartedmsg.data = started;
+    rosstartedport.write( rosstartedmsg );
 }
 
 void BaseSupervisor::stopHook()

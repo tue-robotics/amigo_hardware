@@ -59,9 +59,35 @@ setActivity("DigitalIns2",0.1,LowestPriority,ORO_SCHED_OTHER)
 # Temp
 stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
 
-AnalogOuts.start
-DigitalOuts.start
-Soem.start
-AnalogIns.start
-DigitalIns.start
-DigitalIns2.start
+#AnalogOuts.start
+#DigitalOuts.start
+#Soem.start
+#AnalogIns.start
+#DigitalIns.start
+#DigitalIns2.start
+
+
+#### LOAD SUPERVISOR ###
+loadComponent("Supervisor","AMIGO::Supervisor")
+Supervisor.configure
+setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
+stream("Supervisor.rosemergency", ros.topic("/emergency_switch")); 
+stream("Supervisor.rosstandby", ros.topic("/base_standby")); 
+stream("Supervisor.base_started", ros.topic("/base_started"));
+
+
+#### START COMPONENTS ####
+addPeer("Supervisor","AnalogOuts")
+Supervisor.AddAllwaysOnPeer ("AnalogOuts")
+addPeer("Supervisor","DigitalOuts")
+Supervisor.AddAllwaysOnPeer ("DigitalOuts")
+addPeer("Supervisor","Soem")
+Supervisor.AddAllwaysOnPeer ("Soem")
+addPeer("Supervisor","AnalogIns")
+Supervisor.AddAllwaysOnPeer ("AnalogIns")
+addPeer("Supervisor","DigitalIns")
+Supervisor.AddAllwaysOnPeer ("DigitalIns")
+addPeer("Supervisor","DigitalIns2")
+Supervisor.AddAllwaysOnPeer ("DigitalIns2")
+
+

@@ -234,14 +234,20 @@ addPeer("BaseSupervisor","BaseSafety")
 BaseSupervisor.AddBaseSupervisoredPeer ("BaseSafety")
 stream("BaseSupervisor.rosemergency", ros.topic("/emergency_switch"));
 stream("BaseSupervisor.rosstandby", ros.topic("/base_standby"));
+stream("BaseSupervisor.base_started", ros.topic("/base_started"));
 BaseSupervisor.configure
 setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 
 
 ### We start by reading the encoders and sending the position information to ROS: ###
-ReadWheelEncoders.start
-BaseDecouplePosition.start
-Odometry.start
+#### START COMPONENTS ####
+addPeer("Supervisor","ReadWheelEncoders")
+Supervisor.AddAllwaysOnPeer ("ReadWheelEncoders")
+addPeer("Supervisor","BaseDecouplePosition")
+Supervisor.AddAllwaysOnPeer ("BaseDecouplePosition")
+addPeer("Supervisor","Odometry")
+Supervisor.AddAllwaysOnPeer ("Odometry")
+
 
 ### Now we read the reference velocities from ROS and close the control loop:
 BaseReadReferenceVelocities.start
