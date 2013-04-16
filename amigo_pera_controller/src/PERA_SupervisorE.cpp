@@ -119,13 +119,12 @@ bool SupervisorE::configureHook()
 	}
 
 	// Set the initial jnt for homingprocedure
-	jntNr=5;
+	jntNr=6;
 
 	// Pressed is true. No SOEM heartbeat means no amplifier enabling.
 	pressed = true;
 
 	return true;
-
 }
 
 bool SupervisorE::startHook()
@@ -157,6 +156,11 @@ bool SupervisorE::startHook()
 	}
 
 	log(Warning)<<"SUPERVISOR: configured and running."<<endlog();
+	
+				doubles resetdata(32,0.0);
+
+				// Reset the reference interpolator to zero
+				resetIntPort.write(resetdata);
 
 	return true;
 }
@@ -401,8 +405,6 @@ void SupervisorE::updateHook()
 				// Measure the abs en rel angles.
 				mRelJntAngPort.read(measRelJntAngles);
 				mAbsJntAngPort.read(measAbsJntAngles);
-				
-				
 
 				if(cntr==0){
 
@@ -580,7 +582,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		}
 		// If true the homing will be done using rel encoders
 		else if(ABS_OR_REL[jntNr-1]==1){
-
+			
 			// If the mechanical endstop is not reached
 			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]-0.0017) ){
 				tempHomJntAngles[jntNr-1]-=STEPSIZE;
@@ -588,6 +590,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 			// If the mechanical endstop is reached (error to large)
 			else if( fabs(jointErrors[jntNr-1]) >= (MAX_ERRORS[jntNr-1]-0.0017) ){
+				log(Warning) << "The mechanical endstop is reached for joint : [ " << jntNr << "]" <<endlog();
 
 				// From the mechanical endstop move back to homing position
 				tempHomJntAngles[jntNr-1]=measRelJntAngles[jntNr-1]+HOMEDPOS[jntNr-1];

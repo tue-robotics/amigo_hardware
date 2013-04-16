@@ -59,12 +59,12 @@ void SensorTorquesE::updateHook()
         Tmeasured[i] = (Ksensor[i]/(Vmeasured[i] + Voffset[i])-Xoffset[i])*Stiffness[i]*PivotDistance[i]; // Differential (gear) torques
 	}
 	
-	if (cnt == 5000) { 
-		log(Warning)<<"Vmeasured: ["<< Vmeasured[0] << ","<< Vmeasured[1] << ","<< Vmeasured[2] << ","<< Vmeasured[3] << ","<< Vmeasured[4] << ","<< Vmeasured[5] << ","<< Vmeasured[6] << ","<< Vmeasured[7] << "]"  <<endlog();
-		log(Warning)<<"Tmeasured: ["<< Tmeasured[0] << ","<< Tmeasured[1] << ","<< Tmeasured[2] << ","<< Tmeasured[3] << ","<< Tmeasured[4] << ","<< Tmeasured[5] << ","<< Tmeasured[6] << ","<< Tmeasured[7] << "]"  <<endlog();
-		cnt = 0;
-	}
-	cnt++;
+	//if (cnt == 5000) { 
+	//	log(Warning)<<"Vmeasured: ["<< Vmeasured[0] << ","<< Vmeasured[1] << ","<< Vmeasured[2] << ","<< Vmeasured[3] << ","<< Vmeasured[4] << ","<< Vmeasured[5] << ","<< Vmeasured[6] << ","<< Vmeasured[7] << "]"  <<endlog();
+	//	log(Warning)<<"Tmeasured: ["<< Tmeasured[0] << ","<< Tmeasured[1] << ","<< Tmeasured[2] << ","<< Tmeasured[3] << ","<< Tmeasured[4] << ","<< Tmeasured[5] << ","<< Tmeasured[6] << ","<< Tmeasured[7] << "]"  <<endlog();
+	//	cnt = 0;
+	//}
+	//cnt++;
 	
 	
 	

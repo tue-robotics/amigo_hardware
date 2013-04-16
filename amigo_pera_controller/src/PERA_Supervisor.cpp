@@ -534,10 +534,10 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 	}
 
 	if(jntNr!=0 && goodToGo && gripperHomed){
-
+		
 		// If true the homing will be done using abs sensor
 		if(ABS_OR_REL[jntNr-1]==0){
-
+			
 			// Homing position not reached yet
 			if(fabs(HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=1.0){
 
