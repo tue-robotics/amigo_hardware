@@ -1,0 +1,40 @@
+#Import all the dependencies from the amigo_etherCAT package. 
+#This enables you to import components from all these packages.
+import("amigo_etherCAT")
+var double Ts = 0.001
+
+### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
+#This component enables communication with EtherCAT through the SoemMaster component.
+loadComponent("Soem","soem_master::SoemMasterComponent")
+#Configure the component. This looks for connected EtherCAT slaves and creates ports for all of the slaves.
+Soem.configure
+#Set a realtime priority to this component and run it every 1ms.
+setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
+#TODO What happens if you set the priority to 0.0?
+
+#### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
+#This component splits the doubles vector from the controllers and sends them to the right Soem Slaves
+loadComponent("AnalogOutsPera","SOEM::AnalogOutsPera")
+AnalogOutsPera.configure
+setActivity("AnalogOutsPera",0.0,HighestPriority,ORO_SCHED_RT)
+AnalogOutsPera.max_volt = array ( 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0)
+connect ("AnalogOutsPera.out1","Soem.Slave_1002.pwmDutyMotorsIn", ConnPolicy() );
+connect ("AnalogOutsPera.out2","Soem.Slave_1003.pwmDutyMotorsIn", ConnPolicy() );
+connect ("AnalogOutsPera.out3","Soem.Slave_1004.pwmDutyMotorsIn", ConnPolicy() );
+
+#### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
+#This component aggregates all the signals from the Soem Slaves and puts them into a doubles for the position 
+# and a doubles for the force and then sends these doubles to the right component
+loadComponent("AnalogInsPera","SOEM::AnalogInsPera")
+AnalogInsPera.configure
+setActivity("AnalogInsPera",Ts,HighestPriority,ORO_SCHED_RT)
+connect ("Soem.Slave_1002.forceSensors","AnalogInsPera.in_for1", ConnPolicy() )  
+connect ("Soem.Slave_1003.forceSensors","AnalogInsPera.in_for2", ConnPolicy() )  
+connect ("Soem.Slave_1004.forceSensors","AnalogInsPera.in_for3", ConnPolicy() )   
+connect ("Soem.Slave_1002.positionSensors","AnalogInsPera.in_pos1", ConnPolicy() )  
+connect ("Soem.Slave_1003.positionSensors","AnalogInsPera.in_pos2", ConnPolicy() )  
+connect ("Soem.Slave_1004.positionSensors","AnalogInsPera.in_pos3", ConnPolicy() )
+
+AnalogOutsPera.start
+Soem.start
+AnalogInsPera.start
