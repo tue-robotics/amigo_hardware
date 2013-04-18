@@ -1,22 +1,30 @@
 #Import all the dependencies from the amigo_etherCAT package. 
 #This enables you to import components from all these packages.
 import("amigo_etherCAT")
-
 var double Ts = 0.001
+
+#### LOAD SUPERVISOR ###
+loadComponent("Supervisor","AMIGO::Supervisor")
+Supervisor.configure
+setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
+Supervisor.start
+#stream("Supervisor.rosemergency", ros.topic("/emergency_switch")); 
+#stream("Supervisor.rosstandby", ros.topic("/base_standby")); 
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 #This component enables communication with EtherCAT through the SoemMaster component.
 loadComponent("Soem","soem_master::SoemMasterComponent")
+addPeer("Supervisor","Soem")
 #Configure the component. This looks for connected EtherCAT slaves and creates ports for all of the slaves.
 Soem.configure
 #Set a realtime priority to this component and run it every 1ms.
 setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
 #TODO What happens if you set the priority to 0.0?
 
-
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 #This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.7
 loadComponent("AnalogOuts","SOEM::AnalogOuts")
+addPeer("Supervisor","AnalogOuts")
 AnalogOuts.configure
 setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
 AnalogOuts.max_volt = array ( 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0 )
@@ -24,6 +32,7 @@ connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
 loadComponent("AnalogIns","SOEM::AnalogIns")
+addPeer("Supervisor","AnalogIns")
 AnalogIns.configure
 setActivity("AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
@@ -31,12 +40,14 @@ stream("AnalogIns.out1", ros.topic("/battery_value"))
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
+addPeer("Supervisor","DigitalOuts")
 connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
 setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_1009) ###
 loadComponent("DigitalIns","SOEM::DigitalIns")
+addPeer("Supervisor","DigitalIns")
 DigitalIns.setPeriod(0.1)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
 stream("DigitalIns.out1", ros.topic("/fuse1"))
@@ -52,6 +63,7 @@ setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_100a) ###
 loadComponent("DigitalIns2","SOEM::DigitalIns")
+addPeer("Supervisor","DigitalIns2")
 DigitalIns2.setPeriod(0.1)
 connect ("Soem.Slave_100a.bits", "DigitalIns2.in", ConnPolicy() )
 DigitalIns2.configure
@@ -62,6 +74,7 @@ stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
 #This component splits the doubles vector from the controllers and sends them to the right Soem Slaves
 loadComponent("AnalogOutsPera","SOEM::AnalogOutsPera")
+addPeer("Supervisor","AnalogOutsPera")
 AnalogOutsPera.configure
 setActivity("AnalogOutsPera",0.0,HighestPriority,ORO_SCHED_RT)
 AnalogOutsPera.max_volt = array ( 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0)
@@ -73,6 +86,7 @@ connect ("AnalogOutsPera.out3","Soem.Slave_1013.pwmDutyMotorsIn", ConnPolicy() )
 #This component aggregates all the signals from the Soem Slaves and puts them into a doubles for the position 
 # and a doubles for the force and then sends these doubles to the right component
 loadComponent("AnalogInsPera","SOEM::AnalogInsPera")
+addPeer("Supervisor","AnalogInsPera")
 AnalogInsPera.configure
 setActivity("AnalogInsPera",Ts,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_1011.forceSensors","AnalogInsPera.in_for1", ConnPolicy() )  
@@ -82,11 +96,24 @@ connect ("Soem.Slave_1011.positionSensors","AnalogInsPera.in_pos1", ConnPolicy()
 connect ("Soem.Slave_1012.positionSensors","AnalogInsPera.in_pos2", ConnPolicy() )  
 connect ("Soem.Slave_1013.positionSensors","AnalogInsPera.in_pos3", ConnPolicy() )
 
-AnalogOutsPera.start
-AnalogOuts.start
-DigitalOuts.start
-Soem.start
-AnalogIns.start
-DigitalIns.start
-DigitalIns2.start
-AnalogInsPera.start
+# starting of components old
+#AnalogOutsPera.start
+#AnalogOuts.start
+#DigitalOuts.start
+#Soem.start
+#AnalogIns.start
+#DigitalIns.start
+#DigitalIns2.start
+#AnalogInsPera.start
+
+#### START COMPONENTS ####
+Supervisor.AddAllwaysOnPeer ("AnalogOuts")
+Supervisor.AddAllwaysOnPeer ("AnalogOutsPera")
+Supervisor.AddAllwaysOnPeer ("DigitalOuts")
+Supervisor.AddAllwaysOnPeer ("Soem")
+Supervisor.AddAllwaysOnPeer ("AnalogIns")
+Supervisor.AddAllwaysOnPeer ("AnalogInsPera")
+Supervisor.AddAllwaysOnPeer ("DigitalIns")
+Supervisor.AddAllwaysOnPeer ("DigitalIns2")
+
+

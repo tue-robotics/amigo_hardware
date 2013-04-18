@@ -1,9 +1,7 @@
 #Import all the dependencies from the amigo_etherCAT package. 
 #This enables you to import components from all these packages.
 import("amigo_etherCAT")
-
 var double Ts = 0.001
-
 
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","AMIGO::Supervisor")
@@ -12,7 +10,6 @@ setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 Supervisor.start
 #stream("Supervisor.rosemergency", ros.topic("/emergency_switch")); 
 #stream("Supervisor.rosstandby", ros.topic("/base_standby")); 
-
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 #This component enables communication with EtherCAT through the SoemMaster component.
@@ -23,7 +20,6 @@ Soem.configure
 #Set a realtime priority to this component and run it every 1ms.
 setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
 #TODO What happens if you set the priority to 0.0?
-
 
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 #This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.7
