@@ -23,7 +23,7 @@ namespace PERA
 {
 	typedef std::vector<double> doubles;
 	
-	/*! \class GripperControl
+	/*! \class GripperControlE
 	 *  \brief Defines Orocos component for controlling the gripper
 	 * 
 	 * The GripperControl closes the gripper using a force threshold. It
