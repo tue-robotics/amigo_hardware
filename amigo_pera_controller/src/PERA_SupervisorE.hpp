@@ -75,8 +75,12 @@ namespace PERA
 		OutputPort<amigo_msgs::arm_joints> resetRefPort;
 		//! Outputport for disabling/enabling the ReadReferenceAngles to read topic
 		OutputPort<bool> enableReadRefPort;
-		//! Outputport for ordering the PERA_IO to renull
-		OutputPort<bool> reNullPort;
+		//! Outputport for ordering the PERA_IO to renull for slave 1002
+		OutputPort<bool> reNullPort1;
+		//! Outputport for ordering the PERA_IO to renulll for slave 1003
+		OutputPort<bool> reNullPort2;
+		//! Outputport for ordering the PERA_IO to renulll for slave 1004
+		OutputPort<bool> reNullPort3;
 		//! Outputport for ordering gripper to close
 		//OutputPort<std_msgs::Bool> gripperClosePort;
 		OutputPort<amigo_msgs::AmigoGripperCommand> gripperCommandPort;
@@ -89,6 +93,7 @@ namespace PERA
 		//! Counters for loopcounting
 		int cntr;
 		int cntr2;
+		int cntsl;
 		//! Integer for storing the joint number of the joint that is being stopped
 		uint breaking;
 		//! Emergency button pressed / released (true/false) (memory bool)

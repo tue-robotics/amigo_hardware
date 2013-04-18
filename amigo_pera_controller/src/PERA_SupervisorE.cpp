@@ -36,7 +36,9 @@ SupervisorE::SupervisorE(const string& name) :
 	addPort("resetInterpolatorPort",resetIntPort).doc("Sends resetvalues to the ReferenceInterpolator");
 	addPort("resetRefPort",resetRefPort).doc("Sends reset joint coordinates to ROS topic");
 	addPort("homJntAnglesPort",homJntAngPort).doc("Sends the requested angles for homing to the ReferenceInterpolator");
-	addPort("reNullPort",reNullPort).doc("Sends signal to PERA_IO to renull at actual position");
+	addPort("reNullPort1",reNullPort1).doc("Sends signal to PERA_IO to renull at actual position for slave 1002");
+	addPort("reNullPort2",reNullPort2).doc("Sends signal to PERA_IO to renull at actual position for slave 1002");
+	addPort("reNullPort3",reNullPort3).doc("Sends signal to PERA_IO to renull at actual position for slave 1002");
 	addPort("enableReadRefPort",enableReadRefPort).doc("Sends enable signal to ReadReference allow reading of joint angles from ROS topic");
 	addPort("gripper_command", gripperCommandPort);
 	addPort("gripper_measurement",gripperMeasurementPort);
@@ -82,6 +84,7 @@ bool SupervisorE::configureHook()
 	// Set initial values
 	cntr=0;
 	cntr2=0;
+	cntsl=0;
 	firstSatInstance[0] = 0;
 	firstSatInstance[1] = 0;
 	firstSatInstance[2] = 0;
@@ -123,7 +126,7 @@ bool SupervisorE::configureHook()
 
 	// Pressed is true. No SOEM heartbeat means no amplifier enabling.
 	pressed = true;
-
+	
 	return true;
 }
 
@@ -156,11 +159,6 @@ bool SupervisorE::startHook()
 	}
 
 	log(Warning)<<"SUPERVISOR: configured and running."<<endlog();
-	
-				doubles resetdata(32,0.0);
-
-				// Reset the reference interpolator to zero
-				resetIntPort.write(resetdata);
 
 	return true;
 }
@@ -401,7 +399,13 @@ void SupervisorE::updateHook()
 				doubles measRelJntAngles(8,0.0);
                 doubles measAbsJntAngles(7,0.0);
 				doubles homJntAngTemp(7,0.0);
-
+				
+				if (cntsl == 0) {
+				// sleep of 5 to make sure homing is not started before slaves are ready
+				sleep(1); 
+				cntsl++;
+				}
+				
 				// Measure the abs en rel angles.
 				mRelJntAngPort.read(measRelJntAngles);
 				mAbsJntAngPort.read(measAbsJntAngles);
@@ -512,6 +516,12 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 		amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
 		gripperMeasurementPort.read(gripperMeasurement);
+		
+		if (gripperMeasurement.max_torque_reached)
+		log(Warning) << "Gripper Max torque reached" <<endlog();
+		
+		if (gripperMeasurement.end_position_reached)
+		log(Warning) << "Gripper end postion reached" <<endlog();
 
 		if(gripperMeasurement.end_position_reached || gripperMeasurement.max_torque_reached){
 			log(Warning)<<"SUPERVISOR: gripper homed"<<endlog();
@@ -534,19 +544,35 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]+=0.0007; //go forward fast
-						log(Info)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {
+						log(Warning)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]-=0.0007; //go back fast
-						log(Info)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {
+						log(Warning)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]+=0.00017; //go forward slowly
-						log(Info)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {
+						log(Warning)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]-=0.00017; //go back slowly
-						log(Info)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {						
+						log(Warning)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;
 					}
 
 
@@ -556,19 +582,35 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]-=0.0007; //go forward fast 
-						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {						
+						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;					
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]+=0.0007; //go back fast
-						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {						
+						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;				
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]-=0.00017; //go forward slowly
-						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" decreasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {						
+						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]+=0.00017; //go back slowly
-						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" increasing despos towards "<<homJntAngles[jntNr-1]<<endlog();
+						if (cntsl > 100) {						
+						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]" <<endlog();
+						cntsl = 1;
+						}
+						cntsl++;					
 					}
 
 				}
@@ -586,11 +628,14 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 			// If the mechanical endstop is not reached
 			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]-0.0017) ){
 				tempHomJntAngles[jntNr-1]-=STEPSIZE;
+				//log(Warning) << "Stepsize is done: [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "," << jntNr-1 << "]" <<endlog();
 			}
 
 			// If the mechanical endstop is reached (error to large)
 			else if( fabs(jointErrors[jntNr-1]) >= (MAX_ERRORS[jntNr-1]-0.0017) ){
 				log(Warning) << "The mechanical endstop is reached for joint : [ " << jntNr << "]" <<endlog();
+				log(Warning) << "First >= Second : [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "]" <<endlog();
+
 
 				// From the mechanical endstop move back to homing position
 				tempHomJntAngles[jntNr-1]=measRelJntAngles[jntNr-1]+HOMEDPOS[jntNr-1];
@@ -636,13 +681,13 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		// If homed joint is last one, reset interpolator and PERA_USB_IO
 		else if(jntNr==1){
 
-			if(cntr2>=0 && cntr2<5){
+			if(cntr2>=0 && cntr2<20){
 				cntr2++;
 				enable = false;
 				enablePort.write(enable);
 			}
 
-			else if(cntr2==5){
+			else if(cntr2==20){
 
 				// Reset the referenceInterpolator and PERA_IO.
 				doubles resetdata(32,0.0);
@@ -653,12 +698,11 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 				// Null the PERA_IO.
 				bool reNull = true;
-				reNullPort.write(reNull);
-				log(Warning)<<"SUPERVISOR: Renulled PERA_IO \n"<<endlog();
+				reNullPort1.write(reNull);
+				reNullPort2.write(reNull);
+				reNullPort3.write(reNull);
 
-				// Enable the reading of the reference joint angles.
-				bool enableReadRef = true;
-				enableReadRefPort.write(enableReadRef);
+				log(Warning)<<"SUPERVISOR: Renulled PERA_IO \n"<<endlog();
 
 				// Fill up resetdata
 				for(unsigned int i = 0;i<8;i++){
@@ -667,6 +711,10 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					resetdata[i*4+2]=0.0;
 					resetdata[i*4+3]=0.0;
 				}
+
+				// Enable the reading of the reference joint angles.
+				bool enableReadRef = true;
+				enableReadRefPort.write(enableReadRef);
 
 				// Reset the reference interpolator to zero
 				resetIntPort.write(resetdata);
@@ -677,10 +725,11 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 				cntr2++;
 
 			}
-			else if(cntr2>=6 && cntr2<65){
+			else if(cntr2>=21 && cntr2<260){
 				cntr2++;
+				log(Warning)<<"SUPERVISOR: almost Finished homing; counting:" << cntr2 <<endlog();
 			}
-			else if(cntr2==65){
+			else if(cntr2==260){
 
 				// Enable PERA IO
 				enable = true;
