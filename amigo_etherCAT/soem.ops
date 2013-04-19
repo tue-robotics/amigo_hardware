@@ -78,8 +78,6 @@ stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
 #DigitalIns.start
 #DigitalIns2.start
 
-
-
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("DigitalOuts")

@@ -74,7 +74,6 @@ stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
 #This component splits the doubles vector from the controllers and sends them to the right Soem Slaves
 loadComponent("AnalogOutsPera","SOEM::AnalogOutsPera")
-addPeer("Supervisor","AnalogOutsPera")
 AnalogOutsPera.configure
 setActivity("AnalogOutsPera",0.0,HighestPriority,ORO_SCHED_RT)
 AnalogOutsPera.max_volt = array ( 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0)
@@ -86,7 +85,6 @@ connect ("AnalogOutsPera.out3","Soem.Slave_1013.pwmDutyMotorsIn", ConnPolicy() )
 #This component aggregates all the signals from the Soem Slaves and puts them into a doubles for the position 
 # and a doubles for the force and then sends these doubles to the right component
 loadComponent("AnalogInsPera","SOEM::AnalogInsPera")
-addPeer("Supervisor","AnalogInsPera")
 AnalogInsPera.configure
 setActivity("AnalogInsPera",Ts,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_1011.forceSensors","AnalogInsPera.in_for1", ConnPolicy() )  
@@ -96,23 +94,13 @@ connect ("Soem.Slave_1011.positionSensors","AnalogInsPera.in_pos1", ConnPolicy()
 connect ("Soem.Slave_1012.positionSensors","AnalogInsPera.in_pos2", ConnPolicy() )  
 connect ("Soem.Slave_1013.positionSensors","AnalogInsPera.in_pos3", ConnPolicy() )
 
-# starting of components old
-#AnalogOutsPera.start
-#AnalogOuts.start
-#DigitalOuts.start
-#Soem.start
-#AnalogIns.start
-#DigitalIns.start
-#DigitalIns2.start
-#AnalogInsPera.start
-
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("AnalogOuts")
-Supervisor.AddAllwaysOnPeer ("AnalogOutsPera")
+AnalogOutsPera.start
 Supervisor.AddAllwaysOnPeer ("DigitalOuts")
 Supervisor.AddAllwaysOnPeer ("Soem")
 Supervisor.AddAllwaysOnPeer ("AnalogIns")
-Supervisor.AddAllwaysOnPeer ("AnalogInsPera")
+AnalogInsPera.start
 Supervisor.AddAllwaysOnPeer ("DigitalIns")
 Supervisor.AddAllwaysOnPeer ("DigitalIns2")
 
