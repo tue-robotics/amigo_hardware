@@ -120,6 +120,12 @@ namespace PERA
 		double prevJntNr;
 		//! Variable for storing the nr of the joint being homed during homing
 		double jntNr;
+		//! Constant for stepsize Fast (steps in absolute part of homing procedure)
+		double FastStep;
+		//! Constant for stepsize Slow (steps in absolute part of homing procedure)
+		double SlowStep;
+		//! Ts hardcoded for now                                                           TO DO : Ugly coding make more nice
+		double Ts;
 		//! Variable for storing the previous measured jointangle during homing
 		double prevAngle;
 		//! Requested joint angles

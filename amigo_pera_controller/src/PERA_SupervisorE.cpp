@@ -123,7 +123,10 @@ bool SupervisorE::configureHook()
 
 	// Set the initial jnt for homingprocedure
 	jntNr=6;
-
+	FastStep = 0.175;
+	SlowStep = 0.0425;
+	Ts = 1000;
+	
 	// Pressed is true. No SOEM heartbeat means no amplifier enabling.
 	pressed = true;
 	
@@ -543,32 +546,32 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 				if(ABS_SEN_DIR[jntNr-1]==1.0){
 
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
-						tempHomJntAngles[jntNr-1]+=0.0007; //go forward fast
-						if (cntsl > 100) {
+						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go forward fast
+						if (cntsl > (Ts/10)) {
 						log(Warning)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntsl = 1;
 						}
 						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
-						tempHomJntAngles[jntNr-1]-=0.0007; //go back fast
-						if (cntsl > 100) {
+						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go back fast
+						if (cntsl > (Ts/10)) {
 						log(Warning)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntsl = 1;
 						}
 						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
-						tempHomJntAngles[jntNr-1]+=0.00017; //go forward slowly
-						if (cntsl > 100) {
+						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go forward slowly
+						if (cntsl > (Ts/10)) {
 						log(Warning)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntsl = 1;
 						}
 						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
-						tempHomJntAngles[jntNr-1]-=0.00017; //go back slowly
-						if (cntsl > 100) {						
+						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go back slowly
+						if (cntsl > (Ts/10)) {						
 						log(Warning)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntsl = 1;
 						}
@@ -581,32 +584,32 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 				else if(ABS_SEN_DIR[jntNr-1]==-1.0){
 
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
-						tempHomJntAngles[jntNr-1]-=0.0007; //go forward fast 
-						if (cntsl > 100) {						
+						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go forward fast 
+						if (cntsl > (Ts/10)) {						
 						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntsl = 1;
 						}
 						cntsl++;					
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
-						tempHomJntAngles[jntNr-1]+=0.0007; //go back fast
-						if (cntsl > 100) {						
+						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go back fast
+						if (cntsl > (Ts/10)) {						
 						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntsl = 1;
 						}
 						cntsl++;				
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
-						tempHomJntAngles[jntNr-1]-=0.00017; //go forward slowly
-						if (cntsl > 100) {						
+						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go forward slowly
+						if (cntsl > (Ts/10)) {						
 						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntsl = 1;
 						}
 						cntsl++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
-						tempHomJntAngles[jntNr-1]+=0.00017; //go back slowly
-						if (cntsl > 100) {						
+						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go back slowly
+						if (cntsl > (Ts/10)) {						
 						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]" <<endlog();
 						cntsl = 1;
 						}
@@ -624,18 +627,18 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		}
 		// If true the homing will be done using rel encoders
 		else if(ABS_OR_REL[jntNr-1]==1){
-			
-			// If the mechanical endstop is not reached
+			// If the mechanical endstop is not reached yet
 			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]-0.0017) ){
-				tempHomJntAngles[jntNr-1]-=STEPSIZE;
-				//log(Warning) << "Stepsize is done: [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "," << jntNr-1 << "]" <<endlog();
+				if (jntNr == 7);
+				tempHomJntAngles[jntNr-1]-=(STEPSIZE/Ts);
+				if (jntNr != 7);
+				tempHomJntAngles[jntNr-1]-=(STEPSIZE/Ts);
+				//log(Warning) << "Stepsize is done: [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "," << jntNr << "]" <<endlog();
 			}
 
 			// If the mechanical endstop is reached (error to large)
 			else if( fabs(jointErrors[jntNr-1]) >= (MAX_ERRORS[jntNr-1]-0.0017) ){
 				log(Warning) << "The mechanical endstop is reached for joint : [ " << jntNr << "]" <<endlog();
-				log(Warning) << "First >= Second : [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "]" <<endlog();
-
 
 				// From the mechanical endstop move back to homing position
 				tempHomJntAngles[jntNr-1]=measRelJntAngles[jntNr-1]+HOMEDPOS[jntNr-1];
@@ -664,13 +667,13 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 			goodToGo = true;
 		}
 		// If joint is moved to endstop using rel enc waiting time is required to move to homing position
-		else if(ABS_OR_REL[jntNr-1]==1 && cntr2<6000 && jntNr!=1 && jntNr!=4){
+		else if(ABS_OR_REL[jntNr-1]==1 && cntr2<(5*Ts) && jntNr!=1 && jntNr!=4){
 
 			cntr2++;
 
 		}
 		// If waiting is complete move on to next joint
-		else if(ABS_OR_REL[jntNr-1]==1 && cntr2==6000 && jntNr!=1 && jntNr!=4){
+		else if(ABS_OR_REL[jntNr-1]==1 && cntr2==(5*Ts) && jntNr!=1 && jntNr!=4){
 
 			cntr2=0;
 			jntNr--;
@@ -727,7 +730,6 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 			}
 			else if(cntr2>=21 && cntr2<260){
 				cntr2++;
-				log(Warning)<<"SUPERVISOR: almost Finished homing; counting:" << cntr2 <<endlog();
 			}
 			else if(cntr2==260){
 
