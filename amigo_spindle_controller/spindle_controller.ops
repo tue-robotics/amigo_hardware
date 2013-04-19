@@ -142,8 +142,8 @@ stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/sp
 stream("SpindlePublishPosition.out", ros.topic("/spindle_position"));
 stream("SpindleReadSetpoint.afterhoming_pos", ros.topic("/spindle_controller/spindle_coordinates"));
 stream("SpindleStatus.bool_out1", ros.topic("/spindle_status"));
-stream("SpindleHoming.ros_emergency", ros.topic("/disable_amplifiers"));
-
+#stream("SpindleHoming.ros_emergency", ros.topic("/disable_amplifiers"));
+stream("SpindleHoming.ros_emergency", ros.topic("/emergency_switch"));
 
 ### Setting up reporting ###
 #loadComponent("SpindleReporter", "OCL::FileReporting")
