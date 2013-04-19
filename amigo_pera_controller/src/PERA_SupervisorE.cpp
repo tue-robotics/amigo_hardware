@@ -64,7 +64,6 @@ SupervisorE::SupervisorE(const string& name) :
 	addProperty( "maxAccelerations", MAXACCS ).doc("Joint maximum accelerations");
 	addProperty( "dynBreakEpsilon", DYNBREAKEPS ).doc("Tuning epsilon for dynamical breaking (margin on minimum breaking distance)");
 	addProperty( "requireGripperHoming", REQUIRE_GRIPPER_HOMING ).doc("Defines whether the gripper is homed upon startup");
-
 }
 
 SupervisorE::~SupervisorE(){}
@@ -404,7 +403,7 @@ void SupervisorE::updateHook()
 				doubles homJntAngTemp(7,0.0);
 				
 				if (cntsl == 0) {
-				// sleep of 5 to make sure homing is not started before slaves are ready
+				// sleep of 1s to make sure homing is not started before slaves are ready
 				sleep(1); 
 				cntsl++;
 				}
@@ -629,9 +628,9 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		else if(ABS_OR_REL[jntNr-1]==1){
 			// If the mechanical endstop is not reached yet
 			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]-0.0017) ){
-				if (jntNr == 7);
+				if (jntNr == 7)
 				tempHomJntAngles[jntNr-1]-=(STEPSIZE/Ts);
-				if (jntNr != 7);
+				if (jntNr != 7)
 				tempHomJntAngles[jntNr-1]-=(STEPSIZE/Ts);
 				//log(Warning) << "Stepsize is done: [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "," << jntNr << "]" <<endlog();
 			}
@@ -659,22 +658,24 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 	}
 
 	else if(!goodToGo && gripperHomed){
+		// If joint is homed using abs sens small waiting time is required
+		if( ((ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ) && (cntr2<(1*Ts))){
+			cntr2++;
+		}
 
-		// If joint is homed using abs sens no waiting time is required
-		if( (ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ){
+		// If waiting is complete move on to next joint
+		if( ((ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ) && (cntr2==(1*Ts))){
+			cntr2=0;
 			jntNr--;
 			log(Warning)<<"SUPERVISOR: Proceeded to joint "<<jntNr<<"\n"<<endlog();
 			goodToGo = true;
 		}
 		// If joint is moved to endstop using rel enc waiting time is required to move to homing position
 		else if(ABS_OR_REL[jntNr-1]==1 && cntr2<(5*Ts) && jntNr!=1 && jntNr!=4){
-
 			cntr2++;
-
 		}
 		// If waiting is complete move on to next joint
 		else if(ABS_OR_REL[jntNr-1]==1 && cntr2==(5*Ts) && jntNr!=1 && jntNr!=4){
-
 			cntr2=0;
 			jntNr--;
 			log(Warning)<<"SUPERVISOR: Proceeded to joint "<<jntNr<<"\n"<<endlog();
@@ -684,13 +685,17 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		// If homed joint is last one, reset interpolator and PERA_USB_IO
 		else if(jntNr==1){
 
-			if(cntr2>=0 && cntr2<20){
+			if(cntr2>=0 && cntr2<(int (0.02*Ts))){
+				cntr2++;
+			}
+
+			if(cntr2>=(int (0.02*Ts)) && cntr2<(int (0.04*Ts))){
 				cntr2++;
 				enable = false;
 				enablePort.write(enable);
 			}
 
-			else if(cntr2==20){
+			else if(cntr2==(int (0.04*Ts))){
 
 				// Reset the referenceInterpolator and PERA_IO.
 				doubles resetdata(32,0.0);
@@ -728,10 +733,10 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 				cntr2++;
 
 			}
-			else if(cntr2>=21 && cntr2<260){
+			else if(cntr2>=(int (0.04*Ts)) && cntr2<(int (0.26*Ts))){
 				cntr2++;
 			}
-			else if(cntr2==260){
+			else if(cntr2 == int (0.26*Ts)){
 
 				// Enable PERA IO
 				enable = true;
