@@ -5,6 +5,7 @@ var double Ts = 0.001
 
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","AMIGO::Supervisor")
+stream("Supervisor.rosout", ros.topic("/rosout"))
 Supervisor.configure
 setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 Supervisor.start
