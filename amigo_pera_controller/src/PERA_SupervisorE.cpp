@@ -627,16 +627,13 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		// If true the homing will be done using rel encoders
 		else if(ABS_OR_REL[jntNr-1]==1){
 			// If the mechanical endstop is not reached yet
-			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]-0.0017) ){
-				if (jntNr == 7)
-				tempHomJntAngles[jntNr-1]-=(STEPSIZE/Ts);
-				if (jntNr != 7)
+			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]*0.5) ){
 				tempHomJntAngles[jntNr-1]-=(STEPSIZE/Ts);
 				//log(Warning) << "Stepsize is done: [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "," << jntNr << "]" <<endlog();
 			}
 
 			// If the mechanical endstop is reached (error to large)
-			else if( fabs(jointErrors[jntNr-1]) >= (MAX_ERRORS[jntNr-1]-0.0017) ){
+			else if( fabs(jointErrors[jntNr-1]) >= (MAX_ERRORS[jntNr-1]*0.5) ){
 				log(Warning) << "The mechanical endstop is reached for joint : [ " << jntNr << "]" <<endlog();
 
 				// From the mechanical endstop move back to homing position
@@ -660,7 +657,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 	else if(!goodToGo && gripperHomed){
 		// If joint is homed using abs sens small waiting time is required
 		if( ((ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ) && (cntr2<(1*Ts))){
-			cntr2++;
+			cntr2 = Ts;
 		}
 
 		// If waiting is complete move on to next joint
