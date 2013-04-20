@@ -184,25 +184,25 @@ stream("SpindleHoming.ros_emergency", ros.topic("/emergency_switch"));
 
 
 #### LOAD COMPONENT THATS STOPS THE CONTROLLER IF REQUESTED OR REQUIRED ###
-loadComponent("SpindleSupervisor","AMIGO::SpindleSupervisor")
-addPeer("SpindleSupervisor","SpindleCalculateFFW")
-SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateFFW")
-addPeer("SpindleSupervisor","SpindleCalculateOutput")
-SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateOutput")
-addPeer("SpindleSupervisor","SpindleCalculateError")
-SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateError")
-addPeer("SpindleSupervisor","SpindleGain")
-SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleGain")
-addPeer("SpindleSupervisor","SpindleLeadLag")
-SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleLeadLag")
-addPeer("SpindleSupervisor","SpindleFirstOrderLowPass")
-SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleFirstOrderLowPass")
-addPeer("SpindleSupervisor","SpindleSafety")
-SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleSafety")
-stream("SpindleSupervisor.rosemergency", ros.topic("/emergency_switch"));
-stream("SpindleSupervisor.rosstandby", ros.topic("/spindle_standby"));
-SpindleSupervisor.configure
-setActivity("SpindleSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
+#loadComponent("SpindleSupervisor","AMIGO::SpindleSupervisor")
+#addPeer("SpindleSupervisor","SpindleCalculateFFW")
+#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateFFW")
+#addPeer("SpindleSupervisor","SpindleCalculateOutput")
+#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateOutput")
+#addPeer("SpindleSupervisor","SpindleCalculateError")
+#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateError")
+#addPeer("SpindleSupervisor","SpindleGain")
+#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleGain")
+#addPeer("SpindleSupervisor","SpindleLeadLag")
+#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleLeadLag")
+#addPeer("SpindleSupervisor","SpindleFirstOrderLowPass")
+#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleFirstOrderLowPass")
+#addPeer("SpindleSupervisor","SpindleSafety")
+#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleSafety")
+#stream("SpindleSupervisor.rosemergency", ros.topic("/emergency_switch"));
+#stream("SpindleSupervisor.rosstandby", ros.topic("/spindle_standby"));
+#SpindleSupervisor.configure
+#setActivity("SpindleSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 
 #### Starting all the components ###
 #SpindleReadSetpoint.start
@@ -221,7 +221,7 @@ setActivity("SpindleSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 #SpindleSafety.start
 #SpindleReferenceLimiter.start
 #SpindleStatus.start
-SpindleSupervisor.start
+#SpindleSupervisor.start
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("SpindleReadSetpoint")

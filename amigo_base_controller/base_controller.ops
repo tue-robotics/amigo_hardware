@@ -225,34 +225,34 @@ connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", ConnPolicy() )
 stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 
 
-#### LOAD COMPONENT THATS STOPS THE CONTROLLER IF REQUESTED OR REQUIRED ###
-loadComponent("BaseSupervisor","AMIGO::BaseSupervisor")
-addPeer("Supervisor","BaseSupervisor")
-addPeer("BaseSupervisor","BaseReadReferenceVelocities")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseReadReferenceVelocities")
-addPeer("BaseSupervisor","BaseDecoupleVelReference")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseDecoupleVelReference")
-addPeer("BaseSupervisor","BaseWheelVel2WheelPos")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseWheelVel2WheelPos")
-addPeer("BaseSupervisor","BaseCalculateErrors")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseCalculateErrors")
-addPeer("BaseSupervisor","BaseControllerGains")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseControllerGains")
-addPeer("BaseSupervisor","BaseIntegrator")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseIntegrator")
-addPeer("BaseSupervisor","BaseLeadLag")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseLeadLag")
-addPeer("BaseSupervisor","BaseSecondOrderLowPass")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseSecondOrderLowPass")
-addPeer("BaseSupervisor","BaseSI2Volt")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseSI2Volt")
-addPeer("BaseSupervisor","BaseSafety")
-BaseSupervisor.AddBaseSupervisoredPeer ("BaseSafety")
-stream("BaseSupervisor.rosemergency", ros.topic("/emergency_switch"));
-stream("BaseSupervisor.rosstandby", ros.topic("/base_standby"));
-stream("BaseSupervisor.base_started", ros.topic("/base_started"));
-BaseSupervisor.configure
-setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
+##### LOAD COMPONENT THATS STOPS THE CONTROLLER IF REQUESTED OR REQUIRED ###
+#loadComponent("BaseSupervisor","AMIGO::BaseSupervisor")
+#addPeer("Supervisor","BaseSupervisor")
+#addPeer("BaseSupervisor","BaseReadReferenceVelocities")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseReadReferenceVelocities")
+#addPeer("BaseSupervisor","BaseDecoupleVelReference")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseDecoupleVelReference")
+#addPeer("BaseSupervisor","BaseWheelVel2WheelPos")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseWheelVel2WheelPos")
+#addPeer("BaseSupervisor","BaseCalculateErrors")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseCalculateErrors")
+#addPeer("BaseSupervisor","BaseControllerGains")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseControllerGains")
+#addPeer("BaseSupervisor","BaseIntegrator")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseIntegrator")
+#addPeer("BaseSupervisor","BaseLeadLag")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseLeadLag")
+#addPeer("BaseSupervisor","BaseSecondOrderLowPass")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseSecondOrderLowPass")
+#addPeer("BaseSupervisor","BaseSI2Volt")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseSI2Volt")
+#addPeer("BaseSupervisor","BaseSafety")
+#BaseSupervisor.AddBaseSupervisoredPeer ("BaseSafety")
+#stream("BaseSupervisor.rosemergency", ros.topic("/emergency_switch"));
+#stream("BaseSupervisor.rosstandby", ros.topic("/base_standby"));
+#stream("BaseSupervisor.base_started", ros.topic("/base_started"));
+#BaseSupervisor.configure
+#setActivity("BaseSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 
 
 ### We start by reading the encoders and sending the position information to ROS: ###
@@ -281,5 +281,5 @@ Supervisor.AddPeerToBodyPart ("BaseSI2Volt",1 )
 Supervisor.AddPeerToBodyPart ("BaseSafety",1 )
 Supervisor.AddAllwaysOnPeer ("BaseDiagnostics")
 Supervisor.AddAllwaysOnPeer ("BaseStatus")
-Supervisor.AddAllwaysOnPeer ("BaseSupervisor") # To be removed?
+#Supervisor.AddAllwaysOnPeer ("BaseSupervisor") # To be removed?
 
