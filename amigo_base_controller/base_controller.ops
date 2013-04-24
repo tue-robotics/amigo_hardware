@@ -278,7 +278,7 @@ Supervisor.AddPeerToBodyPart ("BaseSecondOrderLowPass",1 )
 Supervisor.AddPeerToBodyPart ("BaseSI2Volt",1 )
 
 ### Now the whole control loop is closed. Lets add some aditional components for fun and safety:
-Supervisor.AddPeerToBodyPart ("BaseSafety",1 )
+Supervisor.AddAllwaysOnPeer ("BaseSafety" )
 Supervisor.AddAllwaysOnPeer ("BaseDiagnostics")
 Supervisor.AddAllwaysOnPeer ("BaseStatus")
 #Supervisor.AddAllwaysOnPeer ("BaseSupervisor") # To be removed?
