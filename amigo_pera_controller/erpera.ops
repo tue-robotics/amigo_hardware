@@ -15,7 +15,7 @@ import("amigo_pera_controller")
 trigger
 
 ## Declare standard variables that are used multiple times
-var double Ts = 0.001
+var double Ts = 0.003
 var array SIGNS = array (  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
 var array OFFSETS = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
 ## ENC2SI parameters
@@ -204,7 +204,7 @@ RPERA_JointToMotorTorques.function8 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
 loadComponent("RPERA_Gain","MATH::Gains")
 setActivity("RPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gain.vectorsize = 8
-RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 30.0); 		#GRIPPER STILL NEEDS TUNING
+RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0); 		#GRIPPER STILL NEEDS TUNING
 RPERA_Gain.configure
 
 ### Lead Lag ###

@@ -11,7 +11,7 @@ PanTiltController.pan_speed = 50
 PanTiltController.tilt_speed = 25
 PanTiltController.pan_offset = 610
 PanTiltController.tilt_offset = 503
-PanTiltController.setPeriod(0.022)
+PanTiltController.setPeriod(0.1)
 PanTiltController.configure
 
 connect ("Soem.Slave_100f.data_tx", "PanTiltController.instruction", ConnPolicy() )
