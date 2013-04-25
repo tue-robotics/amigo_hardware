@@ -8,7 +8,7 @@ loadComponent("Supervisor","AMIGO::Supervisor")
 stream("Supervisor.rosout", ros.topic("/rosout"))
 Supervisor.configure
 setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
-Supervisor.start
+#Supervisor.start
 stream( "Supervisor.rosemergency", ros.topic("/emergency_switch"));
 stream("Supervisor.rosshutdown", ros.topic("/etherCAT_shutdown")); 
 stream("Supervisor.rosetherCATenabled", ros.topic("/etherCAT_enabled")); 
