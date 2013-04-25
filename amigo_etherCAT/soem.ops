@@ -109,3 +109,4 @@ Supervisor.AddAllwaysOnPeer ("DigitalIns")
 Supervisor.AddAllwaysOnPeer ("DigitalIns2")
 
 
+Supervisor.start()
