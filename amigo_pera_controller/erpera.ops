@@ -15,7 +15,7 @@ import("amigo_pera_controller")
 trigger
 
 ## Declare standard variables that are used multiple times
-var double Ts = 0.003
+var double Ts = 0.001
 var array SIGNS = array (  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
 var array OFFSETS = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
 ## ENC2SI parameters

@@ -22,6 +22,8 @@ Soem.configure
 #Set a realtime priority to this component and run it every 1ms.
 setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
 #TODO What happens if you set the priority to 0.0?
+connect ("Soem.Slave_100f.running", "Supervisor.serialRunning", ConnPolicy() )
+
 
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 #This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.7

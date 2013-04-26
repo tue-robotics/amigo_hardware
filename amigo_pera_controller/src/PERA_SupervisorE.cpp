@@ -404,7 +404,7 @@ void SupervisorE::updateHook()
 				
 				if (cntsl == 0) {
 				// sleep of 1s to make sure homing is not started before slaves are ready
-				sleep(1); 
+				sleep(1); //TIMC: Check actively (port==NewData?) -> sleeps are not allowed in update hooks! 
 				cntsl++;
 				}
 				
