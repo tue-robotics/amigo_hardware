@@ -94,8 +94,6 @@ namespace PERA
 		int cntr;
 		int cntr2;
 		int cntsl;
-		//! Integer for storing the joint number of the joint that is being stopped
-		uint breaking;
 		//! Emergency button pressed / released (true/false) (memory bool)
 		bool pressed;
 		//! Does the deployerfile require homing
@@ -110,8 +108,6 @@ namespace PERA
 		bool goodToGo;
 		//! An error did occur yes / no (true/false)
 		bool errors;
-		//! Indicates if the rostopic /joint_references has been reset
-		bool resetReference;
 		//! Bool for indicating whether gripper is homed (true) or not (false)
 		bool gripperHomed; 
 		//! Property to define whether homing of the gripper is desired
@@ -186,8 +182,6 @@ namespace PERA
 		void updateHook();
 		//! Function outputting jointangles for homing procedure
         doubles homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles);           // changed from ints to doubles
-		//! Function for determining the sign of the input vector
-		doubles signum(doubles a);
 
     };
 }

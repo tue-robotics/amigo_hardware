@@ -70,7 +70,6 @@ SupervisorE::~SupervisorE(){}
 
 bool SupervisorE::configureHook()
 {
-
 	Logger::In in("SUPERVISOR"); 
 
 	jointAngles.resize(7);
@@ -92,16 +91,12 @@ bool SupervisorE::configureHook()
 	firstSatInstance[5] = 0;
 	firstSatInstance[6] = 0;
 	firstSatInstance[7] = 0;
-	breaking = 0;
 
 	// Errors is false by default
 	errors=false;
 
 	// Gripper initially not homed by default
 	gripperHomed = !REQUIRE_GRIPPER_HOMING;
-
-	// Reference not yet resetted
-	resetReference=false;
 
 	// Assign ENABLE_PROPERTY to value enable
 	enable=ENABLE_PROPERTY;
@@ -134,11 +129,8 @@ bool SupervisorE::configureHook()
 
 bool SupervisorE::startHook()
 {
-	
-	log(Warning)<<"SUPERVISOR: executing from trunk"<<endlog();
-
 	// Wait for SOEM heartbeat.
-	while(!(eButtonPort.read(eButtonPressed) == NewData)){
+	/*while(!(eButtonPort.read(eButtonPressed) == NewData)){
 		sleep(1);
 		log(Info)<<"SUPERVISOR: Waiting for enable-signal from the emergency button"<<endlog();
 		cntr++;
@@ -153,14 +145,46 @@ bool SupervisorE::startHook()
 			cntr2=0;
 			return false;
 		}
+	}*/
+
+	/*//Wait untill data can be received. 
+	bool absreceived = false;
+	bool relreceived = false;
+	bool emergencyreceived = false;
+	int counter = 0;
+	while ( ( !absreceived || !relreceived || !emergencyreceived ) && counter < 2000 )
+	{
+		doubles measAbsJntAngles(8,0.0);
+		if ( mRelJntAngPort.read(measAbsJntAngles) == NewData )
+		{
+			absreceived = true;
+		}
+		doubles measRelJntAngles(8,0.0);
+		if ( mRelJntAngPort.read(measRelJntAngles) == NewData )
+		{
+			relreceived = true;
+		}
+		std_msgs::Bool eButtonPressed;
+		if ( eButtonPort.read(eButtonPressed) == NewData )
+		{
+			emergencyreceived = true;
+		}		
+		log(Debug) << "Waiting for ports: abs:" << absreceived << " rel:" << relreceived << " emergency:" << emergencyreceived << endlog();
+		sleep(0.1);
+		counter++;
 	}
+	if (! counter < 2000 )
+	{
+		log(Error) << "One port did not yet send data, aborting: abs:" << absreceived << " rel:" << relreceived << " emergency:" << emergencyreceived << endlog();
+		//return false;
+	}*/  // Now done in updatehook
 
 	if(!REQUIRE_HOMING){
 		bool enableReadRef = true;
 		enableReadRefPort.write(enableReadRef);
 	}
 
-	log(Warning)<<"SUPERVISOR: configured and running."<<endlog();
+	log(Info)<<"SUPERVISOR: configured and running."<<endlog();
 
 	return true;
 }
@@ -178,6 +202,13 @@ bool SupervisorE::startHook()
  */
 void SupervisorE::updateHook()
 {
+	doubles jointarray(8,0.0);
+	if ( !mAbsJntAngPort.read(jointarray) == NewData || !mRelJntAngPort.read(jointarray) == NewData )
+	{
+		log(Warning) << "RPERA_Supervisor: Excecuting updatehook not usefull if no new data is received." << endlog();
+		return;
+	}
+		
 	if(ENABLE_PROPERTY){
 		// Read emergency-button state
 		eButtonPort.read(eButtonPressed);
@@ -233,12 +264,6 @@ void SupervisorE::updateHook()
 					}
 				}
 			}
-
-			/* Set the value to false, otherwise if eButtonPressed.data
-			 * becomes false it will still keep resetting the reference
-			 * interpolator
-			 */
-			resetReference = false;
 
 			reqJntAngPort.read(jointAngles);
 			jointErrorsPort.read(jointErrors);
@@ -296,102 +321,6 @@ void SupervisorE::updateHook()
 
 			}
 			
-			//if(homed && !errors){
-			
-				/* Check whether braking is required to avoid collosion with 
-				 * the mechanical bound. Interferes with homing sequence
-				 * because that intends to hit the mechanical bound. Therefor 
-				 * this check is only performed if the homing is completed.
-				 */
-				/*doubles refIntVelocities(8,0.0);
-				doubles signs(8,0.0);
-				doubles measRelJntAngles(8,0.0);
-				
-				mRelJntAngPort.read(measRelJntAngles);
-				measVelPort.read(refIntVelocities);
-				for(unsigned int i = 0;i<8;i++){
-					if(fabs(refIntVelocities[i])<=0.001){
-						refIntVelocities[i]=0.0;
-					}
-				}
-				signs = signum(refIntVelocities);
-				
-				for(unsigned int i = 0;i<7;i++){
-					// Joint moving towards mechanical upperbound to fast
-					if(signs[i]==1.0 && (0.5*(refIntVelocities[i]*refIntVelocities[i])/MAXACCS[i] > fabs(UPPERBOUNDS[i]-measRelJntAngles[i]+DYNBREAKEPS)) && fabs(UPPERBOUNDS[i]-measRelJntAngles[i])>DYNBREAKEPS && breaking==0){
-						
-						log(Error)<<"SUPERVISOR: Joint q"<<i+1<<" moving to fast towards upperbound. PERA slowed down."<<endlog();
-
-						// Disable the reading of the reference
-						bool enableReadRef = false;
-						enableReadRefPort.write(enableReadRef);\
-						// Store which joint is to be stopped
-						breaking = i+1;
-						
-						for(unsigned int j = 0;j<7;j++){
-							breakingPos[j]=measRelJntAngles[j]+(signs[j]*0.5*(refIntVelocities[j]*refIntVelocities[j])/MAXACCS[j]);
-							// If breakingpoint outside limits then set it at limit
-							if(breakingPos[j]>=UPPERBOUNDS[j]){
-								breakingPos[j]=UPPERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" outside upperbound."<<endlog();
-							}
-							else if(breakingPos[j]<=LOWERBOUNDS[j]){
-								breakingPos[j]=LOWERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" lowerside upperbound."<<endlog();
-							}							
-						}
-						
-						
-					}
-					// Joint moving towards mechanical lowerbound to fast
-					if(signs[i]==-1.0 && (0.5*(refIntVelocities[i]*refIntVelocities[i])/MAXACCS[i] > (measRelJntAngles[i]-LOWERBOUNDS[i]+DYNBREAKEPS)) && fabs(measRelJntAngles[i]-LOWERBOUNDS[i])>DYNBREAKEPS && breaking==0){
-						
-						log(Error)<<"SUPERVISOR: Joint q"<<i+1<<" moving to fast towards lowerbound. PERA slowed down."<<endlog();
-
-						// Disable the reading of the reference
-						bool enableReadRef = false;
-						enableReadRefPort.write(enableReadRef);
-						// Store which joint is to be stopped
-						breaking = i+1;
-						
-						for(unsigned int j = 0;j<7;j++){
-							breakingPos[j]=measRelJntAngles[j]+(signs[j]*0.5*(refIntVelocities[j]*refIntVelocities[j])/MAXACCS[j]);
-							// If breakingpoint outside limits then set it at limit
-							if(breakingPos[j]>=UPPERBOUNDS[j]){
-								breakingPos[j]=UPPERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" outside upperbound."<<endlog();
-							}
-							else if(breakingPos[j]<=LOWERBOUNDS[j]){
-								breakingPos[j]=LOWERBOUNDS[j];
-								log(Error)<<"SUPERVISOR: Brakingpoint joint q"<<j+1<<" lowerside upperbound."<<endlog();
-							}							
-						}
-					}	
-				}
-				
-				// Check if normal operation can continue or that breaking is required
-				if(breaking!=0){
-					
-					homJntAngPort.write(breakingPos);
-					log(Error)<<"SUPERVISOR: Braking!"<<endlog();
-				
-					uint nrJointsStopped = 0;
-					// Check if all joints slowed down enough
-					for(unsigned int i = 0;i<7;i++){
-						if(fabs(refIntVelocities[i])<=0.02){
-							nrJointsStopped++;
-						}
-					}
-					// If all joints slowed down enough resume normal operation
-					if(nrJointsStopped==7){
-						log(Error)<<"SUPERVISOR: We are good again."<<endlog();
-						breaking=0;
-						bool enableReadRef = true;
-						enableReadRefPort.write(enableReadRef);
-					}			
-				}
-			}*/
-
 			/* Check if homing is completed. Else, request for homing angles and
 			 * disable the reading of the reference joint angles from the
 			 * ROS inverse kinematics.
@@ -470,7 +399,6 @@ void SupervisorE::updateHook()
 
 			//log(Error)<<"SUPERVISOR: i wrote q2 = "<<jointResetData.pos[1].data<<"."<<endlog();
 			resetRefPort.write(jointResetData);
-			resetReference = true;
 
 			// Write the new angles to the interpolator for reset such that interpolator will follow the arm position causing no jump in the error
 			resetIntPort.write(resetdata);
@@ -482,20 +410,19 @@ void SupervisorE::updateHook()
 
 		enable = false;
 		enablePort.write(enable);
-
 	}
 	
 	std_msgs::UInt8 statusToDashboard;
 	
-	if(homed==true && errors==false && breaking==0){
+	if(homed==true && errors==false){
 		statusToDashboard.data = 0;
 		peraStatusPort.write(statusToDashboard);
 	}
-	else if(homed==false && errors==false && breaking==0){
+	else if(homed==false && errors==false){
 		statusToDashboard.data = 1;
 		peraStatusPort.write(statusToDashboard);
 	}
-	else if(errors==true || breaking!=0){
+	else if(errors==true){
 		statusToDashboard.data = 2;
 		peraStatusPort.write(statusToDashboard);
 	}
@@ -763,17 +690,5 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 }
 
-doubles SupervisorE::signum(doubles a){
-	doubles signum(8,1.0);
-	for(unsigned int i = 0;i<8;i++){
-		if (a[i] < 0.0){
-			signum[i]=-1.0;
-		}
-		else if (a[i] >= 0.0){
-			signum[i]=1.0;
-		}
-	}
-	return signum;
-}
 
 ORO_CREATE_COMPONENT(PERA::SupervisorE)
