@@ -121,7 +121,7 @@ bool SupervisorE::configureHook()
 	SlowStep = 0.0425;
 	Ts = 1000;
 	
-	// Pressed is true. No SOEM heartbeat means no amplifier enabling.
+	// Pressed is true. Assume emergency button pressed untill informed otherwise.
 	pressed = true;
 	
 	return true;
@@ -129,62 +129,12 @@ bool SupervisorE::configureHook()
 
 bool SupervisorE::startHook()
 {
-	// Wait for SOEM heartbeat.
-	/*while(!(eButtonPort.read(eButtonPressed) == NewData)){
-		sleep(1);
-		log(Info)<<"SUPERVISOR: Waiting for enable-signal from the emergency button"<<endlog();
-		cntr++;
-		if( cntr == 10 && cntr<3 ){
-			log(Warning)<<"SUPERVISOR: no signal from emergency button (SOEM). Is SOEM running?"<<endlog();
-			cntr = 0;
-			cntr2++;
-		}
-		else if( cntr==3 ){
-			log(Error)<<"SUPERVISOR: no SOEM heartbeat. Shutting down LPERA."<<endlog();
-			cntr=0;
-			cntr2=0;
-			return false;
-		}
-	}*/
-
-	/*//Wait untill data can be received. 
-	bool absreceived = false;
-	bool relreceived = false;
-	bool emergencyreceived = false;
-	int counter = 0;
-	while ( ( !absreceived || !relreceived || !emergencyreceived ) && counter < 2000 )
-	{
-		doubles measAbsJntAngles(8,0.0);
-		if ( mRelJntAngPort.read(measAbsJntAngles) == NewData )
-		{
-			absreceived = true;
-		}
-		doubles measRelJntAngles(8,0.0);
-		if ( mRelJntAngPort.read(measRelJntAngles) == NewData )
-		{
-			relreceived = true;
-		}
-		std_msgs::Bool eButtonPressed;
-		if ( eButtonPort.read(eButtonPressed) == NewData )
-		{
-			emergencyreceived = true;
-		}		
-		log(Debug) << "Waiting for ports: abs:" << absreceived << " rel:" << relreceived << " emergency:" << emergencyreceived << endlog();
-		sleep(0.1);
-		counter++;
-	}
-	if (! counter < 2000 )
-	{
-		log(Error) << "One port did not yet send data, aborting: abs:" << absreceived << " rel:" << relreceived << " emergency:" << emergencyreceived << endlog();
-		//return false;
-	}*/  // Now done in updatehook
-
 	if(!REQUIRE_HOMING){
 		bool enableReadRef = true;
 		enableReadRefPort.write(enableReadRef);
 	}
 
-	log(Info)<<"SUPERVISOR: configured and running."<<endlog();
+	log(Info)<<"SUPERVISOR: started."<<endlog();
 
 	return true;
 }
@@ -466,7 +416,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 	}
 
-	if(jntNr!=0 && goodToGo){
+	if(jntNr!=0 && goodToGo && gripperHomed){
 		
 		// If true the homing will be done using abs sensor
 		if(ABS_OR_REL[jntNr-1]==0){
@@ -590,7 +540,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 	}
 
-	else if(!goodToGo){
+	else if(!goodToGo && gripperHomed){
 		// If joint is homed using abs sens small waiting time is required
 		if( ((ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ) && (cntr2<(1*Ts))){
 			cntr2 = Ts;
