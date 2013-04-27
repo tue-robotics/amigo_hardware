@@ -333,7 +333,12 @@ void SupervisorE::updateHook()
 				
 				if (cntsl == 0) {
 				// sleep of 1s to make sure homing is not started before slaves are ready
-				sleep(1); //TIMC: Check actively (port==NewData?) -> sleeps are not allowed in update hooks! 
+				//mRelJntAngPort.read(measRelJntAngles);
+				log(Warning) << "Rel: " << measRelJntAngles[3] << endlog();
+				//sleep(1); 
+				log(Error) << "TIMC: Check actively (port==NewData?) -> sleeps are not allowed in update hooks! " << endlog();
+//				mRelJntAngPort.read(measRelJntAngles);
+				log(Warning) << "Rel: " << measRelJntAngles[3] << endlog();
 				cntsl++;
 				}
 				
@@ -435,16 +440,17 @@ void SupervisorE::updateHook()
  */
 doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 	
-	if(!gripperHomed){
+	amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
 
+	//if(!gripperHomed && gripperMeasurementPort.read(gripperMeasurement) == NewData ){
+	if(!gripperHomed) {
+		gripperMeasurementPort.read(gripperMeasurement);
 		amigo_msgs::AmigoGripperCommand gripperCommand;
 		gripperCommand.direction = amigo_msgs::AmigoGripperCommand::CLOSE;
 		gripperCommand.max_torque = 1000;
 
 		gripperCommandPort.write(gripperCommand);
 
-		amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
-		gripperMeasurementPort.read(gripperMeasurement);
 		
 		if (gripperMeasurement.max_torque_reached)
 		log(Warning) << "Gripper Max torque reached" <<endlog();
@@ -554,6 +560,9 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		// If true the homing will be done using rel encoders
 		else if(ABS_OR_REL[jntNr-1]==1){
 			// If the mechanical endstop is not reached yet
+			if (jntNr == 6) log(Warning) << "Joint error: " << fabs(jointErrors[jntNr-1]) << "  Threshold: " << (MAX_ERRORS[jntNr-1]*0.5) << " Joint angle: " << measRelJntAngles[jntNr-1] << endlog();
+			
+			
 			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]*0.5) ){
 				tempHomJntAngles[jntNr-1]-=(STEPSIZE/Ts);
 				//log(Warning) << "Stepsize is done: [ " << fabs(jointErrors[jntNr-1]) << " >= " << (MAX_ERRORS[jntNr-1]-0.0017) << "," << jntNr << "]" <<endlog();
