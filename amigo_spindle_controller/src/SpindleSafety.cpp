@@ -60,16 +60,10 @@ void SpindleSafety::updateHook()
 	{
 		safety = false;
 		
-		// Publishing a message after 500 cycles, which is 2 seconds at 250 Hz
-		publish_counter += 1.0;
-		//if( publish_counter == 500.0)
-		//{
-			if(!once){
-				log(Warning)<<"Error ( "<< error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
-				once = true;
-			}
-		//	publish_counter = 0.0;
-		//}
+		if(!once){
+			log(Warning)<<"Error ( "<< error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
+			once = true;
+		}
 	}
 	
 	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
@@ -81,7 +75,7 @@ void SpindleSafety::updateHook()
 	if (enable_endswitch_safety && !endswitch.data) 
 	{
 		if (safety) log(Error)<<"Spindle out of range, endswitch data is false"<<endlog();
-		safety = false;
+		//safety = false; // TIMC: Disabled for debugging purposes
 	}
 	
 	// Applying brake if necessary

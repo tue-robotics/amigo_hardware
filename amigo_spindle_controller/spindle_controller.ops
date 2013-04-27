@@ -158,8 +158,9 @@ stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/sp
 stream("SpindlePublishPosition.out", ros.topic("/spindle_position"));
 stream("SpindleReadSetpoint.afterhoming_pos", ros.topic("/spindle_controller/spindle_coordinates"));
 stream("SpindleStatus.bool_out1", ros.topic("/spindle_status"));
-#stream("SpindleHoming.ros_emergency", ros.topic("/disable_amplifiers"));
 stream("SpindleHoming.ros_emergency", ros.topic("/emergency_switch"));
+stream("SpindleHoming.endswitch", ros.topic("/spindle_endswitch"));
+
 
 ### Setting up reporting ###
 #loadComponent("SpindleReporter", "OCL::FileReporting")
@@ -183,45 +184,6 @@ stream("SpindleHoming.ros_emergency", ros.topic("/emergency_switch"));
 
 
 
-#### LOAD COMPONENT THATS STOPS THE CONTROLLER IF REQUESTED OR REQUIRED ###
-#loadComponent("SpindleSupervisor","AMIGO::SpindleSupervisor")
-#addPeer("SpindleSupervisor","SpindleCalculateFFW")
-#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateFFW")
-#addPeer("SpindleSupervisor","SpindleCalculateOutput")
-#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateOutput")
-#addPeer("SpindleSupervisor","SpindleCalculateError")
-#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleCalculateError")
-#addPeer("SpindleSupervisor","SpindleGain")
-#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleGain")
-#addPeer("SpindleSupervisor","SpindleLeadLag")
-#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleLeadLag")
-#addPeer("SpindleSupervisor","SpindleFirstOrderLowPass")
-#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleFirstOrderLowPass")
-#addPeer("SpindleSupervisor","SpindleSafety")
-#SpindleSupervisor.AddSpindleSupervisoredPeer ("SpindleSafety")
-#stream("SpindleSupervisor.rosemergency", ros.topic("/emergency_switch"));
-#stream("SpindleSupervisor.rosstandby", ros.topic("/spindle_standby"));
-#SpindleSupervisor.configure
-#setActivity("SpindleSupervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
-
-#### Starting all the components ###
-#SpindleReadSetpoint.start
-#SpindleReadEncoder.start
-#SpindleReferenceGenerator.start
-#SpindleGain.start
-#SpindleLeadLag.start
-#SpindleFirstOrderLowPass.start
-#SpindleCalculateError.start
-#SpindleCalculateFFW.start
-#SpindleCalculatePosition.start
-#SpindleCalculateOutput.start
-#SpindleOutputLimiter.start
-#SpindlePublishPosition.start
-#SpindleHoming.start
-#SpindleSafety.start
-#SpindleReferenceLimiter.start
-#SpindleStatus.start
-#SpindleSupervisor.start
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("SpindleReadSetpoint")

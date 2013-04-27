@@ -30,7 +30,6 @@ namespace AMIGO // Just because it looks nice
     bool enable_endswitch_safety;
     bool once;
     doubles error_pos;
-    double publish_counter;
     
 
     public:
