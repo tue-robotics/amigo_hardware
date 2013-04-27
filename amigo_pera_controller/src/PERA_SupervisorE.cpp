@@ -440,17 +440,17 @@ void SupervisorE::updateHook()
  */
 doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 	
-	amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
 
-	//if(!gripperHomed && gripperMeasurementPort.read(gripperMeasurement) == NewData ){
 	if(!gripperHomed) {
-		gripperMeasurementPort.read(gripperMeasurement);
+
 		amigo_msgs::AmigoGripperCommand gripperCommand;
 		gripperCommand.direction = amigo_msgs::AmigoGripperCommand::CLOSE;
 		gripperCommand.max_torque = 1000;
 
 		gripperCommandPort.write(gripperCommand);
 
+		amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
+		gripperMeasurementPort.read(gripperMeasurement);
 		
 		if (gripperMeasurement.max_torque_reached)
 		log(Warning) << "Gripper Max torque reached" <<endlog();
@@ -466,7 +466,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 	}
 
-	if(jntNr!=0 && goodToGo && gripperHomed){
+	if(jntNr!=0 && goodToGo){
 		
 		// If true the homing will be done using abs sensor
 		if(ABS_OR_REL[jntNr-1]==0){
@@ -590,7 +590,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 	}
 
-	else if(!goodToGo && gripperHomed){
+	else if(!goodToGo){
 		// If joint is homed using abs sens small waiting time is required
 		if( ((ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ) && (cntr2<(1*Ts))){
 			cntr2 = Ts;
