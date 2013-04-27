@@ -12,6 +12,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
+#include <ros/ros.h>
 #include "BaseSafety.hpp"
 
 using namespace std;
@@ -89,14 +90,14 @@ void BaseSafety::updateHook()
     // Check validity of Ports
     if ( !refport.connected() || !errorport.connected() || !voltport.connected() )
     {
-      log(Error)<<"BaseSafety::Input port not connected!"<<endlog();
+      log(Error) << "BaseSafety::Input port not connected!" << endlog();
       // No connection was made, can't do my job !
       safe = false;
     }
 
     if ( !amplifierport.connected() )
     {
-      log(Warning)<<"BaseSafety::Output port not connected!"<<endlog();
+      log(Error) << "BaseSafety::Output port not connected!" << endlog();
     }
 
     doubles refs(3);
@@ -105,7 +106,8 @@ void BaseSafety::updateHook()
       if ( refs[i] > max_velocities[i] )
       {
         safe = false;
-        log(Error)<<"BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] <<" Disabling hardware!"<<endlog();
+        ROS_ERROR_STREAM( "BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] << " Disabling hardware!" );
+        log(Error) << "BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] << " Disabling hardware!" << endlog();
       }
 
     doubles errors(4);
@@ -114,7 +116,8 @@ void BaseSafety::updateHook()
       if ( errors[i] > max_errors[i] )
       {
         safe = false;
-        log(Error)<<"BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!"<<endlog();
+        ROS_ERROR_STREAM( "BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!" );
+        log(Error) << "BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!" << endlog();
       }
 
     doubles voltage(4);
@@ -123,16 +126,19 @@ void BaseSafety::updateHook()
       if ( voltage[i] > max_voltage )
       {
         safe = false;
-
-        log(Error)<<"BaseSafety::Maximum voltage exeeded! Disabling hardware!"<<endlog();
-        log(Error)<<"BaseSafety::Voltages: "<<voltage[0]<<"   "<<voltage[1]<<"   "<<voltage[2]<<"   "<<voltage[3]<<"   "<<voltage[4]<<"   "<<voltage[5]<<"   "<<voltage[6]<<"   "<<voltage[7]<<endlog();
+		ROS_ERROR_STREAM( "BaseSafety::Maximum voltage exeeded! Disabling hardware!" );
+        log(Error) << "BaseSafety::Maximum voltage exeeded! Disabling hardware!" << endlog();
+        log(Error) << "BaseSafety::Voltages: "<<voltage[0]<<"   "<<voltage[1]<<"   "<<voltage[2]<<"   "<<voltage[3]<<"   "<<voltage[4]<<"   "<<voltage[5]<<"   "<<voltage[6]<<"   "<<voltage[7]<<endlog();
       }
   }
   else if ( resetport.read( reset ) == NewData )
+  {
+	  ROS_INFO_STREAM( "BaseSafety::Base enabled again" );
 	  safe = true;
+  }
 	
   // One sample delay is build in to make sure the errors are resetted before enabling the amplifiers
-  amplifierport.write( safe&&previousSafe );
+  amplifierport.write( safe&&previousSafe ); //TODO: I think this came irrelevant after the new supervisor...
   
   previousSafe = safe;
   
