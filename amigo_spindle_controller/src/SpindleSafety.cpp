@@ -5,6 +5,8 @@
 
 #include "SpindleSafety.hpp"
 
+#include <ros/ros.h>
+
 #define	BRAKEOFF true
 #define BRAKEON	false
 #define ERRORMARGIN 0.02
@@ -29,7 +31,6 @@ SpindleSafety::~SpindleSafety(){}
 
 bool SpindleSafety::configureHook()
 {
-  once = false;
   return true;
 }
 
@@ -53,17 +54,15 @@ bool SpindleSafety::startHook()
 
 void SpindleSafety::updateHook()
 {
-	
 	// Measuring safety
 	errorpos_inport.read(error_pos);
 	if( abs(error_pos[0]) > ERRORMARGIN )
 	{
-		safety = false;
-		
-		if(!once){
-			log(Warning)<<"Error ( "<< error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint."<<endlog();
-			once = true;
+		if(safety){ // Safety was true, so log now once
+			ROS_ERROR_STREAM( "Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." );
+			log(Error) << "Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." << endlog();
 		}
+		safety = false;
 	}
 	
 	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
@@ -74,8 +73,11 @@ void SpindleSafety::updateHook()
 	endswitch_inport.read(endswitch);
 	if (enable_endswitch_safety && !endswitch.data) 
 	{
-		if (safety) log(Error)<<"Spindle out of range, endswitch data is false"<<endlog();
-		//safety = false; // TIMC: Disabled for debugging purposes
+		if (safety) {
+			ROS_ERROR_STREAM( "Spindle out of range, endswitch data is false" );
+			log(Error) << "Spindle out of range, endswitch data is false" << endlog();
+			//safety = false; // TIMC: Disabled for debugging purposes
+		}
 	}
 	
 	// Applying brake if necessary
@@ -86,8 +88,6 @@ void SpindleSafety::updateHook()
 	else
 	{
 		spindle_brake_outport.write(BRAKEOFF);
-		// Make sure the error message is printed every time a new safety issue occurs.
-		once = false;  
 	}
 	
 	// Writing boolean safety to port

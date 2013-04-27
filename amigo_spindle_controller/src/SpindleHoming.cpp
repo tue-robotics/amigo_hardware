@@ -4,7 +4,8 @@
 
 #include "SpindleHoming.hpp"
 
-//#define HOMINGERROR 0.005
+#include <ros/ros.h>
+
 #define RESET 1.0
 #define NORESET 0.0
 
@@ -100,7 +101,8 @@ void SpindleHoming::updateHook()
 	//else if(abs(error_pos[0]) > HOMINGERROR && homed == false)
 	else if ( !endswitch.data && homed == false )
 	{
-		log(Info)<<"Spindle is homed."<<endlog();
+		ROS_INFO_STREAM( "Spindle is homed." );
+		log(Info) << "Spindle is homed." << endlog();
 		homed = true;
 		encoder_inport.read(input);
 		correction[0] = stroke + input[0];

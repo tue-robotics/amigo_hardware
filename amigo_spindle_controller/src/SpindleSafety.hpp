@@ -28,7 +28,6 @@ namespace AMIGO // Just because it looks nice
     // Declaring variables
     bool safety;
     bool enable_endswitch_safety;
-    bool once;
     doubles error_pos;
     
 
