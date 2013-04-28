@@ -24,6 +24,9 @@ ReferenceLimiter::ReferenceLimiter(const string& name) : TaskContext(name, PreOp
   addPort( "ref_pos_out", refpos_outport );
   addPort( "ref_vel_out", refvel_outport );
   addPort( "ref_acc_out", refacc_outport );
+  
+  addProperty( "minimum_spindle_pos", minimum_spindle_pos );
+
 }
 ReferenceLimiter::~ReferenceLimiter(){}
 
@@ -57,7 +60,7 @@ void ReferenceLimiter::updateHook()
   refvel_inport.read(ref_vel);
   refacc_inport.read(ref_acc);
  
-  double minimum_pos = SAFETYMARGIN;
+  double minimum_pos = SAFETYMARGIN + minimum_spindle_pos;
   double maximum_pos = STROKE - SAFETYMARGIN;
  
  	// Limiting the references to the minimum and maximum if necessary

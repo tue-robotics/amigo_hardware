@@ -30,6 +30,7 @@ namespace AMIGO // Just because it looks nice
     
 	// Declaring variables
 	doubles current_position;
+	double minimum_spindle_pos;
 
     public:
 
