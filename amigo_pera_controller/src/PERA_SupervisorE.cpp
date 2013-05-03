@@ -83,6 +83,8 @@ bool SupervisorE::configureHook()
 	cntr=0;
 	cntr2=0;
 	cntsl=0;
+	cntsl2=0;
+	wait=true;
 	firstSatInstance[0] = 0;
 	firstSatInstance[1] = 0;
 	firstSatInstance[2] = 0;
@@ -275,22 +277,35 @@ void SupervisorE::updateHook()
 			 * disable the reading of the reference joint angles from the
 			 * ROS inverse kinematics.
 			 */
-			if(enable && !homed && !errors){
+			 
+			 if (cntsl2 < 1000) {
+				//log(Warning) << "I am waiting 1s" << endlog();
+				cntsl2++;				
+				}
+			 else if (cntsl2 == 1000) {
+				log(Warning) << "I am done waiting 1s" << endlog();
+				wait = false;
+				cntsl2++;
+				}
+
+			 
+			 
+			if(enable && !homed && !errors && !wait){
 
 				doubles measRelJntAngles(8,0.0);
                 doubles measAbsJntAngles(7,0.0);
 				doubles homJntAngTemp(7,0.0);
 				
-				if (cntsl == 0) {
+				//if (cntsl == 0) {
 				// sleep of 1s to make sure homing is not started before slaves are ready
 				//mRelJntAngPort.read(measRelJntAngles);
-				log(Warning) << "Rel: " << measRelJntAngles[3] << endlog();
+				//log(Warning) << "Rel: " << measRelJntAngles[3] << endlog();
 				//sleep(1); 
-				log(Error) << "TIMC: Check actively (port==NewData?) -> sleeps are not allowed in update hooks! " << endlog();
+				//log(Error) << "TIMC: Check actively (port==NewData?) -> sleeps are not allowed in update hooks! " << endlog();
 //				mRelJntAngPort.read(measRelJntAngles);
-				log(Warning) << "Rel: " << measRelJntAngles[3] << endlog();
-				cntsl++;
-				}
+				//log(Warning) << "Rel: " << measRelJntAngles[3] << endlog();
+				//cntsl++;
+				//}
 				
 				// Measure the abs en rel angles.
 				mRelJntAngPort.read(measRelJntAngles);

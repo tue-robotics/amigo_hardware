@@ -94,6 +94,7 @@ namespace PERA
 		int cntr;
 		int cntr2;
 		int cntsl;
+		int cntsl2;
 		//! Emergency button pressed / released (true/false) (memory bool)
 		bool pressed;
 		//! Does the deployerfile require homing
@@ -108,6 +109,8 @@ namespace PERA
 		bool goodToGo;
 		//! An error did occur yes / no (true/false)
 		bool errors;
+		//! Wait with homing, for first second
+		bool wait;
 		//! Bool for indicating whether gripper is homed (true) or not (false)
 		bool gripperHomed; 
 		//! Property to define whether homing of the gripper is desired
