@@ -30,6 +30,7 @@ var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
 var double ENCODERCOUNTS_WM		= 500.0*4.0   
 var double ENCODERCOUNTS_HM		= 128.0*4.0 
+var double ENC2ZERO				= 0.0 ;          			#This ENC2ZERO is used for the empty slot of the first slave (only two motors in shoulders, while the etherCAT print can control 3 DOF)
 var double ENC2SI_SM			= 2.0*0.00000563 ;          #TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	To Do find out remaining gear ratio's 		:16.4818
 var double ENC2SI_S3			= 0.00001653 ;              #TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;	from matlab determined to 					:5.6055	
 var double ENC2SI_EM			= 2.0*0.000003835;      	#TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM;		 										:12.3885
@@ -120,7 +121,7 @@ loadComponent("RPERA_ReadEncoders","SOEM::ReadEncoders")
 addPeer("Supervisor","RPERA_ReadEncoders")
 setActivity("RPERA_ReadEncoders",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_ReadEncoders.encoderbits = 65536
-RPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM , ENC2SI_S3 , ENC2SI_EM , ENC2SI_EM , ENC2SI_WM , ENC2SI_WM , ENC2SI_HM )
+RPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM ,ENC2ZERO , ENC2SI_S3 , ENC2SI_EM , ENC2SI_EM , ENC2SI_WM , ENC2SI_WM , ENC2SI_HM )
 RPERA_ReadEncoders.configure
 
 ### Velocity and acceleration estimator ###
@@ -187,14 +188,14 @@ setActivity("RPERA_MotorToJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_MotorToJointAngles.Nrows = 8
 RPERA_MotorToJointAngles.Ncolumns = 8
 RPERA_MotorToJointAngles.configure
-RPERA_MotorToJointAngles.function1 = array (  0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_MotorToJointAngles.function2 = array (  0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_MotorToJointAngles.function3 = array (  0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_MotorToJointAngles.function4 = array (  0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
-RPERA_MotorToJointAngles.function5 = array (  0.0,  0.0,  0.0, -0.5,  0.5,  0.0,  0.0,  0.0)
-RPERA_MotorToJointAngles.function6 = array (  0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-RPERA_MotorToJointAngles.function7 = array (  0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
-RPERA_MotorToJointAngles.function8 = array (  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
+RPERA_MotorToJointAngles.function1 = array  ( 0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_MotorToJointAngles.function2 = array  ( 0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_MotorToJointAngles.function3 = array  ( 0.0,  0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_MotorToJointAngles.function4 = array  ( 0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
+RPERA_MotorToJointAngles.function5 = array  ( 0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0,  0.0,  0.0)
+RPERA_MotorToJointAngles.function6 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+RPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+RPERA_MotorToJointAngles.function8 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Compute tracking error ###
 loadComponent("RPERA_ComputeJointErrors","MATH::Subtraction")
@@ -212,12 +213,13 @@ RPERA_JointToMotorTorques.Ncolumns = 8
 RPERA_JointToMotorTorques.configure
 RPERA_JointToMotorTorques.function1 = array ( 0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
 RPERA_JointToMotorTorques.function2 = array (-0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_JointToMotorTorques.function3 = array ( 0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_JointToMotorTorques.function4 = array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
-RPERA_JointToMotorTorques.function5 = array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
-RPERA_JointToMotorTorques.function6 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-RPERA_JointToMotorTorques.function7 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
-RPERA_JointToMotorTorques.function8 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
+RPERA_JointToMotorTorques.function3 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_JointToMotorTorques.function4 = array ( 0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_JointToMotorTorques.function5 = array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
+RPERA_JointToMotorTorques.function6 = array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
+RPERA_JointToMotorTorques.function7 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+RPERA_JointToMotorTorques.function8 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+RPERA_JointToMotorTorques.function9 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Kp ###
 loadComponent("RPERA_Gain","MATH::Gains")
@@ -269,21 +271,14 @@ RPERA_WriteCurrentJointAngles.configure
 loadComponent("RPERA_SensorTorques","SensorTorquesE")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
-#												SM1 		SM2			SM3 		EM1 			EM2 		WM1 		WM2 		HM
-RPERA_SensorTorques.Ksensor = array 			(0.0025		, 0.0025	, 0.0025	, 0.0025		, 0.0025	, 0.0025	, 0.0025	, 0.0025)
-RPERA_SensorTorques.Voffset = array 			(0.2		, 0.2		, 0.2		, 0.2			, 0.2		, 0.2		, 0.2		, 0.2		)
-RPERA_SensorTorques.Xoffset = array 			(0.00025	, 0.00025	, 0.00025	, 0.0013875		, 0.0013875	, 0.0034488	, 0.0048276	, 0.00268	)
-RPERA_SensorTorques.Stiffness = array 			(777777.7	, 777777.7	, 700.0		, 2009211.0		, 2009211.0	, 60739.73	, 37274.25	, 12935.0	)
-RPERA_SensorTorques.PivotDistance = array 		(0.03		, 0.03		, 1.0		, 0.025			, 0.025		, 0.017		, 0.017		, 1.0		)
+#												SM1 		SM2			   			SM3 		EM1 			EM2 		WM1 		WM2 		HM
+RPERA_SensorTorques.Ksensor = array 			(0.0025		, 0.0025	, 0.0 		, 0.0025	, 0.0025		, 0.0025	, 0.0025	, 0.0025	, 0.0025)
+RPERA_SensorTorques.Voffset = array 			(0.2		, 0.2		, 0.0 		, 0.2		, 0.2			, 0.2		, 0.2		, 0.2		, 0.2		)
+RPERA_SensorTorques.Xoffset = array 			(0.00025	, 0.00025	, 0.0 		, 0.00025	, 0.0013875		, 0.0013875	, 0.0034488	, 0.0048276	, 0.00268	)
+RPERA_SensorTorques.Stiffness = array 			(777777.7	, 777777.7	, 0.0 		, 700.0		, 2009211.0		, 2009211.0	, 60739.73	, 37274.25	, 12935.0	)
+RPERA_SensorTorques.PivotDistance = array 		(0.03		, 0.03		, 0.0 		, 1.0		, 0.025			, 0.025		, 0.017		, 0.017		, 1.0		)
 RPERA_SensorTorques.setPeriod(0.005)
 RPERA_SensorTorques.configure
-
-## old values :
-#												SM1 		SM2 		EM1 		EM2				SM3 		HM			WM1 		WM2
-#RPERA_SensorTorques.Xoffset = array 			(0.00025	, 0.00025	, 0.0013875	, 0.0013875		, 0.00025	, 0.00268	, 0.0034488	, 0.0048276)
-#RPERA_SensorTorques.Stiffness = array 			(777777.7	, 777777.7	, 2009211.0	, 2009211.0		, 700.0		, 12935.0	, 60739.73	, 37274.25)
-#RPERA_SensorTorques.PivotDistance = array 		(0.03		, 0.03		, 0.025		, 0.025			, 1.0		, 1.0		, 0.017		, 0.017)
-#
 
 #### Diagnostics ###
 loadComponent("RPERA_Diagnostics","ROS::RosDiagnostics")
@@ -332,12 +327,13 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle0","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle0","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc7_in" , ConnPolicy() );
-connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("Soem.Slave_1011.encoderAngle2","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle0","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle0","RPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointAngles.in" , ConnPolicy() ); 
 connect ("RPERA_MotorToJointAngles.out","RPERA_WriteCurrentJointAngles.pos", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )

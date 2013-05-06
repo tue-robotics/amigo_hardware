@@ -55,19 +55,9 @@ void SensorTorquesE::updateHook()
 {
 	voltage_inport.read(Vmeasured);
 	
-	for (unsigned int i=0; i<8; i++) {
+	for (unsigned int i=0; i<9; i++) {
         Tmeasured[i] = (Ksensor[i]/(Vmeasured[i] + Voffset[i])-Xoffset[i])*Stiffness[i]*PivotDistance[i]; // Differential (gear) torques
 	}
-	
-	//if (cnt == 5000) { 
-	//	log(Warning)<<"Vmeasured: ["<< Vmeasured[0] << ","<< Vmeasured[1] << ","<< Vmeasured[2] << ","<< Vmeasured[3] << ","<< Vmeasured[4] << ","<< Vmeasured[5] << ","<< Vmeasured[6] << ","<< Vmeasured[7] << "]"  <<endlog();
-	//	log(Warning)<<"Tmeasured: ["<< Tmeasured[0] << ","<< Tmeasured[1] << ","<< Tmeasured[2] << ","<< Tmeasured[3] << ","<< Tmeasured[4] << ","<< Tmeasured[5] << ","<< Tmeasured[6] << ","<< Tmeasured[7] << "]"  <<endlog();
-	//	cnt = 0;
-	//}
-	//cnt++;
-	
-	
-	
 	
     // Joint torques                                     // TO DO: check these values, but better way would be to multiply the sensor torques with the same matrix as in erpera.ops
     //Tjoint[0] = -Tmeasured[0] + Tmeasured[1];
@@ -78,7 +68,9 @@ void SensorTorquesE::updateHook()
     //Tjoint[5] =  Tmeasured[6] + Tmeasured[7];
     //Tjoint[6] =  Tmeasured[6] - Tmeasured[7];
     //Tjoint[7] =  Tmeasured[8];
-    Tmeasured[7] = Tmeasured[7] + 7.0;
+    
+    
+    Tmeasured[8] = Tmeasured[8] + 7.0;
        
 	measured_torques_outport.write(Tmeasured);
     //joint_torques_outport.write(Tjoint);

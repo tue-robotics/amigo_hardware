@@ -54,7 +54,7 @@ SupervisorE::SupervisorE(const string& name) :
 	addProperty( "motorSaturations", MOTORSAT ).doc("Motor saturation values");
 	addProperty( "maxConSatTime", MAXCONSATTIME ).doc("Maximum time the controller is allowed to be saturated");
 	addProperty( "offsetAngles", OFFSETANGLES ).doc("Joint angles to be published when emergency button is released");
-	addProperty( "signs", SIGNS ).doc("Signs of the angles to be published");
+	//addProperty( "signs", SIGNS ).doc("Signs of the angles to be published"); obsolete
 	addProperty( "homedPos", HOMEDPOS ).doc("Homing positions for the joints");
 	addProperty( "absOrRel", ABS_OR_REL ).doc("Defines whether joint is homed using absolute sensors or using mechanical endstop");
 	addProperty( "absSenDir", ABS_SEN_DIR ).doc("Defines if absolute sensor has its positive direction the same or opposite to relative sensors");
@@ -154,8 +154,9 @@ bool SupervisorE::startHook()
  */
 void SupervisorE::updateHook()
 {
-	doubles jointarray(8,0.0);
-	if ( !mAbsJntAngPort.read(jointarray) == NewData || !mRelJntAngPort.read(jointarray) == NewData )
+	doubles jointarray1(9,0.0); //mAbs has size 9 since 8 sensors are read plus one obsolete sensorport
+	doubles jointarray2(8,0.0); //mRel has size 8 since only 8 encoders are recieved from the MotorToJointAngles component
+	if ( !mAbsJntAngPort.read(jointarray1) == NewData || !mRelJntAngPort.read(jointarray2) == NewData )
 	{
 		log(Warning) << "RPERA_Supervisor: Excecuting updatehook not usefull if no new data is received." << endlog();
 		return;
@@ -293,7 +294,7 @@ void SupervisorE::updateHook()
 			if(enable && !homed && !errors && !wait){
 
 				doubles measRelJntAngles(8,0.0);
-                doubles measAbsJntAngles(7,0.0);
+                doubles measAbsJntAngles(9,0.0);
 				doubles homJntAngTemp(7,0.0);
 				
 				//if (cntsl == 0) {
