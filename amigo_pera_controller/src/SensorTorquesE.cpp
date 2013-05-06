@@ -46,7 +46,7 @@ bool SensorTorquesE::startHook()
 	if (!measured_torques_outport.connected()) {
         log(Warning)<<"Outputport2 not connected!"<<endlog();
 	}
-	cnt = 0;
+
 	return true;
 	
 }
