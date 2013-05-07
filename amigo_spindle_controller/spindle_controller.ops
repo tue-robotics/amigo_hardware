@@ -1,11 +1,12 @@
 import("amigo_spindle_controller")
 
+var double Ts = 0.001
 #TODO: set to 1khz like base
 ### Loading Components ###
 #Reading Encoders
 loadComponent("SpindleReadEncoder","SOEM::ReadEncoders")
 addPeer("Supervisor","SpindleReadEncoder")
-SpindleReadEncoder.setPeriod(0.004)
+SpindleReadEncoder.setPeriod(Ts)
 SpindleReadEncoder.encoderbits = 65536
 SpindleReadEncoder.enc2SI = array (4.1666667e-7)
 SpindleReadEncoder.configure
@@ -69,7 +70,7 @@ SpindleGain.configure
 loadComponent("SpindleLeadLag","FILTERS::LeadLag")
 addPeer("Supervisor","SpindleLeadLag")
 SpindleLeadLag.vector_size = 1
-SpindleLeadLag.sampling_time = 0.004
+SpindleLeadLag.sampling_time = Ts
 SpindleLeadLag.zero_frequency = array (1.6)
 SpindleLeadLag.pole_frequency = array (60.0)
 SpindleLeadLag.configure
@@ -77,7 +78,7 @@ SpindleLeadLag.configure
 loadComponent("SpindleFirstOrderLowPass","FILTERS::FirstOrderLowPass")
 addPeer("Supervisor","SpindleFirstOrderLowPass")
 SpindleFirstOrderLowPass.vector_size = 1
-SpindleFirstOrderLowPass.sampling_time = 0.004
+SpindleFirstOrderLowPass.sampling_time = Ts
 SpindleFirstOrderLowPass.pole_frequency = array (20.0)
 SpindleFirstOrderLowPass.configure
 #TODO: Enable interpolator
@@ -85,7 +86,7 @@ SpindleFirstOrderLowPass.configure
 #loadComponent("SpindleIntegrator","FILTERS::WeakIntegrators")
 #SpindleIntegrator.zero_frequency = array ( 0.3 )
 #SpindleIntegrator.vector_size = 1
-#SpindleIntegrator.sampling_time = 0.004
+#SpindleIntegrator.sampling_time = Ts
 #SpindleIntegrator.configure
 
 #TODO: Should be passive, only acting on actual errors
@@ -98,7 +99,7 @@ SpindleSafety.configure
 #Reading spindle setpoints 
 loadComponent("SpindleReadSetpoint","MSG::ReadSpindleSetpoint")
 addPeer("Supervisor","SpindleReadSetpoint")
-SpindleReadSetpoint.setPeriod(0.004)
+SpindleReadSetpoint.setPeriod(Ts)
 SpindleReadSetpoint.homed_pos = 0.35
 SpindleReadSetpoint.configure
 
@@ -111,9 +112,9 @@ SpindleReferenceLimiter.minimum_spindle_pos = 0.08
 #Loading Reference Generator
 loadComponent("SpindleReferenceGenerator","ReferenceGenerator")
 addPeer("Supervisor","SpindleReferenceGenerator")
-SpindleReferenceGenerator.setPeriod(0.004)
+SpindleReferenceGenerator.setPeriod(Ts)
 SpindleReferenceGenerator.NrInterpolators = 1
-SpindleReferenceGenerator.InterpolatorDt = 0.004
+SpindleReferenceGenerator.InterpolatorDt = Ts
 SpindleReferenceGenerator.InterpolatorEps = 1.0
 SpindleReferenceGenerator.configure
 SpindleReferenceGenerator.interpolator1 = array (0.0, 0.01, 0.1)
@@ -146,7 +147,7 @@ connect ("SpindleHoming.ref_pos_out","SpindleReferenceGenerator.posin", ConnPoli
 connect ("SpindleSafety.safety","SpindleHoming.safe", ConnPolicy() )
 connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindleCalculateError.in_minus", ConnPolicy() )
-connect ("SpindleCalculatePosition.out","SpindlePublishPosition.in", ConnPolicy() )
+connect ("SpindleReadEncoder.out","SpindlePublishPosition.in", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindleHoming.current_pos", ConnPolicy() )
 #connect ("SpindleCalculatePosition.out","SpindleReferenceLimiter.spindle_position", ConnPolicy() )
 connect ("SpindleReferenceGenerator.velout","SpindleCalculateFFW.ref_vel", ConnPolicy() )
