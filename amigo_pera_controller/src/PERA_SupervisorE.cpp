@@ -118,7 +118,7 @@ bool SupervisorE::configureHook()
 	}
 
 	// Set the initial jnt for homingprocedure
-	jntNr=6;
+	jntNr=STRT_JNT;
 	FastStep = 0.175;
 	SlowStep = 0.0425;
 	Ts = 1000;
