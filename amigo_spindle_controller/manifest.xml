@@ -14,6 +14,7 @@
   <depend package="amigo_ref_interpolator"/>
   <depend package="std_msgs"/>
   <depend package="rtt_amigo_msgs"/>
+  <depend package="amigo_etherCAT"/>
   <depend package="rtt_math_components"/>
   <depend package="rtt_filter_components"/>
   <depend package="rtt_source_components"/>
