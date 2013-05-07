@@ -1,5 +1,6 @@
 import("amigo_spindle_controller")
 
+#TODO: set to 1khz like base
 ### Loading Components ###
 #Reading Encoders
 loadComponent("SpindleReadEncoder","SOEM::ReadEncoders")
@@ -32,15 +33,18 @@ addPeer("Supervisor","SpindleCalculateOutput")
 SpindleCalculateOutput.vectorsize = 1
 SpindleCalculateOutput.configure
 
+#TODO: Remove
 #Limiting the Output
 loadComponent("SpindleOutputLimiter","OutputLimiter")
 addPeer("Supervisor","SpindleOutputLimiter")
 SpindleOutputLimiter.configure
 
+#TODO: Replace by DoubleToROS component
 #Publishing the spindle position to ROS
 loadComponent("SpindlePublishPosition","PublishPosition")
 addPeer("Supervisor","SpindlePublishPosition")
 SpindlePublishPosition.configure
+
 
 #Calculating Spindle Position
 loadComponent("SpindleCalculatePosition","MATH::Subtraction")
@@ -55,11 +59,13 @@ SpindleCalculateError.vectorsize = 1
 SpindleCalculateError.configure
 
 #Loading controller components
+#Gain
 loadComponent("SpindleGain","MATH::Gain")
 addPeer("Supervisor","SpindleGain")
 SpindleGain.vectorsize = 1
 SpindleGain.gain = 40
 SpindleGain.configure
+#LeadLag
 loadComponent("SpindleLeadLag","FILTERS::LeadLag")
 addPeer("Supervisor","SpindleLeadLag")
 SpindleLeadLag.vector_size = 1
@@ -67,23 +73,28 @@ SpindleLeadLag.sampling_time = 0.004
 SpindleLeadLag.zero_frequency = array (1.6)
 SpindleLeadLag.pole_frequency = array (60.0)
 SpindleLeadLag.configure
+#LowPass
 loadComponent("SpindleFirstOrderLowPass","FILTERS::FirstOrderLowPass")
 addPeer("Supervisor","SpindleFirstOrderLowPass")
 SpindleFirstOrderLowPass.vector_size = 1
 SpindleFirstOrderLowPass.sampling_time = 0.004
 SpindleFirstOrderLowPass.pole_frequency = array (20.0)
 SpindleFirstOrderLowPass.configure
+#TODO: Enable interpolator
+#Integrator
 #loadComponent("SpindleIntegrator","FILTERS::WeakIntegrators")
 #SpindleIntegrator.zero_frequency = array ( 0.3 )
 #SpindleIntegrator.vector_size = 1
 #SpindleIntegrator.sampling_time = 0.004
 #SpindleIntegrator.configure
 
+#TODO: Should be passive, only acting on actual errors
 #Loading Safety component
 loadComponent("SpindleSafety","SpindleSafety")
 addPeer("Supervisor","SpindleSafety")
 SpindleSafety.configure
 
+#TODO: Feed vel and acc to reference interpolator
 #Reading spindle setpoints 
 loadComponent("SpindleReadSetpoint","MSG::ReadSpindleSetpoint")
 addPeer("Supervisor","SpindleReadSetpoint")
@@ -199,7 +210,7 @@ Supervisor.AddAllwaysOnPeer ("SpindleStatus")
 
 Supervisor.NameBodyPart( 2, "spindle")
 stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup") )
-stream( "Supervisor.spindle_enabled", ros.topic("/spindle_enabled"));
+stream( "Supervisor.spindle_enabled", ros.topic("/spindle_enabled") );
 Supervisor.AddPeerToBodyPart ("SpindleCalculateFFW",2 )
 Supervisor.AddPeerToBodyPart ("SpindleCalculateOutput",2 )
 Supervisor.AddPeerToBodyPart ("SpindleCalculateError",2 )
