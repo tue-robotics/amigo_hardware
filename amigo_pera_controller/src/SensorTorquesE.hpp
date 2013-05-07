@@ -5,7 +5,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#define N 8
+#define N 9
 using namespace std;
 using namespace RTT;
 

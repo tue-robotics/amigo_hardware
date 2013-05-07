@@ -186,7 +186,7 @@ loadComponent("RPERA_MotorToJointAngles","MatrixTransform")
 addPeer("Supervisor","RPERA_MotorToJointAngles")
 setActivity("RPERA_MotorToJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_MotorToJointAngles.Nrows = 8
-RPERA_MotorToJointAngles.Ncolumns = 8
+RPERA_MotorToJointAngles.Ncolumns = 9
 RPERA_MotorToJointAngles.configure
 RPERA_MotorToJointAngles.function1 = array  ( 0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
 RPERA_MotorToJointAngles.function2 = array  ( 0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
@@ -208,7 +208,7 @@ RPERA_ComputeJointErrors.configure
 loadComponent("RPERA_JointToMotorTorques","MatrixTransform")
 addPeer("Supervisor","RPERA_JointToMotorTorques")
 setActivity("RPERA_JointToMotorTorques",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_JointToMotorTorques.Nrows = 8
+RPERA_JointToMotorTorques.Nrows = 9
 RPERA_JointToMotorTorques.Ncolumns = 8
 RPERA_JointToMotorTorques.configure
 RPERA_JointToMotorTorques.function1 = array ( 0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
@@ -272,7 +272,7 @@ loadComponent("RPERA_SensorTorques","SensorTorquesE")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
 #												SM1 		SM2			   			SM3 		EM1 			EM2 		WM1 		WM2 		HM
-RPERA_SensorTorques.Ksensor = array 			(0.0025		, 0.0025	, 0.0 		, 0.0025	, 0.0025		, 0.0025	, 0.0025	, 0.0025	, 0.0025)
+RPERA_SensorTorques.Ksensor = array 			(0.0025		, 0.0025	, 0.0 		, 0.0025	, 0.0025		, 0.0025	, 0.0025	, 0.0025	, 0.0025	)
 RPERA_SensorTorques.Voffset = array 			(0.2		, 0.2		, 0.0 		, 0.2		, 0.2			, 0.2		, 0.2		, 0.2		, 0.2		)
 RPERA_SensorTorques.Xoffset = array 			(0.00025	, 0.00025	, 0.0 		, 0.00025	, 0.0013875		, 0.0013875	, 0.0034488	, 0.0048276	, 0.00268	)
 RPERA_SensorTorques.Stiffness = array 			(777777.7	, 777777.7	, 0.0 		, 700.0		, 2009211.0		, 2009211.0	, 60739.73	, 37274.25	, 12935.0	)

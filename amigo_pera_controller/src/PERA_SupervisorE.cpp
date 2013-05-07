@@ -54,7 +54,7 @@ SupervisorE::SupervisorE(const string& name) :
 	addProperty( "motorSaturations", MOTORSAT ).doc("Motor saturation values");
 	addProperty( "maxConSatTime", MAXCONSATTIME ).doc("Maximum time the controller is allowed to be saturated");
 	addProperty( "offsetAngles", OFFSETANGLES ).doc("Joint angles to be published when emergency button is released");
-	//addProperty( "signs", SIGNS ).doc("Signs of the angles to be published"); obsolete
+	addProperty( "signs", SIGNS ).doc("Signs of the angles to be published");
 	addProperty( "homedPos", HOMEDPOS ).doc("Homing positions for the joints");
 	addProperty( "absOrRel", ABS_OR_REL ).doc("Defines whether joint is homed using absolute sensors or using mechanical endstop");
 	addProperty( "absSenDir", ABS_SEN_DIR ).doc("Defines if absolute sensor has its positive direction the same or opposite to relative sensors");
