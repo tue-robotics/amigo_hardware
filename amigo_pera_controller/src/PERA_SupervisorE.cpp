@@ -195,7 +195,7 @@ void SupervisorE::updateHook()
 			 * the PERA_IO is disabled.
 			 */
 			doubles controllerOutputs;
-			controllerOutputs.resize(8);
+			controllerOutputs.resize(9);
 			controllerOutputPort.read(controllerOutputs);
 			
 			long double timeNow = os::TimeService::Instance()->getNSecs()*1e-9; 

@@ -76,8 +76,8 @@ addPeer("Supervisor","RPERA_JointOutputLimiter")
 setActivity("RPERA_JointOutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
 #RPERA_JointOutputLimiter.upper_limit = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  40.0 )
 #RPERA_JointOutputLimiter.lower_limit = array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -40.0 )
-RPERA_JointOutputLimiter.upper_limit = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.0,  0.0,  40.0 ) ;			# Put wrist output to zero
-RPERA_JointOutputLimiter.lower_limit = array (  -1.57, -1.57, -1.57,  0.0, -1.83, 0.0, 0.0, -40.0 )  ;			# Put wrist output to zero
+RPERA_JointOutputLimiter.upper_limit = 	array (    0.0,  1.57,  1.57, 2.23,  1.83,   0.0,  0.0,  40.0 ) ;			# Put wrist output to zero
+RPERA_JointOutputLimiter.lower_limit = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83,   0.0,  0.0, -40.0 )  ;			# Put wrist output to zero
 RPERA_JointOutputLimiter.vector_size = 8
 RPERA_JointOutputLimiter.configure
 
@@ -95,9 +95,9 @@ loadComponent("RPERA_Supervisor","PERA::SupervisorE")
 addPeer("Supervisor","RPERA_Supervisor")
 setActivity("RPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Supervisor.setPeriod(0.001)
-RPERA_Supervisor.jointLowerBounds = array (  0.0, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
-RPERA_Supervisor.jointUpperBounds = array ( 1.57,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
-RPERA_Supervisor.motorSaturations = array ( 25000.0, 25000.0, 20000.0, 20000.0, 15000.0, 15000.0, 25000.0, 32000.0 )
+RPERA_Supervisor.jointUpperBounds = 	array (	   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
+RPERA_Supervisor.jointLowerBounds = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
+RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 20.0, 100.0, 100.0, 100.0, 100.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
 RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 120.0)
 RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 RPERA_Supervisor.dynBreakEpsilon = 0.05;
@@ -107,7 +107,7 @@ RPERA_Supervisor.offsetAngles = OFFSETS
 RPERA_Supervisor.signs = SIGNS
 RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 RPERA_Supervisor.homedPos = array (682.0, 322.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
-RPERA_Supervisor.maxConSatTime = 5.0
+RPERA_Supervisor.maxConSatTime = 3.0
 RPERA_Supervisor.stepSize = 0.5 ;# stepsize per second, divided by Ts to get stepsize per updatecycle
 RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
