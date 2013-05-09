@@ -97,7 +97,7 @@ setActivity("RPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Supervisor.setPeriod(0.001)
 RPERA_Supervisor.jointUpperBounds = 	array (	   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
 RPERA_Supervisor.jointLowerBounds = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
-RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 20.0, 100.0, 100.0, 100.0, 100.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
+RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 100.0, 50.0, 50.0, 10.0, 10.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
 RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 120.0)
 RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 RPERA_Supervisor.dynBreakEpsilon = 0.05;
@@ -308,20 +308,20 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
-#loadComponent("Tracing","Signal::Tracing")
-#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array 		(8.0,  8.0,  8.0,  9.0,  8.0)
-#Tracing.buffersize = 2*65536;
-#Tracing.filename = "/home/amigo/LOGGING_ARM/Homingtough.dat"
-#Tracing.Ts = Ts
-#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
-#Tracing.configure
-#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );	# reference after reference generator
-#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 		# error
-#connect ("RPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 			# control effort in joint space
-#connect ("RPERA_WeakIntegrator1.out","Tracing.in4", tracingpolicy ) ; 			# control effort in motor space
-#connect ("RPERA_MotorToJointAngles.out","Tracing.in5", tracingpolicy ) ; 		# output
+var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
+loadComponent("Tracing","Signal::Tracing")
+setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+Tracing.vector_sizes = array 		(8.0,  8.0,  8.0,  9.0,  8.0)
+Tracing.buffersize = 2*65536;
+Tracing.filename = "/home/amigo/LOGGING_ARM3/RE_5.dat"
+Tracing.Ts = Ts
+Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+Tracing.configure
+connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );	# reference after reference generator
+connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 		# error
+connect ("RPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 			# control effort in joint space
+connect ("RPERA_JointToMotorTorques.out","Tracing.in4", tracingpolicy ) ; 		# control effort in motor space
+connect ("RPERA_MotorToJointAngles.out","Tracing.in5", tracingpolicy ) ; 		# output
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
