@@ -519,6 +519,16 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 			}
 			// Homing position reached
 			else if(fabs(HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<1.0){
+				
+				// From the mechanical endstop move back to homing position (no motion in this case for absolute homing)
+				tempHomJntAngles[jntNr-1]=measRelJntAngles[jntNr-1];
+
+				// Reset the interpolator for jnt jntNr to the position it is at
+				doubles resetdata(32,0.0);
+				resetdata[(jntNr-1)*4]=1.0;
+				resetdata[(jntNr-1)*4+1]=measRelJntAngles[jntNr-1];
+				resetIntPort.write(resetdata);				
+				
 				goodToGo = false;
 			}
 
