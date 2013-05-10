@@ -559,7 +559,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 	else if(!goodToGo && gripperHomed){
 		// If joint is homed using abs sens small waiting time is required
 		if( ((ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ) && (cntr2<(1*Ts))){
-			cntr2 = Ts;
+			cntr2++;
 		}
 
 		// If waiting is complete move on to next joint
@@ -603,12 +603,6 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					tempHomJntAngles[i]=0.0;
 				}
 
-				// Null the PERA_IO.
-				bool reNull = true;
-				reNullPort1.write(reNull);
-				reNullPort2.write(reNull);
-				reNullPort3.write(reNull);
-
 				log(Warning)<<"SUPERVISOR: Renulled PERA_IO \n"<<endlog();
 
 				// Fill up resetdata
@@ -618,6 +612,12 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					resetdata[i*4+2]=0.0;
 					resetdata[i*4+3]=0.0;
 				}
+
+				// Null the PERA_IO.
+				bool reNull = true;
+				reNullPort1.write(reNull);
+				reNullPort2.write(reNull);
+				reNullPort3.write(reNull);
 
 				// Enable the reading of the reference joint angles.
 				bool enableReadRef = true;
