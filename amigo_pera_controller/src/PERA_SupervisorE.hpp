@@ -93,8 +93,8 @@ namespace PERA
 		//! Counters for loopcounting
 		int cntr;
 		int cntr2;
-		int cntsl;
-		int cntsl2;
+		int cntr3;
+		int cntr4;
 		//! Emergency button pressed / released (true/false) (memory bool)
 		bool pressed;
 		//! Does the deployerfile require homing

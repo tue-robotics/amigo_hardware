@@ -101,7 +101,7 @@ using namespace PERA;
 
 			if(gripperCommand.direction == amigo_msgs::AmigoGripperCommand::OPEN){
 				if (gripperPos[0] >= maxPos){
-					log(Info)<<"Gripper is OPEN"<<endlog();
+					//log(Info)<<"Gripper is OPEN"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
