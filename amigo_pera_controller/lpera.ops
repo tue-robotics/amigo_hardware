@@ -298,20 +298,20 @@ LPERA_Reporter.configure
 
 
 ### Setting up tracing ###
-var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
-loadComponent("Tracing","Signal::Tracing")
-setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-Tracing.vector_sizes = array (8.0 , 8.0 , 8.0 , 8.0 , 8.0)
-Tracing.buffersize = 2*65536;
-Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMLOG/LT123.dat"
-Tracing.Ts = Ts
-Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
-Tracing.configure
-connect ("LPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );	# reference after reference generator
-connect ("LPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 		# error
-connect ("LPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 			# control effort in joint space
-connect ("LPERA_JointToMotorTorques.out","Tracing.in4", tracingpolicy ) ; 		# control effort in motor space
-connect ("LPERA_MotorToJointAngles.out","Tracing.in5", tracingpolicy ) ; 		# output
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
+#loadComponent("Tracing","Signal::Tracing")
+#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+#Tracing.vector_sizes = array (8.0 , 8.0 , 8.0 , 8.0 , 8.0)
+#Tracing.buffersize = 2*65536;
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMLOG/LT123.dat"
+#Tracing.Ts = Ts
+#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+#Tracing.configure
+#connect ("LPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );	# reference after reference generator
+#connect ("LPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 		# error
+#connect ("LPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 			# control effort in joint space
+#connect ("LPERA_JointToMotorTorques.out","Tracing.in4", tracingpolicy ) ; 		# control effort in motor space
+#connect ("LPERA_MotorToJointAngles.out","Tracing.in5", tracingpolicy ) ; 		# output
 
 ########################################################################
 # Connecting all the ports and streams. Be carefull with making        #
