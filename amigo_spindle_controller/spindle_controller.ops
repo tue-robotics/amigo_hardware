@@ -147,7 +147,7 @@ connect ("SpindleHoming.ref_pos_out","SpindleReferenceGenerator.posin", ConnPoli
 connect ("SpindleSafety.safety","SpindleHoming.safe", ConnPolicy() )
 connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindleCalculateError.in_minus", ConnPolicy() )
-connect ("SpindleReadEncoder.out","SpindlePublishPosition.in", ConnPolicy() )
+connect ("SpindleCalculatePosition.out","SpindlePublishPosition.in", ConnPolicy() )
 connect ("SpindleCalculatePosition.out","SpindleHoming.current_pos", ConnPolicy() )
 #connect ("SpindleCalculatePosition.out","SpindleReferenceLimiter.spindle_position", ConnPolicy() )
 connect ("SpindleReferenceGenerator.velout","SpindleCalculateFFW.ref_vel", ConnPolicy() )
