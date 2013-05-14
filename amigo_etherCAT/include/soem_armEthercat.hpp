@@ -90,19 +90,18 @@ typedef struct PACKED {
         void read_supply();
         void read_forces();
         void read_positions();
-        void read_spareanalog();
+        //void read_spareanalog();
         void stop();
 
 	private:
         int printEnabled;
         int printDisabled;
-        uint16 cntr;
-        uint16 cntr2;
-        uint16 cntr3;
         bool enable;
         bool enablestatus;
         bool setOutputToZero;
         uint8 heart_beat_source;
+        uint16 cntr;
+        uint16 cntr2;
         uint16 initRelEnc1;
         uint16 initRelEnc2;
         uint16 initRelEnc3;
@@ -111,7 +110,7 @@ typedef struct PACKED {
 		uint16 encoderAngle2;
 	  	std::vector<float> forceSensors;
 	  	std::vector<float> positionSensors;
-	  	std::vector<float> spareAnalogIns;     					// ToDo: Why call these spare???
+	  	//std::vector<float> spareAnalogIns;     					
 	  	std::vector<float> motorCurrents;
 	    std::vector<float> supplyVoltages;
 		std::vector<float> pwmDutyMotors;		
@@ -121,7 +120,7 @@ typedef struct PACKED {
 		EncoderMsg encoderAngle2_msg;
 	  	AnalogMsg forceSensors_msg;
 	  	AnalogMsg positionSensors_msg;
-	  	AnalogMsg spareAnalogIns_msg;
+	  	//AnalogMsg spareAnalogIns_msg;
 	  	AnalogMsg motorCurrents_msg;
 	 	AnalogMsg supplyVoltages_msg;
 		AnalogMsg pwmDutyMotors_msg;
@@ -135,19 +134,17 @@ typedef struct PACKED {
 		OutputPort<EncoderMsg> port_out_encoderAngle2;
 	 	OutputPort<AnalogMsg> port_out_forceSensors;
 	 	OutputPort<AnalogMsg> port_out_positionSensors;
-	 	OutputPort<AnalogMsg> port_out_spareAnalogIns;
+	 	//OutputPort<AnalogMsg> port_out_spareAnalogIns;
 	 	OutputPort<AnalogMsg> port_out_motorCurrents;
 	 	OutputPort<AnalogMsg> port_out_supplyVoltages;
         // OutputPort<std::vector<Bool> >  port_out_spareDigitalIns;
 
-		// ToDo: Use messages similar to soem_beckhoff_drivers? 
-		// This basically holds for every port		
-		OutputPort	< std::vector<float> > 		port_out_pwmDutyMotors;   
-        InputPort	< AnalogMsg>  				port_in_pwmDutyMotors;
-        InputPort   < bool>                     port_in_enable;
-        InputPort   < bool>                     port_in_reNullPort;
-	 	//InputPort	< std::vector<bool> >  		port_in_spareDigitalOuts;  
-        //OutputPort	< std::vector<bool> >  	port_out_spareDigitalOuts;
+		OutputPort < std::vector<float> > 	port_out_pwmDutyMotors;   
+        InputPort < AnalogMsg >  			port_in_pwmDutyMotors;
+        InputPort < bool >                  port_in_enable;
+        InputPort < bool >                  port_in_reNullPort;
+	 	//InputPort < std::vector<bool> >   port_in_spareDigitalOuts;  
+        //OutputPort < std::vector<bool> >  port_out_spareDigitalOuts;
 
     };
 	}
