@@ -107,7 +107,7 @@ SpindleReadSetpoint.configure
 loadComponent("SpindleReferenceLimiter","ReferenceLimiter")
 addPeer("Supervisor","SpindleReferenceLimiter")
 SpindleReferenceLimiter.configure
-SpindleReferenceLimiter.minimum_spindle_pos = 0.08
+SpindleReferenceLimiter.minimum_spindle_pos = 0.07
 
 #Loading Reference Generator
 loadComponent("SpindleReferenceGenerator","ReferenceGenerator")
