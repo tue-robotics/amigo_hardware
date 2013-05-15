@@ -110,7 +110,7 @@ namespace PERA
 		//! An error did occur yes / no (true/false)
 		bool errors;
 		//! Wait with homing, for first second
-		bool wait;
+		bool soemAwake;
 		//! Bool for indicating whether gripper is homed (true) or not (false)
 		bool gripperHomed; 
 		//! Property to define whether homing of the gripper is desired

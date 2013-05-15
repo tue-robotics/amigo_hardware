@@ -138,7 +138,7 @@ loadComponent("RPERA_GripperControl","PERA::GripperControlE")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 #RPERA_GripperControl.threshold_closed = 5.0
-RPERA_GripperControl.threshold_closed = 7.5
+RPERA_GripperControl.threshold_closed = 2.25
 RPERA_GripperControl.setPeriod(0.001)
 RPERA_GripperControl.max_pos = 28
 RPERA_GripperControl.gripper_gain = 2.4
@@ -308,20 +308,20 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Setting up tracing ###
-var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
-loadComponent("Tracing","Signal::Tracing")
-setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-Tracing.vector_sizes = array 		(8.0,  8.0,  8.0,  9.0,  8.0)
-Tracing.buffersize = 2*65536;
-Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMLOG/RT123.dat"
-Tracing.Ts = Ts
-Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
-Tracing.configure
-connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );	# reference after reference generator
-connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 		# error
-connect ("RPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 			# control effort in joint space
-connect ("RPERA_JointToMotorTorques.out","Tracing.in4", tracingpolicy ) ; 		# control effort in motor space
-connect ("RPERA_MotorToJointAngles.out","Tracing.in5", tracingpolicy ) ; 		# output
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
+#loadComponent("Tracing","Signal::Tracing")
+#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+#Tracing.vector_sizes = array 		(8.0,  8.0, 9.0, 9.0, 1.0)
+#Tracing.buffersize = 2*65536;
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIPLOG/GR_4.dat"
+#Tracing.Ts = Ts
+#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+#Tracing.configure
+#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );						# reference after reference generator
+#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 							# error
+#connect ("RPERA_SensorTorques.measured_torques_out","Tracing.in3", tracingpolicy ) ; 				# force
+#connect ("AnalogInsPera.out_for","Tracing.in4", tracingpolicy ) ;									# measurement voltage
+#connect ("RPERA_GripperControl.gripper_ref","Tracing.in5", tracingpolicy ) ; 						# Gripper REF
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
@@ -334,7 +334,6 @@ connect ("Soem.Slave_1013.encoderAngle0","RPERA_ReadEncoders.enc7_in" , ConnPoli
 connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
 connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointAngles.in" , ConnPolicy() ); 
-connect ("RPERA_MotorToJointAngles.out","RPERA_WriteCurrentJointAngles.pos", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("RPERA_ComputeJointErrors.out","RPERA_Gain.in", ConnPolicy() )
 connect ("RPERA_Gain.out","RPERA_LeadLag.in", ConnPolicy() )
@@ -342,13 +341,20 @@ connect ("RPERA_LeadLag.out","RPERA_Lowpass.in", ConnPolicy() )
 connect ("RPERA_Lowpass.out","RPERA_WeakIntegrator1.in", ConnPolicy() )
 connect ("RPERA_WeakIntegrator1.out","RPERA_AddGravComp.in2_event", ConnPolicy() )
 connect ("RPERA_AddGravComp.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
+connect ("RPERA_JointToMotorTorques.out","AnalogOutsPera.in_ev", ConnPolicy() )
 
+### Reference and Ros communication ###
 connect ("RPERA_ReadReferenceAngles.pos","RPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_ref","RPERA_VectorConcatenate.in2", ConnPolicy() )
 connect ("RPERA_VectorConcatenate.out","RPERA_ReferenceInterpolator.posin", ConnPolicy() )
+connect ("RPERA_MotorToJointAngles.out","RPERA_WriteCurrentJointAngles.pos", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_JointOutputLimiter.in", ConnPolicy() )
 connect ("RPERA_JointOutputLimiter.out","RPERA_WriteClippedJointAngles.pos", ConnPolicy() )
 connect ("RPERA_ReferenceInterpolator.posout","RPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+
+stream("RPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_right_controller/joint_measurements_raw"))
+stream("RPERA_WriteClippedJointAngles.joint_measurements", ros.topic("/arm_right_controller/joint_measurements"))
+stream("RPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_right_controller/joint_references"))
 
 ### Gravity compensation part ###
 connect ("RPERA_ReferenceInterpolator.posout","RPERA_GravityCompensation.in", ConnPolicy() )
@@ -357,6 +363,7 @@ connect ("RPERA_GC_Gains.out","RPERA_Polynomials.in", ConnPolicy() )
 connect ("RPERA_Polynomials.out","RPERA_AddGravComp.in1", ConnPolicy() )
 
 ### Supervisor ###
+connect ("AnalogInsPera.out_pos","RPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )
 connect ("RPERA_JointToMotorTorques.out","RPERA_Supervisor.controllerOutputPort", ConnPolicy() )
 connect ("RPERA_ReadReferenceAngles.pos","RPERA_Supervisor.requestedJointAnglesPort", ConnPolicy() )
 connect ("RPERA_Supervisor.enablePort","Soem.Slave_1011.enablePort", ConnPolicy() )                                
@@ -365,31 +372,18 @@ connect ("RPERA_Supervisor.enablePort","Soem.Slave_1013.enablePort", ConnPolicy(
 connect ("RPERA_ComputeJointErrors.out","RPERA_Supervisor.errorPort", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_Supervisor.measRelJointAnglesPort", ConnPolicy() )
 connect ("RPERA_Supervisor.resetInterpolatorPort","RPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
-
 connect ("RPERA_Supervisor.homJntAnglesPort","RPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("RPERA_Supervisor.enableReadRefPort","RPERA_ReadReferenceAngles.enablePort", ConnPolicy() )
 connect ("RPERA_Supervisor.reNullPort1","Soem.Slave_1011.reNullPort", ConnPolicy() )                     
 connect ("RPERA_Supervisor.reNullPort2","Soem.Slave_1012.reNullPort", ConnPolicy() )                     
 connect ("RPERA_Supervisor.reNullPort3","Soem.Slave_1013.reNullPort", ConnPolicy() )                     
-#connect ("RPERA_Supervisor.reNullPort","RPERA_GripperControl.reNullPort", ConnPolicy() )
-connect ("RPERA_RTD.ude","RPERA_Supervisor.jointVelocity", ConnPolicy() )
-connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
 
 stream("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
-#stream("RPERA_Supervisor.eButtonPort", ros.topic("/disable_amplifiers"))
 stream("RPERA_Supervisor.resetRefPort", ros.topic("/arm_right_controller/joint_references"))
-stream("RPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_right_controller/joint_measurements_raw"))
-stream("RPERA_WriteClippedJointAngles.joint_measurements", ros.topic("/arm_right_controller/joint_measurements"))
-stream("RPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_right_controller/joint_references"))
 stream("RPERA_Supervisor.peraStatusPort", ros.topic("/arm_right_status"))
-stream("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
-
-## soem connections
-connect ("RPERA_JointToMotorTorques.out","AnalogOutsPera.in_ev", ConnPolicy() )
-connect ("AnalogInsPera.out_for","RPERA_SensorTorques.voltage_in", ConnPolicy() )
-connect ("AnalogInsPera.out_pos","RPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )
 
 ### Gripper control ###
+connect ("AnalogInsPera.out_for","RPERA_SensorTorques.voltage_in", ConnPolicy() )
 connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque_in", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out", "RPERA_GripperControl.position_in", ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_measurement","RPERA_Supervisor.gripper_measurement", ConnPolicy() )
@@ -398,7 +392,10 @@ connect ("RPERA_Supervisor.gripper_command","RPERA_GripperControl.gripper_comman
 stream("RPERA_GripperControl.gripper_measurement", ros.topic("/arm_right_controller/gripper_measurement"))
 stream("RPERA_GripperControl.gripper_command", ros.topic("/arm_right_controller/gripper_command"))
 
-
+# RTD, publishes velocities to Supervisor and ROS (to do check if obsolete?)
+connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
+connect ("RPERA_RTD.ude","RPERA_Supervisor.jointVelocity", ConnPolicy() )
+stream("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
 Supervisor.AddAllwaysOnPeer ("SpindleStatus")
 

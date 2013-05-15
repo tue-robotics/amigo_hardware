@@ -267,7 +267,7 @@ LPERA_Diagnostics.boolname2 = "ReadRef Enable"
 connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPolicy() )
 
 ### Setting up reporting ###
-loadComponent("LPERA_Reporter", "OCL::FileReporting")
+#loadComponent("LPERA_Reporter", "OCL::FileReporting")
 ##LPERA_Reporter.NullSample="-1 -1 -1 -1 -1 -1 -1 -1 "
 #addPeer("LPERA_Reporter","LPERA_GripperControl")
 #LPERA_Reporter.reportPort("LPERA_GripperControl","gripper_ref")
@@ -275,8 +275,8 @@ loadComponent("LPERA_Reporter", "OCL::FileReporting")
 #addPeer("LPERA_Reporter","LPERA_ReferenceInterpolator")
 #LPERA_Reporter.reportPort("LPERA_ReferenceInterpolator","posout")
 ## log the measured joint angles
-addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
-LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
+#addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
+#LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
 ## log the errors
 #addPeer("LPERA_Reporter","LPERA_ComputeJointErrors")
 #LPERA_Reporter.reportPort("LPERA_ComputeJointErrors","out")
@@ -293,8 +293,8 @@ LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
 #addPeer("LPERA_Reporter","LPERA_WeakIntegrator1")
 #LPERA_Reporter.reportPort("LPERA_WeakIntegrator1","out")
 
-LPERA_Reporter.ReportFile = "/home/amigo/LPERA.dat"
-LPERA_Reporter.configure
+#LPERA_Reporter.ReportFile = "/home/amigo/LPERA.dat"
+#LPERA_Reporter.configure
 
 
 ### Setting up tracing ###
