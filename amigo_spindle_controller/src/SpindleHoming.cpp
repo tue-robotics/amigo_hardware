@@ -111,8 +111,8 @@ void SpindleHoming::updateHook()
 		homing_correction = correction[0];// + HOMINGERROR;
 		generator_reset[0] = RESET;
 		generator_reset[1] = current_pos[0] + homing_correction;
-		generator_reset[2] = maxvel;
-		generator_reset[3] = maxacc;
+		generator_reset[2] = 0.07;//maxvel;
+		generator_reset[3] = 0.1;//maxacc;
 		
 		reset_generator_outport.write(generator_reset);	
 	}
