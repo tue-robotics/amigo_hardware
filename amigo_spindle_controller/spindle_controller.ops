@@ -14,7 +14,7 @@ SpindleReadEncoder.configure
 #Loading Homing component
 loadComponent("SpindleHoming","SpindleHoming")
 addPeer("Supervisor","SpindleHoming")
-SpindleHoming.max_vel = 0.07
+SpindleHoming.max_vel = 0.01
 SpindleHoming.max_acc = 0.04
 SpindleHoming.stroke  = 0.413
 SpindleHoming.configure
