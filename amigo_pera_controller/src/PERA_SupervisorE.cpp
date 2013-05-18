@@ -336,7 +336,7 @@ void SupervisorE::updateHook()
 				homJntAngPort.write(homJntAngles);
 
 			}
-
+			log(Warning)<<"SUPERVISOR ( UH !Pressed): enable is send to driver. Enable = [" << enable << "]" <<endlog();	
 			enablePort.write(enable);
 
 		}
@@ -348,6 +348,7 @@ void SupervisorE::updateHook()
 
 			// Set enable to false and write it to the PERA_IO component.
 			enable = false;
+			log(Warning)<<"SUPERVISOR ( UH Pressed): enable is send to driver. Enable = [" << enable << "]" <<endlog();
 			enablePort.write(enable);
 
 			// Read angles from PERA angles from IO
@@ -379,6 +380,7 @@ void SupervisorE::updateHook()
 	else if(!ENABLE_PROPERTY){
 
 		enable = false;
+		log(Warning)<<"SUPERVISOR (ENABLE_PROPERTY): enable is send to driver. Enable = [" << enable << "]" <<endlog();
 		enablePort.write(enable);
 	}
 	
@@ -590,8 +592,8 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 			if(cntr2>=(int (0.02*Ts)) && cntr2<(int (0.04*Ts))){
 				enable = false;
+				log(Warning)<<"SUPERVISOR (Homing last joint 1): enable to driver. Enable = [" << enable << "]" <<endlog();
 				enablePort.write(enable);
-				log(Warning)<<"SUPERVISOR: Enable = false written" <<endlog();
 				log(Warning)<<"SUPERVISOR: second loopstep( enable=false written), cntr2 = : [ " << cntr2<< "]" <<endlog();
 				cntr2++;
 			}
@@ -648,6 +650,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 
 				// Enable PERA IO
 				enable = true;
+				log(Warning)<<"SUPERVISOR  (Homing last joint2 ): enable to driver. Enable = [" << enable << "]" <<endlog();
 				enablePort.write(enable);
 				log(Warning)<<"SUPERVISOR: enable = true to enablePort written" <<endlog();
 
