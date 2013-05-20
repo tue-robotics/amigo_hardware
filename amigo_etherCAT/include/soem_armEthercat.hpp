@@ -86,7 +86,6 @@ typedef struct PACKED {
 			void update();
 			bool configure();
 			void write_pwm(float val1,float val2,float val3);
-			void null_encoders();
 			void read_encoders();
 			void read_supply();
 			void read_forces();
@@ -99,13 +98,8 @@ typedef struct PACKED {
 			bool enable;
 			bool enablestatus;
 			bool setOutputToZero;
-			bool nulled;
-			bool reNull;
 			uint8 heart_beat_source;
 			uint16 cntr;
-			uint16 relEnc1;
-			uint16 relEnc2;
-			uint16 relEnc3;
         
 			std::vector<float> forceSensors;
 			std::vector<float> positionSensors;					
@@ -136,7 +130,6 @@ typedef struct PACKED {
 			OutputPort< std::vector<float> > port_out_pwmDutyMotors;   
 			InputPort<AnalogMsg> port_in_pwmDutyMotors;
 			InputPort<bool> port_in_enable;
-			InputPort<bool> port_in_reNullPort;
 		};
 	}
 #endif
