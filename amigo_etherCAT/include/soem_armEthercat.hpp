@@ -78,74 +78,65 @@ typedef struct PACKED {
 
 	namespace soem_beckhoff_drivers {
 
-	class SoemARMETHERCAT: public soem_master::SoemDriver {
-	public:
-		SoemARMETHERCAT(ec_slavet* mem_loc);
-		~SoemARMETHERCAT() {};
+		class SoemARMETHERCAT: public soem_master::SoemDriver {
+		public:
+			SoemARMETHERCAT(ec_slavet* mem_loc);
+			~SoemARMETHERCAT() {};
 
-		void update();
-		bool configure();
-        void write_pwm(float val1,float val2,float val3);
-        void read_encoders();
-        void read_supply();
-        void read_forces();
-        void read_positions();
-        //void read_spareanalog();
-        void stop();
+			void update();
+			bool configure();
+			void write_pwm(float val1,float val2,float val3);
+			void null_encoders();
+			void read_encoders();
+			void read_supply();
+			void read_forces();
+			void read_positions();
+			void stop();
 
-	private:
-        int printEnabled;
-        int printDisabled;
-        bool enable;
-        bool enablestatus;
-        bool setOutputToZero;
-        uint8 heart_beat_source;
-        uint16 cntr;
-        uint16 cntr2;
-        uint16 initRelEnc1;
-        uint16 initRelEnc2;
-        uint16 initRelEnc3;
-        uint16 encoderAngle0;
-		uint16 encoderAngle1;
-		uint16 encoderAngle2;
-	  	std::vector<float> forceSensors;
-	  	std::vector<float> positionSensors;
-	  	//std::vector<float> spareAnalogIns;     					
-	  	std::vector<float> motorCurrents;
-	    std::vector<float> supplyVoltages;
-		std::vector<float> pwmDutyMotors;		
+		private:
+			int printEnabled;
+			int printDisabled;
+			bool enable;
+			bool enablestatus;
+			bool setOutputToZero;
+			bool nulled;
+			bool reNull;
+			uint8 heart_beat_source;
+			uint16 cntr;
+			uint16 relEnc1;
+			uint16 relEnc2;
+			uint16 relEnc3;
+        
+			std::vector<float> forceSensors;
+			std::vector<float> positionSensors;					
+			std::vector<float> motorCurrents;
+			std::vector<float> supplyVoltages;
+			std::vector<float> pwmDutyMotors;		
+					
+			EncoderMsg encoderAngle0_msg;
+			EncoderMsg encoderAngle1_msg;
+			EncoderMsg encoderAngle2_msg;
+			AnalogMsg forceSensors_msg;
+			AnalogMsg positionSensors_msg;
+			AnalogMsg motorCurrents_msg;
+			AnalogMsg supplyVoltages_msg;
+			AnalogMsg pwmDutyMotors_msg;
 		
-		EncoderMsg encoderAngle0_msg;
-		EncoderMsg encoderAngle1_msg;
-		EncoderMsg encoderAngle2_msg;
-	  	AnalogMsg forceSensors_msg;
-	  	AnalogMsg positionSensors_msg;
-	  	//AnalogMsg spareAnalogIns_msg;
-	  	AnalogMsg motorCurrents_msg;
-	 	AnalogMsg supplyVoltages_msg;
-		AnalogMsg pwmDutyMotors_msg;
-        std_msgs::Bool enable_msg;
-		
-        in_armEthercatMemoryt* m_in_armEthercat;
-        out_armEthercatMemoryt* m_out_armEthercat;
+			in_armEthercatMemoryt* m_in_armEthercat;
+			out_armEthercatMemoryt* m_out_armEthercat;
 
-		OutputPort<EncoderMsg> port_out_encoderAngle0;
-		OutputPort<EncoderMsg> port_out_encoderAngle1;		
-		OutputPort<EncoderMsg> port_out_encoderAngle2;
-	 	OutputPort<AnalogMsg> port_out_forceSensors;
-	 	OutputPort<AnalogMsg> port_out_positionSensors;
-	 	//OutputPort<AnalogMsg> port_out_spareAnalogIns;
-	 	OutputPort<AnalogMsg> port_out_motorCurrents;
-	 	OutputPort<AnalogMsg> port_out_supplyVoltages;
-        // OutputPort<std::vector<Bool> >  port_out_spareDigitalIns;
+			OutputPort<EncoderMsg> port_out_encoderAngle0;
+			OutputPort<EncoderMsg> port_out_encoderAngle1;		
+			OutputPort<EncoderMsg> port_out_encoderAngle2;
+			OutputPort<AnalogMsg> port_out_forceSensors;
+			OutputPort<AnalogMsg> port_out_positionSensors;
+			OutputPort<AnalogMsg> port_out_motorCurrents;
+			OutputPort<AnalogMsg> port_out_supplyVoltages;
 
-		OutputPort < std::vector<float> > 	port_out_pwmDutyMotors;   
-        InputPort < AnalogMsg >  			port_in_pwmDutyMotors;
-        InputPort < bool >                  port_in_enable;
-        InputPort < bool >                  port_in_reNullPort;
-	 	//InputPort < std::vector<bool> >   port_in_spareDigitalOuts;  
-        //OutputPort < std::vector<bool> >  port_out_spareDigitalOuts;
-
-    };
+			OutputPort< std::vector<float> > port_out_pwmDutyMotors;   
+			InputPort<AnalogMsg> port_in_pwmDutyMotors;
+			InputPort<bool> port_in_enable;
+			InputPort<bool> port_in_reNullPort;
+		};
 	}
 #endif
