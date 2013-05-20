@@ -36,9 +36,7 @@ SupervisorE::SupervisorE(const string& name) :
 	addPort("resetInterpolatorPort",resetIntPort).doc("Sends resetvalues to the ReferenceInterpolator");
 	addPort("resetRefPort",resetRefPort).doc("Sends reset joint coordinates to ROS topic");
 	addPort("homJntAnglesPort",homJntAngPort).doc("Sends the requested angles for homing to the ReferenceInterpolator");
-	addPort("reNullPort1",reNullPort1).doc("Sends signal to PERA_IO to renull at actual position for slave 1002");
-	addPort("reNullPort2",reNullPort2).doc("Sends signal to PERA_IO to renull at actual position for slave 1002");
-	addPort("reNullPort3",reNullPort3).doc("Sends signal to PERA_IO to renull at actual position for slave 1002");
+	addPort("reNullPort",reNullPort).doc("Sends signal to ReadEncoders to renull at actual position");
 	addPort("enableReadRefPort",enableReadRefPort).doc("Sends enable signal to ReadReference allow reading of joint angles from ROS topic");
 	addPort("gripper_command", gripperCommandPort);
 	addPort("gripper_measurement",gripperMeasurementPort);
@@ -85,6 +83,7 @@ bool SupervisorE::configureHook()
 	cntr3=0;  // used for warning in homing procedure to make sure it is printed only once per X seconds
 	cntr4=0;  // used for sleep of 1s to make sure soem is awake TODO find out why this is needed
 	soemAwake=false;
+	nulling = false;
 	
 	firstSatInstance[0] = 0;
 	firstSatInstance[1] = 0;
@@ -262,7 +261,7 @@ void SupervisorE::updateHook()
 			for(unsigned int i = 0;i<8;i++){
 
 				// If the error is too large and corresponding joint is NOT being homed -> stop PERA_IO
-				if( (fabs(jointErrors[i])>MAX_ERRORS[i]) && (jntNr!=i+1) ){
+				if( (fabs(jointErrors[i])>MAX_ERRORS[i]) && (jntNr!=i+1) && (nulling == false)  ){
 
 					enable = false;
 
@@ -336,7 +335,7 @@ void SupervisorE::updateHook()
 				homJntAngPort.write(homJntAngles);
 
 			}
-			log(Warning)<<"SUPERVISOR ( UH !Pressed): enable is send to driver. Enable = [" << enable << "]" <<endlog();	
+			//log(Warning)<<"SUPERVISOR ( UH !Pressed): enable is send to driver. Enable = [" << enable << "]" <<endlog();	
 			enablePort.write(enable);
 
 		}
@@ -348,7 +347,7 @@ void SupervisorE::updateHook()
 
 			// Set enable to false and write it to the PERA_IO component.
 			enable = false;
-			log(Warning)<<"SUPERVISOR ( UH Pressed): enable is send to driver. Enable = [" << enable << "]" <<endlog();
+			//log(Warning)<<"SUPERVISOR ( UH Pressed): enable is send to driver. Enable = [" << enable << "]" <<endlog();
 			enablePort.write(enable);
 
 			// Read angles from PERA angles from IO
@@ -485,7 +484,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go forward fast 
 						if (cntr3 > (Ts/10)) {						
-						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;					
@@ -493,7 +492,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go back fast
 						if (cntr3 > (Ts/10)) {						
-						log(Info)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;				
@@ -501,7 +500,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go forward slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -509,7 +508,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go back slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Info)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]" <<endlog();
+						log(Warning)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]" <<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;					
@@ -584,24 +583,22 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		}
 		// If homed joint is last one, reset interpolator and PERA_USB_IO
 		else if(jntNr==1){
-
-			if(cntr2>=0 && cntr2<(int (0.02*Ts))){
-				log(Warning)<<"SUPERVISOR: first loopstep(obsolete), cntr2 = : [ " << cntr2<< "]" <<endlog();
+		
+			if(cntr2>=0 && cntr2<Ts){
 				cntr2++;
 			}
 
-			if(cntr2>=(int (0.02*Ts)) && cntr2<(int (0.04*Ts))){
+			if(cntr2>=Ts && cntr2<(Ts+10)){
+												
 				enable = false;
-				log(Warning)<<"SUPERVISOR (Homing last joint 1): enable to driver. Enable = [" << enable << "]" <<endlog();
 				enablePort.write(enable);
-				log(Warning)<<"SUPERVISOR: second loopstep( enable=false written), cntr2 = : [ " << cntr2<< "]" <<endlog();
+				nulling = true;
+				
 				cntr2++;
 			}
 
-			else if(cntr2==(int (0.04*Ts))){
-				
-				log(Warning)<<"SUPERVISOR: Renulled PERA_IO \n"<<endlog();
-
+			else if(cntr2==(Ts+10)){			
+						
 				// Reset the referenceInterpolator and PERA_IO.
 				doubles resetdata(32,0.0);
 
@@ -617,57 +614,61 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 					resetdata[i*4+3]=0.0;
 				}
 
-				// Null the PERA_IO.
-				bool reNull = true;
-				reNullPort1.write(reNull);
-				reNullPort2.write(reNull);
-				reNullPort3.write(reNull);
-				log(Warning)<<"SUPERVISOR: reNull = true to reNullPort123 written" <<endlog();
+				enable = false;
+				enablePort.write(enable);
+
 
 				// Enable the reading of the reference joint angles.
-				bool enableReadRef = true;
+				bool enableReadRef = false;
 				enableReadRefPort.write(enableReadRef);
-				log(Warning)<<"SUPERVISOR: enableReadRef = true to enableReadRefPort written" <<endlog();
 
 				// Reset the reference interpolator to zero
 				resetIntPort.write(resetdata);
-				log(Warning)<<"SUPERVISOR: resetdata to resetIntPort written" <<endlog();
-
-				// Reset the gripper controller position to zero
-				//gripperResetPort.write(true);
-				log(Warning)<<"SUPERVISOR: third step( actual reNulling), cntr2 = : [ " << cntr2<< "]" <<endlog();
-				cntr2++;
-
-			}
-			else if(cntr2>=(int (0.04*Ts)) && cntr2<(int (0.26*Ts))){
-				cntr2++;
-				if ( (cntr2 == int (0.05*Ts)) || (cntr2 == int (0.1*Ts)) || (cntr2 == int (0.15*Ts)) || (cntr2 == int (0.20*Ts)) )
-					log(Warning)<<"SUPERVISOR: fourth loopstep( wait), cntr2 = : [ " << cntr2<< "]" <<endlog();
-			}
-			else if(cntr2 == int (0.26*Ts)){
 				
-				log(Warning)<<"SUPERVISOR: fifth step( wait), cntr2 = : [ " << cntr2<< "]" <<endlog();
+				// Null the PERA_IO.
+				bool reNull = true;
+				reNullPort.write(reNull);
+				log(Info)<<"SUPERVISOR: Renulled PERA_IO \n"<<endlog();
+				
+				enable = false;
+				enablePort.write(enable);
 
+				cntr2++;
+
+			}
+			else if(cntr2>=(Ts+11) && cntr2<(Ts+Ts)){
+				if (cntr2 == (Ts+11))
+					enable = false;
+					enablePort.write(enable);
+				
+				cntr2++;
+			}
+			
+			else if(cntr2>=(Ts+Ts) && cntr2<(Ts+Ts+10)){
+				
 				// Enable PERA IO
 				enable = true;
-				log(Warning)<<"SUPERVISOR  (Homing last joint2 ): enable to driver. Enable = [" << enable << "]" <<endlog();
 				enablePort.write(enable);
-				log(Warning)<<"SUPERVISOR: enable = true to enablePort written" <<endlog();
-
+				nulling = false;
+				
+				cntr2++;
+			}
+			
+			else if(cntr2 >= (Ts+Ts+10)){
+				
 				// Enable homing for next joint
 				goodToGo = true;
 
 				// Reset counter for next round
 				cntr2 = 0;
 
-				// Move towards next joint
+				// set jointNr to zero, otherwise q1 will not be checked for exceeding errors
 				jntNr--;
 
 				// Set homing to true
 				homed = true;
-
+				
 				log(Warning)<<"SUPERVISOR: Finished homing \n"<<endlog();
-
 			}			
 
 		}

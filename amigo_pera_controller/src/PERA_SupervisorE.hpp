@@ -76,11 +76,7 @@ namespace PERA
 		//! Outputport for disabling/enabling the ReadReferenceAngles to read topic
 		OutputPort<bool> enableReadRefPort;
 		//! Outputport for ordering the PERA_IO to renull for slave 1002
-		OutputPort<bool> reNullPort1;
-		//! Outputport for ordering the PERA_IO to renulll for slave 1003
-		OutputPort<bool> reNullPort2;
-		//! Outputport for ordering the PERA_IO to renulll for slave 1004
-		OutputPort<bool> reNullPort3;
+		OutputPort<bool> reNullPort;
 		//! Outputport for ordering gripper to close
 		//OutputPort<std_msgs::Bool> gripperClosePort;
 		OutputPort<amigo_msgs::AmigoGripperCommand> gripperCommandPort;
@@ -105,6 +101,8 @@ namespace PERA
 		bool enable;
 		//! Bool indicating if homing is completed yes / no (true/false)
 		bool homed;
+		//! Bool indicating that the supervisor is nulling yes / no (true/false)
+		bool nulling;
 		//! Bool making sure that jntNr is lowered after x.x seconds
 		bool goodToGo;
 		//! An error did occur yes / no (true/false)
