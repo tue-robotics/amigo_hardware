@@ -30,12 +30,12 @@ var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
 var double ENCODERCOUNTS_WM		= 500.0*4.0   
 var double ENCODERCOUNTS_HM		= 128.0*4.0 
-var double ENC2ZERO				= 0.0 ;          			#This ENC2ZERO is used for the empty slot of the first slave (only two motors in shoulders, while the etherCAT print can control 3 DOF)
-var double ENC2SI_SM			= 2.0*0.00000563 ;          #TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	To Do find out remaining gear ratio's 		:16.4818
-var double ENC2SI_S3			= 0.00001653 ;              #TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;	from matlab determined to 					:5.6055	
-var double ENC2SI_EM			= 2.0*0.000003835;      	#TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM;		 										:12.3885
-var double ENC2SI_WM			= 2.0*0.00002116;           #TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 												:2.5458
-var double ENC2SI_HM 			= 0.0005236;                #TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
+var double ENC2ZERO				= 0.0 ;          						#This ENC2ZERO is used for the empty slot of the first slave (only two motors in shoulders, while the etherCAT print can control 3 DOF)
+var double ENC2SI_SM			= 2.0*0.00000563 ;          			#TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	To Do find out remaining gear ratio's 		:16.4818
+var double ENC2SI_S3			= 0.00001653 ;              			#TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;	from matlab determined to 					:5.6055	
+var double ENC2SI_EM			= 2.0*0.000003835;      				#TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM;		 										:12.3885
+var double ENC2SI_WM			= 2.0*0.00002116*(29.0/35.0);        	#TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 												:2.5458
+var double ENC2SI_HM 			= 0.0005236;               	 			#TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
 
 ### Read reference joint angles ###
 loadComponent("RPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
@@ -106,7 +106,7 @@ RPERA_Supervisor.dynBreakEpsilon = 0.05;
 RPERA_Supervisor.offsetAngles = OFFSETS
 RPERA_Supervisor.signs = SIGNS
 RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-RPERA_Supervisor.homedPos = array (682.0, 322.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
+RPERA_Supervisor.homedPos = array (682.0, 315.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
 RPERA_Supervisor.maxConSatTime = 3.0
 RPERA_Supervisor.stepSize = 0.5 ;# stepsize per second, divided by Ts to get stepsize per updatecycle
 RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
