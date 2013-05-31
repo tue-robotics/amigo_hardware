@@ -74,10 +74,10 @@ RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 10.0, 100.0)
 loadComponent("RPERA_JointOutputLimiter","DISCONTINUITIES::Saturation")
 addPeer("Supervisor","RPERA_JointOutputLimiter")
 setActivity("RPERA_JointOutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
-#RPERA_JointOutputLimiter.upper_limit = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  40.0 )
-#RPERA_JointOutputLimiter.lower_limit = array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -40.0 )
-RPERA_JointOutputLimiter.upper_limit = 	array (    0.0,  1.57,  1.57, 2.23,  1.83,   0.0,  0.0,  40.0 ) ;			# Put wrist output to zero
-RPERA_JointOutputLimiter.lower_limit = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83,   0.0,  0.0, -40.0 )  ;			# Put wrist output to zero
+RPERA_JointOutputLimiter.upper_limit = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  40.0 )
+RPERA_JointOutputLimiter.lower_limit = array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -40.0 )
+#RPERA_JointOutputLimiter.upper_limit = 	array (    0.0,  1.57,  1.57, 2.23,  1.83,   0.0,  0.0,  40.0 ) ;			# Put wrist output to zero
+#RPERA_JointOutputLimiter.lower_limit = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83,   0.0,  0.0, -40.0 )  ;			# Put wrist output to zero
 RPERA_JointOutputLimiter.vector_size = 8
 RPERA_JointOutputLimiter.configure
 
@@ -97,7 +97,7 @@ setActivity("RPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Supervisor.setPeriod(0.001)
 RPERA_Supervisor.jointUpperBounds = 	array (	   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
 RPERA_Supervisor.jointLowerBounds = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
-RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0, 10.0, 10.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
+RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0, 25.0, 25.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
 RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 120.0)
 RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 RPERA_Supervisor.dynBreakEpsilon = 0.05;
@@ -113,7 +113,7 @@ RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
 RPERA_Supervisor.requireHoming = true
 RPERA_Supervisor.requireGripperHoming = false
-RPERA_Supervisor.startJoint = 5
+RPERA_Supervisor.startJoint = 6
 RPERA_Supervisor.configure
 
 ### LOAD READENCODERS
@@ -141,7 +141,7 @@ setActivity("RPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_GripperControl.threshold_closed = 2.25
 RPERA_GripperControl.setPeriod(0.001)
 RPERA_GripperControl.max_pos = 28
-RPERA_GripperControl.gripper_gain = 2.4
+RPERA_GripperControl.gripper_gain = 0.6
 RPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -311,17 +311,16 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 #var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("Tracing","Signal::Tracing")
 #setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array 		(8.0, 8.0, 8.0, 9.0, 9.0)
+#Tracing.vector_sizes = array 		(8.0, 8.0, 8.0, 9.0)
 #Tracing.buffersize = 2*65536;
-#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIPLOG/REHOM3.dat"
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIPLOG/GripperIntTest.dat"
 #Tracing.Ts = Ts
 #Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #Tracing.configure
 #connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );						# reference after reference generator
 #connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 							# error
 #connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# output
-#connect ("RPERA_ReadEncoders.out","Tracing.in4", tracingpolicy ) ; 								# output 2 MOTORSPACE (RADIANS)
-#connect ("RPERA_ReadEncoders.out_enc","Tracing.in5", tracingpolicy ); 								# output 3 MOTORSPACE (ENCODERCOUNTS)
+#connect ("AnalogInsPera.out_for","Tracing.in4", tracingpolicy ) ; 									# force
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 

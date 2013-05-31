@@ -526,7 +526,7 @@ doubles SupervisorE::homing(doubles jointErrors, doubles absJntAngles, doubles t
 		// If true the homing will be done using rel encoders
 		else if(ABS_OR_REL[jntNr-1]==1){
 			// If the mechanical endstop is not reached yet
-			if (jntNr == 6) log(Warning) << "Joint error: " << fabs(jointErrors[jntNr-1]) << "  Threshold: " << (MAX_ERRORS[jntNr-1]*0.5) << " Joint angle: " << measRelJntAngles[jntNr-1] << endlog();
+			//if (jntNr == 6) log(Warning) << "Joint error: " << fabs(jointErrors[jntNr-1]) << "  Threshold: " << (MAX_ERRORS[jntNr-1]*0.5) << " Joint angle: " << measRelJntAngles[jntNr-1] << endlog();
 			
 			
 			if( fabs(jointErrors[jntNr-1]) < (MAX_ERRORS[jntNr-1]*0.5) ){
