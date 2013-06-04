@@ -269,13 +269,13 @@ void Supervisor::updateHook()
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
-						//log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds maximum of "<<UPPERBOUNDS[i]<<endlog();
+						log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds maximum of "<<UPPERBOUNDS[i]<<endlog();
 					}
 					else if(jointAngles[i]<LOWERBOUNDS[i] && errors == false){
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
-						//log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds minimum of "<<LOWERBOUNDS[i]<<endlog();
+						log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds minimum of "<<LOWERBOUNDS[i]<<endlog();
 					}
 
 				}
