@@ -109,7 +109,7 @@ using namespace PERA;
 					gripperPos[0] += gripperGain*PI/180;
 				}
 			} 
-			else{
+			else if(gripperCommand.direction == amigo_msgs::AmigoGripperCommand::CLOSE){
 				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
 				if ( (torques[GRIPPER_JOINT_TORQUE_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0) ) ){
 					//log(Warning)<<"Gripper is CLOSED"<<endlog();
