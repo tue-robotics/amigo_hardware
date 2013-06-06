@@ -111,7 +111,7 @@ using namespace PERA;
 			} 
 			else{
 				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_INDEX]<<endlog();
-				if ( (torques[GRIPPER_JOINT_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_INDEX] < MAX_TORQUE) || (gripperPos[0] < 0.0) ){
+				if ( (torques[GRIPPER_JOINT_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_INDEX] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0)) ){
 					log(Warning)<<"Gripper is CLOSED"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;

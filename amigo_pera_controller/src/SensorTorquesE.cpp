@@ -68,7 +68,7 @@ void SensorTorquesE::updateHook()
     //Tjoint[5] =  Tmeasured[6] + Tmeasured[7];
     //Tjoint[6] =  Tmeasured[6] - Tmeasured[7];
     //Tjoint[7] =  Tmeasured[8];
-        
+           
 	measured_torques_outport.write(Tmeasured);
     //joint_torques_outport.write(Tjoint);
 }
