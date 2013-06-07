@@ -61,11 +61,11 @@ RPERA_ReferenceInterpolator.InterpolatorDt = 0.001
 RPERA_ReferenceInterpolator.InterpolatorEps = 1.0
 RPERA_ReferenceInterpolator.configure
 RPERA_ReferenceInterpolator.interpolator1 = array (0.0, 0.4, 0.2)
-RPERA_ReferenceInterpolator.interpolator2 = array (0.0, 0.4, 0.1)
+RPERA_ReferenceInterpolator.interpolator2 = array (0.0, 0.4, 0.2)
 RPERA_ReferenceInterpolator.interpolator3 = array (0.0, 0.6, 0.3)
 RPERA_ReferenceInterpolator.interpolator4 = array (0.0, 0.8, 0.5)
 RPERA_ReferenceInterpolator.interpolator5 = array (0.0, 0.8, 0.5)
-RPERA_ReferenceInterpolator.interpolator6 = array (0.0, 0.1, 0.05)
+RPERA_ReferenceInterpolator.interpolator6 = array (0.0, 1.0, 0.5)
 RPERA_ReferenceInterpolator.interpolator7 = array (0.0, 1.0, 0.5)
 RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 10.0, 100.0)
 
@@ -76,8 +76,6 @@ addPeer("Supervisor","RPERA_JointOutputLimiter")
 setActivity("RPERA_JointOutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_JointOutputLimiter.upper_limit = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  40.0 )
 RPERA_JointOutputLimiter.lower_limit = array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -40.0 )
-#RPERA_JointOutputLimiter.upper_limit = 	array (    0.0,  1.57,  1.57, 2.23,  1.83,   0.0,  0.0,  40.0 ) ;			# Put wrist output to zero
-#RPERA_JointOutputLimiter.lower_limit = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83,   0.0,  0.0, -40.0 )  ;			# Put wrist output to zero
 RPERA_JointOutputLimiter.vector_size = 8
 RPERA_JointOutputLimiter.configure
 
@@ -204,13 +202,8 @@ loadComponent("RPERA_Gain","MATH::Gains")
 addPeer("Supervisor","RPERA_Gain")
 setActivity("RPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gain.vectorsize = 8
-<<<<<<< .mine
-RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0); 		#GRIPPER STILL NEEDS TUNING
-#RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 0.0, 0.0, 20.0); 				# Put wrist motor gains to zero
-=======
 #RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0); 		#GRIPPER STILL NEEDS TUNING
 RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 3000.0, 3500.0, 20.0); 				# Put wrist motor gains to zero
->>>>>>> .r16380
 RPERA_Gain.configure
 
 ### Lead Lag ###
@@ -291,19 +284,19 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
-#loadComponent("Tracing","Signal::Tracing")
-#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array 		(8.0, 8.0, 8.0, 9.0)
-#Tracing.buffersize = 2*65536;
-#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIPLOG/GripperIntTest.dat"
-#Tracing.Ts = Ts
-#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
-#Tracing.configure
-#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );						# reference after reference generator
-#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 							# error
-#connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# output
-#connect ("AnalogInsPera.out_for","Tracing.in4", tracingpolicy ) ; 									# force
+var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
+loadComponent("Tracing","Signal::Tracing")
+setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+Tracing.vector_sizes = array 		(8.0, 8.0, 8.0)
+Tracing.buffersize = 2*65536;
+Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMTEST/RNoFF.dat"
+Tracing.Ts = Ts
+Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+Tracing.configure
+connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );						# reference
+connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 							# error
+connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# output
+#connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# ffw
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
