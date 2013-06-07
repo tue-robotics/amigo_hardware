@@ -103,6 +103,8 @@ namespace PERA
 		bool enable;
 		//! Bool indicating if homing is completed yes / no (true/false)
 		bool homed;
+		//! Bool indicating that the supervisor is nulling yes / no (true/false)
+		bool nulling;
 		//! Bool making sure that jntNr is lowered after x.x seconds
 		bool goodToGo;
 		//! An error did occur yes / no (true/false)

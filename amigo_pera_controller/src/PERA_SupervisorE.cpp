@@ -229,18 +229,18 @@ void SupervisorE::updateHook()
 				// If outside bounds, disable usage and write previous angles to the reference interpolator
 				if(!(jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i])){ 
 
-					if(jointAngles[i]>UPPERBOUNDS[i] && errors == false){
+					if(jointAngles[i]>UPPERBOUNDS[i]*SIGNS[i] && errors == false){
 						
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
-						//log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds maximum of "<<UPPERBOUNDS[i]<<endlog();
+						log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds maximum of "<<UPPERBOUNDS[i]<<endlog();
 					}
-					else if(jointAngles[i]<LOWERBOUNDS[i] && errors == false){
+					else if(jointAngles[i]<LOWERBOUNDS[i]*SIGNS[i] && errors == false){
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
-						//log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds minimum of "<<LOWERBOUNDS[i]<<endlog();
+						log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds minimum of "<<LOWERBOUNDS[i]<<endlog();
 					}
 
 				}

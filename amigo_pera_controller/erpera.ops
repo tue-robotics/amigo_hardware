@@ -112,7 +112,7 @@ RPERA_Supervisor.stepSize = 0.5 ;# stepsize per second, divided by Ts to get ste
 RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
 RPERA_Supervisor.requireHoming = true
-RPERA_Supervisor.requireGripperHoming = false
+RPERA_Supervisor.requireGripperHoming = true
 RPERA_Supervisor.startJoint = 6
 RPERA_Supervisor.configure
 

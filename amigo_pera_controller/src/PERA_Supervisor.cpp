@@ -83,6 +83,7 @@ bool Supervisor::configureHook()
 	// Set initial values
 	cntr=0;
 	cntr2=0;
+	nulling = false;
 	firstSatInstance[0] = 0;
 	firstSatInstance[1] = 0;
 	firstSatInstance[2] = 0;
@@ -264,14 +265,14 @@ void Supervisor::updateHook()
 				// If outside bounds, disable usage and write previous angles to the reference interpolator
 				if(!(jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i])){ 
 
-					if(jointAngles[i]>UPPERBOUNDS[i] && errors == false){
+					if(jointAngles[i]>UPPERBOUNDS[i]*SIGNS[i] && errors == false){
 						
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
 						log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds maximum of "<<UPPERBOUNDS[i]<<endlog();
 					}
-					else if(jointAngles[i]<LOWERBOUNDS[i] && errors == false){
+					else if(jointAngles[i]<LOWERBOUNDS[i]*SIGNS[i] && errors == false){
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
@@ -296,7 +297,7 @@ void Supervisor::updateHook()
 			for(unsigned int i = 0;i<8;i++){
 
 				// If the error is too large and corresponding joint is NOT being homed -> stop PERA_IO
-				if( (fabs(jointErrors[i])>MAX_ERRORS[i]) && (jntNr!=i+1) ){
+				if( (fabs(jointErrors[i])>MAX_ERRORS[i]) && (jntNr!=i+1) && (nulling == false)  ){
 
 					enable = false;
 
@@ -651,6 +652,7 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 				cntr2++;
 				enable = false;
 				enablePort.write(enable);
+				nulling = true;
 			}
 
 			else if(cntr2==5){
@@ -696,6 +698,7 @@ doubles Supervisor::homing(doubles jointErrors, ints absJntAngles, doubles tempH
 				// Enable PERA IO
 				enable = true;
 				enablePort.write(enable);
+				nulling = false;
 
 				// Enable homing for next joint
 				goodToGo = true;
