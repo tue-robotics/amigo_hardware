@@ -296,7 +296,7 @@ Tracing.configure
 connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );						# reference
 connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 							# error
 connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# output
-#connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# ffw
+#connect ("RPERA_FFW.out","Tracing.in3", tracingpolicy ) ; 											# ffw
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
@@ -332,7 +332,7 @@ stream("RPERA_WriteClippedJointAngles.joint_measurements", ros.topic("/arm_right
 stream("RPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_right_controller/joint_references"))
 
 ### FFW ###
-connect ("RPERA_ReferenceInterpolator.accout","RPERA_FFW.in", ConnPolicy() )
+connect ("RPERA_ReferenceInterpolator.velout","RPERA_FFW.in", ConnPolicy() )
 connect ("RPERA_FFW.out","RPERA_AddGravComp.in1", ConnPolicy() )
 
 ### Supervisor ###
@@ -392,7 +392,7 @@ Supervisor.AddAllwaysOnPeer ("RPERA_Gain")
 Supervisor.AddAllwaysOnPeer ("RPERA_LeadLag")
 Supervisor.AddAllwaysOnPeer ("RPERA_Lowpass")
 Supervisor.AddAllwaysOnPeer ("RPERA_WeakIntegrator1")
-Supervisor.AddAllwaysOnPeer ("RPERA_FFW")
+#Supervisor.AddAllwaysOnPeer ("RPERA_FFW")
 Supervisor.AddAllwaysOnPeer ("RPERA_AddGravComp")
 Supervisor.AddAllwaysOnPeer ("RPERA_SensorTorques")
 Supervisor.AddAllwaysOnPeer ("RPERA_GripperControl")
