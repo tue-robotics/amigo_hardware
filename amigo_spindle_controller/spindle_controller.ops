@@ -25,7 +25,7 @@ loadComponent("SpindleReadSetpoint","SPINDLE::ReadSpindleSetpoint")
 addPeer("Supervisor","SpindleReadSetpoint")
 SpindleReadSetpoint.min_pos = 0.075
 SpindleReadSetpoint.max_pos = 0.4
-SpindleReadSetpoint.max_vel = 0.7
+SpindleReadSetpoint.max_vel = 0.07
 SpindleReadSetpoint.configure
 stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/spindle_coordinates"));
 
