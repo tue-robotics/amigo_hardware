@@ -30,7 +30,7 @@ bool ReadArmJointsMsg2::configureHook()
 
 bool ReadArmJointsMsg2::startHook()
 {
-  Logger::In in("ReadArmJointsMsg::startHook()");
+  Logger::In in("ReadArmJointsMsg2::startHook()");
   // Check validity of Ports:
   if ( !inport.connected() )
     {
@@ -53,13 +53,14 @@ bool ReadArmJointsMsg2::startHook()
   pos.resize(8.0,0.0);
   vel.resize(8.0,0.0);
   acc.resize(8.0,0.0);
-  jointdataref1.resize(5.0,0.0); 
-  jointdataref2.resize(5.0,0.0); 
-  jointdataref1[0] =  0.0;
-  jointdataref1[1] = -0.5; 
-  jointdataref1[2] = -0.3; 
-  jointdataref1[3] = -0.5;
-  jointdataref1[4] =  0.0;  
+  jointdataref1.resize(10.0,0.0); 
+  jointdataref2.resize(10.0,0.0); 
+  jointdataref1[0] = 0.0;
+  jointdataref1[1] = 0.5; 
+  jointdataref1[2] = 0.3; 
+  jointdataref1[3] = 0.5;
+  jointdataref1[4] = 0.0;
+    
   jointdataref2[0] =  0.0;
   jointdataref2[1] = -0.5; 
   jointdataref2[2] =  0.5; 
@@ -92,7 +93,7 @@ void ReadArmJointsMsg2::updateHook()
 	  // Read the inputport
 	  amigo_msgs::arm_joints jointdata;
 
-	  jointdata.pos[0].data = jointdataref1[counter];
+	  jointdata.pos[2].data = jointdataref2[counter];
 		  
 	  for ( uint i = 0; i < 7; i++ ){ 
 		  pos[i] = SIGNAL_SIGNS[i]*(jointdata.pos[i].data+OFFSET_VALUES[i]);

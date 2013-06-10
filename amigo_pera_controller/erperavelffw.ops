@@ -40,7 +40,7 @@ var double ENC2SI_HM 			= 0.0005236;               	 			#TWOPI*GEARRATIO_HM/ENCO
 ### Read reference joint angles ###
 loadComponent("RPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg2")
 addPeer("Supervisor","RPERA_ReadReferenceAngles")
-setActivity("RPERA_ReadReferenceAngles",0.1,HighestPriority,ORO_SCHED_RT)
+setActivity("RPERA_ReadReferenceAngles",10,HighestPriority,ORO_SCHED_RT)
 RPERA_ReadReferenceAngles.offsets = OFFSETS
 RPERA_ReadReferenceAngles.signs = SIGNS
 RPERA_ReadReferenceAngles.configure
@@ -109,7 +109,7 @@ RPERA_Supervisor.maxConSatTime = 3.0
 RPERA_Supervisor.stepSize = 0.5 ;# stepsize per second, divided by Ts to get stepsize per updatecycle
 RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
-RPERA_Supervisor.requireHoming = true
+RPERA_Supervisor.requireHoming = false
 RPERA_Supervisor.requireGripperHoming = false
 RPERA_Supervisor.startJoint = 6
 RPERA_Supervisor.configure
@@ -147,7 +147,9 @@ loadComponent("RPERA_FFW","MATH::Gains")
 addPeer("Supervisor","RPERA_FFW")
 setActivity("RPERA_FFW",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_FFW.vectorsize = 8
-RPERA_FFW.gain = array (0.06, 0.06, 0.06, 0.053, 0.053, 0.0, 0.0, 0.0)
+#RPERA_FFW.gain = array (-0.06, -0.06, -0.06, -0.053, -0.053, -0.0, -0.0, -0.0)
+#RPERA_FFW.gain = array (-0.3, -0.3, -0.3, -0.265, -0.265, -0.0, -0.0, -0.0)
+RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 3000.0, 3500.0, 0.0); 
 RPERA_FFW.configure
 
 ### Adding the gravity compensational term ###
@@ -203,7 +205,7 @@ addPeer("Supervisor","RPERA_Gain")
 setActivity("RPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gain.vectorsize = 8
 #RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0); 		#GRIPPER STILL NEEDS TUNING
-RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 3000.0, 3500.0, 20.0); 				# Put wrist motor gains to zero
+RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 3000.0, 3500.0, 0.0); 				# Put wrist motor gains to zero
 RPERA_Gain.configure
 
 ### Lead Lag ###
@@ -287,16 +289,17 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
 loadComponent("Tracing","Signal::Tracing")
 setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-Tracing.vector_sizes = array 		(8.0, 8.0, 8.0)
-Tracing.buffersize = 2*65536;
-Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMTEST/RNoFF.dat"
+Tracing.vector_sizes = array 		(8.0, 8.0, 8.0, 8.0, 8.0)
+Tracing.buffersize = 65536;
+Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMTEST/R3Fm.dat"
 Tracing.Ts = Ts
 Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 Tracing.configure
 connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );						# reference
 connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 							# error
 connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# output
-#connect ("RPERA_FFW.out","Tracing.in3", tracingpolicy ) ; 											# ffw
+connect ("RPERA_FFW.out","Tracing.in4", tracingpolicy ) ; 											# ffw
+connect ("RPERA_AddGravComp.out","Tracing.in5", tracingpolicy ) ; 									# control signal
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
@@ -392,10 +395,10 @@ Supervisor.AddAllwaysOnPeer ("RPERA_Gain")
 Supervisor.AddAllwaysOnPeer ("RPERA_LeadLag")
 Supervisor.AddAllwaysOnPeer ("RPERA_Lowpass")
 Supervisor.AddAllwaysOnPeer ("RPERA_WeakIntegrator1")
-#Supervisor.AddAllwaysOnPeer ("RPERA_FFW")
+Supervisor.AddAllwaysOnPeer ("RPERA_FFW")
 Supervisor.AddAllwaysOnPeer ("RPERA_AddGravComp")
 Supervisor.AddAllwaysOnPeer ("RPERA_SensorTorques")
 Supervisor.AddAllwaysOnPeer ("RPERA_GripperControl")
 Supervisor.AddAllwaysOnPeer ("RPERA_Diagnostics")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
-#Tracing.start
+Tracing.start

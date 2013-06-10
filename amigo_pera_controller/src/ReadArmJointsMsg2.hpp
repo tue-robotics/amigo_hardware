@@ -20,11 +20,11 @@ namespace PERA
 
   typedef vector<double> doubles;
 
-  /*! \class ReadArmJointsMsg
+  /*! \class ReadArmJointsMsg2
    *  \brief Defines Orocos component for reading and splitting up the 
    *         ROS topic joint_references
    * 
-   * The ReadArmJointsMsg component reads the joint coordinates from the 
+   * The ReadArmJointsMsg2 component reads the joint coordinates from the 
    * ROS topic /joint_references. As this topic publishes joint angles 
    * wrt the Denavit-Hartenberg zero-position an offset is added in 
    * order to account for the difference with the controller 
