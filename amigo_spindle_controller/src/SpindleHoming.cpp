@@ -51,6 +51,13 @@ SpindleHoming::~SpindleHoming(){}
 
 bool SpindleHoming::configureHook()
 {
+  homed = false;
+  safe = false;
+  sent_enable_endswitch_safety = false;
+  maxvel = maxvel_property.get();
+  maxacc = maxacc_property.get();
+  log(Info)<<"Spindle is not homed. Homing procedure started."<<endlog(); 
+  
   return true;
 }
 
@@ -70,12 +77,7 @@ bool SpindleHoming::startHook()
 	  log(Warning)<<"SpindleHoming: Safe inport or emergency button inport not connected!"<<endlog();
   }
 
-  homed = false;
-  safe = false;
-  sent_enable_endswitch_safety = false;
-  maxvel = maxvel_property.get();
-  maxacc = maxacc_property.get();
-  log(Info)<<"Spindle is not homed. Homing procedure started."<<endlog();  
+ 
   return true;
 }
 
@@ -91,15 +93,8 @@ void SpindleHoming::updateHook()
 	ros_emergency_inport.read(emergency_button);
 	endswitch_inport.read(endswitch);
 	
-	// Error or emergency button pressed
-	if ( !safe || emergency_button.data )
-	{
-	    ref_pos[0] = current_pos[0];
-	}
-	
 	//Homing finished
-	//else if(abs(error_pos[0]) > HOMINGERROR && homed == false)
-	else if ( !endswitch.data && homed == false )
+	if ( !endswitch.data && homed == false )
 	{
 		ROS_INFO_STREAM( "Spindle is homed." );
 		log(Info) << "Spindle is homed." << endlog();
@@ -117,6 +112,11 @@ void SpindleHoming::updateHook()
 		reset_generator_outport.write(generator_reset);	
 	}
 
+	// Error or emergency button pressed
+	if ( !safe || emergency_button.data )
+	{
+	    ref_pos[0] = current_pos[0];
+	}
 	//Homing
 	else if(homed == false)
 	{
@@ -136,7 +136,7 @@ void SpindleHoming::updateHook()
 	correction_outport.write(correction);
 	
 	// Commented 19-04-2012
-	reset_generator_outport.write(generator_reset);	
+	//reset_generator_outport.write(generator_reset);	
 }
 
 ORO_CREATE_COMPONENT(SpindleHoming)

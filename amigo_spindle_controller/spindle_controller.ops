@@ -205,17 +205,20 @@ Supervisor.AddAllwaysOnPeer ("SpindleReferenceGenerator")
 Supervisor.AddAllwaysOnPeer ("SpindleCalculatePosition")
 Supervisor.AddAllwaysOnPeer ("SpindleOutputLimiter")
 Supervisor.AddAllwaysOnPeer ("SpindlePublishPosition")
-Supervisor.AddAllwaysOnPeer ("SpindleHoming")
 Supervisor.AddAllwaysOnPeer ("SpindleReferenceLimiter")
-Supervisor.AddAllwaysOnPeer ("SpindleStatus")
-
 Supervisor.NameBodyPart( 2, "spindle")
 stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup") )
 stream( "Supervisor.spindle_enabled", ros.topic("/spindle_enabled") );
+
+Supervisor.AddPeerToBodyPart ("SpindleSafety",2 )
+
 Supervisor.AddPeerToBodyPart ("SpindleCalculateFFW",2 )
 Supervisor.AddPeerToBodyPart ("SpindleCalculateOutput",2 )
 Supervisor.AddPeerToBodyPart ("SpindleCalculateError",2 )
 Supervisor.AddPeerToBodyPart ("SpindleGain",2 )
 Supervisor.AddPeerToBodyPart ("SpindleLeadLag",2 )
 Supervisor.AddPeerToBodyPart ("SpindleFirstOrderLowPass",2 )
-Supervisor.AddPeerToBodyPart ("SpindleSafety",2 )
+Supervisor.AddAllwaysOnPeer ("SpindleStatus")
+
+#Supervisor.AddAllwaysOnPeer ("SpindleHoming")
+Supervisor.AddPeerToBodyPart ("SpindleHoming",2)
