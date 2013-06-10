@@ -6,25 +6,30 @@
 
 using namespace std;
 using namespace RTT;
-using namespace MSG;
+using namespace SPINDLE;
 
 ReadSpindleSetpoint::ReadSpindleSetpoint(const string& name) : TaskContext(name, PreOperational)
 {
   // Creating ports:
   addEventPort( "spindle_setpoint", spindle_setpoint_inport );
-  addPort( "afterhoming_pos", afterhoming_outport );
-  addPort( "ref_pos", refpos_outport );
-  addPort( "ref_vel", refvel_outport );
-  addPort( "ref_acc", refacc_outport );
+  addPort( "out", ref_outport );
   
   // Creating variables
-  homed_position_property = 0.35;
-  addProperty( "homed_pos", homed_position_property );
+  minpos = -1.0;
+  maxpos = -1.0;
+  maxvel = -1.0;
+  addProperty( "min_pos", minpos );
+  addProperty( "max_pos", maxpos );
+  addProperty( "max_vel", maxvel );
 }
 ReadSpindleSetpoint::~ReadSpindleSetpoint(){}
 
 bool ReadSpindleSetpoint::configureHook()
 {
+	// Set size of reference vector
+	ref.resize(1); //Single joint
+	ref[0].resize(3,0); //pos, vel, acc
+	
   return true;
 }
 
@@ -37,38 +42,29 @@ bool ReadSpindleSetpoint::startHook()
     return false;
   }
   
-  if ( !refpos_outport.connected() ) {
+  if ( !ref_outport.connected() ) {
     log(Warning)<<"ReadSpindleSetpoint::Outputport not connected!"<<endlog();
   }
-
-  // During the startup the position which is desired after homing, 
-  // is once published to the ROS topic.
-  double homed_pos = homed_position_property;
-  spindle_setpoint.pos = homed_pos;
-  afterhoming_outport.write(spindle_setpoint);
+  
+  if ( minpos < 0.0 || maxpos < 0.0 || maxvel <= 0.0 ) {
+	log(Error)<<"ReadSpindleSetpoint::Minima or maxima not correctly indicated!"<<endlog();
+	return false;
+  }
   return true;
 }
 
 void ReadSpindleSetpoint::updateHook()
 {
-  // Read the inputports
-  spindle_setpoint_inport.read(spindle_setpoint);
-  
-  	// Declaring variables
-  double ref_pos;
-  double ref_vel;
-  double ref_acc;
-  //int ref_stop;
-
-  ref_pos = spindle_setpoint.pos;
-  ref_vel = spindle_setpoint.vel;
-  ref_acc = spindle_setpoint.acc;
-  //ref_stop = spindle_setpoint.stop;
- 	
-  // Write data to ports
-  refpos_outport.write( ref_pos );
-  refvel_outport.write( ref_vel );
-  refacc_outport.write( ref_acc );
+	// Read the inputports
+	amigo_msgs::spindle_setpoint spindle_setpoint;
+	if ( spindle_setpoint_inport.read(spindle_setpoint) == NewData ) {
+	  ref[0][0] = fmin( maxpos, fmax( minpos, spindle_setpoint.pos ) );
+	  ref[0][1] = fmin( maxvel, spindle_setpoint.vel );
+	  ref[0][2] = spindle_setpoint.acc;
+		
+	  // Write data to ports
+	  ref_outport.write( ref );
+	}
 }
 
-ORO_CREATE_COMPONENT(MSG::ReadSpindleSetpoint)
+ORO_CREATE_COMPONENT(SPINDLE::ReadSpindleSetpoint)

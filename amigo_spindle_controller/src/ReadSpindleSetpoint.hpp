@@ -9,7 +9,7 @@
 using namespace std;
 using namespace RTT;
 
-namespace MSG // Just because it looks nice
+namespace SPINDLE // Just because it looks nice
 {
   // Define a new type for easy coding:
   typedef vector<double> doubles;
@@ -22,17 +22,14 @@ namespace MSG // Just because it looks nice
     // Declaring input- and output_ports
     InputPort<amigo_msgs::spindle_setpoint> spindle_setpoint_inport;
     OutputPort<amigo_msgs::spindle_setpoint> afterhoming_outport;
-    OutputPort<double> refpos_outport;
-    OutputPort<double> refvel_outport;
-    OutputPort<double> refacc_outport;
-    //OutputPort<bool> refstop_outport;
-    
-    // Declaring property
-    double homed_position_property;
-    
+    OutputPort< vector<doubles> > ref_outport;
+
     // Declaring message types
-    amigo_msgs::spindle_setpoint spindle_setpoint;
     
+    vector<doubles> ref;
+    double minpos;
+    double maxpos;
+    double maxvel;
 
     public:
 

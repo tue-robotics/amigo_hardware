@@ -13,6 +13,7 @@
   <depend package="geometry_msgs"/>
   <depend package="amigo_ref_interpolator"/>
   <depend package="std_msgs"/>
+  <depend package="rtt_std_msgs"/>
   <depend package="rtt_amigo_msgs"/>
   <depend package="amigo_etherCAT"/>
   <depend package="rtt_math_components"/>
@@ -21,6 +22,7 @@
   <depend package="rtt_ROS_interfacing"/>
   <depend package="rtt_soem_interfacing"/>
   <depend package="rtt_discontinuity_components"/>
+  <depend package="rtt_routing_components"/>
   
 </package>
 

@@ -1,142 +1,137 @@
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
+#include <rtt/OperationCaller.hpp>
 
 #include "SpindleHoming.hpp"
 
 #include <ros/ros.h>
-
-#define RESET 1.0
-#define NORESET 0.0
 
 using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 
 
-SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperational),
-  
-  maxvel_property( "max_vel" , "Vector", 0.05),
-  maxacc_property( "max_acc" , "Vector", 0.02)
-  
+SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperational)
   {
-  // Creating ports:
-  addEventPort( "encoder_in", encoder_inport );
-  addPort( "error_pos", errorpos_inport );
-  addPort( "ref_pos_in", refpos_inport );
-  addPort( "current_pos", currentpos_inport );
-  addPort( "safe", safe_inport );
-  addPort( "ros_emergency", ros_emergency_inport );
-  addPort( "endswitch", endswitch_inport );
+  addEventPort( "endswitch", endswitch_inport );
 
-  addPort( "ref_pos_out", refpos_outport );
-  addPort( "correction_out", correction_outport );
-  addPort( "reset_generator", reset_generator_outport );
-  addPort( "enable_endswitch_safety", enable_endswitch_safety_outport );
+  addPort( "ref_out", ref_outport );
+
   
   // Creating variables
-  addProperty( maxvel_property );
-  addProperty( maxacc_property ); 
+  home_vel = 0.01;
+  home_acc = 0.01;
+  addProperty( "home_vel", home_vel );
+  addProperty( "home_acc", home_acc );
   addProperty( "stroke", stroke );
+  addProperty( "endpos", endpos );
+  addProperty( "homed", homed );
   
-  // Initialising variables
-  ref_pos.assign(1,0.0);
-  input.assign(1,0.0);
-  correction.assign(1,0.0);
-  error_pos.assign(1,0.0);
-  generator_reset.assign(4,0.0);
   
 }
 SpindleHoming::~SpindleHoming(){}
 
 bool SpindleHoming::configureHook()
 {
-  homed = false;
-  safe = false;
-  sent_enable_endswitch_safety = false;
-  maxvel = maxvel_property.get();
-  maxacc = maxacc_property.get();
-  log(Info)<<"Spindle is not homed. Homing procedure started."<<endlog(); 
-  
-  return true;
+	// Lookup the Supervisor component.
+	TaskContext* Supervisor = this->getPeer("Supervisor");
+	if ( !Supervisor ) {
+		log(Error) << "Could not find Supervisor component! Did you add it as Peer in the ops file?"<<endlog();
+		return false;
+	}
+	// Lookup the Encoder component.
+	TaskContext* SpindleReadEncoder = this->getPeer("SpindleReadEncoder");
+	if ( !SpindleReadEncoder ) {
+		log(Error) << "Could not find SpindleReadEncoder component! Did you add it as Peer in the ops file?"<<endlog();
+		return false;
+	}	
+	// Lookup the Setpoint component.
+	TaskContext* SpindleReadSetpoint = this->getPeer("SpindleReadSetpoint");
+	if ( !SpindleReadSetpoint ) {
+		log(Error) << "Could not find SpindleReadSetpoint component! Did you add it as Peer in the ops file?"<<endlog();
+		return false;
+	}
+	
+	
+	// Lookup operations of peers
+	StartBodyPart = Supervisor->getOperation("StartBodyPart");
+	if ( !StartBodyPart.ready() ) {
+		log(Error) << "Could not find Supervisor.StartBodyPart Operation!"<<endlog();
+		return false;
+	}
+	StopBodyPart = Supervisor->getOperation("StopBodyPart");
+	if ( !StopBodyPart.ready() ) {
+		log(Error) << "Could not find Supervisor.StopBodyPart Operation!"<<endlog();
+		return false;
+	}	
+	ResetEncoder = SpindleReadEncoder->getOperation("reset");
+	if ( !ResetEncoder.ready() ) {
+		log(Error) << "Could not find SpindleReadEncoder.reset Operation!"<<endlog();
+		return false;
+	}	
+	
+	// Set size of reference vector
+	ref.resize(1); //Single joint
+	ref[0].resize(3); //pos, vel, acc
+	ref[0][1] = home_vel;
+	ref[0][2] = home_acc;
+	
+	return true;
 }
 
 bool SpindleHoming::startHook()
 { 
-  // Check validity of Ports:
-  if ( !encoder_inport.connected() || !errorpos_inport.connected() || !refpos_inport.connected() )
-  {
-    log(Error)<<"SpindleHoming:One or more inputports not connected!"<<endlog();
-    // No connection was made, can't do my job !
-    return false;
-  }
-  if ( !refpos_outport.connected() || !correction_outport.connected() || !reset_generator_outport.connected() || !endswitch_inport.connected() || !enable_endswitch_safety_outport.connected() ) {
-    log(Warning)<<"SpindleHoming:One or more outputports not connected!"<<endlog();
-  }
-  if (!safe_inport.connected() || !ros_emergency_inport.connected() ){
-	  log(Warning)<<"SpindleHoming: Safe inport or emergency button inport not connected!"<<endlog();
-  }
+		if ( !homed ) {
+			TaskContext* SpindleReadSetpoint = this->getPeer("SpindleReadSetpoint");
+			if ( ! SpindleReadSetpoint->isRunning() ) {
+				log(Error) << "Spindle component is not running yet, please start this component first" << endlog();
+			}
+			else {
+				SpindleReadSetpoint->stop(); //Disabling reading of references. Will be enabled automagically at the end by the supervisor.
+			}
+		}
+		
+	starttime = os::TimeService::Instance()->getNSecs()*1e-9;
+	log(Warning)<<"SpindleHoming::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
 
- 
-  return true;
+	return true;
 }
 
 void SpindleHoming::updateHook()
 {   	
-	errorpos_inport.read(error_pos);
-	refpos_inport.read(refpos);
-	ref_pos[0] = refpos;
-	generator_reset[0] = NORESET;
-	currentpos_inport.read(current_pos);
-
-	safe_inport.read( safe );
-	ros_emergency_inport.read(emergency_button);
+	std_msgs::Bool endswitch;
 	endswitch_inport.read(endswitch);
 	
-	//Homing finished
+	if ( homed == false )
+	{
+		ref[0][0] = 1.0; // You always find the endstop within the meter
+		ref_outport.write(ref);
+	}
 	if ( !endswitch.data && homed == false )
 	{
 		ROS_INFO_STREAM( "Spindle is homed." );
-		log(Info) << "Spindle is homed." << endlog();
 		homed = true;
-		encoder_inport.read(input);
-		correction[0] = stroke + input[0];
-		
-		// a variable used once to reset the reference generator after homing
-		homing_correction = correction[0];// + HOMINGERROR;
-		generator_reset[0] = RESET;
-		generator_reset[1] = current_pos[0] + homing_correction;
-		generator_reset[2] = 0.07;//maxvel;
-		generator_reset[3] = 0.1;//maxacc;
-		
-		reset_generator_outport.write(generator_reset);	
-	}
 
-	// Error or emergency button pressed
-	if ( !safe || emergency_button.data )
-	{
-	    ref_pos[0] = current_pos[0];
+
+		// Actually call the services
+		log(Debug)<<"SpindleHoming::start calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
+		StopBodyPart("spindle");
+		ResetEncoder(0,stroke);
+		StartBodyPart("spindle");
+		log(Debug)<<"SpindleHoming::finshed calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
+		
+		// Got to desired position
+		ref[0][0] = endpos;
+		ref_outport.write(ref);
+		this->stop(); 
 	}
-	//Homing
-	else if(homed == false)
-	{
-		ref_pos[0] = 0.5;
+	if ( homed == true ){
+		//Should not happen only if homed == true is defined in ops file
+		this->stop(); 
 	}
-	
-	// Send a bool to SpindleSafety to enable endswitch safety
-	if (homed && endswitch.data && !sent_enable_endswitch_safety) 
-	{
-		log(Info)<<"Sending enable_endswitch_safety"<<endlog();
-		sent_enable_endswitch_safety = true;
-		enable_endswitch_safety_outport.write(true);
-	}
-	
-	// Write to output ports
-	refpos_outport.write(ref_pos);
-	correction_outport.write(correction);
-	
-	// Commented 19-04-2012
-	//reset_generator_outport.write(generator_reset);	
 }
+
+
 
 ORO_CREATE_COMPONENT(SpindleHoming)

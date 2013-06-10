@@ -18,43 +18,31 @@ namespace AMIGO // Just because it looks nice
     {
     private:
 
-    // Declaring input- and output_ports
-    InputPort<doubles> encoder_inport;
-    InputPort<doubles> errorpos_inport;
-    InputPort<double> refpos_inport;
-    InputPort<doubles> currentpos_inport;
-    InputPort<bool> safe_inport;
-    InputPort<std_msgs::Bool> ros_emergency_inport;
     InputPort<std_msgs::Bool> endswitch_inport;
 
-    OutputPort<doubles> refpos_outport;
-    OutputPort<doubles> correction_outport;
-    OutputPort<doubles> reset_generator_outport;
-    OutputPort<bool> enable_endswitch_safety_outport;
-    
-    // Declaring properties
-    Property<double> maxvel_property;
-    Property<double> maxacc_property;
+    OutputPort< vector<doubles> > ref_outport;
+
     
     // Declaring variables
     bool homed;
-    std_msgs::Bool endswitch;
-    bool sent_enable_endswitch_safety;
-    doubles ref_pos;
-    double refpos;
-    doubles input;
-    doubles correction;
-    doubles error_pos;
-    doubles current_pos;
-    doubles generator_reset;
-    double maxvel;
-    double maxacc;
-    double stroke;
-    double homing_correction;
 
-    std_msgs::Bool emergency_button;
-    bool safe;
+    double home_vel;
+    double home_acc;
+    double stroke;
+    double endpos;
+    long long int starttime; //Debugging
+    
+    vector<doubles> ref;
+
+    //double homing_correction;
+
 	
+    
+    protected:
+    OperationCaller<bool(string)> StartBodyPart;
+    OperationCaller<bool(string)> StopBodyPart;
+    OperationCaller<void(int,double)> ResetEncoder;
+
     public:
 
     SpindleHoming(const string& name);

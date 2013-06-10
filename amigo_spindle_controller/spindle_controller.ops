@@ -1,113 +1,34 @@
 import("amigo_spindle_controller")
 
 var double Ts = 0.001
-#TODO: set to 1khz like base
 ### Loading Components ###
 #Reading Encoders
 loadComponent("SpindleReadEncoder","SOEM::ReadEncoders")
 addPeer("Supervisor","SpindleReadEncoder")
 SpindleReadEncoder.setPeriod(Ts)
 SpindleReadEncoder.encoderbits = 65536
-SpindleReadEncoder.enc2SI = array (4.1666667e-7)
+SpindleReadEncoder.enc2SI = array (-4.1666667e-7); # Minus because spindle up is defined positive.
 SpindleReadEncoder.configure
+connect ("Soem.Slave_1006.Slave_1006_value","SpindleReadEncoder.enc1_in", ConnPolicy() )
 
-#Loading Homing component
-loadComponent("SpindleHoming","SpindleHoming")
-addPeer("Supervisor","SpindleHoming")
-SpindleHoming.max_vel = 0.01
-SpindleHoming.max_acc = 0.04
-SpindleHoming.stroke  = 0.413
-SpindleHoming.configure
+#Publish component
+loadComponent("SpindlePositionToROS","ROS::DoublesToROS")
+addPeer("Supervisor","SpindlePositionToROS")
+setActivity("SpindlePositionToROS",0.01,LowestPriority,ORO_SCHED_OTHER)
+SpindlePositionToROS.NumberOfDoublesInVector = 1
+SpindlePositionToROS.configure
+connect ("SpindleReadEncoder.out","SpindlePositionToROS.in", ConnPolicy() )
+stream("SpindlePositionToROS.out1", ros.topic("/spindle_position"));
 
-#Calculating Feed Forward
-loadComponent("SpindleCalculateFFW","CalculateFFW")
-addPeer("Supervisor","SpindleCalculateFFW")
-SpindleCalculateFFW.FFWgrav = 0.07
-SpindleCalculateFFW.FFWstat = 0.05
-SpindleCalculateFFW.FFWdyn = 0.4
-SpindleCalculateFFW.FFWacc = 0.3
-SpindleCalculateFFW.configure
-
-#Calculating Output to encoders
-loadComponent("SpindleCalculateOutput","MATH::Addition")
-addPeer("Supervisor","SpindleCalculateOutput")
-SpindleCalculateOutput.vectorsize = 1
-SpindleCalculateOutput.configure
-
-#TODO: Remove
-#Limiting the Output
-loadComponent("SpindleOutputLimiter","OutputLimiter")
-addPeer("Supervisor","SpindleOutputLimiter")
-SpindleOutputLimiter.configure
-
-#TODO: Replace by DoubleToROS component
-#Publishing the spindle position to ROS
-loadComponent("SpindlePublishPosition","PublishPosition")
-addPeer("Supervisor","SpindlePublishPosition")
-SpindlePublishPosition.configure
-
-
-#Calculating Spindle Position
-loadComponent("SpindleCalculatePosition","MATH::Subtraction")
-addPeer("Supervisor","SpindleCalculatePosition")
-SpindleCalculatePosition.vectorsize = 1
-SpindleCalculatePosition.configure
-
-#Calculating Errors
-loadComponent("SpindleCalculateError","MATH::Subtraction")
-addPeer("Supervisor","SpindleCalculateError")
-SpindleCalculateError.vectorsize = 1
-SpindleCalculateError.configure
-
-#Loading controller components
-#Gain
-loadComponent("SpindleGain","MATH::Gain")
-addPeer("Supervisor","SpindleGain")
-SpindleGain.vectorsize = 1
-SpindleGain.gain = 40
-SpindleGain.configure
-#LeadLag
-loadComponent("SpindleLeadLag","FILTERS::LeadLag")
-addPeer("Supervisor","SpindleLeadLag")
-SpindleLeadLag.vector_size = 1
-SpindleLeadLag.sampling_time = Ts
-SpindleLeadLag.zero_frequency = array (1.6)
-SpindleLeadLag.pole_frequency = array (60.0)
-SpindleLeadLag.configure
-#LowPass
-loadComponent("SpindleFirstOrderLowPass","FILTERS::FirstOrderLowPass")
-addPeer("Supervisor","SpindleFirstOrderLowPass")
-SpindleFirstOrderLowPass.vector_size = 1
-SpindleFirstOrderLowPass.sampling_time = Ts
-SpindleFirstOrderLowPass.pole_frequency = array (20.0)
-SpindleFirstOrderLowPass.configure
-#TODO: Enable interpolator
-#Integrator
-#loadComponent("SpindleIntegrator","FILTERS::WeakIntegrators")
-#SpindleIntegrator.zero_frequency = array ( 0.3 )
-#SpindleIntegrator.vector_size = 1
-#SpindleIntegrator.sampling_time = Ts
-#SpindleIntegrator.configure
-
-#TODO: Should be passive, only acting on actual errors
-#Loading Safety component
-loadComponent("SpindleSafety","SpindleSafety")
-addPeer("Supervisor","SpindleSafety")
-SpindleSafety.configure
-
-#TODO: Feed vel and acc to reference interpolator
 #Reading spindle setpoints 
-loadComponent("SpindleReadSetpoint","MSG::ReadSpindleSetpoint")
+loadComponent("SpindleReadSetpoint","SPINDLE::ReadSpindleSetpoint")
 addPeer("Supervisor","SpindleReadSetpoint")
-SpindleReadSetpoint.setPeriod(Ts)
-SpindleReadSetpoint.homed_pos = 0.35
+SpindleReadSetpoint.min_pos = 0.075
+SpindleReadSetpoint.max_pos = 0.4
+SpindleReadSetpoint.max_vel = 0.7
 SpindleReadSetpoint.configure
+stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/spindle_coordinates"));
 
-#Loading reference limiter component
-loadComponent("SpindleReferenceLimiter","ReferenceLimiter")
-addPeer("Supervisor","SpindleReferenceLimiter")
-SpindleReferenceLimiter.configure
-SpindleReferenceLimiter.minimum_spindle_pos = 0.07
 
 #Loading Reference Generator
 loadComponent("SpindleReferenceGenerator","ReferenceGenerator")
@@ -117,7 +38,108 @@ SpindleReferenceGenerator.NrInterpolators = 1
 SpindleReferenceGenerator.InterpolatorDt = Ts
 SpindleReferenceGenerator.InterpolatorEps = 1.0
 SpindleReferenceGenerator.configure
-SpindleReferenceGenerator.interpolator1 = array (0.0, 0.01, 0.1)
+SpindleReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.03); #Velocity is carefully tuned. Do not increase because integrator will fill!
+connect ("SpindleReadSetpoint.out","SpindleReferenceGenerator.refin", ConnPolicy() )
+connect ("SpindleReadEncoder.out","SpindleReferenceGenerator.actual_pos", ConnPolicy() )
+
+#Loading Homing component
+loadComponent("SpindleHoming","SpindleHoming")
+connectPeers("Supervisor","SpindleHoming")
+connectPeers("SpindleHoming","Supervisor")
+connectPeers("SpindleHoming","SpindleReadEncoder")
+addPeer("SpindleHoming","SpindleReferenceGenerator")
+addPeer("SpindleHoming","SpindleReadSetpoint")
+SpindleHoming.home_vel = 0.01
+SpindleHoming.home_acc = 0.1; #Fast acc means constant velocity means better reproducing homing
+SpindleHoming.stroke  = 0.41
+SpindleHoming.endpos = 0.35
+SpindleHoming.homed = 0; # =False
+SpindleHoming.configure
+connect ("DigitalIns2.out2", "SpindleHoming.endswitch", ConnPolicy() )
+connect ("SpindleHoming.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
+
+
+
+#Calculating Errors
+loadComponent("SpindleCalculateError","MATH::Subtraction")
+addPeer("Supervisor","SpindleCalculateError")
+SpindleCalculateError.vectorsize = 1
+SpindleCalculateError.configure
+connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
+connect ("SpindleReadEncoder.out","SpindleCalculateError.in_minus", ConnPolicy() )
+
+
+#Loading controller components
+#Gain
+loadComponent("SpindleGain","MATH::Gain")
+addPeer("Supervisor","SpindleGain")
+SpindleGain.vectorsize = 1
+SpindleGain.gain = -40; ###TODO: Move negative sign to AnalogOuts
+SpindleGain.configure
+connect ("SpindleCalculateError.out","SpindleGain.in", ConnPolicy() )
+
+#Integrator
+loadComponent("SpindleIntegrator","FILTERS::WeakIntegrators")
+addPeer("Supervisor","SpindleIntegrator")
+SpindleIntegrator.zero_frequency = array ( 0.3 )
+SpindleIntegrator.vector_size = 1
+SpindleIntegrator.sampling_time = Ts
+SpindleIntegrator.configure
+connect ("SpindleGain.out","SpindleIntegrator.in", ConnPolicy() )
+
+#LeadLag
+loadComponent("SpindleLeadLag","FILTERS::LeadLag")
+addPeer("Supervisor","SpindleLeadLag")
+SpindleLeadLag.vector_size = 1
+SpindleLeadLag.sampling_time = Ts
+SpindleLeadLag.zero_frequency = array (1.6)
+SpindleLeadLag.pole_frequency = array (60.0)
+SpindleLeadLag.configure
+connect ("SpindleIntegrator.out","SpindleLeadLag.in", ConnPolicy() )
+
+#LowPass
+loadComponent("SpindleSecondOrderLowPass","FILTERS::SecondOrderLowPass")
+addPeer("Supervisor","SpindleSecondOrderLowPass")
+SpindleSecondOrderLowPass.vector_size = 1
+SpindleSecondOrderLowPass.sampling_time = Ts
+SpindleSecondOrderLowPass.pole_frequency = array (20.0)
+SpindleSecondOrderLowPass.pole_damping = array (0.7)
+SpindleSecondOrderLowPass.configure
+connect ("SpindleLeadLag.out","SpindleSecondOrderLowPass.in", ConnPolicy() )
+
+
+
+
+
+#Calculating Feed Forward
+loadComponent("SpindleCalculateFFW","CalculateFFW")
+addPeer("Supervisor","SpindleCalculateFFW")
+SpindleCalculateFFW.FFWgrav = 0.07
+SpindleCalculateFFW.FFWstat = 0.05
+SpindleCalculateFFW.FFWdyn = 0.4
+SpindleCalculateFFW.FFWacc = 0.3
+SpindleCalculateFFW.configure
+connect ("SpindleReferenceGenerator.velout","SpindleCalculateFFW.ref_vel", ConnPolicy() )
+connect ("SpindleReferenceGenerator.accout","SpindleCalculateFFW.ref_acc", ConnPolicy() )
+
+#Calculating Output to encoders
+loadComponent("SpindleAddFeedForward","MATH::Addition")
+addPeer("Supervisor","SpindleAddFeedForward")
+SpindleAddFeedForward.vectorsize = 1
+SpindleAddFeedForward.configure
+connect ("SpindleCalculateFFW.FFW_out","SpindleAddFeedForward.in1", ConnPolicy() )
+connect ("SpindleSecondOrderLowPass.out","SpindleAddFeedForward.in2_event", ConnPolicy() )
+connect ("SpindleAddFeedForward.out","AnalogOuts.spindle", ConnPolicy() )
+
+
+#TODO: Should be passive, only acting on actual errors
+#Loading Safety component
+loadComponent("SpindleSafety","SpindleSafety")
+addPeer("Supervisor","SpindleSafety")
+SpindleSafety.error_margin = 0.05
+SpindleSafety.configure
+connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
+connect ("SpindleCalculateError.out","SpindleSafety.error_pos", ConnPolicy() )
 
 
 #### LOAD COMPONENT TO PUBLISH STATUS ###
@@ -128,97 +150,46 @@ SpindleStatus.configure
 SpindleStatus.setPeriod(1)
 
 
-
-### Setting up the connections between the components ###
-connect ("Soem.Slave_1006.Slave_1006_value","SpindleReadEncoder.enc1_in", ConnPolicy() )
-connect ("SpindleReadEncoder.out","SpindleCalculatePosition.in_minus", ConnPolicy() )
-connect ("SpindleHoming.correction_out","SpindleCalculatePosition.in_plus", ConnPolicy() )
-connect ("SpindleHoming.reset_generator","SpindleReferenceGenerator.resetValues", ConnPolicy() )
-connect ("DigitalIns2.out2", "SpindleHoming.endswitch", ConnPolicy() )
-connect ("DigitalIns2.out2", "SpindleSafety.endswitch_inport", ConnPolicy() )
-connect ("SpindleHoming.enable_endswitch_safety", "SpindleSafety.enable_endswitch_safety", ConnPolicy() )
-connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
-connect ("SpindleSafety.safety","SpindleOutputLimiter.safety", ConnPolicy() )
-connect ("SpindleReadSetpoint.ref_pos","SpindleReferenceLimiter.ref_pos_in", ConnPolicy() )
-connect ("SpindleReadSetpoint.ref_vel","SpindleReferenceLimiter.ref_vel_in", ConnPolicy() )
-connect ("SpindleReadSetpoint.ref_acc","SpindleReferenceLimiter.ref_acc_in", ConnPolicy() )
-connect ("SpindleReferenceLimiter.ref_pos_out","SpindleHoming.ref_pos_in", ConnPolicy() )
-connect ("SpindleHoming.ref_pos_out","SpindleReferenceGenerator.posin", ConnPolicy() )
-connect ("SpindleSafety.safety","SpindleHoming.safe", ConnPolicy() )
-connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
-connect ("SpindleCalculatePosition.out","SpindleCalculateError.in_minus", ConnPolicy() )
-connect ("SpindleCalculatePosition.out","SpindlePublishPosition.in", ConnPolicy() )
-connect ("SpindleCalculatePosition.out","SpindleHoming.current_pos", ConnPolicy() )
-#connect ("SpindleCalculatePosition.out","SpindleReferenceLimiter.spindle_position", ConnPolicy() )
-connect ("SpindleReferenceGenerator.velout","SpindleCalculateFFW.ref_vel", ConnPolicy() )
-connect ("SpindleReferenceGenerator.accout","SpindleCalculateFFW.ref_acc", ConnPolicy() )
-connect ("SpindleCalculateError.out","SpindleGain.in", ConnPolicy() )
-connect ("SpindleCalculateError.out","SpindleHoming.error_pos", ConnPolicy() )
-connect ("SpindleCalculateError.out","SpindleSafety.error_pos", ConnPolicy() )
-connect ("SpindleGain.out","SpindleLeadLag.in", ConnPolicy() )
-connect ("SpindleLeadLag.out","SpindleFirstOrderLowPass.in", ConnPolicy() )
-#connect ("SpindleFirstOrderLowPass.out","SpindleIntegrator.in", ConnPolicy() )
-#connect ("SpindleIntegrator.out","SpindleCalculateOutput.in2_event", ConnPolicy() )
-connect ("SpindleFirstOrderLowPass.out","SpindleCalculateOutput.in2_event", ConnPolicy() )
-connect ("SpindleCalculateFFW.FFW_out","SpindleCalculateOutput.in1", ConnPolicy() )
-connect ("SpindleCalculateOutput.out","SpindleOutputLimiter.input", ConnPolicy() )
-connect ("SpindleOutputLimiter.output","AnalogOuts.spindle", ConnPolicy() )
-connect ("SpindleReadEncoder.out","SpindleHoming.encoder_in", ConnPolicy() )
-connect ("SpindleSafety.spindle_brake", "SpindleStatus.bool_in1", ConnPolicy() )
-
-#Setting up the connections with ROS-topics
-stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/spindle_coordinates"));
-stream("SpindlePublishPosition.out", ros.topic("/spindle_position"));
-stream("SpindleReadSetpoint.afterhoming_pos", ros.topic("/spindle_controller/spindle_coordinates"));
-stream("SpindleStatus.bool_out1", ros.topic("/spindle_status"));
-stream("SpindleHoming.ros_emergency", ros.topic("/emergency_switch"));
-stream("SpindleHoming.endswitch", ros.topic("/spindle_endswitch"));
-
-
-### Setting up reporting ###
-#loadComponent("SpindleReporter", "OCL::FileReporting")
-#SpindleReporter.ReportFile = "/home/amigo/spindlereports.dat"
-#addPeer("SpindleReporter","SpindleOutputLimiter")
-#addPeer("SpindleReporter","SpindleCalculatePosition")
-#addPeer("SpindleReporter","SpindleReferenceGenerator")
-#addPeer("SpindleReporter","SpindleCalculateError")
-#addPeer("SpindleReporter","SpindleFirstOrderLowPass")
-#addPeer("SpindleReporter","SpindleReadSetpoint")
-#addPeer("SpindleReporter","SpindleIntegrator")
-#SpindleReporter.reportPort("SpindleReadSetpoint","ref_pos")
-#SpindleReporter.reportPort("SpindleOutputLimiter","output")
-#SpindleReporter.reportPort("SpindleCalculatePosition","out")
-#SpindleReporter.reportPort("SpindleReferenceGenerator","posout")
-#SpindleReporter.reportPort("SpindleCalculateError","out")
-#SpindleReporter.reportPort("SpindleReferenceGenerator","velout")
-#SpindleReporter.reportPort("SpindleReferenceGenerator","accout")
-#SpindleReporter.reportPort("SpindleFirstOrderLowPass","out")
-#SpindleReporter.reportPort("SpindleIntegrator","out")
-
-
+#### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
+loadComponent("SpindleDiagnostics","ROS::RosDiagnostics")
+addPeer("Supervisor","SpindleDiagnostics")
+SpindleDiagnostics.statusname = "SpindleController"
+SpindleDiagnostics.NumberOfVectorPorts = 4
+SpindleDiagnostics.NumberOfBoolPorts = 1
+SpindleDiagnostics.configure
+setActivity("SpindleDiagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
+SpindleDiagnostics.vecname1 = "Reference"
+SpindleDiagnostics.vecname2 = "Error"
+SpindleDiagnostics.vecname3 = "Voltage"
+SpindleDiagnostics.vecname4 = "ControlEffort"
+SpindleDiagnostics.boolname1 = "Safe"
+connect ("SpindleReferenceGenerator.posout", "SpindleDiagnostics.vec1", ConnPolicy() )
+connect ("SpindleCalculateError.out", "SpindleDiagnostics.vec2", ConnPolicy() )
+connect ("SpindleAddFeedForward.out", "SpindleDiagnostics.vec3", ConnPolicy() )
+connect ("SpindleSecondOrderLowPass.out", "SpindleDiagnostics.vec4", ConnPolicy() )
+connect ("SpindleSafety.safety", "SpindleDiagnostics.bool1", ConnPolicy() )
+stream("SpindleDiagnostics.diagnostics", ros.topic("/diagnostics"));
 
 
 #### START COMPONENTS ####
-Supervisor.AddAllwaysOnPeer ("SpindleReadSetpoint")
 Supervisor.AddAllwaysOnPeer ("SpindleReadEncoder")
-Supervisor.AddAllwaysOnPeer ("SpindleReferenceGenerator")
-Supervisor.AddAllwaysOnPeer ("SpindleCalculatePosition")
-Supervisor.AddAllwaysOnPeer ("SpindleOutputLimiter")
-Supervisor.AddAllwaysOnPeer ("SpindlePublishPosition")
-Supervisor.AddAllwaysOnPeer ("SpindleReferenceLimiter")
+Supervisor.AddAllwaysOnPeer ("SpindlePositionToROS")
+Supervisor.AddAllwaysOnPeer ("SpindleDiagnostics")
+
+
+
 Supervisor.NameBodyPart( 2, "spindle")
 stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup") )
 stream( "Supervisor.spindle_enabled", ros.topic("/spindle_enabled") );
-
-Supervisor.AddPeerToBodyPart ("SpindleSafety",2 )
-
-Supervisor.AddPeerToBodyPart ("SpindleCalculateFFW",2 )
-Supervisor.AddPeerToBodyPart ("SpindleCalculateOutput",2 )
+Supervisor.AddPeerToBodyPart ("SpindleReadSetpoint",2 )
+Supervisor.AddPeerToBodyPart ("SpindleReferenceGenerator",2 )
 Supervisor.AddPeerToBodyPart ("SpindleCalculateError",2 )
 Supervisor.AddPeerToBodyPart ("SpindleGain",2 )
+Supervisor.AddPeerToBodyPart ("SpindleIntegrator",2 )
 Supervisor.AddPeerToBodyPart ("SpindleLeadLag",2 )
-Supervisor.AddPeerToBodyPart ("SpindleFirstOrderLowPass",2 )
-Supervisor.AddAllwaysOnPeer ("SpindleStatus")
+Supervisor.AddPeerToBodyPart ("SpindleSecondOrderLowPass",2 )
+Supervisor.AddPeerToBodyPart ("SpindleCalculateFFW",2 )
+Supervisor.AddPeerToBodyPart ("SpindleAddFeedForward",2 )
+Supervisor.AddPeerToBodyPart ("SpindleSafety",2 )
 
-#Supervisor.AddAllwaysOnPeer ("SpindleHoming")
-Supervisor.AddPeerToBodyPart ("SpindleHoming",2)
+Supervisor.AddAllwaysOnPeer ("SpindleHoming"); #Homing stops itself after finishing, last component because all others have to be started in order to be stopped ;)

@@ -29,6 +29,7 @@ namespace AMIGO // Just because it looks nice
     bool safety;
     bool enable_endswitch_safety;
     doubles error_pos;
+    double errormargin;
     
 
     public:

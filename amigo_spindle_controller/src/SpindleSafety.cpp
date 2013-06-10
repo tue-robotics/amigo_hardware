@@ -9,7 +9,6 @@
 
 #define	BRAKEOFF true
 #define BRAKEON	false
-#define ERRORMARGIN 0.02
 
 using namespace std;
 using namespace RTT;
@@ -23,6 +22,8 @@ SpindleSafety::SpindleSafety(const string& name) : TaskContext(name, PreOperatio
   addPort( "endswitch_inport", endswitch_inport );
   addPort( "spindle_brake", spindle_brake_outport );
   addPort( "safety", safety_outport );
+  
+  addProperty( "error_margin", errormargin );
   
   // Initialising variables
   error_pos.assign(1,0.0);  
@@ -40,15 +41,20 @@ bool SpindleSafety::startHook()
   if ( !errorpos_inport.connected() )
   {
     log(Error)<<"SpindleSafety::Inputport not connected!"<<endlog();
-    // No connection was made, can't do my job !
     return false;
   }
   if ( !spindle_brake_outport.connected() || !safety_outport.connected() ) {
     log(Warning)<<"SpindleSafety::One or more outputports not connected!"<<endlog();
   }
+  if ( ! (errormargin > 0.0) ) {
+	  log(Warning)<<"SpindleSafety::error_margin not (correctly) specified!"<<endlog();
+  }
   	 
   safety = true;
   enable_endswitch_safety = false;
+  
+  log(Warning)<<"SpindleSafety::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
+
   return true;
 }
 
@@ -56,7 +62,7 @@ void SpindleSafety::updateHook()
 {
 	// Measuring safety
 	errorpos_inport.read(error_pos);
-	if( abs(error_pos[0]) > ERRORMARGIN )
+	if( abs(error_pos[0]) > errormargin )
 	{
 		if(safety){ // Safety was true, so log now once
 			ROS_ERROR_STREAM( "Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." );
@@ -65,6 +71,7 @@ void SpindleSafety::updateHook()
 		safety = false;
 	}
 	
+	/*TODO
 	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
 	if (enable_endswitch_safety_inport.read(enable_endswitch_safety) == NewData) log(Info)<<"Endswitch safety enabled"<<endlog();
 	
@@ -78,7 +85,7 @@ void SpindleSafety::updateHook()
 			log(Error) << "Spindle out of range, endswitch data is false" << endlog();
 			//safety = false; // TIMC: Disabled for debugging purposes
 		}
-	}
+	}*/
 	
 	// Applying brake if necessary
 	if(safety == false)
