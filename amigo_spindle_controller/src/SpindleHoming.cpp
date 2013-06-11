@@ -74,8 +74,8 @@ bool SpindleHoming::configureHook()
 	// Set size of reference vector
 	ref.resize(1); //Single joint
 	ref[0].resize(3); //pos, vel, acc
-	ref[0][1] = home_vel;
-	ref[0][2] = home_acc;
+	ref[0][1] = home_vel; //Redundant?
+	ref[0][2] = home_acc; //Redundant?
 	
 	return true;
 }
@@ -106,6 +106,8 @@ void SpindleHoming::updateHook()
 	if ( homed == false )
 	{
 		ref[0][0] = 1.0; // You always find the endstop within the meter
+		ref[0][1] = home_vel;
+		ref[0][2] = home_acc;
 		ref_outport.write(ref);
 	}
 	if ( !endswitch.data && homed == false )
