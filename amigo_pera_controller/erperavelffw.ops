@@ -111,7 +111,7 @@ RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
 RPERA_Supervisor.requireHoming = false
 RPERA_Supervisor.requireGripperHoming = false
-RPERA_Supervisor.startJoint = 6
+RPERA_Supervisor.startJoint = 5
 RPERA_Supervisor.configure
 
 ### LOAD READENCODERS
@@ -149,7 +149,8 @@ setActivity("RPERA_FFW",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_FFW.vectorsize = 8
 #RPERA_FFW.gain = array (-0.06, -0.06, -0.06, -0.053, -0.053, -0.0, -0.0, -0.0)
 #RPERA_FFW.gain = array (-0.3, -0.3, -0.3, -0.265, -0.265, -0.0, -0.0, -0.0)
-RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 3000.0, 3500.0, 0.0); 
+#RPERA_FFW.gain = array (0.063*2000.0, 0.06*2000.0, 0.04*1000.0, 0.046*1750.0, 0.050*1750.0, 0.00*1750.0, 0.00*2150.0, 0.0); 
+RPERA_FFW.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 RPERA_FFW.configure
 
 ### Adding the gravity compensational term ###
@@ -286,12 +287,12 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Setting up tracing ###
-var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
+var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 65536;	tracingpolicy.lock_policy = LOCKED
 loadComponent("Tracing","Signal::Tracing")
 setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
 Tracing.vector_sizes = array 		(8.0, 8.0, 8.0, 8.0, 8.0)
 Tracing.buffersize = 65536;
-Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMTEST/R3Fm.dat"
+Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/LOGREP/RPERA/RES5.dat"
 Tracing.Ts = Ts
 Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 Tracing.configure

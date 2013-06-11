@@ -93,7 +93,7 @@ void ReadArmJointsMsg2::updateHook()
 	  // Read the inputport
 	  amigo_msgs::arm_joints jointdata;
 
-	  jointdata.pos[2].data = jointdataref2[counter];
+	  jointdata.pos[4].data = jointdataref2[counter];
 		  
 	  for ( uint i = 0; i < 7; i++ ){ 
 		  pos[i] = SIGNAL_SIGNS[i]*(jointdata.pos[i].data+OFFSET_VALUES[i]);
