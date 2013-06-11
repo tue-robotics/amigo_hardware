@@ -123,6 +123,8 @@ void SpindleHoming::updateHook()
 		
 		// Got to desired position
 		ref[0][0] = endpos;
+		ref[0][1] = 0.0; // Use default
+		ref[0][2] = 0.0; // Use default
 		ref_outport.write(ref);
 		this->stop(); 
 	}
