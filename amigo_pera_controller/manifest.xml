@@ -27,6 +27,7 @@
   <depend package="rtt_ROS_interfacing"/>
   <depend package="rtt_matrix_components"/>
   <depend package="rtt_discontinuity_components"/>
+  <depend package="rtt_tracing"/>
 
 </package>
 
