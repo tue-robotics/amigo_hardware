@@ -148,7 +148,8 @@ addPeer("Supervisor","SpindleStatus")
 SpindleStatus.NumberOfBoolPorts = 1
 SpindleStatus.configure
 SpindleStatus.setPeriod(1)
-
+connect ("SpindleSafety.spindle_brake", "SpindleStatus.bool_in1", ConnPolicy() )
+stream("SpindleStatus.bool_out1", ros.topic("/spindle_status"));
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("SpindleDiagnostics","ROS::RosDiagnostics")
@@ -175,8 +176,6 @@ stream("SpindleDiagnostics.diagnostics", ros.topic("/diagnostics"));
 Supervisor.AddAllwaysOnPeer ("SpindleReadEncoder")
 Supervisor.AddAllwaysOnPeer ("SpindlePositionToROS")
 Supervisor.AddAllwaysOnPeer ("SpindleDiagnostics")
-
-
 
 Supervisor.NameBodyPart( 2, "spindle")
 stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup") )
