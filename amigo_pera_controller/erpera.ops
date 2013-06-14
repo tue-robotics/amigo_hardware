@@ -112,8 +112,8 @@ RPERA_Supervisor.stepSize = 0.5 ;# stepsize per second, divided by Ts to get ste
 RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
 RPERA_Supervisor.requireHoming = true
-RPERA_Supervisor.requireGripperHoming = false
-RPERA_Supervisor.startJoint = 5
+RPERA_Supervisor.requireGripperHoming = true
+RPERA_Supervisor.startJoint = 6
 RPERA_Supervisor.configure
 
 ### LOAD READENCODERS
@@ -138,9 +138,9 @@ loadComponent("RPERA_GripperControl","PERA::GripperControlE")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 #RPERA_GripperControl.threshold_closed = 5.0
-RPERA_GripperControl.threshold_closed = 2.25
+RPERA_GripperControl.threshold_closed = 8.00
 RPERA_GripperControl.setPeriod(0.001)
-RPERA_GripperControl.max_pos = 28
+RPERA_GripperControl.max_pos = 35
 RPERA_GripperControl.gripper_gain = 0.6
 RPERA_GripperControl.configure
 
@@ -226,8 +226,8 @@ loadComponent("RPERA_Gain","MATH::Gains")
 addPeer("Supervisor","RPERA_Gain")
 setActivity("RPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gain.vectorsize = 8
-#RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0); 		#GRIPPER SET TO ZERO
-RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 0.0, 0.0, 0.0); 		#GRIPPER SET TO ZERO
+RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0); 		#GRIPPER SET TO ZERO
+#RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 0.0, 0.0, 0.0); 		#GRIPPER SET TO ZERO
 #RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 3000.0, 3500.0, 20.0); 				# Put wrist motor gains to zero
 RPERA_Gain.configure
 

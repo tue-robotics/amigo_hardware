@@ -200,7 +200,7 @@ void SupervisorE::updateHook()
 			
 			long double timeNow = os::TimeService::Instance()->getNSecs()*1e-9; 
 			
-			for(unsigned int i = 0;i<5;i++){
+			for(unsigned int i = 0;i<7;i++){
 				if(firstSatInstance[i]==0 && fabs(controllerOutputs[i])>=MOTORSAT[i]){
 					timeReachedSaturation[i]=timeNow;
 					firstSatInstance[i]=1;
@@ -224,7 +224,7 @@ void SupervisorE::updateHook()
 			/* Check if joint angles requested by the path planning node
 			 * in ROS are within the feasible joint limits.
 			 */
-			for(unsigned int i = 0;i<5;i++){
+			for(unsigned int i = 0;i<7;i++){
 				
 				// If outside bounds, disable usage and write previous angles to the reference interpolator
 				if(!(jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i])){ 
@@ -258,7 +258,7 @@ void SupervisorE::updateHook()
 			}
 
 			// Check if joint errors are within specified limits
-			for(unsigned int i = 0;i<5;i++){
+			for(unsigned int i = 0;i<8;i++){
 
 				// If the error is too large and corresponding joint is NOT being homed -> stop PERA_IO
 				if( (fabs(jointErrors[i])>MAX_ERRORS[i]) && (jntNr!=i+1) && (nulling == false)  ){
