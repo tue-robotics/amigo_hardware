@@ -2,35 +2,42 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#include "SensorTorques.hpp"
+#include "SensorTorques2.hpp"
 
 using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 
-SensorTorques::SensorTorques(const string& name) : TaskContext(name, PreOperational), Vmeasured(N, 0.0), Tmeasured(N, 0.0), Tjoint(N, 0.0)
+SensorTorques2::SensorTorques2(const string& name) : TaskContext(name, PreOperational), Vmeasured(N, 0.0), Tmeasured(N, 0.0), Tjoint(N, 0.0)
 {
+    addProperty( "Ncolumns", Ncolumns );
+    addProperty( "Nrows", Nrows );
 	addProperty( "Ksensor", Ksensor).doc("Ksensor [Vm]");
 	addProperty( "Voffset", Voffset).doc("Voffset [V]");
 	addProperty( "Xoffset", Xoffset).doc("Xoffset [m]");
 	addProperty( "Stiffness", Stiffness).doc("Stiffness [N/m]");
 	addProperty( "PivotDistance", PivotDistance).doc("Distance from the force act point to the pivot point [m]");
-	
+
 	addEventPort("voltage_in", voltage_inport).doc("Optical sensors voltage [V]");
 	addPort("joint_torques_out", joint_torques_outport).doc("Joint torques [Nm]");
 	addPort("measured_torques_out", measured_torques_outport).doc("Differential (gear) torques [Nm]");
 	
 }
-SensorTorques::~SensorTorques(){}
+SensorTorques2::~SensorTorques2(){}
 
-bool SensorTorques::configureHook()
+bool SensorTorques2::configureHook()
 {	
+    for ( uint i = 0; i < Nrows; i++ )
+    {
+      string name = "function"+to_string(i+1);
+      addProperty( name, function[i]);
+    }
 	return true;
 }
 
-bool SensorTorques::startHook()
+bool SensorTorques2::startHook()
 {
-	Logger::In in("SensorTorques::startHook()");
+    Logger::In in("SensorTorques2::startHook()");
 	
 	if (Ksensor.size()!=N || Voffset.size()!=N || Xoffset.size()!=N || Stiffness.size()!=N || PivotDistance.size()!=N) {
 		log(Error)<<"Parameters missing! Check the sizes of Ksensor, Voffset, Stiffness and PivotDistance arrays."<< endlog();
@@ -49,7 +56,7 @@ bool SensorTorques::startHook()
 	return true;
 }
 
-void SensorTorques::updateHook()
+void SensorTorques2::updateHook()
 {
 	voltage_inport.read(Vmeasured);
 	
@@ -57,18 +64,8 @@ void SensorTorques::updateHook()
 		Tmeasured[i] = (Ksensor[i]/(Vmeasured[i] + Voffset[i])-Xoffset[i])*Stiffness[i]*PivotDistance[i]; // Differential (gear) torques
 	}
 	
-	// Joint torques
-	Tjoint[0] =  Tmeasured[0] - Tmeasured[1];
-	Tjoint[1] = -(Tmeasured[0] + Tmeasured[1]);
-	Tjoint[2] =  Tmeasured[4];
-	Tjoint[3] =  Tmeasured[2] + Tmeasured[3];
-	Tjoint[4] =  Tmeasured[2] - Tmeasured[3];
-	Tjoint[5] =  Tmeasured[6] + Tmeasured[7];
-	Tjoint[6] =  Tmeasured[6] - Tmeasured[7];
-	Tjoint[7] =  Tmeasured[5];
-		
 	measured_torques_outport.write(Tmeasured);
     joint_torques_outport.write(Tjoint);
 }
 
-ORO_CREATE_COMPONENT(SensorTorques)
+ORO_CREATE_COMPONENT(SensorTorques2)
