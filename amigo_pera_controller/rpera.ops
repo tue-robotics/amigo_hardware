@@ -197,6 +197,15 @@ RPERA_MotorToJointAngles.function6 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
 RPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
 RPERA_MotorToJointAngles.function8 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
+### Output limiter for safety, this way it is not possible to send the arm to an unfeasible out of bounds location ###
+loadComponent("RPERA_ReferenceSaturation","DISCONTINUITIES::Saturation")
+addPeer("Supervisor","RPERA_ReferenceSaturation")
+setActivity("RPERA_ReferenceSaturation",0.0,HighestPriority,ORO_SCHED_RT)
+RPERA_ReferenceSaturation.upper_limit = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  40.0 )
+RPERA_ReferenceSaturation.lower_limit = array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -40.0 )
+RPERA_ReferenceSaturation.vector_size = 8
+RPERA_ReferenceSaturation.configure
+
 ### Compute tracking error ###
 loadComponent("RPERA_ComputeJointErrors","MATH::Subtraction")
 addPeer("Supervisor","RPERA_ComputeJointErrors")
@@ -334,7 +343,8 @@ connect ("Soem.Slave_1013.encoderAngle0","RPERA_ReadEncoders.enc7_in" , ConnPoli
 connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
 connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointAngles.in" , ConnPolicy() ); 
-connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )
+connect ("RPERA_MotorToJointAngles.out","RPERA_ReferenceSaturation.in", ConnPolicy() )
+connect ("RPERA_ReferenceSaturation.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("RPERA_ComputeJointErrors.out","RPERA_Gain.in", ConnPolicy() )
 connect ("RPERA_Gain.out","RPERA_LeadLag.in", ConnPolicy() )
 connect ("RPERA_LeadLag.out","RPERA_Lowpass.in", ConnPolicy() )
@@ -408,6 +418,7 @@ Supervisor.AddAllwaysOnPeer ("RPERA_VectorConcatenate")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceInterpolator") ;#
 Supervisor.AddAllwaysOnPeer ("RPERA_MotorToJointAngles")
 Supervisor.AddAllwaysOnPeer ("RPERA_ComputeJointErrors")
+Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceSaturation")
 Supervisor.AddAllwaysOnPeer ("RPERA_JointToMotorTorques")
 Supervisor.AddAllwaysOnPeer ("RPERA_JointOutputLimiter")
 Supervisor.AddAllwaysOnPeer ("RPERA_WriteCurrentJointAngles")
