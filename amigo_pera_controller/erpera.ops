@@ -324,15 +324,15 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 #connect ("AnalogInsPera.out_for","Tracing.in4", tracingpolicy ) ; 									# force
 
 ### Control loop ###
-connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle2","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle0","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle0","RPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
-connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
+connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1011.encoderAngle2","RPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1011.encoderAngle3","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle3","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("Soem.Slave_1013.encoderAngle3","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointAngles.in" , ConnPolicy() ); 
 connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("RPERA_ComputeJointErrors.out","RPERA_Gain.in", ConnPolicy() )
