@@ -38,7 +38,7 @@
 #include "COE_config.h"
 #include <soem_beckhoff_drivers/AnalogMsg.h>
 #include <soem_beckhoff_drivers/EncoderMsg.h>
-#include <std_msgs/Bool.h>
+
 
 using namespace std;
 typedef vector<double> doubles;
@@ -93,43 +93,45 @@ typedef struct PACKED {
 			void stop();
 
 		private:
+			// Declaring of 
 			int printEnabled;
 			int printDisabled;
-			bool enable;
 			bool enablestatus;
 			bool setOutputToZero;
 			uint8 heart_beat_source;
 			uint16 cntr;
         
+			// declaring of local vectors and scalars
+			uint16 enc1;
+			uint16 enc2;
+			uint16 enc3;
 			std::vector<float> forceSensors;
 			std::vector<float> positionSensors;					
-			std::vector<float> motorCurrents;
 			std::vector<float> supplyVoltages;
-			std::vector<float> pwmDutyMotors;		
-					
-			EncoderMsg encoderAngle0_msg;
+			std::vector<float> pwmDutyMotors;	
+			bool enable;
+				
+			// Declaring of Messages		
 			EncoderMsg encoderAngle1_msg;
 			EncoderMsg encoderAngle2_msg;
-			AnalogMsg forceSensors_msg;
-			AnalogMsg positionSensors_msg;
-			AnalogMsg motorCurrents_msg;
-			AnalogMsg supplyVoltages_msg;
-			AnalogMsg pwmDutyMotors_msg;
-		
+			EncoderMsg encoderAngle3_msg;
+			AnalogMsg  positionSensors_msg;
+			AnalogMsg  forceSensors_msg;
+			AnalogMsg  supplyVoltages_msg;
+			AnalogMsg  pwmDutyMotors_msg;
+			
 			in_armEthercatMemoryt* m_in_armEthercat;
 			out_armEthercatMemoryt* m_out_armEthercat;
 
-			OutputPort<EncoderMsg> port_out_encoderAngle0;
-			OutputPort<EncoderMsg> port_out_encoderAngle1;		
-			OutputPort<EncoderMsg> port_out_encoderAngle2;
-			OutputPort<AnalogMsg> port_out_forceSensors;
-			OutputPort<AnalogMsg> port_out_positionSensors;
-			OutputPort<AnalogMsg> port_out_motorCurrents;
-			OutputPort<AnalogMsg> port_out_supplyVoltages;
-
-			OutputPort< std::vector<float> > port_out_pwmDutyMotors;   
-			InputPort<AnalogMsg> port_in_pwmDutyMotors;
-			InputPort<bool> port_in_enable;
+			// Declaring of In and Out ports
+			OutputPort<EncoderMsg> port_out_encoderAngle1;
+			OutputPort<EncoderMsg> port_out_encoderAngle2;		
+			OutputPort<EncoderMsg> port_out_encoderAngle3;
+			OutputPort<AnalogMsg>  port_out_positionSensors;
+			OutputPort<AnalogMsg>  port_out_forceSensors;
+			OutputPort<AnalogMsg>  port_out_supplyVoltages;
+			InputPort<AnalogMsg>   port_in_pwmDutyMotors;
+			InputPort<bool>  	   port_in_enable;
 		};
 	}
 #endif
