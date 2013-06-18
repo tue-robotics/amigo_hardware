@@ -8,7 +8,7 @@ using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 
-SensorTorques2::SensorTorques2(const string& name) : TaskContext(name, PreOperational), Vmeasured(N, 0.0), Tmeasured(N, 0.0), Tjoint(N, 0.0)
+SensorTorques2::SensorTorques2(const string& name) : TaskContext(name, PreOperational), Vmeasured(Ncolumns, 0.0), Tmeasured(Ncolumns, 0.0), Tjoint(Ncolumns, 0.0)
 {
     addProperty( "Ncolumns", Ncolumns );
     addProperty( "Nrows", Nrows );
@@ -32,6 +32,8 @@ bool SensorTorques2::configureHook()
       string name = "function"+to_string(i+1);
       addProperty( name, function[i]);
     }
+    Tjoint.assign(Nrows, 0.0);
+    Tmeasured.assign(Ncolumns, 0.0);
 	return true;
 }
 
@@ -39,7 +41,7 @@ bool SensorTorques2::startHook()
 {
     Logger::In in("SensorTorques2::startHook()");
 	
-	if (Ksensor.size()!=N || Voffset.size()!=N || Xoffset.size()!=N || Stiffness.size()!=N || PivotDistance.size()!=N) {
+    if (Ksensor.size()!=Ncolumns || Voffset.size()!=Ncolumns || Xoffset.size()!=Ncolumns || Stiffness.size()!=Ncolumns || PivotDistance.size()!=Ncolumns) {
 		log(Error)<<"Parameters missing! Check the sizes of Ksensor, Voffset, Stiffness and PivotDistance arrays."<< endlog();
 		return false;
 	}	
@@ -60,10 +62,20 @@ void SensorTorques2::updateHook()
 {
 	voltage_inport.read(Vmeasured);
 	
-	for (unsigned int i=0; i<N; i++) {
+    for (unsigned int i=0; i<Ncolumns; i++) {
 		Tmeasured[i] = (Ksensor[i]/(Vmeasured[i] + Voffset[i])-Xoffset[i])*Stiffness[i]*PivotDistance[i]; // Differential (gear) torques
 	}
-	
+
+    // matrix multiplication to go from motorspace(Tmeasured) to joint space (Tjoint)
+    for ( uint i = 0; i < Nrows; i++ )
+    {
+      Tjoint[i] = 0.0;
+      for ( uint j = 0; j < Ncolumns; j++ )
+      {
+        Tjoint[i] += function[i][j] * Tmeasured[j];
+      }
+    }
+
 	measured_torques_outport.write(Tmeasured);
     joint_torques_outport.write(Tjoint);
 }

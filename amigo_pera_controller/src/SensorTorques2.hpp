@@ -5,7 +5,6 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#define N 8 // todo remove this hardcoded parameter
 #define maxN 10 //Maximum matrix size. Still a workaround.
 using namespace std;
 using namespace RTT;
