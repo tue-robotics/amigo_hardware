@@ -398,14 +398,12 @@ stream("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 Supervisor.NameBodyPart( 4, "right_arm")
 stream( "Supervisor.right_arm_fireup", ros.topic("/right_arm_fireup") )
 stream( "Supervisor.right_arm_enabled", ros.topic("/right_arm_enabled"));
-# To Do : Put AddPeerToBodyPart back for ReadReferenceAngles and ReferenceInterpolator, but without resetting the arm upon startup of the ref gens
-#Supervisor.AddPeerToBodyPart ("RPERA_ReadReferenceAngles",4 );  #As example, more can be added later.
-#Supervisor.AddPeerToBodyPart ("RPERA_ReferenceInterpolator",4 ) #The Supervisor waits until soem starts before it starts this, fixes homing
+# To Do : Put in same form as spindle controller, in other words add most components to body Parts instead of always on
 
 Supervisor.AddAllwaysOnPeer ("RPERA_Supervisor")
-Supervisor.AddAllwaysOnPeer ("RPERA_ReadReferenceAngles") ;#
+Supervisor.AddAllwaysOnPeer ("RPERA_ReadReferenceAngles")
 Supervisor.AddAllwaysOnPeer ("RPERA_VectorConcatenate")
-Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceInterpolator") ;#
+Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceInterpolator")
 Supervisor.AddAllwaysOnPeer ("RPERA_MotorToJointAngles")
 Supervisor.AddAllwaysOnPeer ("RPERA_ComputeJointErrors")
 Supervisor.AddAllwaysOnPeer ("RPERA_JointToMotorTorques")
