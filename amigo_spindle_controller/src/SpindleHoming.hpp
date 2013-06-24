@@ -42,6 +42,7 @@ namespace AMIGO // Just because it looks nice
     OperationCaller<bool(string)> StartBodyPart;
     OperationCaller<bool(string)> StopBodyPart;
     OperationCaller<void(int,double)> ResetEncoder;
+    OperationCaller<void(bool)> EnableEndswitchSafety;
 
     public:
 

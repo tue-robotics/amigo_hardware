@@ -9,6 +9,7 @@
 
 #define	BRAKEOFF true
 #define BRAKEON	false
+#define STATUSPUBRATE 10 //Hz
 
 using namespace std;
 using namespace RTT;
@@ -18,11 +19,11 @@ SpindleSafety::SpindleSafety(const string& name) : TaskContext(name, PreOperatio
 {
   // Creating ports:
   addEventPort( "error_pos", errorpos_inport );
-  addPort( "enable_endswitch_safety", enable_endswitch_safety_inport );
   addPort( "endswitch_inport", endswitch_inport );
   addPort( "spindle_brake", spindle_brake_outport );
   addPort( "safety", safety_outport );
-  
+  addPort( "spindle_status", spindlestatus_outport ).doc("For publishing the spindle status to the AMIGO dashboard");
+
   addProperty( "error_margin", errormargin );
   
   // Initialising variables
@@ -51,7 +52,7 @@ bool SpindleSafety::startHook()
   }
   	 
   safety = true;
-  enable_endswitch_safety = false;
+  endswitchSafetyActivated = false;
   
   log(Warning)<<"SpindleSafety::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
 
@@ -70,22 +71,18 @@ void SpindleSafety::updateHook()
 		}
 		safety = false;
 	}
-	
-	/*TODO
-	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
-	if (enable_endswitch_safety_inport.read(enable_endswitch_safety) == NewData) log(Info)<<"Endswitch safety enabled"<<endlog();
-	
+
 	// If endswitch safety is enabled and the endswitch port reads false, the spindle is out of range which is not safe
 	std_msgs::Bool endswitch;
 	endswitch_inport.read(endswitch);
-	if (enable_endswitch_safety && !endswitch.data) 
+	if (endswitchSafetyActivated && !endswitch.data) 
 	{
 		if (safety) {
 			ROS_ERROR_STREAM( "Spindle out of range, endswitch data is false" );
 			log(Error) << "Spindle out of range, endswitch data is false" << endlog();
-			//safety = false; // TIMC: Disabled for debugging purposes
+			// safety = false; //TIMC enable after WK2013
 		}
-	}*/
+	}
 	
 	// Applying brake if necessary
 	if(safety == false)
@@ -99,7 +96,25 @@ void SpindleSafety::updateHook()
 	
 	// Writing boolean safety to port
 	safety_outport.write(safety);
+	
+	// Publish status TODO: maybe less frequent?
+	std_msgs::UInt8 statusToDashboard;
+	if(endswitchSafetyActivated==true && safety==false){
+		statusToDashboard.data = 0;
+	}
+	else if(endswitchSafetyActivated==false && safety==false){
+		statusToDashboard.data = 1;
+	}
+	else if(safety==true){
+		statusToDashboard.data = 2;
+	}
+	spindlestatus_outport.write(statusToDashboard);
+	
 }
 
+void SpindleSafety::setEndswitchSafety( bool active )
+{
+	endswitchSafetyActivated = active;
+}
 
 ORO_CREATE_COMPONENT(SpindleSafety)

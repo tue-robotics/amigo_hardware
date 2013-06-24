@@ -220,7 +220,7 @@ loadComponent("BaseStatus","ROS::BoolToROS")
 addPeer("Supervisor","BaseStatus")
 BaseStatus.NumberOfBoolPorts = 1
 BaseStatus.configure
-setActivity("BaseStatus",1.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("BaseStatus",0.5,LowestPriority,ORO_SCHED_OTHER)
 connect ("BaseSafety.wheel_amplifiers", "BaseStatus.bool_in1", ConnPolicy() )
 stream("BaseStatus.bool_out1", ros.topic("/base_status"));
 

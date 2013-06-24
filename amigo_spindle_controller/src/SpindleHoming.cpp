@@ -52,7 +52,12 @@ bool SpindleHoming::configureHook()
 		log(Error) << "Could not find SpindleReadSetpoint component! Did you add it as Peer in the ops file?"<<endlog();
 		return false;
 	}
-	
+	// Lookup the Safety component.
+	TaskContext* SpindleSafety = this->getPeer("SpindleSafety");
+	if ( !SpindleSafety ) {
+		log(Error) << "Could not find SpindleSafety component! Did you add it as Peer in the ops file?"<<endlog();
+		return false;
+	}	
 	
 	// Lookup operations of peers
 	StartBodyPart = Supervisor->getOperation("StartBodyPart");
@@ -70,12 +75,18 @@ bool SpindleHoming::configureHook()
 		log(Error) << "Could not find SpindleReadEncoder.reset Operation!"<<endlog();
 		return false;
 	}	
-	
+	EnableEndswitchSafety = SpindleSafety->getOperation("setEndswitch");
+	if ( !EnableEndswitchSafety.ready() ) {
+		log(Error) << "Could not find SpindleSafety.setEndswitch Operation!"<<endlog();
+		return false;
+	}	
+		
+		
 	// Set size of reference vector
 	ref.resize(1); //Single joint
 	ref[0].resize(3); //pos, vel, acc
-	ref[0][1] = home_vel; //Redundant?
-	ref[0][2] = home_acc; //Redundant?
+	ref[0][1] = home_vel; //Todo: Redundant?
+	ref[0][2] = home_acc; //Todo: Redundant?
 	
 	return true;
 }
@@ -83,6 +94,8 @@ bool SpindleHoming::configureHook()
 bool SpindleHoming::startHook()
 { 
 		if ( !homed ) {
+			EnableEndswitchSafety( false );
+			
 			TaskContext* SpindleReadSetpoint = this->getPeer("SpindleReadSetpoint");
 			if ( ! SpindleReadSetpoint->isRunning() ) {
 				log(Error) << "Spindle component is not running yet, please start this component first" << endlog();
@@ -94,6 +107,7 @@ bool SpindleHoming::startHook()
 		
 	starttime = os::TimeService::Instance()->getNSecs()*1e-9;
 	log(Warning)<<"SpindleHoming::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
+	
 
 	return true;
 }
@@ -114,6 +128,7 @@ void SpindleHoming::updateHook()
 	{
 		ROS_INFO_STREAM( "Spindle is homed." );
 		homed = true;
+		EnableEndswitchSafety( true );
 
 
 		// Actually call the services
@@ -135,7 +150,6 @@ void SpindleHoming::updateHook()
 		this->stop(); 
 	}
 }
-
 
 
 ORO_CREATE_COMPONENT(SpindleHoming)
