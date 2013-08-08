@@ -112,7 +112,7 @@ RPERA_Supervisor.stepSize = 0.5 ;# stepsize per second, divided by Ts to get ste
 RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput = true
 RPERA_Supervisor.requireHoming = true
-RPERA_Supervisor.requireGripperHoming = true
+RPERA_Supervisor.requireGripperHoming = false
 RPERA_Supervisor.startJoint = 6
 RPERA_Supervisor.configure
 
@@ -226,7 +226,7 @@ loadComponent("RPERA_Gain","MATH::Gains")
 addPeer("Supervisor","RPERA_Gain")
 setActivity("RPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gain.vectorsize = 8
-RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0); 		#GRIPPER SET TO ZERO
+RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 00.0); 		#GRIPPER SET TO ZERO
 #RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 0.0, 0.0, 0.0); 		#GRIPPER SET TO ZERO
 #RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 3000.0, 3500.0, 20.0); 				# Put wrist motor gains to zero
 RPERA_Gain.configure
@@ -309,19 +309,20 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 131072;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("Tracing","Signal::Tracing")
 #setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array 		(8.0, 8.0, 8.0, 9.0)
-#Tracing.buffersize = 2*65536;
-#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIPLOG/GripperIntTest.dat"
+#Tracing.vector_sizes = array (8.0, 8.0, 8.0, 8.0)
+#Tracing.buffersize = 131072;
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/FORCETEST2/Rq3.dat"
 #Tracing.Ts = Ts
 #Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #Tracing.configure
-#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );						# reference after reference generator
-#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 							# error
-#connect ("RPERA_MotorToJointAngles.out","Tracing.in3", tracingpolicy ) ; 							# output
-#connect ("AnalogInsPera.out_for","Tracing.in4", tracingpolicy ) ; 									# force
+#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );				# reference after reference generator
+#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 					# error
+##connect ("LPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 						# control effort in joint space
+#connect ("AnalogInsPera.out_for","Tracing.in3", tracingpolicy ) ; 							# measured voltage
+#connect ("RPERA_SensorTorques.measured_torques_out","Tracing.in4", tracingpolicy ) ; 		# measured torques actuator space
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
