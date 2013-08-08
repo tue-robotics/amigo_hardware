@@ -41,8 +41,11 @@ loadComponent("LPERA_AdmittanceController","FILTERS::AdmittanceControllers")
 setActivity("LPERA_AdmittanceController",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_AdmittanceController.vector_size = 7
 LPERA_AdmittanceController.sampling_time = Ts
-LPERA_AdmittanceController.masses = array()
-LPERA_AdmittanceController.damping_coefficients = array()
+LPERA_AdmittanceController.masses = array( 1.04, 1.04, 0.46, 0.184, 0.184, 0.33, 0.33 )
+## Fit
+#LPERA_AdmittanceController.damping_coefficients = array( 75.0, 125.0, 45.0, 63.0, 55.0, 35.0, 25.0 )
+## Physical rough estimate 
+LPERA_AdmittanceController.damping_coefficients = array( 10.0, 10.0, 10.0, 1.5, 1.5, 1.0, 1.0 )
 LPERA_AdmittanceController.lower_joint_limits = JOINTLOWERBOUNDS
 LPERA_AdmittanceController.upper_joint_limits = JOINTUPPERBOUNDS
 LPERA_AdmittanceController.configure
@@ -90,7 +93,7 @@ LPERA_Supervisor.maxConSatTime = 5.0
 LPERA_Supervisor.stepSize = 0.001570796
 LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput = true
-LPERA_Supervisor.requireHoming = true
+LPERA_Supervisor.requireHoming = false
 LPERA_Supervisor.requireGripperHoming = true
 LPERA_Supervisor.startJoint = 6
 LPERA_Supervisor.configure
