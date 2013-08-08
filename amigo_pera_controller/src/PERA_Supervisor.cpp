@@ -121,7 +121,7 @@ bool Supervisor::configureHook()
 	}
 
 	// Set the initial jnt for homingprocedure
-	jntNr=5;
+	jntNr=STRT_JNT;
 
 	// Pressed is true. No SOEM heartbeat means no amplifier enabling.
 	pressed = true;
