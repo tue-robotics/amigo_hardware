@@ -1,0 +1,446 @@
+########################################################################
+#                                                                      #
+# Left Philips Experimental Robotic Arm deployer file.                 #
+#                                                                      #
+# Bas Willems                                                          #
+# September 2011                                                       #
+#                                                                      #
+# Uses the DeploymentComponent available within the OCL for deploying  #
+# and connecting components.                                           #
+#                                                                      #
+# Januari 2012: Adapted for new robot model                            #
+#                                                                      #
+########################################################################
+
+### Import amigo_pera_controller package ###
+import("amigo_pera_controller")
+trigger
+
+## Declare standard variables that are used multiple times
+var double Ts = 0.004
+var array SIGNS = array ( -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 )
+var array OFFSETS = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+var array JOINTLOWERBOUNDS = array ( -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
+var array JOINTUPPERBOUNDS = array (   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
+
+### Read reference joint angles ###
+loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
+setActivity("LPERA_ReadReferenceAngles",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_ReadReferenceAngles.offsets = OFFSETS
+LPERA_ReadReferenceAngles.signs = SIGNS
+LPERA_ReadReferenceAngles.configure
+
+### Read reference joint angles using Jointstate messages###
+loadComponent("LPERA_ReadReferenceJointStates","ROS::JointStateToDoubles")
+setActivity("LPERA_ReadReferenceJointStates",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_ReadReferenceJointStates.NumberOfJoints = 7
+LPERA_ReadReferenceJointStates.configure
+
+### Admittance controller
+loadComponent("LPERA_AdmittanceController","FILTERS::AdmittanceControllers")
+setActivity("LPERA_AdmittanceController",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_AdmittanceController.vector_size = 7
+LPERA_AdmittanceController.sampling_time = Ts
+LPERA_AdmittanceController.masses = array()
+LPERA_AdmittanceController.damping_coefficients = array()
+LPERA_AdmittanceController.lower_joint_limits = JOINTLOWERBOUNDS
+LPERA_AdmittanceController.upper_joint_limits = JOINTUPPERBOUNDS
+LPERA_AdmittanceController.configure
+
+### Vector concatenate ###
+loadComponent("LPERA_VectorConcatenate","PERA::Concatenate")
+setActivity("LPERA_VectorConcatenate",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_VectorConcatenate.configure
+
+### Interpolator (DO NOT INCREASE VALUES !!!) ###
+loadComponent("LPERA_ReferenceInterpolator","ReferenceGenerator")
+setActivity("LPERA_ReferenceInterpolator",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_ReferenceInterpolator.setPeriod(0.004)
+LPERA_ReferenceInterpolator.NrInterpolators = 8
+LPERA_ReferenceInterpolator.InterpolatorDt = 0.004
+LPERA_ReferenceInterpolator.InterpolatorEps = 1.0
+LPERA_ReferenceInterpolator.configure
+LPERA_ReferenceInterpolator.interpolator1 = array (0.0, 0.4, 0.2)
+LPERA_ReferenceInterpolator.interpolator2 = array (0.0, 0.4, 0.2)
+LPERA_ReferenceInterpolator.interpolator3 = array (0.0, 0.6, 0.3)
+LPERA_ReferenceInterpolator.interpolator4 = array (0.0, 0.8, 0.5)
+LPERA_ReferenceInterpolator.interpolator5 = array (0.0, 0.8, 0.5)
+LPERA_ReferenceInterpolator.interpolator6 = array (0.0, 1.0, 0.5)
+LPERA_ReferenceInterpolator.interpolator7 = array (0.0, 1.0, 0.5)
+LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 1.0, 10.0)
+
+### PERA Supervisor ###
+loadComponent("LPERA_Supervisor","PERA::Supervisor")
+setActivity("LPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_Supervisor.setPeriod(0.004)
+LPERA_Supervisor.jointLowerBounds = JOINTLOWERBOUNDS
+LPERA_Supervisor.jointUpperBounds = JOINTUPPERBOUNDS
+LPERA_Supervisor.motorSaturations = array ( 30000.0, 30000.0, 20000.0, 20000.0, 25000.0, 25000.0, 30000.0, 32000.0 )
+LPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 20.0)
+LPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
+LPERA_Supervisor.dynBreakEpsilon = 0.05;
+# Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
+#LPERA_Supervisor.resetAngles = array ( 0.0, -1.570796325, 0.0, 0.5, 0.0, -1.570796325, 0.0, 0.0 )
+LPERA_Supervisor.offsetAngles = OFFSETS
+LPERA_Supervisor.signs = SIGNS
+LPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+#LPERA_Supervisor.homedPos = array (481.0, 628.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
+LPERA_Supervisor.homedPos = array (467.0, 605.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
+LPERA_Supervisor.maxConSatTime = 5.0
+LPERA_Supervisor.stepSize = 0.001570796
+LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
+LPERA_Supervisor.enableOutput = true
+LPERA_Supervisor.requireHoming = true
+LPERA_Supervisor.requireGripperHoming = true
+LPERA_Supervisor.startJoint = 6
+LPERA_Supervisor.configure
+
+### PERA USB IO ###
+loadComponent("LPERA_IO","PERA::PERA_USB_IO")
+setActivity("LPERA_IO",Ts,HighestPriority,ORO_SCHED_RT)
+LPERA_IO.setPeriod(0.004)
+LPERA_IO.configure
+LPERA_IO.absSenJumpPosProperty = array (1024.0, 732.0, 721.0, 1024.0, 706.0, 1024.0, 1024.0)
+LPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.0)
+
+### Velocity and acceleration estimator ###
+loadComponent("LPERA_RTD","AMIGO::RealTimeDerivator")
+setActivity("LPERA_RTD",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_RTD.setPeriod(0.004)
+LPERA_RTD.vector_size=8
+LPERA_RTD.bw = 10.0
+LPERA_RTD.configure
+
+### Gripper force controller ###
+loadComponent("LPERA_GripperControl","PERA::GripperControl")
+setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
+#LPERA_GripperControl.threshold_closed = 14.0
+LPERA_GripperControl.threshold_closed = 14.0
+LPERA_GripperControl.setPeriod(0.004)
+LPERA_GripperControl.max_pos = 4.0
+#LPERA_GripperControl.gripper_gain = 0.30
+LPERA_GripperControl.gripper_gain = 0.60
+LPERA_GripperControl.configure
+
+### Gravity Compensation ###
+loadComponent("LPERA_GravityCompensation","PERA::GravityCompensation")
+setActivity("LPERA_GravityCompensation",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_GravityCompensation.configure
+
+### Gearing and torque constants ###
+loadComponent("LPERA_GC_Gains","MATH::Gains")
+setActivity("LPERA_GC_Gains",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_GC_Gains.vectorsize = 8
+LPERA_GC_Gains.gain = array (0.337952010814464E2, 0.337952010814464E2, -1.040001040001040E2, -1.238604835513278E2, 1.238604835513278E2, -1.626545217957059E2, -1.626545217957059E2, 0.0)
+LPERA_GC_Gains.configure
+
+### Amplifier polynomials ###
+loadComponent("LPERA_Polynomials","MATH::Polynomials")
+setActivity("LPERA_Polynomials",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_Polynomials.vector_size = 8
+LPERA_Polynomials.configure
+LPERA_Polynomials.polynomial1= array (0.0, 56.973979683065004, -0.060356311372147, 0.000039192263845, -0.000000009835513)
+LPERA_Polynomials.polynomial2= array (0.0, 56.973979683065004, -0.060356311372147, 0.000039192263845, -0.000000009835513)
+LPERA_Polynomials.polynomial3= array (0.0, 49.748426243650833, -0.040065286680613, 0.000017587331607, -0.000000002605682)
+LPERA_Polynomials.polynomial4= array (0.0, 44.604486108032354, -0.042237259213218, 0.000022759847059, -0.000000004411251)
+LPERA_Polynomials.polynomial5= array (0.0, 44.604486108032354, -0.042237259213218, 0.000022759847059, -0.000000004411251)
+LPERA_Polynomials.polynomial6= array (0.0, 52.253658384600797, 0.161846062082499, -0.000384960667380, 0.000000239542223)
+LPERA_Polynomials.polynomial7= array (0.0, 52.253658384600797, 0.161846062082499, -0.000384960667380, 0.000000239542223)
+LPERA_Polynomials.polynomial8= array (0.0)
+
+### Adding the gravity compensational term ###
+loadComponent("LPERA_AddGravComp","MATH::Addition")
+setActivity("LPERA_AddGravComp",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_AddGravComp.vectorsize = 8
+LPERA_AddGravComp.configure
+
+### Motor to joint angles (includes encoder conversion factors) ###
+loadComponent("LPERA_MotorToJointAngles","MatrixTransform")
+setActivity("LPERA_MotorToJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_MotorToJointAngles.Nrows = 8
+LPERA_MotorToJointAngles.Ncolumns = 8
+LPERA_MotorToJointAngles.configure
+LPERA_MotorToJointAngles.function1 = array (-0.00000563, 0.00000563, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+LPERA_MotorToJointAngles.function2 = array (0.00000563, 0.00000563, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+LPERA_MotorToJointAngles.function3 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.00001653, 0.0)
+LPERA_MotorToJointAngles.function4 = array (0.0, 0.0, 0.000003835, 0.000003835, 0.0, 0.0, 0.0, 0.0)
+LPERA_MotorToJointAngles.function5 = array (0.0, 0.0, -0.000003835, 0.000003835, 0.0, 0.0, 0.0, 0.0)
+LPERA_MotorToJointAngles.function6 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, 0.00002116, 0.0, 0.0)
+LPERA_MotorToJointAngles.function7 = array (0.0, 0.0, 0.0, 0.0, 0.00002116, -0.00002116, 0.0, 0.0)
+# Compensated for lower encoder resolution on left PERA
+LPERA_MotorToJointAngles.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0005236)
+
+### Compute tracking error ###
+loadComponent("LPERA_ComputeJointErrors","MATH::Subtraction")
+setActivity("LPERA_ComputeJointErrors",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_ComputeJointErrors.vectorsize = 8
+LPERA_ComputeJointErrors.configure
+
+### Joint to motor torques ###
+loadComponent("LPERA_JointToMotorTorques","MatrixTransform")
+setActivity("LPERA_JointToMotorTorques",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_JointToMotorTorques.Nrows = 8
+LPERA_JointToMotorTorques.Ncolumns = 8
+LPERA_JointToMotorTorques.configure
+LPERA_JointToMotorTorques.function1 = array (-0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+LPERA_JointToMotorTorques.function2 = array (0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+LPERA_JointToMotorTorques.function3 = array (0.0, 0.0, 0.0, 0.5, -0.5, 0.0, 0.0, 0.0)
+LPERA_JointToMotorTorques.function4 = array (0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0)
+LPERA_JointToMotorTorques.function5 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0)
+LPERA_JointToMotorTorques.function6 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.5, -0.5, 0.0)
+LPERA_JointToMotorTorques.function7 = array (0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+LPERA_JointToMotorTorques.function8 = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+
+### Kp ###
+loadComponent("LPERA_Gain","MATH::Gains")
+setActivity("LPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_Gain.vectorsize = 8
+LPERA_Gain.gain = array (2500000.0, 2900000.0, 1700000.0, 2000000.0, 1200000.0, 1100000.0, 900000.0, 135000.0)
+LPERA_Gain.configure
+
+### Lead Lag ###
+loadComponent("LPERA_LeadLag","FILTERS::LeadLags")
+setActivity("LPERA_LeadLag",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_LeadLag.vector_size = 8
+LPERA_LeadLag.sampling_time = 0.004
+LPERA_LeadLag.zero_frequency = array (3.0, 3.0, 3.0, 3.0, 4.5, 4.5, 4.0, 1.5)
+LPERA_LeadLag.pole_frequency = array (80.0, 80.0, 50.0, 100.0, 100.0, 45.0, 40.0, 30.0)
+LPERA_LeadLag.configure
+
+### 2nd Order Lowpass ###
+loadComponent("LPERA_Lowpass","FILTERS::SecondOrderLowPasses")
+setActivity("LPERA_Lowpass",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_Lowpass.vector_size = 8
+LPERA_Lowpass.sampling_time = 0.004
+LPERA_Lowpass.pole_frequency = array (125.0, 125.0, 125.0, 125.0, 62.5, 125.0, 125.0, 125.0)
+LPERA_Lowpass.pole_damping = array (0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7)
+LPERA_Lowpass.configure
+
+### Weak Integrators ###
+loadComponent("LPERA_WeakIntegrator1","FILTERS::WeakIntegrators")
+setActivity("LPERA_WeakIntegrator1",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_WeakIntegrator1.zero_frequency = array(0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 1.0, 1.0, 0.00000000000000000000001)
+LPERA_WeakIntegrator1.vector_size = 8
+LPERA_WeakIntegrator1.sampling_time = 0.004
+LPERA_WeakIntegrator1.configure
+
+### Saturation on the controller output ###
+loadComponent("LPERA_OutputLimiter","DISCONTINUITIES::Saturation")
+setActivity("LPERA_OutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_OutputLimiter.upper_limit = array ( 30000.0, 30000.0, 20000.0, 20000.0, 25000.0, 25000.0, 25000.0, 32000.0 )
+LPERA_OutputLimiter.lower_limit = array ( -30000.0, -30000.0, -20000.0, -20000.0, -25000.0, -25000.0, -25000.0, -32000.0 )
+LPERA_OutputLimiter.vector_size = 8
+LPERA_OutputLimiter.configure
+
+### Output limiter ###
+loadComponent("LPERA_JointOutputLimiter","DISCONTINUITIES::Saturation")
+setActivity("LPERA_JointOutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_JointOutputLimiter.upper_limit = array ( 1.57,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
+LPERA_JointOutputLimiter.lower_limit = array ( 0.0, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
+LPERA_JointOutputLimiter.vector_size = 8
+LPERA_JointOutputLimiter.configure
+
+### Publishing clipped joint angles on ROS-topic ###
+loadComponent("LPERA_WriteClippedJointAngles","PERA::WriteArmJointsMsg")
+setActivity("LPERA_WriteClippedJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_WriteClippedJointAngles.offsets = OFFSETS
+LPERA_WriteClippedJointAngles.signs = SIGNS
+LPERA_WriteClippedJointAngles.configure
+
+### Publishing joint angles on ROS-topic ###
+loadComponent("LPERA_WriteCurrentJointAngles","PERA::WriteArmJointsMsg")
+setActivity("LPERA_WriteCurrentJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_WriteCurrentJointAngles.offsets = OFFSETS
+LPERA_WriteCurrentJointAngles.signs = SIGNS
+LPERA_WriteCurrentJointAngles.configure
+
+### Publishing joint angles on ROS-topic using JointState message ###
+loadComponent("LPERA_WriteJointStates","ROS::DoublesToJointState")
+setActivity("LPERA_WriteJointStates",0.02,HighestPriority,ORO_SCHED_RT)
+LPERA_WriteJointStates.JointNames = strings ( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
+LPERA_WriteJointStates.configure
+
+### Conversion analog PERA_IO values to torques ###
+loadComponent("LPERA_SensorTorques","SensorTorques")
+setActivity("LPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_SensorTorques.Ksensor = array (0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025)
+LPERA_SensorTorques.Voffset = array (0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2)
+LPERA_SensorTorques.Xoffset = array (0.00025, 0.00025, 0.0013875, 0.0013875, 0.00025, 0.00268, 0.0034488, 0.0048276)
+LPERA_SensorTorques.Stiffness = array (777777.7, 777777.7, 2009211.0, 2009211.0, 700.0, 12935.0, 60739.73, 37274.25)
+LPERA_SensorTorques.PivotDistance = array (0.03, 0.03, 0.025, 0.025, 1.0, 1.0, 0.017, 0.017)
+LPERA_SensorTorques.setPeriod(0.02)
+LPERA_SensorTorques.configure
+
+#### Diagnostics ###
+loadComponent("LPERA_Diagnostics","ROS::RosDiagnostics")
+setActivity("LPERA_Diagnostics",0.0,HighestPriority,ORO_SCHED_RT)
+stream("LPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
+LPERA_Diagnostics.setPeriod(1)
+LPERA_Diagnostics.statusname = "LPERA"
+LPERA_Diagnostics.NumberOfVectorPorts = 3
+LPERA_Diagnostics.NumberOfBoolPorts = 2
+LPERA_Diagnostics.configure
+LPERA_Diagnostics.vecname1 = "Reference Interpolator"
+connect ("LPERA_VectorConcatenate.out", "LPERA_Diagnostics.vec1", ConnPolicy() )
+LPERA_Diagnostics.vecname2 = "Joint Errors"
+connect ("LPERA_ComputeJointErrors.out", "LPERA_Diagnostics.vec2", ConnPolicy() )
+LPERA_Diagnostics.vecname3 = "Reference Path Planning"
+connect ("LPERA_ReadReferenceAngles.pos", "LPERA_Diagnostics.vec3", ConnPolicy() )
+LPERA_Diagnostics.boolname1 = "Amplifiers"
+connect ("LPERA_Supervisor.enablePort", "LPERA_Diagnostics.bool1", ConnPolicy() )
+LPERA_Diagnostics.boolname2 = "ReadRef Enable"
+connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPolicy() )
+
+### Setting up reporting ###
+#loadComponent("LPERA_Reporter", "OCL::FileReporting")
+##LPERA_Reporter.NullSample="-1 -1 -1 -1 -1 -1 -1 -1 "
+#addPeer("LPERA_Reporter","LPERA_GripperControl")
+#LPERA_Reporter.reportPort("LPERA_GripperControl","gripper_ref")
+##LPERA_ReferenceInterpolator
+#addPeer("LPERA_Reporter","LPERA_ReferenceInterpolator")
+#LPERA_Reporter.reportPort("LPERA_ReferenceInterpolator","posout")
+## log the measured joint angles
+#addPeer("LPERA_Reporter","LPERA_MotorToJointAngles")
+#LPERA_Reporter.reportPort("LPERA_MotorToJointAngles","out")
+## log the errors
+#addPeer("LPERA_Reporter","LPERA_ComputeJointErrors")
+#LPERA_Reporter.reportPort("LPERA_ComputeJointErrors","out")
+## log the total control u_tot
+#addPeer("LPERA_Reporter","LPERA_AddGravComp")
+#LPERA_Reporter.reportPort("LPERA_AddGravComp","out")
+## log the output_limiter
+#addPeer("LPERA_Reporter","LPERA_OutputLimiter")
+#LPERA_Reporter.reportPort("LPERA_OutputLimiter","out")
+## log the measured force
+#addPeer("LPERA_Reporter","LPERA_SensorTorques")
+#LPERA_Reporter.reportPort("LPERA_SensorTorques","measured_torques_out")
+## log the controller output u_c
+#addPeer("LPERA_Reporter","LPERA_WeakIntegrator1")
+#LPERA_Reporter.reportPort("LPERA_WeakIntegrator1","out")
+
+#LPERA_Reporter.ReportFile = "/home/amigo/LPERA.dat"
+#LPERA_Reporter.configure
+
+
+### Setting up tracing ###
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
+#loadComponent("Tracing","Signal::Tracing")
+#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+#Tracing.vector_sizes = array (8.0 , 8.0 , 8.0 , 8.0 , 8.0)
+#Tracing.buffersize = 2*65536;
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/ARMLOG/LT123.dat"
+#Tracing.Ts = Ts
+#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+#Tracing.configure
+#connect ("LPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );	# reference after reference generator
+#connect ("LPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 		# error
+#connect ("LPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 			# control effort in joint space
+#connect ("LPERA_JointToMotorTorques.out","Tracing.in4", tracingpolicy ) ; 		# control effort in motor space
+#connect ("LPERA_MotorToJointAngles.out","Tracing.in5", tracingpolicy ) ; 		# output
+
+########################################################################
+# Connecting all the ports and streams. Be carefull with making        #
+# changes below as this can easily result in system failure and/or     #
+# damage.                                                              #
+########################################################################
+
+### Control loop ###
+connect ("LPERA_IO.relEnc","LPERA_MotorToJointAngles.in", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_WriteCurrentJointAngles.pos", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_ComputeJointErrors.in_minus", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_AdmittanceController.measured_position_in", ConnPolicy() )
+connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
+connect ("LPERA_Gain.out","LPERA_LeadLag.in", ConnPolicy() )
+connect ("LPERA_LeadLag.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
+connect ("LPERA_WeakIntegrator1.out","LPERA_Lowpass.in", ConnPolicy() )
+connect ("LPERA_Lowpass.out","LPERA_AddGravComp.in2_event", ConnPolicy() )
+connect ("LPERA_AddGravComp.out","LPERA_JointToMotorTorques.in", ConnPolicy() )
+connect ("LPERA_JointToMotorTorques.out","LPERA_OutputLimiter.in", ConnPolicy() )
+connect ("LPERA_OutputLimiter.out","LPERA_IO.cmdTorqueIn", ConnPolicy() )
+#connect ("LPERA_ReadReferenceAngles.pos","LPERA_VectorConcatenate.in1", ConnPolicy() )
+#connect ("LPERA_ReadReferenceJointStates.pos_out", "LPERA_VectorConcatenate.in1", ConnPolicy() )
+connect ("LPERA_ReadReferenceJointStates.eff_out", "LPERA_AdmittanceController.force_in", ConnPolicy() )
+connect ("LPERA_AdmittanceController.out", "LPERA_VectorConcatenate.in1", ConnPolicy() )
+connect ("LPERA_GripperControl.gripper_ref","LPERA_VectorConcatenate.in2", ConnPolicy() )
+connect ("LPERA_VectorConcatenate.out","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_JointOutputLimiter.in", ConnPolicy() )
+connect ("LPERA_JointOutputLimiter.out","LPERA_WriteClippedJointAngles.pos", ConnPolicy() )
+connect ("LPERA_JointOutputLimiter.out","LPERA_WriteJointStates.pos_in", ConnPolicy() )
+connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+
+### Gravity compensation part ###
+connect ("LPERA_ReferenceInterpolator.posout","LPERA_GravityCompensation.in", ConnPolicy() )
+connect ("LPERA_GravityCompensation.out","LPERA_GC_Gains.in", ConnPolicy() )
+connect ("LPERA_GC_Gains.out","LPERA_Polynomials.in", ConnPolicy() )
+connect ("LPERA_Polynomials.out","LPERA_AddGravComp.in1", ConnPolicy() )
+
+### Supervisor ###
+connect ("LPERA_JointToMotorTorques.out","LPERA_Supervisor.controllerOutputPort", ConnPolicy() )
+# ToDo: Check if the supervisory check of the reference angles actually works.
+connect ("LPERA_ReadReferenceAngles.pos","LPERA_Supervisor.requestedJointAnglesPort", ConnPolicy() )
+connect ("LPERA_Supervisor.enablePort","LPERA_IO.enablePort", ConnPolicy() )
+connect ("LPERA_ComputeJointErrors.out","LPERA_Supervisor.errorPort", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_Supervisor.measRelJointAnglesPort", ConnPolicy() )
+connect ("LPERA_Supervisor.resetInterpolatorPort","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
+connect ("LPERA_IO.absSen","LPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )
+connect ("LPERA_Supervisor.homJntAnglesPort","LPERA_VectorConcatenate.in1", ConnPolicy() )
+connect ("LPERA_Supervisor.enableReadRefPort","LPERA_ReadReferenceAngles.enablePort", ConnPolicy() )
+connect ("LPERA_Supervisor.reNullPort","LPERA_IO.reNullPort", ConnPolicy() )
+connect ("LPERA_Supervisor.reNullPort","LPERA_GripperControl.reNullPort", ConnPolicy() )
+connect ("LPERA_RTD.ude","LPERA_Supervisor.jointVelocity", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_RTD.u", ConnPolicy() )
+connect ("LPERA_IO.IODiagnostic","LPERA_Supervisor.IODiagnostic", ConnPolicy() )
+
+stream("LPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
+#stream("LPERA_Supervisor.eButtonPort", ros.topic("/disable_amplifiers"))
+stream("LPERA_Supervisor.resetRefPort", ros.topic("/arm_left_controller/joint_references"))
+# ToDo: make nice
+#stream("LPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_left_controller/joint_measurements_raw"))
+#stream("LPERA_WriteClippedJointAngles.joint_measurements", ros.topic("/arm_left_controller/joint_measurements"))
+stream("LPERA_WriteJointStates.out", ros.topic("/left_arm_controller/measurements"))
+#stream("LPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_left_controller/joint_references"))
+stream("LPERA_ReadReferenceJointStates.in", ros.topic("/arm_left_controller/references"))
+stream("LPERA_IO.terminatePort", ros.topic("/terminate_io_left"))
+stream("LPERA_Supervisor.peraStatusPort", ros.topic("/arm_left_status"))
+stream("LPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
+
+### Gripper control ###
+connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out", "LPERA_GripperControl.position_in", ConnPolicy() )
+connect ("LPERA_GripperControl.gripper_measurement","LPERA_Supervisor.gripper_measurement", ConnPolicy() )
+connect ("LPERA_Supervisor.gripper_command","LPERA_GripperControl.gripper_command", ConnPolicy() )
+connect ("LPERA_IO.forceSen","LPERA_SensorTorques.voltage_in", ConnPolicy() )
+
+stream("LPERA_GripperControl.gripper_command", ros.topic("/arm_left_controller/gripper_command"))
+stream("LPERA_GripperControl.gripper_measurement", ros.topic("/arm_left_controller/gripper_measurement"))
+
+
+LPERA_Supervisor.start
+LPERA_ReadReferenceAngles.start
+LPERA_ReadReferenceJointStates.start
+LPERA_VectorConcatenate.start
+LPERA_ReferenceInterpolator.start
+LPERA_AdmittanceController.start
+LPERA_OutputLimiter.start
+LPERA_MotorToJointAngles.start
+LPERA_ComputeJointErrors.start
+LPERA_JointToMotorTorques.start
+LPERA_JointOutputLimiter.start
+LPERA_WriteCurrentJointAngles.start
+LPERA_WriteClippedJointAngles.start
+LPERA_WriteJointStates.start
+LPERA_IO.start
+LPERA_RTD.start
+LPERA_Gain.start
+LPERA_LeadLag.start
+LPERA_WeakIntegrator1.start
+LPERA_Lowpass.start
+LPERA_GravityCompensation.start
+LPERA_GC_Gains.start
+LPERA_Polynomials.start
+LPERA_AddGravComp.start
+LPERA_SensorTorques.start
+LPERA_GripperControl.start
+LPERA_Diagnostics.start
+#LPERA_Reporter.start
+#Tracing.start
