@@ -6,7 +6,7 @@ var double Ts = 0.001
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","AMIGO::Supervisor")
 Supervisor.configure
-setActivity("Supervisor",0.01,98,ORO_SCHED_OTHER); #Robocup hack
+setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 #Supervisor.start
 stream( "Supervisor.rosemergency", ros.topic("/emergency_switch"));
 stream("Supervisor.rosshutdown", ros.topic("/etherCAT_shutdown")); 
