@@ -149,8 +149,8 @@ setActivity("RPERA_FFW",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_FFW.vectorsize = 8
 #RPERA_FFW.gain = array (-0.06, -0.06, -0.06, -0.053, -0.053, -0.0, -0.0, -0.0)
 #RPERA_FFW.gain = array (-0.3, -0.3, -0.3, -0.265, -0.265, -0.0, -0.0, -0.0)
-#RPERA_FFW.gain = array (0.063*2000.0, 0.06*2000.0, 0.04*1000.0, 0.046*1750.0, 0.050*1750.0, 0.00*1750.0, 0.00*2150.0, 0.0); 
-RPERA_FFW.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+RPERA_FFW.gain = array (0.063*2000.0, 0.06*2000.0, 0.04*1000.0, 0.046*1750.0, 0.050*1750.0, 0.033*1750.0, 0.028*2150.0, 0.0); 
+#RPERA_FFW.gain = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 RPERA_FFW.configure
 
 ### Adding the gravity compensational term ###
@@ -292,7 +292,7 @@ loadComponent("Tracing","Signal::Tracing")
 setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
 Tracing.vector_sizes = array 		(8.0, 8.0, 8.0, 8.0, 8.0)
 Tracing.buffersize = 65536;
-Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/LOGREP/RPERA/RES5.dat"
+Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/LASTTEST/RES7F.dat"
 Tracing.Ts = Ts
 Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 Tracing.configure
@@ -303,15 +303,15 @@ connect ("RPERA_FFW.out","Tracing.in4", tracingpolicy ) ; 											# ffw
 connect ("RPERA_AddGravComp.out","Tracing.in5", tracingpolicy ) ; 									# control signal
 
 ### Control loop ###
-connect ("Soem.Slave_1011.encoderAngle0","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle2","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle0","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle0","RPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
-connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
+connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1011.encoderAngle2","RPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1011.encoderAngle3","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle3","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle1","RPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle2","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("Soem.Slave_1013.encoderAngle3","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointAngles.in" , ConnPolicy() ); 
 connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("RPERA_ComputeJointErrors.out","RPERA_Gain.in", ConnPolicy() )
