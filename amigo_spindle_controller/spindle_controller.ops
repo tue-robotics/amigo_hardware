@@ -18,10 +18,22 @@ setActivity("SpindlePositionToROS",0.01,LowestPriority,ORO_SCHED_OTHER)
 SpindlePositionToROS.NumberOfDoublesInVector = 1
 SpindlePositionToROS.configure
 connect ("SpindleReadEncoder.out","SpindlePositionToROS.in", ConnPolicy() )
-stream("SpindlePositionToROS.out1", ros.topic("/spindle_position"));
+stream("SpindlePositionToROS.out1", ros.topic("/spindle_position"))
 
-#Reading spindle setpoints 
+# Publish JointState Component
+loadComponent("SpindleWriteJointStates","ROS::DoublesToJointState")
+addPeer("Supervisor","SpindleWriteJointStates")
+setActivity("SpindleWriteJointStates",0.01,HighestPriority,ORO_SCHED_RT)
+SpindleWriteJointStates.JointNames = strings ( "spindle_joint" )
+SpindleWriteJointStates.configure
+connect( "SpindleReadEncoder.out", "SpindleWriteJointStates.pos_in", ConnPolicy() )
+#stream( "SpindleWriteJointStates.out", ros.topic("/spindle_controller/measurements"))
+
+# Select either the old (for amigo_msgs) and new (for jointstate messages) interface
+#Reading spindle setpoints (old)
 loadComponent("SpindleReadSetpoint","SPINDLE::ReadSpindleSetpoint")
+#Reading spindle setpoints (new)
+#loadComponent("SpindleReadSetpoint","SPINDLE::ReadSpindleSetpointJointState")
 addPeer("Supervisor","SpindleReadSetpoint")
 SpindleReadSetpoint.min_pos = 0.075
 SpindleReadSetpoint.max_pos = 0.4
@@ -29,6 +41,12 @@ SpindleReadSetpoint.max_vel = 0.07
 SpindleReadSetpoint.configure
 stream("SpindleReadSetpoint.spindle_setpoint", ros.topic("/spindle_controller/spindle_coordinates"));
 
+### Read reference joint angles using Jointstate messages###
+# Won't work in the current structure #
+#loadComponent("SpindleReadReferenceJointStates","ROS::JointStateToDoubles")
+#setActivity("SpindleReadReferenceJointStates",0.0,HighestPriority,ORO_SCHED_RT)
+#SpindleReadReferenceJointStates.NumberOfJoints = 1
+#SpindleReadReferenceJointStates.configure
 
 #Loading Reference Generator
 loadComponent("SpindleReferenceGenerator","ReferenceGenerator")
@@ -173,6 +191,7 @@ stream("SpindleDiagnostics.diagnostics", ros.topic("/diagnostics"));
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("SpindleReadEncoder")
 Supervisor.AddAllwaysOnPeer ("SpindlePositionToROS")
+Supervisor.AddAllwaysOnPeer ("SpindleWriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SpindleDiagnostics")
 Supervisor.AddAllwaysOnPeer ("SpindleStatus")
 
