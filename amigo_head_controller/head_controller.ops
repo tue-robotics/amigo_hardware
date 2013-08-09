@@ -1,6 +1,13 @@
 import("amigo_head_controller")
 
+# Select either the old line or the new lines, here and at the streams
+## Old
 loadComponent("PanTiltController", "PanTiltController")
+## New
+#loadComponent("PanTiltController", "PanTiltControllerJointState")
+#PanTiltController.joint_names = strings( "neck_pan_joint", "neck_tilt_joint" )
+##
+
 PanTiltController.pan_id = 2
 PanTiltController.tilt_id = 1
 PanTiltController.pan_max = 952 	
@@ -18,9 +25,14 @@ connect ("Soem.Slave_100f.data_tx", "PanTiltController.instruction", ConnPolicy(
 connect ("Soem.Slave_100f.data_rx", "PanTiltController.status", ConnPolicy() )
 connect ("Soem.Slave_100f.ready_rx", "PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "PanTiltController.serialRunning", ConnPolicy() )
+
+## Old
 stream("PanTiltController.goalPos", ros.topic("/head_controller/set_Head"))
 stream("PanTiltController.currentPosPan", ros.topic("/head_pan_angle"))
 stream("PanTiltController.currentPosTilt", ros.topic("/head_tilt_angle"))
 stream("PanTiltController.currentPosTilt", ros.topic("/head_status"))
+## New (ToDo: diagnostics)
+#stream("PanTiltController.goalPos", ros.topic("/head_controller/references"))
+#stream("PanTiltController.currentPos", ros.topic("/head_controller/measurements"))
 
 PanTiltController.start
