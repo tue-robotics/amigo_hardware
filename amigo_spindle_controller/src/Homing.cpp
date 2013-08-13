@@ -102,9 +102,9 @@ void Homing::updateHook()
         ref[JntNr-1][1] = homing_refVel[JntNr-1];
         ref[JntNr-1][2] = 0.0;  // May be To Do, add homing_refAcc?
         ref_outport.write(ref);
-		
-        //switch (homing_type[JntNr-1]) {
-		switch (3) {		;// ToDO fix switching for use in arm
+        
+		int homing_type_t = homing_type[JntNr-1];
+        switch (homing_type_t) {
             case 0 : 
             {
 				log(Warning)<< "SPINDLEHOMING CASE 0"  <<endlog();
