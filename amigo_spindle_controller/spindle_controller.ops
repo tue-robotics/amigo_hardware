@@ -90,6 +90,9 @@ connect ("SpindleHoming.ref_out","SpindleReferenceGenerator.refin", ConnPolicy()
 #SpindleHoming.homing_stroke	= array (0.41)		;# Stroke from zero point to homing point (encoders are resetted using this value)
 #SpindleHoming.homing_midpos	= array (0.35)  	;# position that the body should have during homing. To avoid collisions with other bodies/ itself
 #SpindleHoming.homing_endpos	= array (0.35)		;# position that the body should go to after homing is finished. (could be same as midpos)
+#SpindleHoming.homing_absPos    = array (0.0) 		:# homing criterion for abs sen homing			UNUSED FOR SPINDLE HOMING
+#SpindleHoming.homing_force     = array (0.0) 		:# homing criterion for Force sen homing		UNUSED FOR SPINDLE HOMING
+#SpindleHoming.homing_error     = array (0.0) 		:# homing criterion for servo error homing		UNUSED FOR SPINDLE HOMING
 #connect ("DigitalIns2.out2", "SpindleHoming.endswitch", ConnPolicy() )
 #connect ("SpindleHoming.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
 #SpindleHoming.configure

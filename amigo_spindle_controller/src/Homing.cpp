@@ -32,8 +32,8 @@ Homing::Homing(const string& name) : TaskContext(name, PreOperational)
   addProperty( "homing_absPos", homing_absPos ); // homing criterion for abs sen homing
   addProperty( "homing_force", homing_force );   // homing criterion for Force sen homing
   addProperty( "homing_error", homing_error );   // homing criterion for servo error homing
-
 }
+
 Homing::~Homing(){}
 
 bool Homing::configureHook()
@@ -68,12 +68,8 @@ bool Homing::configureHook()
 bool Homing::startHook()
 { 
     JntNr = 1;
-    lastHomedJoint = 0;
+    HomingConstraintMet = false;
     GoToMidPos = false;
-    newRefSent = false;
-    HomingFinished = false;
-
-    // ToDo make SpindleReadSetpoint component generic
 
     if ( !homed ) {
         TaskContext* SpindleReadSetpoint = this->getPeer("SpindleReadSetpoint");
@@ -96,11 +92,11 @@ bool Homing::startHook()
 
 void Homing::updateHook()
 {
-	if (HomingFinished == false)
+	if (HomingConstraintMet == false)
     {
-        ref[JntNr-1][0] = 10.0; // You always find the endstop within 10 radians
+        ref[JntNr-1][0] = homing_refPos[JntNr-1];
         ref[JntNr-1][1] = homing_refVel[JntNr-1];
-        ref[JntNr-1][2] = 0.0;  // May be To Do, add homing_refAcc?
+        ref[JntNr-1][2] = 0.0;  
         ref_outport.write(ref);
         
 		int homing_type_t = homing_type[JntNr-1];
@@ -111,7 +107,7 @@ void Homing::updateHook()
                 if (abs(absPos[JntNr-1]-homing_absPos[JntNr-1]) <= 1) 
                 {
                     log(Warning)<< "Homed a joint using absPos homing"  <<endlog();
-                    HomingFinished = true;
+                    HomingConstraintMet = true;
                 }
             }
             case 1 : 
@@ -121,7 +117,7 @@ void Homing::updateHook()
                 if (fabs(servoErrors[JntNr-1]) >= homing_error[JntNr-1])
                 {
                     log(Warning)<< "Homed a joint using endstop homing"  <<endlog();
-                    HomingFinished = true;
+                    HomingConstraintMet = true;
                 }
             }
             case 2 : 
@@ -131,7 +127,7 @@ void Homing::updateHook()
                 if (fabs(forces[JntNr-1]) >= homing_force[JntNr-1]) 
                 {
                     log(Warning)<< "Homed a joint using forceSensor homing"  <<endlog();
-                    HomingFinished = true;
+                    HomingConstraintMet = true;
                 }
             }
             case 3 : 
@@ -140,17 +136,14 @@ void Homing::updateHook()
                 if (!endSwitch.data) 
                 {
 					log(Warning)<< "Endswitch reached"  <<endlog();
-					HomingFinished = true; 
+					HomingConstraintMet = true; 
                 }
             }
         }
     }
 
-    if (HomingFinished == true)
+    if (HomingConstraintMet == true)
     {
-        HomingFinished = false;
-        newRefSent = false;
-        lastHomedJoint = JntNr;
         ROS_INFO_STREAM( "Joint X is homed" );
         
         // Actually call the services
@@ -159,43 +152,42 @@ void Homing::updateHook()
         StartBodyPart(homing_body);
 				
         // send body joint to midpos, joints that are not homed yet are kept at zero
-        GoToMidPos = true;
+        
         ref[JntNr-1][0] = homing_midpos[JntNr-1];
         ref[JntNr-1][1] = 0.0;
         ref[JntNr-1][2] = 0.0;
         ref_outport.write(ref);
-                    
+        
+        HomingConstraintMet = false;
+        GoToMidPos = true;                    
     }
 
     if (GoToMidPos)  {              // this loop is used to send the joint to a position where it does not hinder other joints that needs to be homded of the same body part
 		log(Warning)<< "GoingToMidPos:" << homing_body  <<endlog();
         relPos_inport.read(relPos);
         if ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) {
-            JntNr++;
-            GoToMidPos = false;
-            log(Warning)<< "Set => GoToMidPos = false;" <<endlog();
+			GoToMidPos = false;     
+			JntNr++;
+            log(Warning)<< "Set => GoToMidPos = false: JntNr = " << JntNr <<endlog();
         }
     }
 
     if ( JntNr == (N + 1) && (!GoToMidPos) ) // if Last Jnt is homed and mid pos is reached for the last joint go to end pos
     {
-		log(Warning)<< "started on midpos" <<endlog();
+		log(Warning)<< "Going to MidPos" <<endlog();
+	
         ref[JntNr-1][0] = homing_endpos[JntNr-1];
         ref[JntNr-1][1] = 0.0;
         ref[JntNr-1][2] = 0.0;
         ref_outport.write(ref);
 	
-        if ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) {
-            JntNr++;
-            GoToMidPos = false;
-            log(Warning)<< "reached midpos" <<endlog();
-        }
+        if ( fabs(relPos[JntNr-1]-homing_endpos[JntNr-1]) <= 0.1) {
+			homed = true;
+			log(Warning)<< "Finished homing of body:" << homing_body  <<endlog();
 
-        homed = true;
-        log(Warning)<< "Finished homing of body:" << homing_body  <<endlog();
-
-        // Stop this component.
-        this->stop(); // stop Homing component when Homing is finished
+			// Stop this component.
+			this->stop(); // stop Homing component when Homing is finished
+        }     
     }
 }
 

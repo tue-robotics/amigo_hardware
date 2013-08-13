@@ -31,12 +31,10 @@ namespace AMIGO // Just because it looks nice
 
     // Declaring system variables
     bool homed;
-    bool HomingFinished;
+    bool HomingConstraintMet;
     bool GoToMidPos;
-    bool newRefSent;
     uint N;
     uint JntNr;
-    uint lastHomedJoint;
 
     // homing variables
     string homing_body;
