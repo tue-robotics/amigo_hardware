@@ -86,7 +86,6 @@ bool Homing::startHook()
 
   log(Warning)<<"SpindleHoming::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
 
-
   return true;
 }
 
@@ -135,7 +134,7 @@ void Homing::updateHook()
 				endSwitch_inport.read(endSwitch);
                 if (!endSwitch.data) 
                 {
-					log(Warning)<< "Endswitch reached"  <<endlog();
+					log(Warning)<< "Endswitch reached 3"  <<endlog();
 					HomingConstraintMet = true; 
                 }
             }
@@ -163,7 +162,7 @@ void Homing::updateHook()
     }
 
     if (GoToMidPos)  {              // this loop is used to send the joint to a position where it does not hinder other joints that needs to be homded of the same body part
-		log(Warning)<< "GoingToMidPos:" << homing_body  <<endlog();
+		log(Warning)<< "GoingToMidPos:" << homing_body  <<endlog(); // Hij komt hier maar 1 keer 
         relPos_inport.read(relPos);
         if ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) {
 			GoToMidPos = false;     

@@ -38,7 +38,7 @@ namespace AMIGO // Just because it looks nice
 
     // homing variables
     string homing_body;
-    ints homing_type;
+    doubles homing_type;
     ints homing_order;
     doubles homing_refPos;
     doubles homing_refVel;
