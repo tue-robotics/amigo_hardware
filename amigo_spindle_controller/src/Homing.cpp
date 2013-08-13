@@ -23,7 +23,7 @@ Homing::Homing(const string& name) : TaskContext(name, PreOperational)
   // Creating variables
   addProperty( "homing_body", homing_body );     // name of the body that is stopped/started during homing procedure
   addProperty( "homing_type", homing_type );     // 0 = abs sen homing 1 = servo error homing  2 = Force sen homing  3 = endSwitch homing
-  addProperty( "homing_order", homing_order );   // TO DO : add different homing order
+  //addProperty( "homing_order", homing_order );   // TO DO : add different homing order
   addProperty( "homing_refPos", homing_refPos ); // Pos Reference for the homing joint
   addProperty( "homing_refVel", homing_refVel ); // Vel Reference for the homing joint
   addProperty( "homing_stroke", homing_stroke ); // Stroke from zero point to homing point (encoders are resetted using this value)
@@ -102,10 +102,12 @@ void Homing::updateHook()
         ref[JntNr-1][1] = homing_refVel[JntNr-1];
         ref[JntNr-1][2] = 0.0;  // May be To Do, add homing_refAcc?
         ref_outport.write(ref);
-  
-        switch (homing_type[JntNr-1]) {
+		
+        //switch (homing_type[JntNr-1]) {
+		switch (3) {		;// ToDO fix switching for use in arm
             case 0 : 
             {
+				log(Warning)<< "SPINDLEHOMING CASE 0"  <<endlog();
                 if (abs(absPos[JntNr-1]-homing_absPos[JntNr-1]) <= 1) 
                 {
                     log(Warning)<< "Homed a joint using absPos homing"  <<endlog();
@@ -114,6 +116,7 @@ void Homing::updateHook()
             }
             case 1 : 
             {
+				log(Warning)<< "SPINDLEHOMING CASE 1"  <<endlog();
                 servoError_inport.read(servoErrors);
                 if (fabs(servoErrors[JntNr-1]) >= homing_error[JntNr-1])
                 {
@@ -123,6 +126,7 @@ void Homing::updateHook()
             }
             case 2 : 
             {
+				log(Warning)<< "SPINDLEHOMING CASE 2"  <<endlog();
                 force_inport.read(forces);
                 if (fabs(forces[JntNr-1]) >= homing_force[JntNr-1]) 
                 {
@@ -132,10 +136,10 @@ void Homing::updateHook()
             }
             case 3 : 
             {
-                endSwitch_inport.read(endSwitch);
+				endSwitch_inport.read(endSwitch);
                 if (!endSwitch.data) 
                 {
-					log(Warning)<< "Homed a joint using endswitch homing"  <<endlog();
+					log(Warning)<< "Endswitch reached"  <<endlog();
 					HomingFinished = true; 
                 }
             }
@@ -148,20 +152,19 @@ void Homing::updateHook()
         newRefSent = false;
         lastHomedJoint = JntNr;
         ROS_INFO_STREAM( "Joint X is homed" );
-        log(Warning)<< homing_body << " joint :" << JntNr << " is homed."  <<endlog();
-
+        
         // Actually call the services
         StopBodyPart(homing_body);
         ResetEncoder((JntNr-1),homing_stroke[JntNr-1]);
         StartBodyPart(homing_body);
-
+				
         // send body joint to midpos, joints that are not homed yet are kept at zero
         GoToMidPos = true;
         ref[JntNr-1][0] = homing_midpos[JntNr-1];
         ref[JntNr-1][1] = 0.0;
         ref[JntNr-1][2] = 0.0;
         ref_outport.write(ref);
-
+                    
     }
 
     if (GoToMidPos)  {              // this loop is used to send the joint to a position where it does not hinder other joints that needs to be homded of the same body part
@@ -170,11 +173,13 @@ void Homing::updateHook()
         if ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) {
             JntNr++;
             GoToMidPos = false;
+            log(Warning)<< "Set => GoToMidPos = false;" <<endlog();
         }
     }
 
     if ( JntNr == (N + 1) && (!GoToMidPos) ) // if Last Jnt is homed and mid pos is reached for the last joint go to end pos
     {
+		log(Warning)<< "started on midpos" <<endlog();
         ref[JntNr-1][0] = homing_endpos[JntNr-1];
         ref[JntNr-1][1] = 0.0;
         ref[JntNr-1][2] = 0.0;
@@ -183,6 +188,7 @@ void Homing::updateHook()
         if ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) {
             JntNr++;
             GoToMidPos = false;
+            log(Warning)<< "reached midpos" <<endlog();
         }
 
         homed = true;
@@ -191,11 +197,6 @@ void Homing::updateHook()
         // Stop this component.
         this->stop(); // stop Homing component when Homing is finished
     }
-}
-
-void Homing::stopHook()
-{ 
-    log(Warning)<< "Killed homing component of body:" << homing_body  <<endlog();
 }
 
 ORO_CREATE_COMPONENT(Homing)
