@@ -45,13 +45,26 @@ bool Homing::configureHook()
     {
         ref[j].resize(3); //pos, vel, acc
     }
-
+    
     // Lookup the Supervisor component.
 	TaskContext* Supervisor = this->getPeer("Supervisor");
 	if ( !Supervisor ) {
         log(Error) << "Could not find Supervisor component! Did you add it as Peer in the ops file?"<<endlog(); // TODO check with Tim if removed checks are really neccesary and if these can be made generic
 		return false;
-	}		
+	}			
+		// Lookup the Encoder component.
+	TaskContext* SpindleReadEncoder = this->getPeer("SpindleReadEncoder");		//To Do make generic
+	if ( !SpindleReadEncoder ) {
+		log(Error) << "Could not find SpindleReadEncoder component! Did you add it as Peer in the ops file?"<<endlog();
+		return false;
+	}	
+	// Lookup the Setpoint component.
+	TaskContext* SpindleReadSetpoint = this->getPeer("SpindleReadSetpoint");		//To Do make generic
+	if ( !SpindleReadSetpoint ) {
+		log(Error) << "Could not find SpindleReadSetpoint component! Did you add it as Peer in the ops file?"<<endlog();
+		return false;
+	}
+	
 	// Lookup operations of peers
 	StartBodyPart = Supervisor->getOperation("StartBodyPart");
 	if ( !StartBodyPart.ready() ) {
@@ -63,7 +76,14 @@ bool Homing::configureHook()
 		log(Error) << "Could not find Supervisor.StopBodyPart Operation!"<<endlog();
 		return false;
 	}	
-    return true;
+	ResetEncoder = SpindleReadEncoder->getOperation("reset");
+	if ( !ResetEncoder.ready() ) {
+		log(Error) << "Could not find SpindleReadEncoder.reset Operation!"<<endlog();
+		return false;
+	}	
+	
+	
+    return true;  
 }
 
 bool Homing::startHook()
@@ -146,24 +166,16 @@ void Homing::updateHook()
     {
         ROS_INFO_STREAM( "Joint X is homed" );
         
-        // Actually call the services
-        //StopBodyPart(homing_body);
-        //ResetEncoder((JntNr-1),homing_stroke[JntNr-1]);
-        //StartBodyPart(homing_body);
+
         
         relPos_inport.read(relPos);
-		log(Warning)<< "relPos[0] bef" << relPos[0]  <<endlog();
-		log(Warning)<< "relPos[0] bef" << relPos[0]  <<endlog();
-		log(Warning)<< "relPos[0] bef" << relPos[0]  <<endlog();
-        
-        StopBodyPart("spindle");
-		ResetEncoder(0,0.41);
-		StartBodyPart("spindle");
-		
+		log(Warning)<< "relPos[0] before:" << relPos[0]  <<endlog();        
+        // Actually call the services
+        StopBodyPart(homing_body);
+        ResetEncoder((JntNr-1),homing_stroke[JntNr-1]);
+        StartBodyPart(homing_body);
 		relPos_inport.read(relPos);
-		log(Warning)<< "relPos[0] aft" << relPos[0]  <<endlog();
-		log(Warning)<< "relPos[0] aft" << relPos[0]  <<endlog();
-		log(Warning)<< "relPos[0] aft" << relPos[0]  <<endlog();
+		log(Warning)<< "relPos[0] after:" << relPos[0]  <<endlog();
 				
         // send body joint to midpos, joints that are not homed yet are kept at zero
         
@@ -179,11 +191,9 @@ void Homing::updateHook()
 
     if (GoToMidPos)  {              // this loop is used to send the joint to a position where it does not hinder other joints that needs to be homded of the same body part
 		//log(Warning)<< "GoingToMidPos:" << homing_body  <<endlog(); 
-        relPos_inport.read(relPos);
-        
+        relPos_inport.read(relPos);        
         //log(Warning)<< "relPos[0]" << relPos[0]  <<endlog();
         //log(Warning)<< "homing_midpos[JntNr-1]" << homing_midpos[JntNr-1] <<endlog();
-        
         //log(Warning)<< "relPos[JntNr-1] - homing_midpos[JntNr-1]" << (relPos[JntNr-1]-homing_midpos[JntNr-1]) <<endlog();
         //log(Warning)<< "fabs(relPos[JntNr-1]-homing_midpos[JntNr-1])" << fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <<endlog();
         //log(Warning)<< "( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1)" << ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) <<endlog();
