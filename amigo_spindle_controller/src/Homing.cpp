@@ -19,6 +19,7 @@ Homing::Homing(const string& name) : TaskContext(name, PreOperational)
   addPort( "force_in", force_inport );
   addPort( "servo_error_in", servoError_inport );
   addPort( "ref_out", ref_outport );
+  addPort( "relPos_in", relPos_inport );
 
   // Creating variables
   addProperty( "homing_body", homing_body );     // name of the body that is stopped/started during homing procedure
@@ -146,9 +147,23 @@ void Homing::updateHook()
         ROS_INFO_STREAM( "Joint X is homed" );
         
         // Actually call the services
-        StopBodyPart(homing_body);
-        ResetEncoder((JntNr-1),homing_stroke[JntNr-1]);
-        StartBodyPart(homing_body);
+        //StopBodyPart(homing_body);
+        //ResetEncoder((JntNr-1),homing_stroke[JntNr-1]);
+        //StartBodyPart(homing_body);
+        
+        relPos_inport.read(relPos);
+		log(Warning)<< "relPos[0] bef" << relPos[0]  <<endlog();
+		log(Warning)<< "relPos[0] bef" << relPos[0]  <<endlog();
+		log(Warning)<< "relPos[0] bef" << relPos[0]  <<endlog();
+        
+        StopBodyPart("spindle");
+		ResetEncoder(0,0.41);
+		StartBodyPart("spindle");
+		
+		relPos_inport.read(relPos);
+		log(Warning)<< "relPos[0] aft" << relPos[0]  <<endlog();
+		log(Warning)<< "relPos[0] aft" << relPos[0]  <<endlog();
+		log(Warning)<< "relPos[0] aft" << relPos[0]  <<endlog();
 				
         // send body joint to midpos, joints that are not homed yet are kept at zero
         
@@ -158,22 +173,31 @@ void Homing::updateHook()
         ref_outport.write(ref);
         
         HomingConstraintMet = false;
-        GoToMidPos = true;                    
+        GoToMidPos = true;  
+                          
     }
 
     if (GoToMidPos)  {              // this loop is used to send the joint to a position where it does not hinder other joints that needs to be homded of the same body part
-		log(Warning)<< "GoingToMidPos:" << homing_body  <<endlog(); // Hij komt hier maar 1 keer 
+		//log(Warning)<< "GoingToMidPos:" << homing_body  <<endlog(); 
         relPos_inport.read(relPos);
+        
+        //log(Warning)<< "relPos[0]" << relPos[0]  <<endlog();
+        //log(Warning)<< "homing_midpos[JntNr-1]" << homing_midpos[JntNr-1] <<endlog();
+        
+        //log(Warning)<< "relPos[JntNr-1] - homing_midpos[JntNr-1]" << (relPos[JntNr-1]-homing_midpos[JntNr-1]) <<endlog();
+        //log(Warning)<< "fabs(relPos[JntNr-1]-homing_midpos[JntNr-1])" << fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <<endlog();
+        //log(Warning)<< "( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1)" << ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) <<endlog();
+
         if ( fabs(relPos[JntNr-1]-homing_midpos[JntNr-1]) <= 0.1) {
 			GoToMidPos = false;     
 			JntNr++;
-            log(Warning)<< "Set => GoToMidPos = false: JntNr = " << JntNr <<endlog();
+			log(Warning)<< "Set => GoToMidPos = false: JntNr = " << JntNr <<endlog();
         }
     }
 
     if ( JntNr == (N + 1) && (!GoToMidPos) ) // if Last Jnt is homed and mid pos is reached for the last joint go to end pos
     {
-		log(Warning)<< "Going to MidPos" <<endlog();
+		log(Warning)<< "Going to EndPos" <<endlog();
 	
         ref[JntNr-1][0] = homing_endpos[JntNr-1];
         ref[JntNr-1][1] = 0.0;

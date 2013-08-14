@@ -94,6 +94,7 @@ connect ("SpindleHoming.ref_out","SpindleReferenceGenerator.refin", ConnPolicy()
 #SpindleHoming.homing_force     	= array (0.0) 		;# homing criterion for Force sen homing		UNUSED FOR SPINDLE HOMING
 #SpindleHoming.homing_error     	= array (0.0) 		;# homing criterion for servo error homing		UNUSED FOR SPINDLE HOMING
 #connect ("DigitalIns2.out2", "SpindleHoming.endswitch", ConnPolicy() )
+#connect ("SpindleReadEncoder.out", "SpindleHoming.relPos_in", ConnPolicy() )
 #connect ("SpindleHoming.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
 #SpindleHoming.configure
 
@@ -104,6 +105,7 @@ SpindleCalculateError.vectorsize = 1
 SpindleCalculateError.configure
 connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
 connect ("SpindleReadEncoder.out","SpindleCalculateError.in_minus", ConnPolicy() )
+
 
 
 #Loading controller components
