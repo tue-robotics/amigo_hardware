@@ -208,13 +208,14 @@ void Homing::updateHook()
     if ( JntNr == (N + 1) && (!GoToMidPos) ) // if Last Jnt is homed and mid pos is reached for the last joint go to end pos
     {
 		log(Warning)<< "Going to EndPos" <<endlog();
-	
-        ref[JntNr-1][0] = homing_endpos[JntNr-1];
-        ref[JntNr-1][1] = 0.0;
-        ref[JntNr-1][2] = 0.0;
+		
+        ref[0][0] = homing_endpos[0]; // To do fix for all joints
+        ref[0][1] = 0.0;
+        ref[0][2] = 0.0;
         ref_outport.write(ref);
-	
-        if ( fabs(relPos[JntNr-1]-homing_endpos[JntNr-1]) <= 0.1) {
+        
+		relPos_inport.read(relPos);
+        if ( fabs(relPos[0]-homing_endpos[0]) <= 0.1) {
 			homed = true;
 			log(Warning)<< "Finished homing of body:" << homing_body  <<endlog();
 
