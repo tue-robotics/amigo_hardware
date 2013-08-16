@@ -15,11 +15,6 @@ WriteArmJointsMsg::WriteArmJointsMsg(const string& name) : TaskContext(name, Pre
   // Creating ports:
   addEventPort( "pos", inport );
   addPort( "joint_measurements", outport );
-  
-  // Loading properties
-  addProperty ("offsets", OFFSET_VALUES);
-  addProperty ("signs", SIGNAL_SIGNS);
-
 }
 
 WriteArmJointsMsg::~WriteArmJointsMsg(){}
@@ -61,7 +56,7 @@ void WriteArmJointsMsg::updateHook()
   // Change sign and add offset (wrt inverse kinematics)
   for ( uint i = 0; i < 7; i++ )
 	{
-	  jointdata.pos[i].data = angles[i]*SIGNAL_SIGNS[i]-OFFSET_VALUES[i];
+	  jointdata.pos[i].data = angles[i];
 	}
 
   // Write data to port (ie publishing on ROS topic)

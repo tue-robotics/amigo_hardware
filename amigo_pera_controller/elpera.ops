@@ -18,34 +18,30 @@ trigger
 
 ## Declare standard variables that are used multiple times
 var double Ts = 0.001
-#var array SIGNS = array ( -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 )
-var array SIGNS = array ( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 ) 	;# To do completely remove SIGNS and OFFSETS FROM ALL COMPONENTS
-var array OFFSETS = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
-var array UPPERJOINTLIMIT = array (  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
-var array LOWERJOINTLIMIT = array (-1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
+var array UPPERJOINTLIMIT 		= array (  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
+var array LOWERJOINTLIMIT 		= array (-1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
-var double GEARRATIO_EM			= 1.0/410.0 ;# value (348.0) from philips manual does not make sense, 
+var double GEARRATIO_EM			= 1.0/410.0 ;# value (348.0) from philips manual does not make sense
 var double GEARRATIO_WM			= 1.0/290.0 
+var double GEARRATIO_HM			= 196.0/3249.0 
 var double ENCODERCOUNTS_SM		= 256.0*4.0
 var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
 var double ENCODERCOUNTS_WM		= 128.0*4.0   
+var double ENCODERCOUNTS_HM		= 128.0*4.0   
 var double ENC2SI_SM			= TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	
 var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3; 	
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= 0.0005236;               	 			#TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM; 
-
 # To Do: Put for lpera and rpera the ENC2SI values of the gripper to pure motor axis values and adjust control parameters to that.
 
 ### Read reference joint angles ###
 loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
 addPeer("Supervisor","LPERA_ReadReferenceAngles")
 setActivity("LPERA_ReadReferenceAngles",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_ReadReferenceAngles.offsets = OFFSETS
-LPERA_ReadReferenceAngles.signs = SIGNS
 LPERA_ReadReferenceAngles.configure
 
 ### Vector concatenate ###
@@ -85,32 +81,26 @@ LPERA_JointOutputLimiter.configure
 loadComponent("LPERA_WriteClippedJointAngles","PERA::WriteArmJointsMsg")
 addPeer("Supervisor","LPERA_WriteClippedJointAngles")
 setActivity("LPERA_WriteClippedJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_WriteClippedJointAngles.offsets = OFFSETS
-LPERA_WriteClippedJointAngles.signs = SIGNS
 LPERA_WriteClippedJointAngles.configure
 
-### PERA Supervisor ###			# To Do: Remove from Supervisor the maxAccelerations, SIGNS, OFFSETS
-loadComponent("LPERA_Supervisor","PERA::SupervisorE")
+### PERA Supervisor ###
+loadComponent("LPERA_Supervisor","PERA::Supervisor")
 addPeer("Supervisor","LPERA_Supervisor")
 setActivity("LPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_Supervisor.setPeriod(Ts)
-LPERA_Supervisor.jointUpperBounds = UPPERJOINTLIMIT
-LPERA_Supervisor.jointLowerBounds = LOWERJOINTLIMIT
-LPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0, 25.0, 25.0, 100.0); 
-LPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 20.0)
-LPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
-LPERA_Supervisor.dynBreakEpsilon = 0.05;
-LPERA_Supervisor.offsetAngles = OFFSETS
-LPERA_Supervisor.signs = SIGNS
-LPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-LPERA_Supervisor.homedPos = array (475.0, 624.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
-LPERA_Supervisor.maxConSatTime = 5.0
-LPERA_Supervisor.stepSize = 0.001570796
-LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
-LPERA_Supervisor.enableOutput = true
-LPERA_Supervisor.requireHoming = true
-LPERA_Supervisor.requireGripperHoming = true
-LPERA_Supervisor.startJoint = 6
+LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
+LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
+LPERA_Supervisor.motorSaturations 		= array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0, 25.0, 25.0, 100.0); 
+LPERA_Supervisor.maxJointErrors 		= array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 0.1873, 20.0)
+LPERA_Supervisor.absOrRel 				= array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+LPERA_Supervisor.homedPos 				= array (475.0, 624.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
+LPERA_Supervisor.maxConSatTime 			= 3.0
+LPERA_Supervisor.stepSize 				= 0.5
+LPERA_Supervisor.absSenDir 				= array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
+LPERA_Supervisor.enableOutput 			= true
+LPERA_Supervisor.requireHoming 			= true
+LPERA_Supervisor.requireGripperHoming 	= true
+LPERA_Supervisor.startJoint 			= 6
 LPERA_Supervisor.configure
 
 ### LOAD READENCODERS
@@ -132,7 +122,7 @@ LPERA_RTD.bw = 10.0
 LPERA_RTD.configure
 
 ### Gripper force controller ###
-loadComponent("LPERA_GripperControl","PERA::GripperControlE")
+loadComponent("LPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 #LPERA_GripperControl.threshold_closed = 14.0
@@ -273,12 +263,10 @@ LPERA_OutputLimiter.configure
 loadComponent("LPERA_WriteCurrentJointAngles","PERA::WriteArmJointsMsg")
 addPeer("Supervisor","LPERA_WriteCurrentJointAngles")
 setActivity("LPERA_WriteCurrentJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_WriteCurrentJointAngles.offsets = OFFSETS
-LPERA_WriteCurrentJointAngles.signs = SIGNS
 LPERA_WriteCurrentJointAngles.configure
 
 ### Conversion analog PERA_IO values to torques ###
-loadComponent("LPERA_SensorTorques","SensorTorquesE")
+loadComponent("LPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","LPERA_SensorTorques")
 setActivity("LPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
 #											SM1 		SM2			SM3 		EM1 		EM2 		WM1 		WM2 		HM        TO DO FIX ORDER OF CONSTANTS    

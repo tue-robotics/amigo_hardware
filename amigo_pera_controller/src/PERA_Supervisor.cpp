@@ -51,16 +51,12 @@ Supervisor::Supervisor(const string& name) :
 	addProperty( "jointLowerBounds", LOWERBOUNDS ).doc("Joint lower mechanical bound wrt zero-pose");
 	addProperty( "motorSaturations", MOTORSAT ).doc("Motor saturation values");
 	addProperty( "maxConSatTime", MAXCONSATTIME ).doc("Maximum time the controller is allowed to be saturated");
-	addProperty( "offsetAngles", OFFSETANGLES ).doc("Joint angles to be published when emergency button is released");
-	addProperty( "signs", SIGNS ).doc("Signs of the angles to be published");
 	addProperty( "homedPos", HOMEDPOS ).doc("Homing positions for the joints");
 	addProperty( "absOrRel", ABS_OR_REL ).doc("Defines whether joint is homed using absolute sensors or using mechanical endstop");
 	addProperty( "absSenDir", ABS_SEN_DIR ).doc("Defines if absolute sensor has its positive direction the same or opposite to relative sensors");
 	addProperty( "stepSize", STEPSIZE ).doc("Speed the joint moves to its mechanical endstop during homing");
 	addProperty( "requireHoming", REQUIRE_HOMING ).doc("Specifies if the arm will home yes or no");
 	addProperty( "startJoint", STRT_JNT ).doc("Joint number to start homing with");
-	addProperty( "maxAccelerations", MAXACCS ).doc("Joint maximum accelerations");
-	addProperty( "dynBreakEpsilon", DYNBREAKEPS ).doc("Tuning epsilon for dynamical breaking (margin on minimum breaking distance)");
 	addProperty( "requireGripperHoming", REQUIRE_GRIPPER_HOMING ).doc("Defines whether the gripper is homed upon startup");
 }
 
@@ -75,7 +71,6 @@ bool Supervisor::configureHook()
 	homJntAngles.resize(8);
 	previousAngles.resize(8);
 	timeReachedSaturation.resize(8);
-	breakingPos.resize(7);
 
 	// Set initial counters
 	cntr=0;   // used to check if it is the first time the loop is running 
@@ -229,14 +224,14 @@ void Supervisor::updateHook()
 				// If outside bounds, disable usage and write previous angles to the reference interpolator
 				if(!(jointAngles[i]>=LOWERBOUNDS[i] && jointAngles[i]<=UPPERBOUNDS[i])){ 
 
-					if(jointAngles[i]>UPPERBOUNDS[i]*SIGNS[i] && errors == false){
+					if(jointAngles[i]>UPPERBOUNDS[i] && errors == false){
 						
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
 						//log(Warning)<<"SUPERVISOR: Joint reference "<<i+1<<" of "<<jointAngles[i]<<" exceeds maximum of "<<UPPERBOUNDS[i]<<endlog();
 					}
-					else if(jointAngles[i]<LOWERBOUNDS[i]*SIGNS[i] && errors == false){
+					else if(jointAngles[i]<LOWERBOUNDS[i] && errors == false){
 						bool enableReadRef = false;
 						enableReadRefPort.write(enableReadRef);
 						homJntAngPort.write(previousAngles);
@@ -364,7 +359,7 @@ void Supervisor::updateHook()
 			// Change sign and add offset (wrt inverse kinematics)
 			for ( uint i = 0; i < 7; i++ )
 			{
-				jointResetData.pos[i].data = measRelJntAngles[i]*SIGNS[i]-OFFSETANGLES[i];
+				jointResetData.pos[i].data = measRelJntAngles[i];
 			}
 
 			//log(Error)<<"SUPERVISOR: i wrote q2 = "<<jointResetData.pos[1].data<<"."<<endlog();

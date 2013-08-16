@@ -16,10 +16,6 @@ ReadArmJointsMsg::ReadArmJointsMsg(const string& name) : TaskContext(name, PreOp
   addPort( "vel", velport );
   addPort( "acc", accport );
   addPort( "enablePort", enablePort );
-  
-  // Loading properties
-  addProperty( "offsets", OFFSET_VALUES );
-  addProperty( "signs", SIGNAL_SIGNS );
 }
 ReadArmJointsMsg::~ReadArmJointsMsg(){}
 
@@ -81,7 +77,7 @@ void ReadArmJointsMsg::updateHook()
 
 	  if( inport.read(jointdata) == NewData){
 		  for ( uint i = 0; i < 7; i++ ){
-			  pos[i] = SIGNAL_SIGNS[i]*(jointdata.pos[i].data+OFFSET_VALUES[i]);
+			  pos[i] = jointdata.pos[i].data;
 			  vel[i] = jointdata.vel[i].data;
 			  acc[i] = jointdata.acc[i].data;
 		  }

@@ -54,12 +54,11 @@ namespace PERA
 		InputPort<doubles> jointErrorsPort;
 		//! Inputport for the measured joint rel angles
 		InputPort<doubles> mRelJntAngPort;
-        //! Inputport for the measured joint abs angles                                              // changed from ints to doubles
+        //! Inputport for the measured joint abs angles
         InputPort<doubles> mAbsJntAngPort;
 		//! Inputport for the emergency button state
 		InputPort<std_msgs::Bool> eButtonPort;
 		//! Inputport for receiving gripper status 
-		//InputPort<std_msgs::Bool> gripperStatusPort;
 		InputPort<amigo_msgs::AmigoGripperMeasurement> gripperMeasurementPort;
 		//! Inputport for receiving controller motorspace output 
 		InputPort<doubles> controllerOutputPort;
@@ -78,7 +77,6 @@ namespace PERA
 		//! Outputport for ordering the PERA_IO to renull for slave 1002
 		OutputPort<bool> reNullPort;
 		//! Outputport for ordering gripper to close
-		//OutputPort<std_msgs::Bool> gripperClosePort;
 		OutputPort<amigo_msgs::AmigoGripperCommand> gripperCommandPort;
 		//! Outputport for ordering gripper to reset its positions
 		OutputPort<bool> gripperResetPort;
@@ -121,7 +119,7 @@ namespace PERA
 		double FastStep;
 		//! Constant for stepsize Slow (steps in absolute part of homing procedure)
 		double SlowStep;
-		//! Ts hardcoded for now                                                           TO DO : Ugly coding make more nice
+		//! Ts
 		double Ts;
 		//! Variable for storing the previous measured jointangle during homing
 		double prevAngle;
@@ -135,16 +133,10 @@ namespace PERA
 		doubles homJntAngles;
 		//! Vector for storing timeinstance controller saturation was reached
 		doubles timeReachedSaturation;
-		//! Vector for storing positions controller should break towards
-		doubles breakingPos;
 		//! The startingjoint for the homing procedure
 		double STRT_JNT;	
 		//! The stepsize if moving towards mechanical endstop
 		double STEPSIZE;	
-		//! Defines the joint angles for after the reset
-		doubles OFFSETANGLES;
-		//! Defines the signs for publishing the reset reference angles
-		doubles SIGNS;
 		//! Joint lower bounds
 		doubles LOWERBOUNDS;
 		//! Joint upper bounds
@@ -153,8 +145,6 @@ namespace PERA
 		doubles MOTORSAT;	
 		//! Maximum time the controller is allowed to be saturated
 		double MAXCONSATTIME;	
-		//! Tuning epsilon for dynamical breaking (margin on minimum breaking distance)
-		double DYNBREAKEPS;	
 		//! Specified maximum joint errors
 		doubles MAX_ERRORS;
 		//! The homed position (combination of rel and abs)
@@ -163,8 +153,6 @@ namespace PERA
 		doubles ABS_OR_REL;	
 		//! Specifies if the abs sensors measure opposite (-1.0) to the joint angles or in the same direction (1.0)
 		doubles ABS_SEN_DIR;
-		//! Specifies the joint maximum accelerations
-		doubles MAXACCS;
 		//! Memory array storing if controller saturation was already reached
 		int firstSatInstance [8];
 	
