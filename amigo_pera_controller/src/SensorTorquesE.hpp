@@ -5,7 +5,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#define N 8
+#define N 9
 using namespace std;
 using namespace RTT;
 
@@ -13,7 +13,7 @@ namespace AMIGO
 {
   typedef vector<double> doubles;
   
-  class SensorTorques
+  class SensorTorquesE
   : public RTT::TaskContext
     {
     private:
@@ -30,11 +30,11 @@ namespace AMIGO
 	doubles Tmeasured;
 	doubles Tjoint;
 	doubles PivotDistance;
-	
+
     public:
 
-    SensorTorques(const string& name);
-    ~SensorTorques();
+    SensorTorquesE(const string& name);
+    ~SensorTorquesE();
 
     bool configureHook();
     bool startHook();

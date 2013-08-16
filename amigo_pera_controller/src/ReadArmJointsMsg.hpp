@@ -51,6 +51,10 @@ namespace PERA
      //! Outputport for all the joint accelerations
     OutputPort<doubles> accport;
     
+    //! Offsets to account for difference between controller and DH convention zero-position
+    doubles OFFSET_VALUES;
+    //! Signs to account for the difference in controller and DH conventio rotational directions
+    doubles SIGNAL_SIGNS;
     //! Vector for storing arm position
     doubles pos;
 	//! Vector for storing arm velocity

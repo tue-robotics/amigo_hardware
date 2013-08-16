@@ -16,29 +16,32 @@ trigger
 
 ## Declare standard variables that are used multiple times
 var double Ts = 0.001
-var array UPPERJOINTLIMIT = array (  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
-var array LOWERJOINTLIMIT = array (-1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
+var array SIGNS = array (  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 )
+var array OFFSETS = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+## ENC2SI parameters
 var double TWOPI 				= 2.0*3.141592
-var double GEARRATIO_SM			= 1.0/550.0
-var double GEARRATIO_S3		    = 1.0/371.25
-var double GEARRATIO_EM			= 1.0/410.0 ;# value (348.0) from philips manual does not make sense, 
-var double GEARRATIO_WM			= 1.0/350.0 ;# value (290.0) from philips manual does not make sense anymore since motors are replaced with a different transmission
+var double GEARRATIO_SM			= 16.0/529.0
+var double GEARRATIO_S3		    = 245.0/16224.0
+var double GEARRATIO_EM			= 16.0/529.0
+var double GEARRATIO_WM			= 25.0/729.0   
 var double GEARRATIO_HM 		= 196.0/3249.0
 var double ENCODERCOUNTS_SM		= 256.0*4.0
 var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
-var double ENCODERCOUNTS_WM		= 128.0*4.0
-var double ENCODERCOUNTS_HM		= 128.0*4.0
-var double ENC2SI_SM			= TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	
-var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3; 	
-var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
-var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
-var double ENC2SI_HM 			= 0.0005236;               	 			#TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;
+var double ENCODERCOUNTS_WM		= 500.0*4.0   
+var double ENCODERCOUNTS_HM		= 128.0*4.0 
+var double ENC2SI_SM			= 2.0*0.00000563 ;          			#TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	To Do find out remaining gear ratio's 		:16.4818
+var double ENC2SI_S3			= 0.00001653 ;              			#TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;	from matlab determined to 					:5.6055	
+var double ENC2SI_EM			= 2.0*0.000003835;      				#TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM;		 										:12.3885
+var double ENC2SI_WM			= 2.0*0.00002116*(29.0/35.0);        	#TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 												:2.5458
+var double ENC2SI_HM 			= 0.0005236;               	 			#TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
 
 ### Read reference joint angles ###
 loadComponent("RPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
 addPeer("Supervisor","RPERA_ReadReferenceAngles")
 setActivity("RPERA_ReadReferenceAngles",0.0,HighestPriority,ORO_SCHED_RT)
+RPERA_ReadReferenceAngles.offsets = OFFSETS
+RPERA_ReadReferenceAngles.signs = SIGNS
 RPERA_ReadReferenceAngles.configure
 
 ### Vector concatenate ###
@@ -85,23 +88,27 @@ RPERA_WriteClippedJointAngles.signs = SIGNS
 RPERA_WriteClippedJointAngles.configure
 
 ### PERA Supervisor ###
-loadComponent("RPERA_Supervisor","PERA::Supervisor")
+loadComponent("RPERA_Supervisor","PERA::SupervisorE")
 addPeer("Supervisor","RPERA_Supervisor")
 setActivity("RPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Supervisor.setPeriod(Ts)
-RPERA_Supervisor.jointUpperBounds 		= array (	  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
-RPERA_Supervisor.jointLowerBounds 		= array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
-RPERA_Supervisor.motorSaturations 		= array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0, 25.0, 25.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
-RPERA_Supervisor.maxJointErrors 		= array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 120.0)
-RPERA_Supervisor.absOrRel 				= array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-RPERA_Supervisor.homedPos 				= array (682.0, 322.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
-RPERA_Supervisor.maxConSatTime 			= 3.0
-RPERA_Supervisor.stepSize 				= 0.5 ;# stepsize per second, divided by Ts to get stepsize per updatecycle
-RPERA_Supervisor.absSenDir 				= array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
-RPERA_Supervisor.enableOutput 			= true
-RPERA_Supervisor.requireHoming 			= true
-RPERA_Supervisor.requireGripperHoming 	= false
-RPERA_Supervisor.startJoint 			= 6
+RPERA_Supervisor.jointUpperBounds = 	array (	   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
+RPERA_Supervisor.jointLowerBounds = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
+RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0, 25.0, 25.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
+RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 120.0)
+RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
+RPERA_Supervisor.dynBreakEpsilon = 0.05;
+RPERA_Supervisor.offsetAngles = OFFSETS
+RPERA_Supervisor.signs = SIGNS
+RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+RPERA_Supervisor.homedPos = array (682.0, 322.0, 1.5708, 0.0, 1.8326, 0.985, 0.7854)
+RPERA_Supervisor.maxConSatTime = 3.0
+RPERA_Supervisor.stepSize = 0.5 ;# stepsize per second, divided by Ts to get stepsize per updatecycle
+RPERA_Supervisor.absSenDir = array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
+RPERA_Supervisor.enableOutput = true
+RPERA_Supervisor.requireHoming = true
+RPERA_Supervisor.requireGripperHoming = false
+RPERA_Supervisor.startJoint = 6
 RPERA_Supervisor.configure
 
 ### LOAD READENCODERS
@@ -122,7 +129,7 @@ RPERA_RTD.bw = 10.0
 RPERA_RTD.configure
 
 ### Gripper force controller ###
-loadComponent("RPERA_GripperControl","PERA::GripperControl")
+loadComponent("RPERA_GripperControl","PERA::GripperControlE")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 #RPERA_GripperControl.threshold_closed = 5.0
@@ -256,7 +263,7 @@ RPERA_WriteCurrentJointAngles.signs = SIGNS
 RPERA_WriteCurrentJointAngles.configure
 
 ### Conversion analog PERA_IO values to torques ###
-loadComponent("RPERA_SensorTorques","SensorTorques")
+loadComponent("RPERA_SensorTorques","SensorTorquesE")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
 #												SM1 		SM2			   			SM3 		EM1 			EM2 		WM1 		WM2 		HM

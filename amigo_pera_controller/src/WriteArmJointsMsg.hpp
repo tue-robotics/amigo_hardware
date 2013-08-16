@@ -38,6 +38,11 @@ namespace PERA
     InputPort<doubles> inport;
     //! Outputport for the ROS message amigo_msgs::arm_joints
     OutputPort<amigo_msgs::arm_joints> outport;
+    
+    //! Signs to account for the difference in controller and DH conventio rotational directions
+    doubles SIGNAL_SIGNS;
+    //! Offsets to account for difference between controller and DH convention zero-position
+    doubles OFFSET_VALUES;
 
     public:
 
