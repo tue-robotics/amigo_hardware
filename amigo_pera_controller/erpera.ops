@@ -98,8 +98,6 @@ RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0
 RPERA_Supervisor.maxJointErrors = array ( 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.0873, 0.1873, 120.0)
 RPERA_Supervisor.maxAccelerations = array ( 0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5 )
 RPERA_Supervisor.dynBreakEpsilon = 0.05;
-# Note that these angles are published on a ROS-topic and will therefore be corrected with the offsets and signs as defined at the ReadReferenceAngles components
-#RPERA_Supervisor.resetAngles = array ( 0.0, -1.570796325, 0.0, 0.5, 0.0, -1.570796325, 0.0, 0.0 )
 RPERA_Supervisor.offsetAngles = OFFSETS
 RPERA_Supervisor.signs = SIGNS
 RPERA_Supervisor.absOrRel = array (0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
@@ -298,12 +296,6 @@ connect ("RPERA_Supervisor.enablePort", "RPERA_Diagnostics.bool1", ConnPolicy() 
 RPERA_Diagnostics.boolname2 = "ReadRef Enable"
 connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPolicy() )
 
-########################################################################
-# Connecting all the ports and streams. Be carefull with making        #
-# changes below as this can easily result in system failure and/or     #
-# damage.                                                              #
-########################################################################
-
 ### Setting up tracing ###
 #var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 131072;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("Tracing","Signal::Tracing")
@@ -319,6 +311,12 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 ##connect ("LPERA_WeakIntegrator1.out","Tracing.in3", tracingpolicy ) ; 						# control effort in joint space
 #connect ("AnalogInsPera.out_for","Tracing.in3", tracingpolicy ) ; 							# measured voltage
 #connect ("RPERA_SensorTorques.measured_torques_out","Tracing.in4", tracingpolicy ) ; 		# measured torques actuator space
+
+########################################################################
+# Connecting all the ports and streams. Be carefull with making        #
+# changes below as this can easily result in system failure and/or     #
+# damage.                                                              #
+########################################################################
 
 ### Control loop ###
 connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
