@@ -37,14 +37,16 @@ namespace AMIGO // Just because it looks nice
     uint JntNr;
 
     // homing variables
+    bool require_homing;
     string homing_body;
-    doubles homing_type;
     ints homing_order;
+    doubles homing_type;    
     doubles homing_refPos;
     doubles homing_refVel;
     doubles homing_midpos;
     doubles homing_endpos;
     doubles homing_stroke;
+    
 
     //ref
     vector<doubles> ref;
