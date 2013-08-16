@@ -54,8 +54,8 @@ namespace PERA
 		InputPort<doubles> jointErrorsPort;
 		//! Inputport for the measured joint rel angles
 		InputPort<doubles> mRelJntAngPort;
-		//! Inputport for the measured joint abs angles
-		InputPort<ints> mAbsJntAngPort;
+        //! Inputport for the measured joint abs angles                                              // changed from ints to doubles
+        InputPort<doubles> mAbsJntAngPort;
 		//! Inputport for the emergency button state
 		InputPort<std_msgs::Bool> eButtonPort;
 		//! Inputport for receiving gripper status 
@@ -65,11 +65,9 @@ namespace PERA
 		InputPort<doubles> controllerOutputPort;
 		//! Inputport for receiving the reference interpolator velocity 
 		InputPort<doubles> measVelPort;
-		//! Inputport for receiving the return value of the I/0 Cycle for diagnostic purposes
-		InputPort<int> IODiagnosticPort;
-		//! Outputport for enabling/disabling the PERA_USB_IO
-		OutputPort<bool> enablePort;
-		//! Outputport for forwarding homing angles to the ReferenceInterpolator
+        //! Outputport for enabling/disabling the PERA_USB_IO Slave 1
+        OutputPort<bool> enablePort;
+        //! Outputport for forwarding homing angles to the ReferenceInterpolator
 		OutputPort<doubles> homJntAngPort;
 		//! Outputport for resetting the ReferenceInterpolator
 		OutputPort<doubles> resetIntPort;
@@ -77,7 +75,7 @@ namespace PERA
 		OutputPort<amigo_msgs::arm_joints> resetRefPort;
 		//! Outputport for disabling/enabling the ReadReferenceAngles to read topic
 		OutputPort<bool> enableReadRefPort;
-		//! Outputport for ordering the PERA_IO to renull
+		//! Outputport for ordering the PERA_IO to renull for slave 1002
 		OutputPort<bool> reNullPort;
 		//! Outputport for ordering gripper to close
 		//OutputPort<std_msgs::Bool> gripperClosePort;
@@ -91,8 +89,8 @@ namespace PERA
 		//! Counters for loopcounting
 		int cntr;
 		int cntr2;
-		//! Integer for storing the joint number of the joint that is being stopped
-		uint breaking;
+		int cntr3;
+		int cntr4;
 		//! Emergency button pressed / released (true/false) (memory bool)
 		bool pressed;
 		//! Does the deployerfile require homing
@@ -109,8 +107,8 @@ namespace PERA
 		bool goodToGo;
 		//! An error did occur yes / no (true/false)
 		bool errors;
-		//! Indicates if the rostopic /joint_references has been reset
-		bool resetReference;
+		//! Wait with homing, for first second
+		bool soemAwake;
 		//! Bool for indicating whether gripper is homed (true) or not (false)
 		bool gripperHomed; 
 		//! Property to define whether homing of the gripper is desired
@@ -119,6 +117,12 @@ namespace PERA
 		double prevJntNr;
 		//! Variable for storing the nr of the joint being homed during homing
 		double jntNr;
+		//! Constant for stepsize Fast (steps in absolute part of homing procedure)
+		double FastStep;
+		//! Constant for stepsize Slow (steps in absolute part of homing procedure)
+		double SlowStep;
+		//! Ts hardcoded for now                                                           TO DO : Ugly coding make more nice
+		double Ts;
 		//! Variable for storing the previous measured jointangle during homing
 		double prevAngle;
 		//! Requested joint angles
@@ -163,8 +167,6 @@ namespace PERA
 		doubles MAXACCS;
 		//! Memory array storing if controller saturation was already reached
 		int firstSatInstance [8];
-		//! Integer specifying I/O status: 0 is good, any other value is bad
-		int IOStatus, prevIOStatus;
 	
     public:
 
@@ -180,9 +182,7 @@ namespace PERA
 		//! Update sequence, performed at specified rate
 		void updateHook();
 		//! Function outputting jointangles for homing procedure
-		doubles homing(doubles jointErrors, ints absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles);
-		//! Function for determining the sign of the input vector
-		doubles signum(doubles a);
+        doubles homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles);           // changed from ints to doubles
 
     };
 }

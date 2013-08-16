@@ -88,14 +88,14 @@ using namespace PERA;
 		}
 				
 
-		//if (!completed){
+		if (!completed){
 			torqueInPort.read(torques);
 			positionInPort.read(measPos);
 			
 			amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
 			gripperMeasurement.direction = gripperCommand.direction;
-			gripperMeasurement.torque = torques[GRIPPER_JOINT_TORQUE_INDEX];
-			gripperMeasurement.position = measPos[GRIPPER_JOINT_POSITION_INDEX]/maxPos;
+			gripperMeasurement.torque = torques[GRIPPER_JOINT_INDEX];
+			gripperMeasurement.position = measPos[GRIPPER_JOINT_INDEX]/maxPos;
 			gripperMeasurement.end_position_reached = false;
 			gripperMeasurement.max_torque_reached = false;
 
@@ -109,26 +109,26 @@ using namespace PERA;
 					gripperPos[0] += gripperGain*PI/180;
 				}
 			} 
-			else if(gripperCommand.direction == amigo_msgs::AmigoGripperCommand::CLOSE){
-				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
-				if ( (torques[GRIPPER_JOINT_TORQUE_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0) ) ){
-					//log(Warning)<<"Gripper is CLOSED"<<endlog();
+			else{
+				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_INDEX]<<endlog();
+				if ( (torques[GRIPPER_JOINT_INDEX] >= threshold_closed && torques[GRIPPER_JOINT_INDEX] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0)) ){
+					log(Warning)<<"Gripper is CLOSED"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
-				else if(torques[GRIPPER_JOINT_TORQUE_INDEX] < threshold_closed && torques[GRIPPER_JOINT_TORQUE_INDEX] < MAX_TORQUE){
-					//log(Warning)<<"GRIPPERCON: closing with torque = "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<endlog();
+				else if(torques[GRIPPER_JOINT_INDEX] < threshold_closed && torques[GRIPPER_JOINT_INDEX] < MAX_TORQUE){
+					//log(Warning)<<"GRIPPERCON: closing with torque = "<<torques[GRIPPER_JOINT_INDEX]<<endlog();
 					gripperPos[0] -= gripperGain*PI/180;
 				}
 				else {
-					log(Error)<<"Gripper torque "<<torques[GRIPPER_JOINT_TORQUE_INDEX]<<" exceeds maximum torque of "<<MAX_TORQUE<<" abort close_gripper"<<endlog();
+					log(Error)<<"Gripper torque "<<torques[GRIPPER_JOINT_INDEX]<<" exceeds maximum torque of "<<MAX_TORQUE<<" abort close_gripper"<<endlog();
 					completed = true;
 					gripperMeasurement.max_torque_reached = true;
 				}
 			}
 			gripperRefPort.write(gripperPos);
 			gripperMeasurementPort.write(gripperMeasurement);
-		//}
+		}
 	}
 
 void GripperControl::stopHook(){}

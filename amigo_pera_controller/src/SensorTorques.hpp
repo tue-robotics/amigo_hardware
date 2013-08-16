@@ -5,7 +5,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#define N 8
+#define N 9
 using namespace std;
 using namespace RTT;
 
@@ -30,7 +30,7 @@ namespace AMIGO
 	doubles Tmeasured;
 	doubles Tjoint;
 	doubles PivotDistance;
-	
+
     public:
 
     SensorTorques(const string& name);

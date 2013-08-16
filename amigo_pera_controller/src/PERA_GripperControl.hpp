@@ -13,8 +13,7 @@
 #include <amigo_msgs/AmigoGripperMeasurement.h>
 
 #define PI 3.141592654
-#define GRIPPER_JOINT_TORQUE_INDEX		5
-#define GRIPPER_JOINT_POSITION_INDEX	7
+#define GRIPPER_JOINT_INDEX	8
 
 using namespace std;
 using namespace RTT;
