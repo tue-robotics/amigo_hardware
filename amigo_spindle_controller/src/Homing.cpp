@@ -53,7 +53,7 @@ bool Homing::configureHook()
         log(Error) << "Could not find Supervisor component! Did you add it as Peer in the ops file?"<<endlog(); // TODO check with Tim if removed checks are really neccesary and if these can be made generic
 		return false;
 	}			
-		// Lookup the Encoder component.
+		// Lookup the Encoder component of the spindle.
 	TaskContext* SpindleReadEncoder = this->getPeer("SpindleReadEncoder");		//To Do make generic
 	if ( !SpindleReadEncoder ) {
 		log(Error) << "Could not find SpindleReadEncoder component! Did you add it as Peer in the ops file?"<<endlog();
@@ -65,7 +65,7 @@ bool Homing::configureHook()
 		log(Error) << "Could not find SpindleReadSetpoint component! Did you add it as Peer in the ops file?"<<endlog();
 		return false;
 	}
-	
+		
 	// Lookup operations of peers
 	StartBodyPart = Supervisor->getOperation("StartBodyPart");
 	if ( !StartBodyPart.ready() ) {
@@ -77,11 +77,16 @@ bool Homing::configureHook()
 		log(Error) << "Could not find Supervisor.StopBodyPart Operation!"<<endlog();
 		return false;
 	}	
-	ResetEncoder = SpindleReadEncoder->getOperation("reset");
+	ResetEncoderSpindle = SpindleReadEncoder->getOperation("reset");
 	if ( !ResetEncoder.ready() ) {
 		log(Error) << "Could not find SpindleReadEncoder.reset Operation!"<<endlog();
 		return false;
 	}	
+	ResetEncoderRPERA = RPERA_ReadEncoders->getOperation("reset");
+	if ( !ResetEncoder.ready() ) {
+		log(Error) << "Could not find RPERA_ReadEncoders.reset Operation!"<<endlog();
+		return false;
+	}
 	
     return true;  
 }
@@ -170,7 +175,7 @@ void Homing::updateHook()
         ResetEncoder((homing_order_t-1),homing_stroke[homing_order_t-1]);
         StartBodyPart(homing_body);
 				
-        // send body joint to midpos, joints that are not homed yet are kept at zero        
+        // send body joint to midpos
         ref[homing_order_t-1][0] = homing_midpos[homing_order_t-1];
         ref[homing_order_t-1][1] = 0.0;
         ref[homing_order_t-1][2] = 0.0;
@@ -180,20 +185,20 @@ void Homing::updateHook()
         GoToMidPos = true;                            
     }
 
-    if ( GoToMidPos && homed == false )  {              // this loop is used to send the joint to a position where it does not hinder other joints that needs to be homded of the same body part
+    if ( GoToMidPos && homed == false ) 				// Send the joint to a position where it does not interfere with rest of the homing procedure
+    {              
 		relPos_inport.read(relPos);        
         if ( fabs(relPos[homing_order_t-1]-homing_midpos[homing_order_t-1]) <= 0.01) {
 			GoToMidPos = false;     
-			//log(Warning)<< homing_body << ": Reached MidPos of joint:" << homing_order_t <<endlog();
 			homing_order_t++;
 			homed = true;
         }
     }
 
-    if ( homing_order_t == (N + 1) && (!GoToMidPos) ) // if Last Jnt is homed and mid pos is reached for the last joint go to end pos
+    if ( homing_order_t == (N + 1) && (!GoToMidPos) ) 	// if Last Jnt is homed and mid pos is reached for the last joint go to end pos
     {
 		for (uint j = 0; j < N; j++){
-			ref[j][0] = homing_endpos[j]; // To do check for all joints, 
+			ref[j][0] = homing_endpos[j]; 
 			ref[j][1] = 0.0;
 			ref[j][2] = 0.0;
 		}

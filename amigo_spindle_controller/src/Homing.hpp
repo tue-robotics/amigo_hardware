@@ -67,7 +67,8 @@ namespace AMIGO // Just because it looks nice
     protected:
     OperationCaller<bool(string)> StartBodyPart;
     OperationCaller<bool(string)> StopBodyPart;
-    OperationCaller<void(int,double)> ResetEncoder;
+    OperationCaller<void(int,double)> ResetEncoderSpindle;
+    OperationCaller<void(int,double)> ResetEncoderRPERA;
     
     public:
 
