@@ -39,7 +39,7 @@ Homing::Homing(const string& name) : TaskContext(name, PreOperational)
 Homing::~Homing(){}
 
 bool Homing::configureHook()
-{	homed = require_homing;
+{	homed = !require_homing;
     N = homing_refPos.size();
     ref.resize(N); //N joint(s)
     for( unsigned int j = 0; j < N; j++ )
@@ -82,7 +82,7 @@ bool Homing::configureHook()
 		log(Error) << "Could not find SpindleReadEncoder.reset Operation!"<<endlog();
 		return false;
 	}	
-		
+	
     return true;  
 }
 
@@ -104,27 +104,30 @@ bool Homing::startHook()
     else {
         this->stop(); //Nothing to do
     }
-
   return true;
 }
 
 void Homing::updateHook()
 {
-	if ( HomingConstraintMet == false && homed == false )
+	if ( HomingConstraintMet == false && homed == false && GoToMidPos == false )
     {
-        ref[(homing_order[JntNr])-1][0] = homing_refPos[(homing_order[JntNr])-1];
-        ref[(homing_order[JntNr])-1][1] = homing_refVel[(homing_order[JntNr])-1];
-        ref[(homing_order[JntNr])-1][2] = 0.0;  
+		int homing_order_tt = homing_order[JntNr-1];
+		homing_order_t = homing_order_tt;
+
+        ref[homing_order_t-1][0] = homing_refPos[homing_order_t-1];
+        ref[homing_order_t-1][1] = homing_refVel[homing_order_t-1];
+        ref[homing_order_t-1][2] = 0.0;  
+       
         ref_outport.write(ref);
-        
-		int homing_type_t = homing_type[(homing_order[JntNr])-1];
+  
+   		int homing_type_t = homing_type[homing_order_t-1];
         switch (homing_type_t) {
             case 0 : 
             {
 				//log(Warning)<< "SPINDLEHOMING CASE 0"  <<endlog(); // remove this warning if case is tested
-                if (abs(absPos[(homing_order[JntNr])-1]-homing_absPos[(homing_order[JntNr])-1]) <= 1) 
+                if (abs(absPos[homing_order_t-1]-homing_absPos[homing_order_t-1]) <= 1.0) 
                 {
-                    log(Warning)<< homing_body << ": Absolute sensor reached goal of joint :" << (homing_order[JntNr]) <<endlog();
+                    log(Warning)<< homing_body << ": Absolute sensor reached goal of joint :" << homing_order_t <<endlog();
                     HomingConstraintMet = true;
                 }
             }
@@ -132,9 +135,9 @@ void Homing::updateHook()
             {
 				//log(Warning)<< "SPINDLEHOMING CASE 1"  <<endlog(); // remove this warning if case is tested
                 servoError_inport.read(servoErrors);
-                if (fabs(servoErrors[(homing_order[JntNr])-1]) >= homing_error[(homing_order[JntNr])-1])
+                if (fabs(servoErrors[homing_order_t-1]) >= homing_error[homing_order_t-1])
                 {
-                    log(Warning)<< homing_body << ": Servo error exceeded threshold, endstop reached of joint:" << (homing_order[JntNr])   <<endlog();
+                    log(Warning)<< homing_body << ": Servo error exceeded threshold, endstop reached of joint:" << homing_order_t <<endlog();
                     HomingConstraintMet = true;
                 }
             }
@@ -142,9 +145,9 @@ void Homing::updateHook()
             {
 				//log(Warning)<< "SPINDLEHOMING CASE 2"  <<endlog(); // remove this warning if case is tested
                 force_inport.read(forces);
-                if (fabs(forces[(homing_order[JntNr])-1]) >= homing_force[(homing_order[JntNr])-1]) 
+                if (fabs(forces[homing_order_t-1]) >= homing_force[homing_order_t-1]) 
                 {
-                    log(Warning)<< homing_body << ": Force Sensor measured threashold value" << (homing_order[JntNr])   <<endlog();
+                    log(Warning)<< homing_body << ": Force Sensor measured threashold value" << homing_order_t <<endlog();
                     HomingConstraintMet = true;
                 }
             }
@@ -153,7 +156,7 @@ void Homing::updateHook()
 				endSwitch_inport.read(endSwitch);
                 if (!endSwitch.data) 
                 {
-					log(Warning)<< homing_body << ": Endswitch reached of joint:" << (homing_order[JntNr])   <<endlog();
+					log(Warning)<< homing_body << ": Endswitch reached of joint:" << homing_order_t <<endlog();
 					HomingConstraintMet = true; 
                 }
             }
@@ -164,13 +167,13 @@ void Homing::updateHook()
     {
         // Actually call the services
         StopBodyPart(homing_body);
-        ResetEncoder(((homing_order[JntNr])-1),homing_stroke[(homing_order[JntNr])-1]);
+        ResetEncoder((homing_order_t-1),homing_stroke[homing_order_t-1]);
         StartBodyPart(homing_body);
 				
         // send body joint to midpos, joints that are not homed yet are kept at zero        
-        ref[(homing_order[JntNr])-1][0] = homing_midpos[(homing_order[JntNr])-1];
-        ref[(homing_order[JntNr])-1][1] = 0.0;
-        ref[(homing_order[JntNr])-1][2] = 0.0;
+        ref[homing_order_t-1][0] = homing_midpos[homing_order_t-1];
+        ref[homing_order_t-1][1] = 0.0;
+        ref[homing_order_t-1][2] = 0.0;
         ref_outport.write(ref);
         
         HomingConstraintMet = false;
@@ -179,17 +182,17 @@ void Homing::updateHook()
 
     if ( GoToMidPos && homed == false )  {              // this loop is used to send the joint to a position where it does not hinder other joints that needs to be homded of the same body part
 		relPos_inport.read(relPos);        
-        if ( fabs(relPos[(homing_order[JntNr])-1]-homing_midpos[(homing_order[JntNr])-1]) <= 0.1) {
+        if ( fabs(relPos[homing_order_t-1]-homing_midpos[homing_order_t-1]) <= 0.01) {
 			GoToMidPos = false;     
-			(homing_order[JntNr])++;
-			log(Warning)<< homing_body << ": Reached MidPos of joint:" << (homing_order[JntNr])   <<endlog();
+			//log(Warning)<< homing_body << ": Reached MidPos of joint:" << homing_order_t <<endlog();
+			homing_order_t++;
+			homed = true;
         }
     }
 
-    if ( (homing_order[JntNr]) == (N + 1) && (!GoToMidPos) && homed == false ) // if Last Jnt is homed and mid pos is reached for the last joint go to end pos
+    if ( homing_order_t == (N + 1) && (!GoToMidPos) ) // if Last Jnt is homed and mid pos is reached for the last joint go to end pos
     {
-		log(Warning)<< homing_body << ": Going to endpos "  <<endlog();
-		for (int j = 0; j < N; j++){
+		for (uint j = 0; j < N; j++){
 			ref[j][0] = homing_endpos[j]; // To do check for all joints, 
 			ref[j][1] = 0.0;
 			ref[j][2] = 0.0;
@@ -199,8 +202,7 @@ void Homing::updateHook()
         
 		relPos_inport.read(relPos);
         if ( fabs(relPos[0]-homing_endpos[0]) <= 0.01) { 
-			homed = true;
-			log(Warning)<< "Finished homing of body:" << homing_body  <<endlog();
+			log(Warning)<< "Finished homing of body:" << homing_body <<endlog();
 
 			// Stop this component.
 			this->stop(); // stop Homing component when Homing is finished

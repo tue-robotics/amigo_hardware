@@ -20,7 +20,7 @@ namespace AMIGO // Just because it looks nice
     private:
     // Declaring Inports
     InputPort<std_msgs::Bool> endSwitch_inport;
-    InputPort<ints> absPos_inport;
+    InputPort<doubles> absPos_inport;
     InputPort<doubles> force_inport;
     InputPort<doubles> servoError_inport;
     InputPort<doubles> relPos_inport;
@@ -39,7 +39,8 @@ namespace AMIGO // Just because it looks nice
     // homing variables
     bool require_homing;
     string homing_body;
-    ints homing_order;
+    doubles homing_order;
+    int homing_order_t;
     doubles homing_type;    
     doubles homing_refPos;
     doubles homing_refVel;
@@ -52,14 +53,14 @@ namespace AMIGO // Just because it looks nice
     vector<doubles> ref;
 
     // Current value variables
-    ints absPos;
     std_msgs::Bool endSwitch;
+    doubles absPos;
     doubles servoErrors;
     doubles forces;
     doubles relPos;
 
     // Homing criterion variables
-    ints homing_absPos;
+    doubles homing_absPos;
     doubles homing_force;
     doubles homing_error;
 
