@@ -191,9 +191,9 @@ setActivity("BaseSafety",0.0,HighestPriority/2,ORO_SCHED_RT)
 connect ("BaseReadReferenceVelocities.out", "BaseSafety.ref", ConnPolicy() )
 connect ("BaseCalculateErrors.out", "BaseSafety.error", ConnPolicy() )
 connect ("BaseSI2Volt.out", "BaseSafety.voltage", ConnPolicy() )
-connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.amplifiers", ConnPolicy() ); # amplifiers
-connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.tuelights", ConnPolicy() ); # lights
-
+connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.in1", ConnPolicy() ); # for reading back the ebutton info
+connect ("BaseSafety.wheel_amplifiers", "DigitalOuts.in2", ConnPolicy() ); # tue-logo
+connect ("BaseSafety.wheel_amplifiers", "DigitalOuts2.in2", ConnPolicy() ); # amplifiers
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("BaseDiagnostics","ROS::RosDiagnostics")
