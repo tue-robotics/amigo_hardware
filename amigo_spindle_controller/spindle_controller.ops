@@ -61,41 +61,41 @@ connect ("Spindle_ReadReferences.out","SpindleReferenceGenerator.refin", ConnPol
 connect ("Spindle_ReadEncoders.out","SpindleReferenceGenerator.actual_pos", ConnPolicy() )
 
 #Loading Homing component
-#loadComponent("SpindleHoming","SpindleHoming")
-#connectPeers("Supervisor","SpindleHoming")
-#connectPeers("SpindleHoming","Supervisor")
-#connectPeers("SpindleHoming","Spindle_ReadEncoders")
-#addPeer("SpindleHoming","SpindleReferenceGenerator")
-#addPeer("SpindleHoming","Spindle_ReadReferences")
-#SpindleHoming.home_vel = 0.01
-#SpindleHoming.home_acc = 0.1; #Fast acc means constant velocity means better reproducing homing
-#SpindleHoming.stroke  = 0.41
-#SpindleHoming.endpos = 0.35
-#SpindleHoming.homed = 0; # =False
-#SpindleHoming.configure
-#connect ("DigitalIns2.out2", "SpindleHoming.endswitch", ConnPolicy() )
-#connect ("SpindleHoming.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
+loadComponent("Spindle_Homing","SpindleHoming")
+connectPeers("Supervisor","Spindle_Homing")
+connectPeers("Spindle_Homing","Supervisor")
+connectPeers("Spindle_Homing","Spindle_ReadEncoders")
+addPeer("Spindle_Homing","SpindleReferenceGenerator")
+addPeer("Spindle_Homing","Spindle_ReadReferences")
+Spindle_Homing.home_vel = 0.01
+Spindle_Homing.home_acc = 0.1; #Fast acc means constant velocity means better reproducing homing
+Spindle_Homing.stroke  = 0.41
+Spindle_Homing.endpos = 0.35
+Spindle_Homing.homed = 0; # =False
+Spindle_Homing.configure
+connect ("DigitalIns2.out2", "Spindle_Homing.endswitch", ConnPolicy() )
+connect ("Spindle_Homing.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
 
 #Loading Homing component
-loadComponent("SpindleHoming","Homing")
-connectPeers("Supervisor","SpindleHoming")
-connectPeers("SpindleHoming","Supervisor")
-connectPeers("SpindleHoming","Spindle_ReadEncoders")
-addPeer("SpindleHoming","SpindleReferenceGenerator")
-addPeer("SpindleHoming","Spindle_ReadReferences")
-SpindleHoming.homing_body   	= "spindle" 			;# name of the body that is stopped/started during homing procedure
-SpindleHoming.require_homing   	= true		 			;# require homing
-SpindleHoming.homing_type		= array (3.0)			;# 0 = abs sen homing 1 = servo error homing  2 = Force sen homing  3 = endSwitch homing
-SpindleHoming.homing_order		= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
-SpindleHoming.homing_refPos		= array (1.0)   		;# Pos Reference for the homing joint
-SpindleHoming.homing_refVel		= array (0.01)  		;# Vel Reference for the homing joint
-SpindleHoming.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
-SpindleHoming.homing_midpos		= array (0.35)  		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
-SpindleHoming.homing_endpos		= array (0.35)			;# position that the body should go to after homing is finished. (could be same as midpos)
-connect ("DigitalIns2.out2", "SpindleHoming.endswitch", ConnPolicy() )
-connect ("Spindle_ReadEncoders.out", "SpindleHoming.relPos_in", ConnPolicy() )
-connect ("SpindleHoming.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
-SpindleHoming.configure
+#loadComponent("Spindle_Homing","AMIGO::Homing")
+#connectPeers("Supervisor","Spindle_Homing")
+#connectPeers("Spindle_Homing","Supervisor")
+#connectPeers("Spindle_Homing","Spindle_ReadEncoders")
+#addPeer("Spindle_Homing","SpindleReferenceGenerator")
+#addPeer("Spindle_Homing","Spindle_ReadReferences")
+#Spindle_Homing.homing_body   		= "Spindle" 			;# name of the body that is stopped/started during homing procedure
+#Spindle_Homing.require_homing   	= true		 			;# require homing
+#Spindle_Homing.homing_type			= array (3.0)			;# 0 = abs sen homing 1 = servo error homing  2 = Force sen homing  3 = endSwitch homing
+#Spindle_Homing.homing_order		= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
+#Spindle_Homing.homing_refPos		= array (1.0)   		;# Pos Reference for the homing joint
+#Spindle_Homing.homing_refVel		= array (0.01)  		;# Vel Reference for the homing joint
+#Spindle_Homing.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
+#Spindle_Homing.homing_midpos		= array (0.35)  		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
+#Spindle_Homing.homing_endpos		= array (0.35)			;# position that the body should go to after homing is finished. (could be same as midpos)
+#connect ("DigitalIns2.out2", "Spindle_Homing.endswitch", ConnPolicy() )
+#connect ("Spindle_ReadEncoders.out", "Spindle_Homing.relPos_in", ConnPolicy() )
+#connect ("Spindle_Homing.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
+#Spindle_Homing.configure
 
 #Calculating Errors
 loadComponent("SpindleCalculateError","MATH::Subtraction")
@@ -224,4 +224,4 @@ Supervisor.AddPeerToBodyPart ("SpindleCalculateFFW",2 )
 Supervisor.AddPeerToBodyPart ("SpindleAddFeedForward",2 )
 Supervisor.AddPeerToBodyPart ("SpindleSafety",2 )
 
-Supervisor.AddAllwaysOnPeer ("SpindleHoming"); #Homing stops itself after finishing, last component because all others have to be started in order to be stopped ;)
+Supervisor.AddAllwaysOnPeer ("Spindle_Homing"); #Homing stops itself after finishing, last component because all others have to be started in order to be stopped ;)
