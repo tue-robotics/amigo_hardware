@@ -60,10 +60,10 @@ void ReadSpindleSetpointJointState::updateHook()
 	//amigo_msgs::spindle_setpoint spindle_setpoint;
 	sensor_msgs::JointState input;
 	if ( spindle_setpoint_inport.read( input ) == NewData ) {
-		log(Warning)<<"ReadSpindle: Received new input!"<<endlog();
+		log(Debug)<<"ReadSpindle: Received new input!"<<endlog();
 	  ref[0][0] = fmin( maxpos, fmax( minpos, input.position[0] ) );
-	  ref[0][1] = fmin( maxvel, input.velocity[0] );
-	  ref[0][2] = input.effort[0];
+	  ref[0][1] = maxvel;//fmin( maxvel, input.velocity[0] );
+	  ref[0][2] = 0;//input.effort[0];
 		
 	  // Write data to ports
 	  ref_outport.write( ref );

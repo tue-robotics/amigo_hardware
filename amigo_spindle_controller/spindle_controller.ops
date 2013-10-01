@@ -12,34 +12,35 @@ Spindle_ReadEncoders.configure
 connect ("Soem.Slave_1006.Slave_1006_value","Spindle_ReadEncoders.enc1_in", ConnPolicy() )
 
 #Publish component
-loadComponent("SpindlePositionToROS","ROS::DoublesToROS")
-addPeer("Supervisor","SpindlePositionToROS")
-setActivity("SpindlePositionToROS",0.01,LowestPriority,ORO_SCHED_OTHER)
-SpindlePositionToROS.NumberOfDoublesInVector = 1
-SpindlePositionToROS.configure
-connect ("Spindle_ReadEncoders.out","SpindlePositionToROS.in", ConnPolicy() )
-stream("SpindlePositionToROS.out1", ros.topic("/spindle_position"))
+#loadComponent("SpindlePositionToROS","ROS::DoublesToROS")
+#addPeer("Supervisor","SpindlePositionToROS")
+#setActivity("SpindlePositionToROS",0.01,LowestPriority,ORO_SCHED_OTHER)
+#SpindlePositionToROS.NumberOfDoublesInVector = 1
+#SpindlePositionToROS.configure
+#connect ("Spindle_ReadEncoders.out","SpindlePositionToROS.in", ConnPolicy() )
+#stream("SpindlePositionToROS.out1", ros.topic("/spindle_position"))
 
 # Publish JointState Component
 loadComponent("SpindleWriteJointStates","ROS::DoublesToJointState")
 addPeer("Supervisor","SpindleWriteJointStates")
 setActivity("SpindleWriteJointStates",0.01,HighestPriority,ORO_SCHED_RT)
-SpindleWriteJointStates.JointNames = strings ( "spindle_joint" )
+SpindleWriteJointStates.JointNames = strings ( "torso_joint" )
 SpindleWriteJointStates.configure
 connect( "Spindle_ReadEncoders.out", "SpindleWriteJointStates.pos_in", ConnPolicy() )
-#stream( "SpindleWriteJointStates.out", ros.topic("/spindle_controller/measurements"))
+stream( "SpindleWriteJointStates.out", ros.topic("/amigo/torso/measurements"))
+stream( "SpindleWriteJointStates.out", ros.topic("/amigo/joint_states"))
 
 # Select either the old (for amigo_msgs) and new (for jointstate messages) interface
 #Reading spindle setpoints (old)
-loadComponent("Spindle_ReadReferences","SPINDLE::ReadSpindleSetpoint")
+#loadComponent("Spindle_ReadReferences","SPINDLE::ReadSpindleSetpoint")
 #Reading spindle setpoints (new)
-#loadComponent("Spindle_ReadReferences","SPINDLE::ReadSpindleSetpointJointState")
+loadComponent("Spindle_ReadReferences","SPINDLE::ReadSpindleSetpointJointState")
 addPeer("Supervisor","Spindle_ReadReferences")
 Spindle_ReadReferences.min_pos = 0.075
 Spindle_ReadReferences.max_pos = 0.4
 Spindle_ReadReferences.max_vel = 0.07
 Spindle_ReadReferences.configure
-stream("Spindle_ReadReferences.spindle_setpoint", ros.topic("/spindle_controller/spindle_coordinates"));
+stream("Spindle_ReadReferences.spindle_setpoint", ros.topic("/amigo/torso/references"));
 
 ### Read reference joint angles using Jointstate messages###
 # Won't work in the current structure #
@@ -205,7 +206,7 @@ stream("SpindleDiagnostics.diagnostics", ros.topic("/diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("Spindle_ReadEncoders")
-Supervisor.AddAllwaysOnPeer ("SpindlePositionToROS")
+#Supervisor.AddAllwaysOnPeer ("SpindlePositionToROS")
 Supervisor.AddAllwaysOnPeer ("SpindleWriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SpindleDiagnostics")
 Supervisor.AddAllwaysOnPeer ("SpindleStatus")
