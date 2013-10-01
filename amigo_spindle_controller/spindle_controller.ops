@@ -169,7 +169,9 @@ loadComponent("SpindleSafety","SpindleSafety")
 addPeer("Supervisor","SpindleSafety")
 SpindleSafety.error_margin = 0.05
 SpindleSafety.configure
-connect ("SpindleSafety.spindle_brake","DigitalOuts.spindlebrake", ConnPolicy() )
+# Brake and amplifier should be switched simultaneously: it is undesired to either power the motor with the brake on or to have no power with the brake off
+connect ("SpindleSafety.spindle_brake","DigitalOuts.in3", ConnPolicy() );   # Spindle brake
+connect ("SpindleSafety.spindle_brake","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
 connect ("SpindleCalculateError.out","SpindleSafety.error_pos", ConnPolicy() )
 
 #### LOAD COMPONENT TO PUBLISH STATUS ###
