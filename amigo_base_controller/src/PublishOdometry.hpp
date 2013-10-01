@@ -6,6 +6,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <rtt/Component.hpp>
+#include <tf/transform_broadcaster.h>
 
 
 using namespace std;
@@ -23,12 +24,16 @@ namespace AMIGO
     //Declaring input- and output_ports
     InputPort<doubles> pos_port;
     OutputPort<nav_msgs::Odometry> odom_port;
+    tf::TransformBroadcaster tf_broadcaster;
 
     //Declaring global variables
     doubles prev_pos;
     long double old_time;
     double global_px;
     double global_py;
+    
+    //Frame ids
+    string base_link_frame, odom_frame;
 
     public:
 

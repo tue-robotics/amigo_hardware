@@ -61,10 +61,12 @@ connect ("ReadWheelEncoders.out","BaseDecouplePosition.in", ConnPolicy() )
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
 loadComponent("Odometry","AMIGO::PublishOdometry")
 addPeer("Supervisor","Odometry")
+Odometry.base_link_frame = "/amigo/base_link"
+Odometry.odom_frame = "/amigo/odom"
 Odometry.configure
 setActivity("Odometry",0.05,LowestPriority,ORO_SCHED_OTHER)
 connect ("BaseDecouplePosition.out", "Odometry.pos", ConnPolicy() );
-stream("Odometry.odom", ros.topic("/odom"));
+stream("Odometry.odom", ros.topic("/amigo/base/measurements"));
 
 
 
@@ -82,7 +84,7 @@ BaseReadReferenceVelocities.max_acc = array (0.7, 0.7, 2.0)
 BaseReadReferenceVelocities.max_interval = 1.0
 BaseReadReferenceVelocities.configure
 setActivity("BaseReadReferenceVelocities",0.01,LowestPriority,ORO_SCHED_OTHER)
-stream ("BaseReadReferenceVelocities.cmd_vel", ros.topic("/cmd_vel"));
+stream ("BaseReadReferenceVelocities.cmd_vel", ros.topic("/amigo/base/references"));
 
 ### DECOUPLE REFERENCE ###
 loadComponent("BaseDecoupleVelReference","MatrixTransform")

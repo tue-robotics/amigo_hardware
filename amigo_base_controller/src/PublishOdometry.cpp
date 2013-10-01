@@ -16,6 +16,9 @@ PublishOdometry::PublishOdometry(const std::string& name) : TaskContext(name)
   // Creating ports
   addPort( "pos", pos_port );
   addPort( "odom", odom_port );
+  
+  addProperty( "base_link_frame", base_link_frame );
+  addProperty( "odom_frame", odom_frame );
 
   // Initialising variables
 
@@ -33,6 +36,11 @@ bool PublishOdometry::startHook()
   prev_pos.assign(3,0.0);
   global_px = 0.0;
   global_py = 0.0;
+  
+  if (base_link_frame == "" || odom_frame == "") {
+	  log(Error)<<"Base link frame or odom frame not specified"<<endlog();
+	  return false;
+  }
   return true;
 }
 
@@ -56,7 +64,7 @@ void PublishOdometry::updateHook()
   geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(pos[2]);
 
   //we'll publish the odometry message over ROS
-  geometry_msgs::TransformStamped tf;
+  geometry_msgs::TransformStamped odom_tf;
 
 
   double costh = cos(pos[2]);
@@ -73,8 +81,8 @@ void PublishOdometry::updateHook()
 
   //populate odom msg
   nav_msgs::Odometry odom;
-  odom.header.frame_id = "odom";
-  odom.child_frame_id = "base_link";
+  odom.header.frame_id = odom_frame;
+  odom.child_frame_id = base_link_frame;
   odom.header.stamp = current_time;
   odom.pose.pose.position.x = global_px; ///(current_pos_corr_x * costh - current_pos_corr_y * sinth);
   odom.pose.pose.position.y = global_py; ///(current_pos_corr_x * sinth + current_pos_corr_y * costh);
@@ -88,13 +96,13 @@ void PublishOdometry::updateHook()
   ///quat_trans.setRPY(0.0, 0.0, current_pos_corr_phi);
 
   //populate tf msg
-  tf.header.frame_id = "odom";
-  tf.child_frame_id = "base_link";
-  tf.header.stamp = current_time;
-  tf.transform.translation.x = global_px; ///(current_pos_corr_x * costh - current_pos_corr_y * sinth);
-  tf.transform.translation.y = global_py; ///(current_pos_corr_x * sinth + current_pos_corr_y * costh);
-  tf.transform.translation.z = 0.0;
-  tf.transform.rotation = odom_quat;
+  odom_tf.header.frame_id = odom_frame;
+  odom_tf.child_frame_id = base_link_frame;
+  odom_tf.header.stamp = current_time;
+  odom_tf.transform.translation.x = global_px; ///(current_pos_corr_x * costh - current_pos_corr_y * sinth);
+  odom_tf.transform.translation.y = global_py; ///(current_pos_corr_x * sinth + current_pos_corr_y * costh);
+  odom_tf.transform.translation.z = 0.0;
+  odom_tf.transform.rotation = odom_quat;
   ///tf.transform.rotation.x = quat_trans.x();
   ///tf.transform.rotation.y = quat_trans.y();
   ///tf.transform.rotation.z = quat_trans.z();
@@ -142,6 +150,8 @@ void PublishOdometry::updateHook()
   odom.twist.covariance = odom.pose.covariance;
   //publish the message
   odom_port.write(odom);
+  //publish the tf
+  tf_broadcaster.sendTransform(odom_tf);
 }
 
 
