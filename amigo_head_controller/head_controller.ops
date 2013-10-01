@@ -2,21 +2,30 @@ import("amigo_head_controller")
 
 # Select either the old line or the new lines, here and at the streams
 ## Old
-loadComponent("PanTiltController", "PanTiltController")
+#loadComponent("PanTiltController", "PanTiltController")
 ## New
-#loadComponent("PanTiltController", "PanTiltControllerJointState")
-#PanTiltController.joint_names = strings( "neck_pan_joint", "neck_tilt_joint" )
+loadComponent("PanTiltController", "PanTiltControllerJointState")
+PanTiltController.joint_names = strings( "neck_pan_joint", "neck_tilt_joint" )
 ##
 
 PanTiltController.pan_id = 2
 PanTiltController.tilt_id = 1
-PanTiltController.pan_max = 952 	
-PanTiltController.pan_min = 268
+
+# Needs to be tuned!
+# Minus does not work
+#PanTiltController.pan_max = 952 	
+#PanTiltController.pan_min = 268
+PanTiltController.pan_max = 502-10-10 	
+PanTiltController.pan_min = 268-450-10-10
+
 PanTiltController.tilt_max = 700
 PanTiltController.tilt_min = 435
 PanTiltController.pan_speed = 50
 PanTiltController.tilt_speed = 25
-PanTiltController.pan_offset = 610
+
+#PanTiltController.pan_offset = 610
+PanTiltController.pan_offset = 160-10-10
+
 PanTiltController.tilt_offset = 503
 PanTiltController.setPeriod(0.1)
 PanTiltController.configure
@@ -27,12 +36,13 @@ connect ("Soem.Slave_100f.ready_rx", "PanTiltController.serialReadyRx", ConnPoli
 connect ("Soem.Slave_100f.running", "PanTiltController.serialRunning", ConnPolicy() )
 
 ## Old
-stream("PanTiltController.goalPos", ros.topic("/head_controller/set_Head"))
-stream("PanTiltController.currentPosPan", ros.topic("/head_pan_angle"))
-stream("PanTiltController.currentPosTilt", ros.topic("/head_tilt_angle"))
-stream("PanTiltController.currentPosTilt", ros.topic("/head_status"))
+#stream("PanTiltController.goalPos", ros.topic("/head_controller/set_Head"))
+#stream("PanTiltController.currentPosPan", ros.topic("/head_pan_angle"))
+#stream("PanTiltController.currentPosTilt", ros.topic("/head_tilt_angle"))
+#stream("PanTiltController.currentPosTilt", ros.topic("/head_status"))
 ## New (ToDo: diagnostics)
-#stream("PanTiltController.goalPos", ros.topic("/head_controller/references"))
-#stream("PanTiltController.currentPos", ros.topic("/head_controller/measurements"))
+stream("PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
+stream("PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
+stream("PanTiltController.currentPos", ros.topic("/amigo/joint_states"))
 
 PanTiltController.start

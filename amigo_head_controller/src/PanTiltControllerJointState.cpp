@@ -108,6 +108,7 @@ void PanTiltControllerJointState::updateHook() {
 	if(!(serialRunningPort.read(serialRunning) == NewData)) {
 		return;
 	}
+	currentPos.header.stamp = ros::Time::now();
 	if (commStatus == COMM_RXSUCCESS){
 		trial = 0;
 		pstate = state;
