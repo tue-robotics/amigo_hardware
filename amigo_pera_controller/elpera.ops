@@ -21,6 +21,7 @@ var double Ts = 0.001
 #var array SIGNS = array ( -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 )
 var array SIGNS = array ( 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 ) 	;# To do completely remove SIGNS and OFFSETS FROM ALL COMPONENTS
 var array OFFSETS = array ( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 )
+var strings JOINT_NAMES = strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" ) 
 var array UPPERJOINTLIMIT = array (  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
 var array LOWERJOINTLIMIT = array (-1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
 var double TWOPI 				= 2.0*3.141592
@@ -41,11 +42,16 @@ var double ENC2SI_HM 			= 0.0005236;               	 			#TWOPI*GEARRATIO_HM/ENCO
 # To Do: Put for lpera and rpera the ENC2SI values of the gripper to pure motor axis values and adjust control parameters to that.
 
 ### Read reference joint angles ###
-loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
+#loadComponent("LPERA_ReadReferenceAngles","PERA::ReadArmJointsMsg")
+#addPeer("Supervisor","LPERA_ReadReferenceAngles")
+#setActivity("LPERA_ReadReferenceAngles",0.0,HighestPriority,ORO_SCHED_RT)
+#LPERA_ReadReferenceAngles.offsets = OFFSETS
+#LPERA_ReadReferenceAngles.signs = SIGNS
+#LPERA_ReadReferenceAngles.configure
+loadComponent("LPERA_ReadReferenceAngles","ROS::JointStateToDoubles")
 addPeer("Supervisor","LPERA_ReadReferenceAngles")
 setActivity("LPERA_ReadReferenceAngles",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_ReadReferenceAngles.offsets = OFFSETS
-LPERA_ReadReferenceAngles.signs = SIGNS
+LPERA_ReadReferenceAngles.NumberOfJoints = 7
 LPERA_ReadReferenceAngles.configure
 
 ### Vector concatenate ###
@@ -82,11 +88,16 @@ LPERA_JointOutputLimiter.vector_size = 8
 LPERA_JointOutputLimiter.configure
 
 ### Publishing joint angles on ROS-topic ###
-loadComponent("LPERA_WriteClippedJointAngles","PERA::WriteArmJointsMsg")
+#loadComponent("LPERA_WriteClippedJointAngles","PERA::WriteArmJointsMsg")
+#addPeer("Supervisor","LPERA_WriteClippedJointAngles")
+#setActivity("LPERA_WriteClippedJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+#LPERA_WriteClippedJointAngles.offsets = OFFSETS
+#LPERA_WriteClippedJointAngles.signs = SIGNS
+#LPERA_WriteClippedJointAngles.configure
+loadComponent("LPERA_WriteClippedJointAngles","ROS::DoublesToJointState")
 addPeer("Supervisor","LPERA_WriteClippedJointAngles")
 setActivity("LPERA_WriteClippedJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_WriteClippedJointAngles.offsets = OFFSETS
-LPERA_WriteClippedJointAngles.signs = SIGNS
+LPERA_WriteClippedJointAngles.JointNames = JOINT_NAMES
 LPERA_WriteClippedJointAngles.configure
 
 ### PERA Supervisor ###			# To Do: Remove from Supervisor the maxAccelerations, SIGNS, OFFSETS
@@ -109,7 +120,7 @@ LPERA_Supervisor.stepSize = 0.001570796
 LPERA_Supervisor.absSenDir = array (-1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput = true
 LPERA_Supervisor.requireHoming = true
-LPERA_Supervisor.requireGripperHoming = true
+LPERA_Supervisor.requireGripperHoming = false
 LPERA_Supervisor.startJoint = 6
 LPERA_Supervisor.configure
 
@@ -270,11 +281,16 @@ LPERA_OutputLimiter.vector_size = 8
 LPERA_OutputLimiter.configure
 
 ### Publishing joint angles on ROS-topic ###
-loadComponent("LPERA_WriteCurrentJointAngles","PERA::WriteArmJointsMsg")
+#loadComponent("LPERA_WriteCurrentJointAngles","PERA::WriteArmJointsMsg")
+#addPeer("Supervisor","LPERA_WriteCurrentJointAngles")
+#setActivity("LPERA_WriteCurrentJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+#LPERA_WriteCurrentJointAngles.offsets = OFFSETS
+#LPERA_WriteCurrentJointAngles.signs = SIGNS
+#LPERA_WriteCurrentJointAngles.configure
+loadComponent("LPERA_WriteCurrentJointAngles","ROS::DoublesToJointState")
 addPeer("Supervisor","LPERA_WriteCurrentJointAngles")
 setActivity("LPERA_WriteCurrentJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_WriteCurrentJointAngles.offsets = OFFSETS
-LPERA_WriteCurrentJointAngles.signs = SIGNS
+LPERA_WriteCurrentJointAngles.JointNames = JOINT_NAMES
 LPERA_WriteCurrentJointAngles.configure
 
 ### Conversion analog PERA_IO values to torques ###
@@ -305,7 +321,7 @@ connect ("LPERA_VectorConcatenate.out", "LPERA_Diagnostics.vec1", ConnPolicy() )
 LPERA_Diagnostics.vecname2 = "Joint Errors"
 connect ("LPERA_ComputeJointErrors.out", "LPERA_Diagnostics.vec2", ConnPolicy() )
 LPERA_Diagnostics.vecname3 = "Reference Path Planning"
-connect ("LPERA_ReadReferenceAngles.pos", "LPERA_Diagnostics.vec3", ConnPolicy() )
+connect ("LPERA_ReadReferenceAngles.pos_out", "LPERA_Diagnostics.vec3", ConnPolicy() )
 LPERA_Diagnostics.boolname1 = "Amplifiers"
 connect ("LPERA_Supervisor.enablePort", "LPERA_Diagnostics.bool1", ConnPolicy() )
 LPERA_Diagnostics.boolname2 = "ReadRef Enable"
@@ -334,15 +350,15 @@ connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Control loop ###
-connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1014.encoderAngle3","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1016.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1016.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
-connect ("Soem.Slave_1016.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
+connect ("Soem.Slave_1013.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1013.encoderAngle3","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1014.encoderAngle3","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("LPERA_ReadEncoders.out","LPERA_MotorToJointAngles.in" , ConnPolicy() ); 
 connect ("LPERA_MotorToJointAngles.out","LPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
@@ -351,20 +367,21 @@ connect ("LPERA_LeadLag.out","LPERA_Lowpass.in", ConnPolicy() )
 connect ("LPERA_Lowpass.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
 connect ("LPERA_WeakIntegrator1.out","LPERA_AddGravComp.in2_event", ConnPolicy() )
 connect ("LPERA_AddGravComp.out","LPERA_JointToMotorTorques.in", ConnPolicy() )
-connect ("LPERA_JointToMotorTorques.out","AnalogOutsPera.in_ev", ConnPolicy() )
+connect ("LPERA_JointToMotorTorques.out","LPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 
 ### Reference and Ros communication ###
-connect ("LPERA_ReadReferenceAngles.pos","LPERA_VectorConcatenate.in1", ConnPolicy() )
+connect ("LPERA_ReadReferenceAngles.pos_out","LPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_ref","LPERA_VectorConcatenate.in2", ConnPolicy() )
 connect ("LPERA_VectorConcatenate.out","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
-connect ("LPERA_MotorToJointAngles.out","LPERA_WriteCurrentJointAngles.pos", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_WriteCurrentJointAngles.pos_in", ConnPolicy() )
 connect ("LPERA_MotorToJointAngles.out","LPERA_JointOutputLimiter.in", ConnPolicy() )
-connect ("LPERA_JointOutputLimiter.out","LPERA_WriteClippedJointAngles.pos", ConnPolicy() )
+connect ("LPERA_JointOutputLimiter.out","LPERA_WriteClippedJointAngles.pos_in", ConnPolicy() )
 connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
 
-stream("LPERA_WriteCurrentJointAngles.joint_measurements", ros.topic("/arm_left_controller/joint_measurements_raw"))
-stream("LPERA_WriteClippedJointAngles.joint_measurements", ros.topic("/arm_left_controller/joint_measurements"))
-stream("LPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_left_controller/joint_references"))
+stream("LPERA_WriteCurrentJointAngles.out", ros.topic("/amigo/left_arm/measurements_raw"))
+stream("LPERA_WriteClippedJointAngles.out", ros.topic("/amigo/left_arm/measurements"))
+stream("LPERA_WriteClippedJointAngles.out", ros.topic("/amigo/joint_states"))
+stream("LPERA_ReadReferenceAngles.in", ros.topic("/amigo/left_arm/measurements"))
 
 ### Gravity compensation part ###
 connect ("LPERA_ReferenceInterpolator.posout","LPERA_GravityCompensation.in", ConnPolicy() )
@@ -373,9 +390,9 @@ connect ("LPERA_GC_Gains.out","LPERA_Polynomials.in", ConnPolicy() )
 connect ("LPERA_Polynomials.out","LPERA_AddGravComp.in1", ConnPolicy() )
 
 ### Supervisor ###
-connect ("AnalogInsPera.out_pos","LPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )
+connect ("LPERA_AnalogInsPera.out_pos","LPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )
 connect ("LPERA_JointToMotorTorques.out","LPERA_Supervisor.controllerOutputPort", ConnPolicy() )
-connect ("LPERA_ReadReferenceAngles.pos","LPERA_Supervisor.requestedJointAnglesPort", ConnPolicy() )
+connect ("LPERA_ReadReferenceAngles.pos_out","LPERA_Supervisor.requestedJointAnglesPort", ConnPolicy() )
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1011.enablePort", ConnPolicy() )                                
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1012.enablePort", ConnPolicy() )                                
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1013.enablePort", ConnPolicy() )                                
@@ -383,7 +400,7 @@ connect ("LPERA_ComputeJointErrors.out","LPERA_Supervisor.errorPort", ConnPolicy
 connect ("LPERA_MotorToJointAngles.out","LPERA_Supervisor.measRelJointAnglesPort", ConnPolicy() )
 connect ("LPERA_Supervisor.resetInterpolatorPort","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
 connect ("LPERA_Supervisor.homJntAnglesPort","LPERA_VectorConcatenate.in1", ConnPolicy() )
-connect ("LPERA_Supervisor.enableReadRefPort","LPERA_ReadReferenceAngles.enablePort", ConnPolicy() )
+#connect ("LPERA_Supervisor.enableReadRefPort","LPERA_ReadReferenceAngles.enablePort", ConnPolicy() );#ToDo: this is a problem!
 connect ("LPERA_Supervisor.reNullPort","LPERA_ReadEncoders.in_reNull", ConnPolicy() )                     
 
 stream("LPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
@@ -391,7 +408,7 @@ stream("LPERA_Supervisor.resetRefPort", ros.topic("/arm_left_controller/joint_re
 stream("LPERA_Supervisor.peraStatusPort", ros.topic("/arm_left_status"))
 
 ### Gripper control ###
-connect ("AnalogInsPera.out_for","LPERA_SensorTorques.voltage_in", ConnPolicy() )
+connect ("LPERA_AnalogInsPera.out_for","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
 connect ("LPERA_MotorToJointAngles.out", "LPERA_GripperControl.position_in", ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_measurement","LPERA_Supervisor.gripper_measurement", ConnPolicy() )
