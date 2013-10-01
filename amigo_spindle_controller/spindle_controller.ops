@@ -86,7 +86,7 @@ connect ("Spindle_Homing.ref_out","SpindleReferenceGenerator.refin", ConnPolicy(
 #Spindle_Homing.homing_body   		= "Spindle" 			;# name of the body that is stopped/started during homing procedure
 #Spindle_Homing.require_homing   	= true		 			;# require homing
 #Spindle_Homing.homing_type			= array (3.0)			;# 0 = abs sen homing 1 = servo error homing  2 = Force sen homing  3 = endSwitch homing
-#Spindle_Homing.homing_order		= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
+#Spindle_Homing.homing_order			= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
 #Spindle_Homing.homing_refPos		= array (1.0)   		;# Pos Reference for the homing joint
 #Spindle_Homing.homing_refVel		= array (0.01)  		;# Vel Reference for the homing joint
 #Spindle_Homing.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
