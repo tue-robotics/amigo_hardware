@@ -15,7 +15,6 @@
   <rosdep name="eigen" />
 
   <!--depend package="orocos_components"/>-->
-  <depend package="PERA_USB_IO"/>
   <depend package="rtt_std_msgs"/>
   <depend package="rtt_amigo_msgs"/>
   <depend package="rtt_diagnostic_msgs"/>

@@ -1,9 +1,0 @@
-redundancy_search:
-
-  root_name: torso
-  tip_name: grippoint_right
-  
-  eps: 0.000001
-  iter_factor: 0.004
-  
- 

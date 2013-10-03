@@ -1,7 +1,0 @@
-<launch>
-
-  <rosparam file="$(find amigo_head_server)/parameters/parameters.yaml" command="load" />
-
-  <node pkg="amigo_head_server" type="head_server" respawn="false" name="head_server" output="screen"></node>
-  
-</launch>

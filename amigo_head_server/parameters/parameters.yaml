@@ -1,5 +1,0 @@
-head_server:
-  tol_head_pan: 0.015
-  tol_head_tilt: 0.015
-  joint_states_field_pan: neck_pan_joint
-  joint_states_field_tilt: neck_tilt_joint
