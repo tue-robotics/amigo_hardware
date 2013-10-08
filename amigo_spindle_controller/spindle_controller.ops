@@ -23,7 +23,7 @@ connect ("Soem.Slave_1006.Slave_1006_value","Spindle_ReadEncoders.enc1_in", Conn
 # Publish JointState Component
 loadComponent("SpindleWriteJointStates","ROS::DoublesToJointState")
 addPeer("Supervisor","SpindleWriteJointStates")
-setActivity("SpindleWriteJointStates",0.01,HighestPriority,ORO_SCHED_RT)
+setActivity("SpindleWriteJointStates",0.05,HighestPriority,ORO_SCHED_RT)
 SpindleWriteJointStates.JointNames = strings ( "torso_joint" )
 SpindleWriteJointStates.configure
 connect( "Spindle_ReadEncoders.out", "SpindleWriteJointStates.pos_in", ConnPolicy() )
