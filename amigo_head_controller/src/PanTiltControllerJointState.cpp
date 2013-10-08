@@ -26,8 +26,6 @@ PanTiltControllerJointState::PanTiltControllerJointState(const std::string& name
 	addPort("serialRunning", serialRunningPort).doc("Serial device running port");
 	addPort("serialReadyRx", serialReadyRxPort).doc("Serial device ready receive port");	
 	addPort("goalPos", goalPosPort).doc("Goal head position");
-	//addPort("currentPosPan", currentPosPanPort).doc("Current head pan position");
-	//addPort("currentPosTilt", currentPosTiltPort).doc("Current head tilt position");
 	addPort("currentPos", currentPosPort).doc("Current head position");
 	addProperty( "pan_id", pan_id).doc("Pan dynamixel id");
 	addProperty( "tilt_id", tilt_id).doc("Tilt dynamixel id");
@@ -50,8 +48,6 @@ bool PanTiltControllerJointState::configureHook() {
 		gbInstructionPacket[i] = 0;
 		gbStatusPacket[i] = 0;
 	}
-	//currentPan.data = 0.0;
-	//currentTilt.data = 0.0;
 	currentPos.position.assign(2, 0.0);
 	newPosition = 0;
 	commStatus = COMM_RXSUCCESS;
@@ -84,14 +80,12 @@ bool PanTiltControllerJointState::readReference() {
 		{
 			log(Error)<<"Head controller: JointState message should contain "<<currentPos.name[0]<<" and "<<currentPos.name[1]<<", while these are now "<<goalPos.name[0]<<" and "<<goalPos.name[1]<<endlog();
 		}
-		//pan_goal = (int) ((goalPos.head_pan)*RAD_TO_STEP+pan_offset);
 		pan_goal = (int) ((goalPos.position[0])*RAD_TO_STEP+pan_offset);
 		if (pan_goal> pan_max)
 			pan_goal = pan_max;
 		if (pan_goal < pan_min)
 			pan_goal = pan_min;
 
-		//tilt_goal = (int) ((goalPos.head_tilt)*RAD_TO_STEP+tilt_offset);
 		tilt_goal = (int) ((goalPos.position[1])*RAD_TO_STEP+tilt_offset);
 		if (tilt_goal > tilt_max)
 			tilt_goal = tilt_max;
@@ -176,8 +170,6 @@ void PanTiltControllerJointState::updateHook() {
 			case 9:
 				newPosition = dxl_makeword(dxl_get_rxpacket_parameter(0), dxl_get_rxpacket_parameter(1));
 				log(Debug) << "PanTiltController: received new pan position, " << newPosition << endlog();
-				//currentPan.data = (newPosition-pan_offset)/RAD_TO_STEP;
-				//currentPosPanPort.write(currentPan);
 				currentPos.position[0] = (newPosition-pan_offset)/RAD_TO_STEP;
 				currentPosPort.write(currentPos);
 				//state++;
@@ -205,8 +197,6 @@ void PanTiltControllerJointState::updateHook() {
 			case 13:
 				newPosition = dxl_makeword(dxl_get_rxpacket_parameter(0), dxl_get_rxpacket_parameter(1));
 				log(Debug) << "PanTiltController: received new tilt position, " << newPosition << endlog();
-				//currentTilt.data = (newPosition-tilt_offset)/RAD_TO_STEP;
-				//currentPosTiltPort.write(currentTilt);
 				currentPos.position[1] = (newPosition-tilt_offset)/RAD_TO_STEP;
 				currentPosPort.write(currentPos);
 				state = 5;

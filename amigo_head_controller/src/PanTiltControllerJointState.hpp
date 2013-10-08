@@ -16,8 +16,6 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 #include <soem_beckhoff_drivers/CommMsgBig.h>
-//#include <amigo_msgs/head_ref.h>
-//#include <std_msgs/Float64.h>
 #include <sensor_msgs/JointState.h>
 #include "AX12_control_table.h"
 #include <queue>
@@ -39,8 +37,6 @@ class PanTiltControllerJointState : public RTT::TaskContext {
 		OutputPort<CommMsgBig> instructionPort;
 		InputPort<CommMsgBig> statusPort;
 		InputPort<sensor_msgs::JointState> goalPosPort;
-		//OutputPort<std_msgs::Float64> currentPosPanPort;
-		//OutputPort<std_msgs::Float64> currentPosTiltPort;
 		OutputPort<sensor_msgs::JointState> currentPosPort;
 		
 		InputPort<bool> serialRunningPort;
@@ -48,10 +44,8 @@ class PanTiltControllerJointState : public RTT::TaskContext {
 		
 		CommMsgBig instruction;
 		CommMsgBig status;
-		//amigo_msgs::head_ref goalPos;
 		sensor_msgs::JointState goalPos;
 		int trial, newPosition;
-		//std_msgs::Float64 currentPan, currentTilt;
 		sensor_msgs::JointState currentPos;
 		
 		int state, pstate;

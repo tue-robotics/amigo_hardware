@@ -1,45 +1,49 @@
 import("amigo_head_controller")
 
-# Select either the old line or the new lines, here and at the streams
-## Old
-#loadComponent("PanTiltController", "PanTiltController")
-## New
+## Parameters
+var double RAD_TO_STEP = 195.37860814; # From header file
+
+## If you want to correct pan or tilt offsets, please add it EXPLICITLY
+## to the pan or tilt offset, e.g. var int PAN_OFFSET = 512 + 3
+var int PAN_OFFSET = 512; # Center pan dynamixel
+var int TILT_OFFSET = 512; # Center tilt dynamixel
+
+## Other parameters from URDF model
+var double PAN_MIN = -1.57
+var double PAN_MAX = 1.57
+var double TILT_MIN = -0.5
+var double TILT_MAX = 0.88
+
+## Pan-tilt controller
 loadComponent("PanTiltController", "PanTiltControllerJointState")
 PanTiltController.joint_names = strings( "neck_pan_joint", "neck_tilt_joint" )
-##
 
+## Parameters
 PanTiltController.pan_id = 2
 PanTiltController.tilt_id = 1
 
-# Needs to be tuned!
-# Minus does not work
-#PanTiltController.pan_max = 952 	
-#PanTiltController.pan_min = 268
-PanTiltController.pan_max = 502-10-10 	
-PanTiltController.pan_min = 268-450-10-10
+PanTiltController.pan_offset = PAN_OFFSET
+PanTiltController.tilt_offset = TILT_OFFSET
 
-PanTiltController.tilt_max = 700
-PanTiltController.tilt_min = 435
+PanTiltController.pan_max = PAN_OFFSET + PAN_MAX * RAD_TO_STEP
+PanTiltController.pan_min = PAN_OFFSET + PAN_MIN * RAD_TO_STEP
+
+PanTiltController.tilt_max = TILT_OFFSET + TILT_MAX * RAD_TO_STEP
+PanTiltController.tilt_min = TILT_OFFSET + TILT_MIN * RAD_TO_STEP
+
 PanTiltController.pan_speed = 50
 PanTiltController.tilt_speed = 25
 
-#PanTiltController.pan_offset = 610
-PanTiltController.pan_offset = 160-10-10
-
-PanTiltController.tilt_offset = 503
 PanTiltController.setPeriod(0.1)
 PanTiltController.configure
 
+## Orocos Connections
 connect ("Soem.Slave_100f.data_tx", "PanTiltController.instruction", ConnPolicy() )
 connect ("Soem.Slave_100f.data_rx", "PanTiltController.status", ConnPolicy() )
 connect ("Soem.Slave_100f.ready_rx", "PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "PanTiltController.serialRunning", ConnPolicy() )
 
-## Old
-#stream("PanTiltController.goalPos", ros.topic("/head_controller/set_Head"))
-#stream("PanTiltController.currentPosPan", ros.topic("/head_pan_angle"))
-#stream("PanTiltController.currentPosTilt", ros.topic("/head_tilt_angle"))
-#stream("PanTiltController.currentPosTilt", ros.topic("/head_status"))
+## ROS Connections
 ## New (ToDo: diagnostics)
 stream("PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
 stream("PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
