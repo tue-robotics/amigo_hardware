@@ -16,7 +16,7 @@ trigger
 
 ## Declare standard variables that are used multiple times
 var double Ts = 0.001
-var strings JOINT_NAMES = strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" ) 
+var strings JOINT_NAMES = strings( "shoulder_yaw_joint_right", "shoulder_pitch_joint_right", "shoulder_roll_joint_right", "elbow_pitch_joint_right", "elbow_roll_joint_right", "wrist_pitch_joint_right", "wrist_yaw_joint_right" ) 
 var array UPPERJOINTLIMIT 		= array (  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
 var array LOWERJOINTLIMIT 		= array (-1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
 var double TWOPI 				= 2.0*3.141592
@@ -29,7 +29,7 @@ var double ENCODERCOUNTS_SM		= 256.0*4.0
 var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
 var double ENCODERCOUNTS_WM		= 128.0*4.0
-var double ENCODERCOUNTS_HM		= 128.0*4.0
+var double ENCODERCOUNTS_HM		= 16.0*4.0
 var double ENC2SI_SM			= TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	
 var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3; 	
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
@@ -81,7 +81,7 @@ RPERA_JointOutputLimiter.configure
 #loadComponent("RPERA_WriteClippedJointAngles","PERA::WriteArmJointsMsg")
 loadComponent("RPERA_WriteClippedJointAngles","ROS::DoublesToJointState")
 addPeer("Supervisor","RPERA_WriteClippedJointAngles")
-setActivity("RPERA_WriteClippedJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("RPERA_WriteClippedJointAngles",0.05,HighestPriority,ORO_SCHED_RT)
 RPERA_WriteClippedJointAngles.JointNames = JOINT_NAMES
 RPERA_WriteClippedJointAngles.configure
 
@@ -126,10 +126,10 @@ RPERA_RTD.configure
 loadComponent("RPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_GripperControl.threshold_closed = 8.00
+RPERA_GripperControl.threshold_closed = 2.5
 RPERA_GripperControl.setPeriod(Ts)
-RPERA_GripperControl.max_pos = 0.4
-RPERA_GripperControl.gripper_gain = 0.15
+RPERA_GripperControl.max_pos = 0.3
+RPERA_GripperControl.gripper_gain = 0.01
 RPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -214,7 +214,7 @@ loadComponent("RPERA_Gain","MATH::Gains")
 addPeer("Supervisor","RPERA_Gain")
 setActivity("RPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gain.vectorsize = 8
-RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0);
+RPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 200.0);
 RPERA_Gain.configure
 
 ### Lead Lag ###
@@ -250,8 +250,8 @@ RPERA_WeakIntegrator1.configure
 #loadComponent("RPERA_WriteCurrentJointAngles","PERA::WriteArmJointsMsg")
 loadComponent("RPERA_WriteCurrentJointAngles","ROS::DoublesToJointState")
 addPeer("Supervisor","RPERA_WriteCurrentJointAngles")
-setActivity("RPERA_WriteCurrentJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_WriteClippedJointAngles.JointNames = JOINT_NAMES
+setActivity("RPERA_WriteCurrentJointAngles",0.05,HighestPriority,ORO_SCHED_RT)
+RPERA_WriteCurrentJointAngles.JointNames = JOINT_NAMES
 RPERA_WriteCurrentJointAngles.configure
 
 ### Conversion analog PERA_IO values to torques ###
@@ -289,19 +289,19 @@ RPERA_Diagnostics.boolname2 = "ReadRef Enable"
 connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPolicy() )
 
 ### Setting up tracing ###
-var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 131072;	tracingpolicy.lock_policy = LOCKED
-loadComponent("Tracing","Signal::Tracing")
-setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-Tracing.vector_sizes = array (8.0, 8.0, 9.0, 9.0)
-Tracing.buffersize = 131072;
-Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/FTEST/Rq1.dat"
-Tracing.Ts = Ts
-Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
-Tracing.configure
-connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );				# reference after reference generator
-connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 					# error
-connect ("RPERA_AnalogInsPera.out_for","Tracing.in3", tracingpolicy ) ; 					# measured voltage
-connect ("RPERA_SensorTorques.measured_torques_out","Tracing.in4", tracingpolicy ) ; 		# measured torques actuator space
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 131072;	tracingpolicy.lock_policy = LOCKED
+#loadComponent("Tracing","Signal::Tracing")
+#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+#Tracing.vector_sizes = array (8.0, 8.0, 9.0, 9.0)
+#Tracing.buffersize = 131072;
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/FTEST/Rq1.dat"
+#Tracing.Ts = Ts
+#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+#Tracing.configure
+#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );				# reference after reference generator
+#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 					# error
+#connect ("RPERA_AnalogInsPera.out_for","Tracing.in3", tracingpolicy ) ; 					# measured voltage
+#connect ("RPERA_SensorTorques.measured_torques_out","Tracing.in4", tracingpolicy ) ; 		# measured torques actuator space
 
 ########################################################################
 # Connecting all the ports and streams. Be carefull with making        #
@@ -374,8 +374,8 @@ connect ("RPERA_MotorToJointAngles.out", "RPERA_GripperControl.position_in", Con
 connect ("RPERA_GripperControl.gripper_measurement","RPERA_Supervisor.gripper_measurement", ConnPolicy() )
 connect ("RPERA_Supervisor.gripper_command","RPERA_GripperControl.gripper_command", ConnPolicy() )
  
-stream("RPERA_GripperControl.gripper_measurement", ros.topic("/arm_right_controller/gripper_measurement"))
-stream("RPERA_GripperControl.gripper_command", ros.topic("/arm_right_controller/gripper_command"))
+stream("RPERA_GripperControl.gripper_measurement", ros.topic("/amigo/right_gripper/measurements"))
+stream("RPERA_GripperControl.gripper_command", ros.topic("/amigo/right_gripper/references"))
 
 # RTD, publishes velocities to Supervisor and ROS
 connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
@@ -409,4 +409,4 @@ Supervisor.AddAllwaysOnPeer ("RPERA_SensorTorques")
 Supervisor.AddAllwaysOnPeer ("RPERA_GripperControl")
 Supervisor.AddAllwaysOnPeer ("RPERA_Diagnostics")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
-Tracing.start
+#Tracing.start

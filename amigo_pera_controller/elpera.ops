@@ -34,7 +34,7 @@ var double ENC2SI_SM			= TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM;
 var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3; 	
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
-var double ENC2SI_HM 			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM;	
+var double ENC2SI_HM 			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM;
 
 ### Read reference joint angles ###
 #loadComponent("LPERA_ReadReferences","PERA::ReadArmJointsMsg")
@@ -81,7 +81,7 @@ LPERA_JointOutputLimiter.configure
 #loadComponent("LPERA_WriteClippedJointAngles","PERA::WriteArmJointsMsg")
 loadComponent("LPERA_WriteClippedJointAngles","ROS::DoublesToJointState")
 addPeer("Supervisor","LPERA_WriteClippedJointAngles")
-setActivity("LPERA_WriteClippedJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("LPERA_WriteClippedJointAngles",0.05,HighestPriority,ORO_SCHED_RT)
 LPERA_WriteClippedJointAngles.JointNames = JOINT_NAMES
 LPERA_WriteClippedJointAngles.configure
 
@@ -146,10 +146,10 @@ LPERA_RTD.configure
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_GripperControl.threshold_closed = 14.0
+LPERA_GripperControl.threshold_closed = 8.0
 LPERA_GripperControl.setPeriod(Ts)
 LPERA_GripperControl.max_pos = 4.0
-LPERA_GripperControl.gripper_gain = 0.0
+LPERA_GripperControl.gripper_gain = 0.15
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -272,7 +272,7 @@ LPERA_WeakIntegrator1.configure
 #loadComponent("LPERA_WriteCurrentJointAngles","PERA::WriteArmJointsMsg")
 loadComponent("LPERA_WriteCurrentJointAngles","ROS::DoublesToJointState")
 addPeer("Supervisor","LPERA_WriteCurrentJointAngles")
-setActivity("LPERA_WriteCurrentJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("LPERA_WriteCurrentJointAngles",0.05,HighestPriority,ORO_SCHED_RT)
 LPERA_WriteCurrentJointAngles.JointNames = JOINT_NAMES
 LPERA_WriteCurrentJointAngles.configure
 
@@ -397,8 +397,11 @@ connect ("LPERA_MotorToJointAngles.out", "LPERA_GripperControl.position_in", Con
 connect ("LPERA_GripperControl.gripper_measurement","LPERA_Supervisor.gripper_measurement", ConnPolicy() )
 connect ("LPERA_Supervisor.gripper_command","LPERA_GripperControl.gripper_command", ConnPolicy() )
  
-stream("LPERA_GripperControl.gripper_measurement", ros.topic("/arm_left_controller/gripper_measurement"))
-stream("LPERA_GripperControl.gripper_command", ros.topic("/arm_left_controller/gripper_command"))
+stream("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
+stream("LPERA_GripperControl.gripper_command", ros.topic("/amigo/left_gripper/references"))
+
+
+
 
 # RTD, publishes velocities to Supervisor and ROS
 connect ("LPERA_MotorToJointAngles.out","LPERA_RTD.u", ConnPolicy() )
