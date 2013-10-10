@@ -1,6 +1,6 @@
 ########################################################################
 #                                                                      #
-# Left Philips Experimental Robotic Arm deployer file.                 #
+# left Philips Experimental Robotic Arm deployer file.                 #
 #                                                                      #
 # Bas Willems Edited by Max Baeten for EtherCAT                        #
 # September 2011                                                       #
@@ -17,6 +17,7 @@ trigger
 ## Declare standard variables that are used multiple times
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
+var strings DUMMY_JOINT_NAMES = strings( "finger1_joint_left", "finger1_tip_joint_left", "finger2_joint_left", "finger2_tip_joint_left" )
 var array UPPERJOINTLIMIT 		= array (  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
 var array LOWERJOINTLIMIT 		= array (-1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
 var double TWOPI 				= 2.0*3.141592
@@ -363,7 +364,11 @@ connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeJointErrors.in_plus"
 
 stream("LPERA_WriteCurrentJointAngles.out", ros.topic("/amigo/left_arm/measurements_raw"))
 stream("LPERA_WriteClippedJointAngles.out", ros.topic("/amigo/left_arm/measurements"))
-stream("LPERA_WriteClippedJointAngles.out", ros.topic("/amigo/joint_states"))
+#stream("LPERA_WriteClippedJointAngles.out", ros.topic("/amigo/joint_states"))
+JointStateAggregator.addJointNames(JOINT_NAMES)
+JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
+JointStateAggregator.addAggregationPort("left_arm")
+connect ("LPERA_WriteClippedJointAngles.out", "JointStateAggregator.left_arm", ConnPolicy() )
 stream("LPERA_ReadReferences.in", ros.topic("/amigo/left_arm/references"))
 
 ### Gravity compensation part ###

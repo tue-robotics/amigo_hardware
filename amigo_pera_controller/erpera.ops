@@ -17,6 +17,7 @@ trigger
 ## Declare standard variables that are used multiple times
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "shoulder_yaw_joint_right", "shoulder_pitch_joint_right", "shoulder_roll_joint_right", "elbow_pitch_joint_right", "elbow_roll_joint_right", "wrist_pitch_joint_right", "wrist_yaw_joint_right" ) 
+var strings DUMMY_JOINT_NAMES = strings( "finger1_joint_right", "finger1_tip_joint_right", "finger2_joint_right", "finger2_tip_joint_right" )
 var array UPPERJOINTLIMIT 		= array (  0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61,  4.0)
 var array LOWERJOINTLIMIT 		= array (-1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61, -4.0)
 var double TWOPI 				= 2.0*3.141592
@@ -340,7 +341,11 @@ connect ("RPERA_ReferenceInterpolator.posout","RPERA_ComputeJointErrors.in_plus"
 
 stream("RPERA_WriteCurrentJointAngles.out", ros.topic("/amigo/right_arm/measurements_raw"))
 stream("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/right_arm/measurements"))
-stream("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/joint_states"))
+#stream("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/joint_states"))
+JointStateAggregator.addJointNames(JOINT_NAMES)
+JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
+JointStateAggregator.addAggregationPort("right_arm")
+connect ("RPERA_WriteClippedJointAngles.out", "JointStateAggregator.right_arm", ConnPolicy() )
 stream("RPERA_ReadReferences.in", ros.topic("/amigo/right_arm/references"))
 
 ### Gravity compensation part ###
