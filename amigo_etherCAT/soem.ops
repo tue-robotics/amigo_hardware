@@ -8,9 +8,18 @@ loadComponent("Supervisor","AMIGO::Supervisor")
 Supervisor.configure
 setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
 #Supervisor.start
-stream( "Supervisor.rosemergency", ros.topic("/emergency_switch"));
+stream("Supervisor.rosemergency", ros.topic("/emergency_switch"));
 stream("Supervisor.rosshutdown", ros.topic("/etherCAT_shutdown")); 
 stream("Supervisor.rosetherCATenabled", ros.topic("/etherCAT_enabled")); 
+
+#### LOAD JOINTSTATEAGGREGATOR ####
+# Is used to push all joint measurement into one message for the /joint_states topic for the state publisher
+# By listing ALL joints, rviz and the environment server will work properly even if some components are not initialized
+loadComponent("JointStateAggregator","ROS::JointStateAggregator")
+addPeer("Supervisor","JointStateAggregator")
+setActivity("JointStateAggregator",0.02,LowestPriority, ORO_SCHED_OTHER)
+JointStateAggregator.configure
+stream("JointStateAggregator.out", ros.topic("/amigo/joint_states"))
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 #This component enables communication with EtherCAT through the SoemMaster component.
@@ -133,10 +142,11 @@ addPeer("Supervisor","EnableAmps")
 setActivity("EnableAmps",Ts,HighestPriority,ORO_SCHED_RT)
 EnableAmps.configure
 EnableAmps.value = true
-connect ("EnableAmps.out", "DigitalOuts.in1", ConnPolicy() )			 ; # Enable amps (D04:DO1)
+connect ("EnableAmps.out", "DigitalOuts.in1", ConnPolicy() ); # Enable amps (D04:DO1)
 connect ("EnableAmps.out", "DigitalOuts.in2", ConnPolicy() ); # tue-logo
 
 #### START COMPONENTS ####
+Supervisor.AddAllwaysOnPeer ("JointStateAggregator")
 Supervisor.AddAllwaysOnPeer ("AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("RPERA_AnalogOutsPera")
 Supervisor.AddAllwaysOnPeer ("LPERA_AnalogOutsPera")
