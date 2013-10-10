@@ -68,6 +68,7 @@ Odometry.configure
 setActivity("Odometry",0.05,LowestPriority,ORO_SCHED_OTHER)
 connect ("BaseDecouplePosition.out", "Odometry.pos", ConnPolicy() );
 stream("Odometry.odom", ros.topic("/amigo/base/measurements"));
+stream("Odometry.reset", ros.topic("/amigo/base/reset_odometry"));
 
 
 
