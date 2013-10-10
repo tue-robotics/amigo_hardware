@@ -2,6 +2,7 @@ import("amigo_head_controller")
 
 ## Parameters
 var double RAD_TO_STEP = 195.37860814; # From header file
+var strings JOINT_NAMES = strings( "neck_pan_joint", "neck_tilt_joint" )
 
 ## If you want to correct pan or tilt offsets, please add it EXPLICITLY
 ## to the pan or tilt offset, e.g. var int PAN_OFFSET = 512 + 3
@@ -16,7 +17,7 @@ var double TILT_MAX = 0.88
 
 ## Pan-tilt controller
 loadComponent("PanTiltController", "PanTiltControllerJointState")
-PanTiltController.joint_names = strings( "neck_pan_joint", "neck_tilt_joint" )
+PanTiltController.joint_names = JOINT_NAMES
 
 ## Parameters
 PanTiltController.pan_id = 2
@@ -47,6 +48,9 @@ connect ("Soem.Slave_100f.running", "PanTiltController.serialRunning", ConnPolic
 ## New (ToDo: diagnostics)
 stream("PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
 stream("PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
-stream("PanTiltController.currentPos", ros.topic("/amigo/joint_states"))
+#stream("PanTiltController.currentPos", ros.topic("/amigo/joint_states"))
+JointStateAggregator.addJointNames(JOINT_NAMES)
+JointStateAggregator.addAggregationPort("head")
+connect ("PanTiltController.currentPos", "JointStateAggregator.head", ConnPolicy() )
 
 PanTiltController.start
