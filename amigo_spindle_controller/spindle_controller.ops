@@ -1,6 +1,9 @@
 import("amigo_spindle_controller")
 
+### Parameters
 var double Ts = 0.001
+var strings JOINT_NAMES = strings( "torso_joint" )
+
 ### Loading Components ###
 #Reading Encoders
 loadComponent("Spindle_ReadEncoders","SOEM::ReadEncoders")
@@ -28,7 +31,10 @@ SpindleWriteJointStates.JointNames = strings ( "torso_joint" )
 SpindleWriteJointStates.configure
 connect( "Spindle_ReadEncoders.out", "SpindleWriteJointStates.pos_in", ConnPolicy() )
 stream( "SpindleWriteJointStates.out", ros.topic("/amigo/torso/measurements"))
-stream( "SpindleWriteJointStates.out", ros.topic("/amigo/joint_states"))
+#stream( "SpindleWriteJointStates.out", ros.topic("/amigo/joint_states"))
+JointStateAggregator.addJointNames(JOINT_NAMES)
+JointStateAggregator.addAggregationPort("torso")
+connect ("SpindleWriteJointStates.out", "JointStateAggregator.torso", ConnPolicy() )
 
 # Select either the old (for amigo_msgs) and new (for jointstate messages) interface
 #Reading spindle setpoints (old)

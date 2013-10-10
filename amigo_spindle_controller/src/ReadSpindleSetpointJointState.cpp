@@ -55,7 +55,6 @@ bool ReadSpindleSetpointJointState::startHook()
 
 void ReadSpindleSetpointJointState::updateHook()
 {
-	log(Warning)<<"ReadSpindle: Updating"<<endlog();
 	// Read the inputports
 	//amigo_msgs::spindle_setpoint spindle_setpoint;
 	sensor_msgs::JointState input;
