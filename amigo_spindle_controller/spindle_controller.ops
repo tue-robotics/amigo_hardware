@@ -63,6 +63,7 @@ SpindleReferenceGenerator.NrInterpolators = 1
 SpindleReferenceGenerator.InterpolatorDt = Ts
 SpindleReferenceGenerator.InterpolatorEps = 1.0
 SpindleReferenceGenerator.configure
+#SpindleReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.1);
 SpindleReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.03); #Velocity is carefully tuned. Do not increase because integrator will fill!
 connect ("Spindle_ReadReferences.out","SpindleReferenceGenerator.refin", ConnPolicy() )
 connect ("Spindle_ReadEncoders.out","SpindleReferenceGenerator.actual_pos", ConnPolicy() )
@@ -210,6 +211,21 @@ connect ("SpindleSecondOrderLowPass.out", "SpindleDiagnostics.vec4", ConnPolicy(
 connect ("SpindleSafety.safety", "SpindleDiagnostics.bool1", ConnPolicy() )
 stream("SpindleDiagnostics.diagnostics", ros.topic("/diagnostics"));
 
+### Setting up tracing ###
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 65536;	tracingpolicy.lock_policy = LOCKED
+#loadComponent("Tracing","Signal::Tracing")
+#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+#Tracing.vector_sizes = array (1.0 , 1.0 , 1.0 , 1.0 )
+#Tracing.buffersize = 65536;
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/Teun/Log/spindle_14_10_13_2.dat"
+#Tracing.Ts = Ts
+#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+#Tracing.configure
+#connect ("SpindleReferenceGenerator.posout","Tracing.in1", tracingpolicy );		# reference after reference generator
+#connect ("SpindleCalculateError.out","Tracing.in2", tracingpolicy ) ; 			# error
+#connect ("SpindleAddFeedForward.out","Tracing.in3", tracingpolicy ) ; 			# control effort feedback plus feedforward
+#connect ("SpindleSecondOrderLowPass.out","Tracing.in4", tracingpolicy ) ; 		# control effort only feedback
+
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("Spindle_ReadEncoders")
 #Supervisor.AddAllwaysOnPeer ("SpindlePositionToROS")
@@ -230,5 +246,6 @@ Supervisor.AddPeerToBodyPart ("SpindleSecondOrderLowPass",2 )
 Supervisor.AddPeerToBodyPart ("SpindleCalculateFFW",2 )
 Supervisor.AddPeerToBodyPart ("SpindleAddFeedForward",2 )
 Supervisor.AddPeerToBodyPart ("SpindleSafety",2 )
+#Tracing.start
 
 Supervisor.AddAllwaysOnPeer ("Spindle_Homing"); #Homing stops itself after finishing, last component because all others have to be started in order to be stopped ;)
