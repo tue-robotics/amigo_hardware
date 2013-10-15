@@ -36,7 +36,7 @@ var double ENCODERCOUNTS_SM		= 256.0*4.0
 var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
 var double ENCODERCOUNTS_WM		= 128.0*4.0
-var double ENCODERCOUNTS_HM		= 128.0*4.0
+var double ENCODERCOUNTS_HM		= 16.0*4.0
 var double ENC2SI_SM			= TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	
 var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3; 	
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
@@ -167,7 +167,7 @@ LPERA_Supervisor.maxConSatTime 			= 3.0
 LPERA_Supervisor.stepSize 				= 0.5
 LPERA_Supervisor.absSenDir 				= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput 			= true
-LPERA_Supervisor.requireHoming 			= false
+LPERA_Supervisor.requireHoming 			= true
 LPERA_Supervisor.requireGripperHoming 	= false
 LPERA_Supervisor.startJoint 			= 6
 LPERA_Supervisor.configure
