@@ -158,6 +158,10 @@ SpindleCalculateFFW.FFWgrav = 0.07
 SpindleCalculateFFW.FFWstat = 0.05
 SpindleCalculateFFW.FFWdyn = 0.4
 SpindleCalculateFFW.FFWacc = 0.3
+#SpindleCalculateFFW.FFWgrav = 0.0
+#SpindleCalculateFFW.FFWstat = 0.0
+#SpindleCalculateFFW.FFWdyn = 0.0
+#SpindleCalculateFFW.FFWacc = 0.0
 SpindleCalculateFFW.configure
 connect ("SpindleReferenceGenerator.velout","SpindleCalculateFFW.ref_vel", ConnPolicy() )
 connect ("SpindleReferenceGenerator.accout","SpindleCalculateFFW.ref_acc", ConnPolicy() )
@@ -212,12 +216,12 @@ connect ("SpindleSafety.safety", "SpindleDiagnostics.bool1", ConnPolicy() )
 stream("SpindleDiagnostics.diagnostics", ros.topic("/diagnostics"));
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 65536;	tracingpolicy.lock_policy = LOCKED
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("Tracing","Signal::Tracing")
 #setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array (1.0 , 1.0 , 1.0 , 1.0 )
-#Tracing.buffersize = 65536;
-#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/Teun/Log/spindle_14_10_13_2.dat"
+#Tracing.vector_sizes = array (1.0 , 1.0 , 1.0 , 1.0, 1.0 )
+#Tracing.buffersize = 2*65536;
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/Teun/Log/spindle_15_10_13.dat"
 #Tracing.Ts = Ts
 #Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #Tracing.configure
@@ -225,6 +229,7 @@ stream("SpindleDiagnostics.diagnostics", ros.topic("/diagnostics"));
 #connect ("SpindleCalculateError.out","Tracing.in2", tracingpolicy ) ; 			# error
 #connect ("SpindleAddFeedForward.out","Tracing.in3", tracingpolicy ) ; 			# control effort feedback plus feedforward
 #connect ("SpindleSecondOrderLowPass.out","Tracing.in4", tracingpolicy ) ; 		# control effort only feedback
+#connect ("SpindleCalculateFFW.FFW_out","Tracing.in5", tracingpolicy ) ; 		# control effort only feedforward
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("Spindle_ReadEncoders")
