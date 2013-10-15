@@ -216,7 +216,7 @@ setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed = 10.0
 LPERA_GripperControl.setPeriod(Ts)
 LPERA_GripperControl.max_pos = 0.6
-LPERA_GripperControl.gripper_gain = 0.01
+LPERA_GripperControl.gripper_gain = 0.1
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -429,7 +429,8 @@ connect ("LPERA_MotorToJointAngles.out","LPERA_Supervisor.measRelJointAnglesPort
 connect ("LPERA_Supervisor.resetInterpolatorPort","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
 connect ("LPERA_Supervisor.homJntAnglesPort","LPERA_VectorConcatenate.in1", ConnPolicy() )
 #connect ("LPERA_Supervisor.enableReadRefPort","LPERA_ReadReferences.enablePort", ConnPolicy() );#ToDo: this is a problem!
-connect ("LPERA_Supervisor.reNullPort","LPERA_ReadEncoders.in_reNull", ConnPolicy() )                     
+connect ("LPERA_Supervisor.reNullPort","LPERA_ReadEncoders.in_reNull", ConnPolicy() )
+connect ("LPERA_Supervisor.reNullPort","LPERA_GripperControl.reNullPort", ConnPolicy() )                     
 
 stream("LPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
 stream("LPERA_Supervisor.resetRefPort", ros.topic("/amigo/left_arm/references"))
