@@ -36,12 +36,12 @@ var double ENCODERCOUNTS_SM		= 256.0*4.0
 var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
 var double ENCODERCOUNTS_WM		= 128.0*4.0
-var double ENCODERCOUNTS_HM		= 16.0*4.0
+var double ENCODERCOUNTS_HM		= 8.0*16.0*4.0 ;# (TO DO: should be 16*4, remove this factor 8)
 var double ENC2SI_SM			= TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	
 var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3; 	
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
-var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_WM;	
+var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
 
 ### Read reference joint angles ###
 #loadComponent("RPERA_ReadReferences","PERA::ReadArmJointsMsg")
@@ -161,7 +161,7 @@ RPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 RPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	100.0)
 RPERA_Supervisor.maxJointErrors 		= array (  0.09,     0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	20.0)
 RPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 		1.0, 	 1.0, 	 	1.0, 	 1.0)
-RPERA_Supervisor.homedPos 				= array (1366.0,   	650.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
+RPERA_Supervisor.homedPos 				= array (1348.0,   	645.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 RPERA_Supervisor.maxConSatTime 			= 3.0
 RPERA_Supervisor.stepSize 				= 0.5
 RPERA_Supervisor.absSenDir 				= array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)

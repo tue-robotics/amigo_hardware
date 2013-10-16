@@ -36,12 +36,12 @@ var double ENCODERCOUNTS_SM		= 256.0*4.0
 var double ENCODERCOUNTS_S3	    = 256.0*4.0
 var double ENCODERCOUNTS_EM		= 500.0*4.0 
 var double ENCODERCOUNTS_WM		= 128.0*4.0
-var double ENCODERCOUNTS_HM		= 16.0*4.0
+var double ENCODERCOUNTS_HM		= 8.0*128.0*4.0 ;# (TO DO: should be 16*4, remove this factor 8)
 var double ENC2SI_SM			= TWOPI*GEARRATIO_SM/ENCODERCOUNTS_SM; 	
 var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3; 	
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
-var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_WM;	
+var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
 
 ### Read reference joint angles ###
 #loadComponent("LPERA_ReadReferences","PERA::ReadArmJointsMsg")
@@ -161,8 +161,7 @@ LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	100.0) 
 LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	20.0)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
-LPERA_Supervisor.homedPos 				= array ( 990.0,   559.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
-#LPERA_Supervisor.homedPos 				= array ( 990.0,   559.0,   90.0,      0.0, 	 1.8326,   0.985, 	 0.7854)
+LPERA_Supervisor.homedPos 				= array ( 984.0,   552.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 LPERA_Supervisor.maxConSatTime 			= 3.0
 LPERA_Supervisor.stepSize 				= 0.5
 LPERA_Supervisor.absSenDir 				= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
@@ -215,8 +214,8 @@ addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed = 10.0
 LPERA_GripperControl.setPeriod(Ts)
-LPERA_GripperControl.max_pos = 0.6
-LPERA_GripperControl.gripper_gain = 0.1
+LPERA_GripperControl.max_pos = 4.5
+LPERA_GripperControl.gripper_gain = 0.01
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -278,7 +277,7 @@ loadComponent("LPERA_Gain","MATH::Gains")
 addPeer("Supervisor","LPERA_Gain")
 setActivity("LPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_Gain.vectorsize = 8
-LPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 20.0);
+LPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 0.0); SET GRIPPER TO ZERO
 LPERA_Gain.configure
 
 ### Lead Lag ###
@@ -377,15 +376,15 @@ connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Control loop ###
-connect ("Soem.Slave_1013.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle3","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1014.encoderAngle3","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
-connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
+connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1014.encoderAngle3","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1016.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1016.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("Soem.Slave_1016.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("LPERA_ReadEncoders.out","LPERA_MotorToJointAngles.in" , ConnPolicy() ); 
 connect ("LPERA_MotorToJointAngles.out","LPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
@@ -421,9 +420,9 @@ connect ("LPERA_Polynomials.out","LPERA_AddGravComp.in1", ConnPolicy() )
 connect ("LPERA_AnalogInsPera.out_pos","LPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )
 connect ("LPERA_JointToMotorTorques.out","LPERA_Supervisor.controllerOutputPort", ConnPolicy() )
 connect ("LPERA_ReadReferences.pos_out","LPERA_Supervisor.requestedJointAnglesPort", ConnPolicy() )
-connect ("LPERA_Supervisor.enablePort","Soem.Slave_1013.enablePort", ConnPolicy() )                                
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1014.enablePort", ConnPolicy() )                                
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1015.enablePort", ConnPolicy() )                                
+connect ("LPERA_Supervisor.enablePort","Soem.Slave_1016.enablePort", ConnPolicy() )                                
 connect ("LPERA_ComputeJointErrors.out","LPERA_Supervisor.errorPort", ConnPolicy() )
 connect ("LPERA_MotorToJointAngles.out","LPERA_Supervisor.measRelJointAnglesPort", ConnPolicy() )
 connect ("LPERA_Supervisor.resetInterpolatorPort","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
