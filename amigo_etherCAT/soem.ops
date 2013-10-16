@@ -104,9 +104,9 @@ loadComponent("LPERA_AnalogOutsPera","SOEM::AnalogOutsPera")
 addPeer("Supervisor","LPERA_AnalogOutsPera")
 LPERA_AnalogOutsPera.configure
 setActivity("LPERA_AnalogOutsPera",0.0,HighestPriority,ORO_SCHED_RT)
-connect ("LPERA_AnalogOutsPera.out1","Soem.Slave_1013.pwmDutyMotorsIn", ConnPolicy() );
-connect ("LPERA_AnalogOutsPera.out2","Soem.Slave_1014.pwmDutyMotorsIn", ConnPolicy() );
-connect ("LPERA_AnalogOutsPera.out3","Soem.Slave_1015.pwmDutyMotorsIn", ConnPolicy() );
+connect ("LPERA_AnalogOutsPera.out1","Soem.Slave_1014.pwmDutyMotorsIn", ConnPolicy() );
+connect ("LPERA_AnalogOutsPera.out2","Soem.Slave_1015.pwmDutyMotorsIn", ConnPolicy() );
+connect ("LPERA_AnalogOutsPera.out3","Soem.Slave_1016.pwmDutyMotorsIn", ConnPolicy() );
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
 #This component aggregates all the signals from the Soem Slaves and puts them into a doubles for the position 
@@ -129,12 +129,12 @@ loadComponent("LPERA_AnalogInsPera","SOEM::AnalogInsPera")
 addPeer("Supervisor","LPERA_AnalogInsPera")
 LPERA_AnalogInsPera.configure
 setActivity("LPERA_AnalogInsPera",Ts,HighestPriority,ORO_SCHED_RT)
-connect ("Soem.Slave_1013.forceSensors","LPERA_AnalogInsPera.in_for1", ConnPolicy() )  
-connect ("Soem.Slave_1014.forceSensors","LPERA_AnalogInsPera.in_for2", ConnPolicy() )  
-connect ("Soem.Slave_1015.forceSensors","LPERA_AnalogInsPera.in_for3", ConnPolicy() )   
-connect ("Soem.Slave_1013.positionSensors","LPERA_AnalogInsPera.in_pos1", ConnPolicy() )  
-connect ("Soem.Slave_1014.positionSensors","LPERA_AnalogInsPera.in_pos2", ConnPolicy() )  
-connect ("Soem.Slave_1015.positionSensors","LPERA_AnalogInsPera.in_pos3", ConnPolicy() )
+connect ("Soem.Slave_1014.forceSensors","LPERA_AnalogInsPera.in_for1", ConnPolicy() )  
+connect ("Soem.Slave_1015.forceSensors","LPERA_AnalogInsPera.in_for2", ConnPolicy() )  
+connect ("Soem.Slave_1016.forceSensors","LPERA_AnalogInsPera.in_for3", ConnPolicy() )   
+connect ("Soem.Slave_1014.positionSensors","LPERA_AnalogInsPera.in_pos1", ConnPolicy() )  
+connect ("Soem.Slave_1015.positionSensors","LPERA_AnalogInsPera.in_pos2", ConnPolicy() )  
+connect ("Soem.Slave_1016.positionSensors","LPERA_AnalogInsPera.in_pos3", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE AMPLIFIERS (D04) ####
 loadComponent("EnableAmps","SOURCES::ConstantBool")
