@@ -42,6 +42,8 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
+var bool REQUIREHOMING   		= false; 
+var bool REQUIREGRIPPERHOMING   = false;
 
 ### Read reference joint angles ###
 #loadComponent("RPERA_ReadReferences","PERA::ReadArmJointsMsg")
@@ -166,8 +168,8 @@ RPERA_Supervisor.maxConSatTime 			= 3.0
 RPERA_Supervisor.stepSize 				= 0.5
 RPERA_Supervisor.absSenDir 				= array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 RPERA_Supervisor.enableOutput 			= true
-RPERA_Supervisor.requireHoming 			= true
-RPERA_Supervisor.requireGripperHoming 	= true
+RPERA_Supervisor.requireHoming 			= REQUIREHOMING
+RPERA_Supervisor.requireGripperHoming 	= REQUIREGRIPPERHOMING
 RPERA_Supervisor.startJoint 			= 6
 RPERA_Supervisor.configure
 
@@ -341,7 +343,7 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 #Tracing.Ts = Ts
 #Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #Tracing.configure
-#connect ("RPERA_GripperControl.gripper_ref","Tracing.in1", tracingpolicy );					# reference after reference generator
+#connect ("RPERA_GripperControl.gripper_ref","Tracing.in1", tracingpolicy );				# reference after reference generator
 #connect ("RPERA_ReferenceInterpolator.posout","Tracing.in2", tracingpolicy );				# reference after reference generator
 #connect ("RPERA_ComputeJointErrors.out","Tracing.in3", tracingpolicy ) ; 					# error
 #connect ("RPERA_SensorTorques.measured_torques_out","Tracing.in4", tracingpolicy ) ; 		# measured torques actuator space

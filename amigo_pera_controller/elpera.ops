@@ -42,6 +42,8 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
+var bool REQUIREHOMING   		= true; 
+var bool REQUIREGRIPPERHOMING   = false;
 
 ### Read reference joint angles ###
 #loadComponent("LPERA_ReadReferences","PERA::ReadArmJointsMsg")
@@ -158,16 +160,16 @@ setActivity("LPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_Supervisor.setPeriod(Ts)
 LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
-LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	100.0) 
+LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	50.0, 	100.0) 
 LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	20.0)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
 LPERA_Supervisor.homedPos 				= array ( 984.0,   552.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
-LPERA_Supervisor.maxConSatTime 			= 3.0
+LPERA_Supervisor.maxConSatTime 			= 5.0
 LPERA_Supervisor.stepSize 				= 0.5
 LPERA_Supervisor.absSenDir 				= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput 			= true
-LPERA_Supervisor.requireHoming 			= true
-LPERA_Supervisor.requireGripperHoming 	= false
+LPERA_Supervisor.requireHoming 			= REQUIREHOMING
+LPERA_Supervisor.requireGripperHoming 	= REQUIREGRIPPERHOMING
 LPERA_Supervisor.startJoint 			= 6
 LPERA_Supervisor.configure
 
@@ -215,7 +217,7 @@ setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed = 10.0
 LPERA_GripperControl.setPeriod(Ts)
 LPERA_GripperControl.max_pos = 4.5
-LPERA_GripperControl.gripper_gain = 0.01
+LPERA_GripperControl.gripper_gain = 0.1
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -277,7 +279,7 @@ loadComponent("LPERA_Gain","MATH::Gains")
 addPeer("Supervisor","LPERA_Gain")
 setActivity("LPERA_Gain",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_Gain.vectorsize = 8
-LPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 0.0); SET GRIPPER TO ZERO
+LPERA_Gain.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 500.0);
 LPERA_Gain.configure
 
 ### Lead Lag ###
