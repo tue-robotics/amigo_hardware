@@ -100,9 +100,11 @@ bool SpindleHoming::startHook()
 
 void SpindleHoming::updateHook()
 {   	
+	//log(Warning)<<"Spindle: Reading endswitch"<<endlog();
 	std_msgs::Bool endswitch;
 	endswitch_inport.read(endswitch);
 	
+	//log(Warning)<<"Spindle: Sending reference"<<endlog();
 	if ( homed == false )
 	{
 		ref[0][0] = 1.0; // You always find the endstop within the meter
@@ -110,6 +112,7 @@ void SpindleHoming::updateHook()
 		ref[0][2] = home_acc;
 		ref_outport.write(ref);
 	}
+	//log(Warning)<<"Spindle: Checking whether homed = true"<<endlog();
 	if ( !endswitch.data && homed == false )
 	{
 		ROS_INFO_STREAM( "Spindle is homed." );
@@ -117,11 +120,11 @@ void SpindleHoming::updateHook()
 
 
 		// Actually call the services
-		log(Debug)<<"SpindleHoming::start calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
+		//log(Warning)<<"SpindleHoming::start calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
 		StopBodyPart("spindle");
 		ResetEncoder(0,stroke);
 		StartBodyPart("spindle");
-		log(Debug)<<"SpindleHoming::finshed calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
+		//log(Warning)<<"SpindleHoming::finshed calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
 		
 		// Got to desired position
 		ref[0][0] = endpos;
@@ -131,6 +134,7 @@ void SpindleHoming::updateHook()
 		this->stop(); 
 	}
 	if ( homed == true ){
+		//log(Warning)<<"Spindle: stop component"<<endlog();
 		//Should not happen only if homed == true is defined in ops file
 		this->stop(); 
 	}
