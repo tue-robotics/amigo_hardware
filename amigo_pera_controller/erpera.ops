@@ -13,7 +13,7 @@
 ### Import amigo_pera_controller package ###
 import("amigo_pera_controller")
 trigger
-require("print")
+#require("print")
 
 var string wbcstr
 wbcstr = os.getenv("wbc")
@@ -42,8 +42,8 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
-var bool REQUIREHOMING   		= false; 
-var bool REQUIREGRIPPERHOMING   = false;
+var bool REQUIREHOMING   		= true; 
+var bool REQUIREGRIPPERHOMING   = true;
 
 ### Read reference joint angles ###
 #loadComponent("RPERA_ReadReferences","PERA::ReadArmJointsMsg")
@@ -72,7 +72,7 @@ RPERA_MotorToJointAngles.function3 = array  ( 0.0,  0.0,  0.0,  1.0,  0.0,  0.0,
 RPERA_MotorToJointAngles.function4 = array  ( 0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
 RPERA_MotorToJointAngles.function5 = array  ( 0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0,  0.0,  0.0)
 RPERA_MotorToJointAngles.function6 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-RPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+RPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0)
 RPERA_MotorToJointAngles.function8 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Compute tracking error ###
@@ -114,7 +114,7 @@ RPERA_ReferenceInterpolator.InterpolatorEps = 1.0
 RPERA_ReferenceInterpolator.configure
 
 if (wbcstr == "true") then {
-	print.ln("Using Admittance controller")
+	#print.ln("Using Admittance controller")
 	connect("RPERA_ReadReferences.eff_out","RPERA_InputTorqueLimiter.in", ConnPolicy() )
 	connect ("RPERA_InputTorqueLimiter.out", "RPERA_AdmittanceController.force_in", ConnPolicy() )
 	connect ("RPERA_MotorToJointAngles.out","RPERA_AdmittanceController.measured_position_in", ConnPolicy() )
@@ -122,7 +122,7 @@ if (wbcstr == "true") then {
 	connect ("RPERA_VectorConcatenate.out","RPERA_ComputeJointErrors.in_plus", ConnPolicy() )
 }
 else if (wbcstr == "false") then {
-	print.ln("Using reference generator: 3")
+	#print.ln("Using reference generator: 3")
 	RPERA_ReferenceInterpolator.interpolator1 = array (0.0, 0.4, 0.2)
 	RPERA_ReferenceInterpolator.interpolator2 = array (0.0, 0.4, 0.2)
 	RPERA_ReferenceInterpolator.interpolator3 = array (0.0, 0.6, 0.3)
@@ -250,8 +250,8 @@ RPERA_JointToMotorTorques.function3 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
 RPERA_JointToMotorTorques.function4 = array ( 0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
 RPERA_JointToMotorTorques.function5 = array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
 RPERA_JointToMotorTorques.function6 = array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
-RPERA_JointToMotorTorques.function7 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-RPERA_JointToMotorTorques.function8 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+RPERA_JointToMotorTorques.function7 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+RPERA_JointToMotorTorques.function8 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
 RPERA_JointToMotorTorques.function9 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Kp ###

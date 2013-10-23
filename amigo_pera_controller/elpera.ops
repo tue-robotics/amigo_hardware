@@ -13,7 +13,7 @@
 ### Import amigo_pera_controller package ###
 import("amigo_pera_controller")
 trigger
-require("print")
+#require("print")
 
 var string wbcstr
 wbcstr = os.getenv("wbc")
@@ -72,7 +72,7 @@ LPERA_MotorToJointAngles.function3 = array  ( 0.0,  0.0,  0.0, -1.0,  0.0,  0.0,
 LPERA_MotorToJointAngles.function4 = array  ( 0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
 LPERA_MotorToJointAngles.function5 = array  ( 0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
 LPERA_MotorToJointAngles.function6 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-LPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0)
+LPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
 LPERA_MotorToJointAngles.function8 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Compute tracking error ###
@@ -114,7 +114,7 @@ LPERA_ReferenceInterpolator.InterpolatorEps = 1.0
 LPERA_ReferenceInterpolator.configure
 
 if (wbcstr == "true") then {
-	print.ln("Using Admittance controller")
+	#print.ln("Using Admittance controller")
 	connect("LPERA_ReadReferences.eff_out","LPERA_InputTorqueLimiter.in", ConnPolicy() )
 	connect ("LPERA_InputTorqueLimiter.out", "LPERA_AdmittanceController.force_in", ConnPolicy() )
 	connect ("LPERA_MotorToJointAngles.out","LPERA_AdmittanceController.measured_position_in", ConnPolicy() )
@@ -122,7 +122,7 @@ if (wbcstr == "true") then {
 	connect ("LPERA_VectorConcatenate.out","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
 }
 else if (wbcstr == "false") then {
-	print.ln("Using reference generator: 3")
+	#print.ln("Using reference generator: 3")
 	LPERA_ReferenceInterpolator.interpolator1 = array (0.0, 0.4, 0.2)
 	LPERA_ReferenceInterpolator.interpolator2 = array (0.0, 0.4, 0.2)
 	LPERA_ReferenceInterpolator.interpolator3 = array (0.0, 0.6, 0.3)
@@ -270,8 +270,8 @@ LPERA_JointToMotorTorques.function3 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
 LPERA_JointToMotorTorques.function4 = array ( 0.0,  0.0, -1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
 LPERA_JointToMotorTorques.function5 = array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
 LPERA_JointToMotorTorques.function6 = array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
-LPERA_JointToMotorTorques.function7 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
-LPERA_JointToMotorTorques.function8 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+LPERA_JointToMotorTorques.function7 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+LPERA_JointToMotorTorques.function8 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
 LPERA_JointToMotorTorques.function9 = array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Kp ###
