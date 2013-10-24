@@ -171,6 +171,7 @@ RPERA_Supervisor.enableOutput 			= true
 RPERA_Supervisor.requireHoming 			= REQUIREHOMING
 RPERA_Supervisor.requireGripperHoming 	= REQUIREGRIPPERHOMING
 RPERA_Supervisor.startJoint 			= 6
+RPERA_Supervisor.jointNames             = JOINT_NAMES
 RPERA_Supervisor.configure
 
 ### LOAD READENCODERS

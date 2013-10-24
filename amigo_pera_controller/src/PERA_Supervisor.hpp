@@ -11,6 +11,7 @@
 #include <rtt/Port.hpp>
 #include <amigo_msgs/AmigoGripperCommand.h>
 #include <amigo_msgs/AmigoGripperMeasurement.h>
+#include <sensor_msgs/JointState.h>
 
 using namespace std;
 using namespace RTT;
@@ -71,7 +72,7 @@ namespace PERA
 		//! Outputport for resetting the ReferenceInterpolator
 		OutputPort<doubles> resetIntPort;
 		//! Outputport for resetting the ROS inverse kinematics topic
-		OutputPort<amigo_msgs::arm_joints> resetRefPort;
+        OutputPort<sensor_msgs::JointState> resetRefPort;
 		//! Outputport for disabling/enabling the ReadReferenceAngles to read topic
 		OutputPort<bool> enableReadRefPort;
 		//! Outputport for ordering the PERA_IO to renull for slave 1002
@@ -155,6 +156,8 @@ namespace PERA
 		doubles ABS_SEN_DIR;
 		//! Memory array storing if controller saturation was already reached
 		int firstSatInstance [8];
+
+        sensor_msgs::JointState out_msg;
 	
     public:
 

@@ -9,7 +9,7 @@
 #include <rtt/Component.hpp>
 #include <std_msgs/Bool.h>
 #include <std_msgs/UInt8.h>
-#include <amigo_msgs/arm_joints.h>
+//#include <amigo_msgs/arm_joints.h>
 #include <amigo_msgs/pera_status.h>
 #include <diagnostic_msgs/DiagnosticArray.h>
 #include <vector>
@@ -58,6 +58,7 @@ Supervisor::Supervisor(const string& name) :
 	addProperty( "requireHoming", REQUIRE_HOMING ).doc("Specifies if the arm will home yes or no");
 	addProperty( "startJoint", STRT_JNT ).doc("Joint number to start homing with");
 	addProperty( "requireGripperHoming", REQUIRE_GRIPPER_HOMING ).doc("Defines whether the gripper is homed upon startup");
+    addProperty( "jointNames", out_msg.name ).doc("Joint state names");
 }
 
 Supervisor::~Supervisor(){}
@@ -71,6 +72,7 @@ bool Supervisor::configureHook()
 	homJntAngles.resize(8);
 	previousAngles.resize(8);
 	timeReachedSaturation.resize(8);
+    out_msg.position.resize(7);
 
 	// Set initial counters
 	cntr=0;   // used to check if it is the first time the loop is running 
@@ -325,7 +327,7 @@ void Supervisor::updateHook()
 			
 			doubles resetdata(32,0.0);
 			doubles measRelJntAngles(8,0.0);
-			amigo_msgs::arm_joints jointResetData;
+//			amigo_msgs::arm_joints jointResetData;
 
 			// Set enable to false and write it to the PERA_IO component.
 			enable = false;
@@ -346,11 +348,12 @@ void Supervisor::updateHook()
 			// Change sign and add offset (wrt inverse kinematics)
 			for ( uint i = 0; i < 7; i++ )
 			{
-				jointResetData.pos[i].data = measRelJntAngles[i];
+                out_msg.position[i] = measRelJntAngles[i];
+//				jointResetData.pos[i].data = measRelJntAngles[i];
 			}
 
 			//log(Error)<<"SUPERVISOR: i wrote q2 = "<<jointResetData.pos[1].data<<"."<<endlog();
-			resetRefPort.write(jointResetData);
+            resetRefPort.write(out_msg);
 
 			// Write the new angles to the interpolator for reset such that interpolator will follow the arm position causing no jump in the error
 			resetIntPort.write(resetdata);
