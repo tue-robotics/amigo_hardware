@@ -170,7 +170,7 @@ LPERA_Supervisor.absSenDir 				= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput 			= true
 LPERA_Supervisor.requireHoming 			= REQUIREHOMING
 LPERA_Supervisor.requireGripperHoming 	= REQUIREGRIPPERHOMING
-LPERA_Supervisor.startJoint 			= 3
+LPERA_Supervisor.startJoint 			= 6
 LPERA_Supervisor.jointNames             = JOINT_NAMES
 LPERA_Supervisor.configure
 
