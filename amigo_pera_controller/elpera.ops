@@ -379,15 +379,15 @@ connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPo
 ########################################################################
 
 ### Control loop ###
-connect ("Soem.Slave_1011.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle3","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle1","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle2","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle3","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1013.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
-connect ("Soem.Slave_1013.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
+connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1014.encoderAngle3","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1016.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1016.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+connect ("Soem.Slave_1016.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("LPERA_ReadEncoders.out","LPERA_MotorToJointAngles.in" , ConnPolicy() ); 
 connect ("LPERA_MotorToJointAngles.out","LPERA_ComputeJointErrors.in_minus", ConnPolicy() )
 connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
@@ -423,9 +423,9 @@ connect ("LPERA_Polynomials.out","LPERA_AddGravComp.in1", ConnPolicy() )
 connect ("LPERA_AnalogInsPera.out_pos","LPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )
 connect ("LPERA_JointToMotorTorques.out","LPERA_Supervisor.controllerOutputPort", ConnPolicy() )
 connect ("LPERA_ReadReferences.pos_out","LPERA_Supervisor.requestedJointAnglesPort", ConnPolicy() )
-connect ("LPERA_Supervisor.enablePort","Soem.Slave_1011.enablePort", ConnPolicy() )                                
-connect ("LPERA_Supervisor.enablePort","Soem.Slave_1012.enablePort", ConnPolicy() )                                
-connect ("LPERA_Supervisor.enablePort","Soem.Slave_1013.enablePort", ConnPolicy() )                                
+connect ("LPERA_Supervisor.enablePort","Soem.Slave_1014.enablePort", ConnPolicy() )                                
+connect ("LPERA_Supervisor.enablePort","Soem.Slave_1015.enablePort", ConnPolicy() )                                
+connect ("LPERA_Supervisor.enablePort","Soem.Slave_1016.enablePort", ConnPolicy() )                                
 connect ("LPERA_ComputeJointErrors.out","LPERA_Supervisor.errorPort", ConnPolicy() )
 connect ("LPERA_MotorToJointAngles.out","LPERA_Supervisor.measRelJointAnglesPort", ConnPolicy() )
 connect ("LPERA_Supervisor.resetInterpolatorPort","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
