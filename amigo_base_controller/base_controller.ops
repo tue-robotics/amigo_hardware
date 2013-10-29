@@ -59,7 +59,6 @@ connect ("ReadWheelEncoders.out","BaseDecouplePosition.in", ConnPolicy() )
 
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
-#loadComponent("Odometry","AMIGO::PublishOdometry")
 loadComponent("Odometry","MSG::PublishOdometry")
 addPeer("Supervisor","Odometry")
 Odometry.base_link_frame = "/amigo/base_link"
