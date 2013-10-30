@@ -163,7 +163,7 @@ RPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 RPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	100.0)
 RPERA_Supervisor.maxJointErrors 		= array (  0.09,     0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	20.0)
 RPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 		1.0, 	 1.0, 	 	1.0, 	 1.0)
-RPERA_Supervisor.homedPos 				= array (1387.0,   	648.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
+RPERA_Supervisor.homedPos 				= array (1380.0,   	648.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 RPERA_Supervisor.maxConSatTime 			= 3.0
 RPERA_Supervisor.stepSize 				= 0.5
 RPERA_Supervisor.absSenDir 				= array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
@@ -338,17 +338,15 @@ connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPo
 #var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("Tracing","Signal::Tracing")
 #setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array (1.0, 8.0, 8.0, 9.0, 8.0)
+#Tracing.vector_sizes = array (8.0, 8.0, 9.0)
 #Tracing.buffersize = 32768;
-#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/FTEST/Rq87.dat"
+#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/test2.dat"
 #Tracing.Ts = Ts
 #Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #Tracing.configure
-#connect ("RPERA_GripperControl.gripper_ref","Tracing.in1", tracingpolicy );				# reference after reference generator
-#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in2", tracingpolicy );				# reference after reference generator
-#connect ("RPERA_ComputeJointErrors.out","Tracing.in3", tracingpolicy ) ; 					# error
-#connect ("RPERA_SensorTorques.measured_torques_out","Tracing.in4", tracingpolicy ) ; 		# measured torques actuator space
-#connect ("RPERA_JointToMotorTorques.out","Tracing.in5", tracingpolicy ) ; 					# measured torques actuator space
+#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );				# reference after reference generator
+#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 					# error
+#connect ("RPERA_AnalogInsPera.out_pos.out","Tracing.in3", tracingpolicy ) ; 				
 
 ########################################################################
 # Connecting all the ports and streams. Be carefull with making        #

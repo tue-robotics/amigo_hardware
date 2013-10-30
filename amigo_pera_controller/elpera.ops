@@ -378,6 +378,15 @@ connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPo
 # damage.                                                              #
 ########################################################################
 
+### Output limiter ###
+#loadComponent("LPERA_TEMP","DISCONTINUITIES::Saturation")
+#addPeer("Supervisor","LPERA_TEMP")
+#setActivity("LPERA_TEMP",0.0,HighestPriority,ORO_SCHED_RT)
+#LPERA_TEMP.upper_limit = array 			(-00.0	, -10.0	, 0.0 		, 0.0	, 0.0		, 0.0	, 0.0	, 0.0	, 0.0	)
+#LPERA_TEMP.lower_limit = array 			(-00.0	, -10.0	, 0.0 		, 0.0	, 0.0		, 0.0	, 0.0	, 0.0	, 0.0	)
+#LPERA_TEMP.vector_size = 9
+#LPERA_TEMP.configure
+
 ### Control loop ###
 connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
@@ -396,6 +405,8 @@ connect ("LPERA_LeadLag.out","LPERA_Lowpass.in", ConnPolicy() )
 connect ("LPERA_Lowpass.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
 connect ("LPERA_WeakIntegrator1.out","LPERA_AddGravComp.in2_event", ConnPolicy() )
 connect ("LPERA_AddGravComp.out","LPERA_JointToMotorTorques.in", ConnPolicy() )
+#connect ("LPERA_JointToMotorTorques.out","LPERA_TEMP.in" , ConnPolicy() )
+#connect ("LPERA_TEMP.out","LPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 connect ("LPERA_JointToMotorTorques.out","LPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 
 ### Reference and Ros communication ###
@@ -491,5 +502,6 @@ Supervisor.AddAllwaysOnPeer ("LPERA_SensorTorques")
 Supervisor.AddAllwaysOnPeer ("LPERA_GripperControl")
 Supervisor.AddAllwaysOnPeer ("LPERA_Diagnostics")
 Supervisor.AddAllwaysOnPeer ("LPERA_ReadEncoders")
+#Supervisor.AddAllwaysOnPeer ("LPERA_TEMP")
 #Tracing.start
 #Supervisor.AddAllwaysOnPeer ("LPERA_Homing");
