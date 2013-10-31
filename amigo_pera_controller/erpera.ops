@@ -5,20 +5,18 @@
 # Bas Willems Edited by Max Baeten for EtherCAT                        #
 # September 2011                                                       #
 #                                                                      #
-# Uses the DeploymentComponent available within the OCL for deploying  #
-# and connecting components.                                           #
-#                                                                      #
 ########################################################################
 
-### Import amigo_pera_controller package ###
+#### IMPORT PACKAGE ####
+# To be able to load components from this package and all packages in the manifest
 import("amigo_pera_controller")
 trigger
-#require("print")
 
+### LOAD WBC PARAMETER ### 
 var string wbcstr
 wbcstr = os.getenv("wbc")
 
-## Declare standard variables that are used multiple times
+#### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "shoulder_yaw_joint_right", "shoulder_pitch_joint_right", "shoulder_roll_joint_right", "elbow_pitch_joint_right", "elbow_roll_joint_right", "wrist_pitch_joint_right", "wrist_yaw_joint_right" ) 
 var strings DUMMY_JOINT_NAMES = strings( "finger1_joint_right", "finger1_tip_joint_right", "finger2_joint_right", "finger2_tip_joint_right" )
@@ -42,8 +40,8 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
-var bool REQUIREHOMING   		= false; 
-var bool REQUIREGRIPPERHOMING   = false; 
+var bool REQUIREHOMING   		= true; 
+var bool REQUIREGRIPPERHOMING   = true;
 
 ### Read reference joint angles ###
 #loadComponent("RPERA_ReadReferences","PERA::ReadArmJointsMsg")
@@ -317,53 +315,38 @@ RPERA_SensorTorques.configure
 loadComponent("RPERA_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","RPERA_Diagnostics")
 setActivity("RPERA_Diagnostics",0.0,HighestPriority,ORO_SCHED_RT)
-stream("RPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 RPERA_Diagnostics.setPeriod(1)
-RPERA_Diagnostics.statusname = "RPERA"
-RPERA_Diagnostics.NumberOfVectorPorts = 3
-RPERA_Diagnostics.NumberOfBoolPorts = 2
+RPERA_Diagnostics.statusname 			= "RPERA"
+RPERA_Diagnostics.NumberOfVectorPorts 	= 3
+RPERA_Diagnostics.NumberOfBoolPorts 	= 2
 RPERA_Diagnostics.configure
-RPERA_Diagnostics.vecname1 = "Reference Interpolator"
-connect ("RPERA_VectorConcatenate.out", "RPERA_Diagnostics.vec1", ConnPolicy() )
-RPERA_Diagnostics.vecname2 = "Joint Errors"
-connect ("RPERA_ComputeJointErrors.out", "RPERA_Diagnostics.vec2", ConnPolicy() )
-RPERA_Diagnostics.vecname3 = "Reference Path Planning"
-connect ("RPERA_ReadReferences.pos_out", "RPERA_Diagnostics.vec3", ConnPolicy() )
-RPERA_Diagnostics.boolname1 = "Amplifiers"
-connect ("RPERA_Supervisor.enablePort", "RPERA_Diagnostics.bool1", ConnPolicy() )
-RPERA_Diagnostics.boolname2 = "ReadRef Enable"
-connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPolicy() )
+RPERA_Diagnostics.vecname1 				= "Reference Interpolator"
+RPERA_Diagnostics.vecname2 				= "Joint Errors"
+RPERA_Diagnostics.vecname3 				= "Reference Path Planning"
+RPERA_Diagnostics.boolname1 			= "Amplifiers"
+RPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 
 ### Setting up tracing ###
 #var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768;	tracingpolicy.lock_policy = LOCKED
-#loadComponent("Tracing","Signal::Tracing")
-#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array (8.0, 8.0, 9.0)
-#Tracing.buffersize = 32768;
-#Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/test2.dat"
-#Tracing.Ts = Ts
-#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
-#Tracing.configure
-#connect ("RPERA_ReferenceInterpolator.posout","Tracing.in1", tracingpolicy );				# reference after reference generator
-#connect ("RPERA_ComputeJointErrors.out","Tracing.in2", tracingpolicy ) ; 					# error
-#connect ("RPERA_AnalogInsPera.out_pos.out","Tracing.in3", tracingpolicy ) ; 				
+#loadComponent("RPERA_Tracing","Signal::Tracing")
+#addPeer("Supervisor","RPERA_Tracing")
+#setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+#RPERA_Tracing.vector_sizes = array (8.0, 8.0, 9.0)
+#RPERA_Tracing.buffersize = 32768;
+#RPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/test2.dat"
+#RPERA_Tracing.Ts = Ts
+#RPERA_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+#RPERA_Tracing.configure
+#connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in1", tracingpolicy );				# reference after reference generator
+#connect ("RPERA_ComputeJointErrors.out","RPERA_Tracing.in2", tracingpolicy ) ; 					# error
+#connect ("RPERA_AnalogInsPera.out_pos.out","RPERA_Tracing.in3", tracingpolicy ) ; 				
 
-########################################################################
-# Connecting all the ports and streams. Be carefull with making        #
-# changes below as this can easily result in system failure and/or     #
-# damage.                                                              #
-########################################################################
+#### SET UP JOINTSTATE AGGREGATOR ####
+JointStateAggregator.addJointNames(JOINT_NAMES)
+JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
+JointStateAggregator.addAggregationPort("right_arm")
 
-### Output limiter ###
-#loadComponent("RPERA_TEMP","DISCONTINUITIES::Saturation")
-#addPeer("Supervisor","RPERA_TEMP")
-#setActivity("RPERA_TEMP",0.0,HighestPriority,ORO_SCHED_RT)
-#RPERA_TEMP.upper_limit = array 			(10.0	, 00.0	, 0.0 		, 0.0	, 0.0		, 0.0	, 0.0	, 0.0	, 0.0	)
-#RPERA_TEMP.lower_limit = array 			(10.0	, 00.0	, 0.0 		, 0.0	, 0.0		, 0.0	, 0.0	, 0.0	, 0.0	)
-#RPERA_TEMP.vector_size = 9
-#RPERA_TEMP.configure
-
-### Control loop ###
+#### CONNECT COMPONENTS ####
 connect ("Soem.Slave_1010.encoderAngle1","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1010.encoderAngle2","RPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1010.encoderAngle3","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
@@ -381,8 +364,6 @@ connect ("RPERA_LeadLag.out","RPERA_Lowpass.in", ConnPolicy() )
 connect ("RPERA_Lowpass.out","RPERA_WeakIntegrator1.in", ConnPolicy() )
 connect ("RPERA_WeakIntegrator1.out","RPERA_AddGravComp.in2_event", ConnPolicy() )
 connect ("RPERA_AddGravComp.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
-#connect ("RPERA_JointToMotorTorques.out","RPERA_TEMP.in" , ConnPolicy() )
-#connect ("RPERA_TEMP.out","RPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 connect ("RPERA_JointToMotorTorques.out","RPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 
 ### Reference and Ros communication ###
@@ -390,15 +371,6 @@ connect ("RPERA_GripperControl.gripper_ref","RPERA_VectorConcatenate.in2", ConnP
 connect ("RPERA_MotorToJointAngles.out","RPERA_WriteCurrentJointAngles.pos_in", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_JointOutputLimiter.in", ConnPolicy() )
 connect ("RPERA_JointOutputLimiter.out","RPERA_WriteClippedJointAngles.pos_in", ConnPolicy() )
-
-stream("RPERA_WriteCurrentJointAngles.out", ros.topic("/amigo/right_arm/measurements_raw"))
-stream("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/right_arm/measurements"))
-#stream("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/joint_states"))
-JointStateAggregator.addJointNames(JOINT_NAMES)
-JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
-JointStateAggregator.addAggregationPort("right_arm")
-connect ("RPERA_WriteClippedJointAngles.out", "JointStateAggregator.right_arm", ConnPolicy() )
-stream("RPERA_ReadReferences.in", ros.topic("/amigo/right_arm/references"))
 
 ### Gravity compensation part ###
 connect ("RPERA_ReferenceInterpolator.posout","RPERA_GravityCompensation.in", ConnPolicy() )
@@ -420,10 +392,7 @@ connect ("RPERA_Supervisor.homJntAnglesPort","RPERA_VectorConcatenate.in1", Conn
 #connect ("RPERA_Supervisor.enableReadRefPort","RPERA_ReadReferences.enablePort", ConnPolicy() ) ;#ToDo: this is a problem!
 connect ("RPERA_Supervisor.reNullPort","RPERA_ReadEncoders.in_reNull", ConnPolicy() )           
 connect ("RPERA_Supervisor.reNullPort","RPERA_GripperControl.reNullPort", ConnPolicy() )          
-
-stream("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
-stream("RPERA_Supervisor.resetRefPort", ros.topic("/amigo/right_arm/references"))
-stream("RPERA_Supervisor.peraStatusPort", ros.topic("/arm_right_status"))
+connect ("RPERA_WriteClippedJointAngles.out", "JointStateAggregator.right_arm", ConnPolicy() )
 
 ### Gripper control ###
 connect ("RPERA_AnalogInsPera.out_for","RPERA_SensorTorques.voltage_in", ConnPolicy() )
@@ -431,19 +400,35 @@ connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque
 connect ("RPERA_MotorToJointAngles.out", "RPERA_GripperControl.position_in", ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_measurement","RPERA_Supervisor.gripper_measurement", ConnPolicy() )
 connect ("RPERA_Supervisor.gripper_command","RPERA_GripperControl.gripper_command", ConnPolicy() )
- 
-stream("RPERA_GripperControl.gripper_measurement", ros.topic("/amigo/right_gripper/measurements"))
-stream("RPERA_GripperControl.gripper_command", ros.topic("/amigo/right_gripper/references"))
 
 # RTD, publishes velocities to Supervisor and ROS
 connect ("RPERA_MotorToJointAngles.out","RPERA_RTD.u", ConnPolicy() )
 connect ("RPERA_RTD.ude","RPERA_Supervisor.jointVelocity", ConnPolicy() )
-stream("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 
+## Diagnostics ##
+connect ("RPERA_VectorConcatenate.out", "RPERA_Diagnostics.vec1", ConnPolicy() )
+connect ("RPERA_ComputeJointErrors.out", "RPERA_Diagnostics.vec2", ConnPolicy() )
+connect ("RPERA_ReadReferences.pos_out", "RPERA_Diagnostics.vec3", ConnPolicy() )
+connect ("RPERA_Supervisor.enablePort", "RPERA_Diagnostics.bool1", ConnPolicy() )
+connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPolicy() )
+
+#### CONNECT ROS STREAMS ####
 Supervisor.NameBodyPart( 4, "right_arm")
-stream( "Supervisor.right_arm_fireup", ros.topic("/right_arm_fireup") )
-stream( "Supervisor.right_arm_enabled", ros.topic("/right_arm_enabled"));
+stream ("Supervisor.right_arm_fireup", ros.topic("/right_arm_fireup"))
+stream ("Supervisor.right_arm_enabled", ros.topic("/right_arm_enabled"))
+stream ("RPERA_WriteCurrentJointAngles.out", ros.topic("/amigo/right_arm/measurements_raw"))
+stream ("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/right_arm/measurements"))
+#stream ("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/joint_states"))
+stream ("RPERA_ReadReferences.in", ros.topic("/amigo/right_arm/references"))
+stream ("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
+stream ("RPERA_Supervisor.resetRefPort", ros.topic("/amigo/right_arm/references"))
+stream ("RPERA_Supervisor.peraStatusPort", ros.topic("/arm_right_status"))
+stream ("RPERA_GripperControl.gripper_measurement", ros.topic("/amigo/right_gripper/measurements"))
+stream ("RPERA_GripperControl.gripper_command", ros.topic("/amigo/right_gripper/references"))
+stream ("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
+stream ("RPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 
+#### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("RPERA_Supervisor")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReadReferences")
 Supervisor.AddAllwaysOnPeer ("RPERA_VectorConcatenate")
@@ -473,5 +458,35 @@ Supervisor.AddAllwaysOnPeer ("RPERA_SensorTorques")
 Supervisor.AddAllwaysOnPeer ("RPERA_GripperControl")
 Supervisor.AddAllwaysOnPeer ("RPERA_Diagnostics")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
-#Supervisor.AddAllwaysOnPeer ("RPERA_TEMP")
-#Tracing.start
+#Supervisor.AddAllwaysOnPeer ("RPERA_Tracing")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
