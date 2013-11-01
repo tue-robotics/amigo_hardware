@@ -74,11 +74,11 @@ LPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
 LPERA_MotorToJointAngles.function8 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Compute tracking error ###
-loadComponent("LPERA_ComputeJointErrors","MATH::Subtraction")
-addPeer("Supervisor","LPERA_ComputeJointErrors")
-setActivity("LPERA_ComputeJointErrors",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_ComputeJointErrors.vectorsize = 8
-LPERA_ComputeJointErrors.configure
+loadComponent("LPERA_ComputeErrors","MATH::Subtraction")
+addPeer("Supervisor","LPERA_ComputeErrors")
+setActivity("LPERA_ComputeErrors",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_ComputeErrors.vectorsize = 8
+LPERA_ComputeErrors.configure
 
 ## Input torque limiter
 loadComponent("LPERA_InputTorqueLimiter", "DISCONTINUITIES::Saturation")
@@ -117,7 +117,7 @@ if (wbcstr == "true") then {
 	connect ("LPERA_InputTorqueLimiter.out", "LPERA_AdmittanceController.force_in", ConnPolicy() )
 	connect ("LPERA_MotorToJointAngles.out","LPERA_AdmittanceController.measured_position_in", ConnPolicy() )
 	connect ("LPERA_AdmittanceController.out", "LPERA_VectorConcatenate.in1", ConnPolicy() )
-	connect ("LPERA_VectorConcatenate.out","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+	connect ("LPERA_VectorConcatenate.out","LPERA_ComputeErrors.in_plus", ConnPolicy() )
 }
 else if (wbcstr == "false") then {
 	#print.ln("Using reference generator: 3")
@@ -131,7 +131,7 @@ else if (wbcstr == "false") then {
 	LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 1.0, 10.0)
 	connect ("LPERA_ReadReferences.pos_out","LPERA_VectorConcatenate.in1", ConnPolicy() )
  	connect ("LPERA_VectorConcatenate.out","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
-    connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+    connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeErrors.in_plus", ConnPolicy() )
 }
 
 ### Output limiter ###
@@ -338,7 +338,7 @@ LPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 #LPERA_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #LPERA_Tracing.configure
 #connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in1", tracingpolicy );	# reference after reference generator
-#connect ("LPERA_ComputeJointErrors.out","LPERA_Tracing.in2", tracingpolicy ) ; 		# error
+#connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in2", tracingpolicy ) ; 		# error
 #connect ("LPERA_WeakIntegrator1.out","LPERA_Tracing.in3", tracingpolicy ) ; 			# control effort in joint space
 #connect ("LPERA_JointToMotorTorques.out","LPERA_Tracing.in4", tracingpolicy ) ; 		# control effort in motor space
 #connect ("LPERA_MotorToJointAngles.out","LPERA_Tracing.in5", tracingpolicy ) ; 		# output
@@ -359,8 +359,8 @@ connect ("Soem.Slave_1013.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPoli
 connect ("Soem.Slave_1013.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
 connect ("Soem.Slave_1013.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("LPERA_ReadEncoders.out","LPERA_MotorToJointAngles.in" , ConnPolicy() ); 
-connect ("LPERA_MotorToJointAngles.out","LPERA_ComputeJointErrors.in_minus", ConnPolicy() )
-connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
+connect ("LPERA_MotorToJointAngles.out","LPERA_ComputeErrors.in_minus", ConnPolicy() )
+connect ("LPERA_ComputeErrors.out","LPERA_Gain.in", ConnPolicy() )
 connect ("LPERA_Gain.out","LPERA_LeadLag.in", ConnPolicy() )
 connect ("LPERA_LeadLag.out","LPERA_Lowpass.in", ConnPolicy() )
 connect ("LPERA_Lowpass.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
@@ -388,7 +388,7 @@ connect ("LPERA_ReadReferences.pos_out","LPERA_Supervisor.requestedJointAnglesPo
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1011.enablePort", ConnPolicy() )                                
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1012.enablePort", ConnPolicy() )                                
 connect ("LPERA_Supervisor.enablePort","Soem.Slave_1013.enablePort", ConnPolicy() )                                
-connect ("LPERA_ComputeJointErrors.out","LPERA_Supervisor.errorPort", ConnPolicy() )
+connect ("LPERA_ComputeErrors.out","LPERA_Supervisor.errorPort", ConnPolicy() )
 connect ("LPERA_MotorToJointAngles.out","LPERA_Supervisor.measRelJointAnglesPort", ConnPolicy() )
 connect ("LPERA_Supervisor.resetInterpolatorPort","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
 connect ("LPERA_Supervisor.homJntAnglesPort","LPERA_VectorConcatenate.in1", ConnPolicy() )
@@ -410,7 +410,7 @@ connect ("LPERA_RTD.ude","LPERA_Supervisor.jointVelocity", ConnPolicy() )
 
 ## Diagnostics ##
 connect ("LPERA_VectorConcatenate.out", "LPERA_Diagnostics.vec1", ConnPolicy() )
-connect ("LPERA_ComputeJointErrors.out", "LPERA_Diagnostics.vec2", ConnPolicy() )
+connect ("LPERA_ComputeErrors.out", "LPERA_Diagnostics.vec2", ConnPolicy() )
 connect ("LPERA_ReadReferences.pos_out", "LPERA_Diagnostics.vec3", ConnPolicy() )
 connect ("LPERA_Supervisor.enablePort", "LPERA_Diagnostics.bool1", ConnPolicy() )
 connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPolicy() )
@@ -443,7 +443,7 @@ else if (wbcstr == "false") then {
 	Supervisor.AddAllwaysOnPeer ("LPERA_ReferenceInterpolator")
 }
 Supervisor.AddAllwaysOnPeer ("LPERA_MotorToJointAngles")
-Supervisor.AddAllwaysOnPeer ("LPERA_ComputeJointErrors")
+Supervisor.AddAllwaysOnPeer ("LPERA_ComputeErrors")
 Supervisor.AddAllwaysOnPeer ("LPERA_JointToMotorTorques")
 Supervisor.AddAllwaysOnPeer ("LPERA_JointOutputLimiter")
 Supervisor.AddAllwaysOnPeer ("LPERA_WriteCurrentJointAngles")
@@ -488,5 +488,5 @@ Supervisor.AddAllwaysOnPeer ("LPERA_ReadEncoders")
 ## Homing ##
 #connect ("LPERA_ReadEncoders.out", "LPERA_Homing.relPos_in", ConnPolicy() )
 #connect ("LPERA_Homing.ref_out","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
-#connect ("LPERA_ComputeJointErrors.out", "LPERA_Homing.servo_error_in", ConnPolicy() )
+#connect ("LPERA_ComputeErrors.out", "LPERA_Homing.servo_error_in", ConnPolicy() )
 #Supervisor.AddAllwaysOnPeer ("LPERA_Homing")

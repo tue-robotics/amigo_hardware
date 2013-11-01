@@ -74,11 +74,11 @@ RPERA_MotorToJointAngles.function7 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
 RPERA_MotorToJointAngles.function8 = array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Compute tracking error ###
-loadComponent("RPERA_ComputeJointErrors","MATH::Subtraction")
-addPeer("Supervisor","RPERA_ComputeJointErrors")
-setActivity("RPERA_ComputeJointErrors",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_ComputeJointErrors.vectorsize = 8
-RPERA_ComputeJointErrors.configure
+loadComponent("RPERA_ComputeErrors","MATH::Subtraction")
+addPeer("Supervisor","RPERA_ComputeErrors")
+setActivity("RPERA_ComputeErrors",0.0,HighestPriority,ORO_SCHED_RT)
+RPERA_ComputeErrors.vectorsize = 8
+RPERA_ComputeErrors.configure
 
 ## Input torque limiter
 loadComponent("RPERA_InputTorqueLimiter", "DISCONTINUITIES::Saturation")
@@ -117,7 +117,7 @@ if (wbcstr == "true") then {
 	connect ("RPERA_InputTorqueLimiter.out", "RPERA_AdmittanceController.force_in", ConnPolicy() )
 	connect ("RPERA_MotorToJointAngles.out","RPERA_AdmittanceController.measured_position_in", ConnPolicy() )
 	connect ("RPERA_AdmittanceController.out", "RPERA_VectorConcatenate.in1", ConnPolicy() )
-	connect ("RPERA_VectorConcatenate.out","RPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+	connect ("RPERA_VectorConcatenate.out","RPERA_ComputeErrors.in_plus", ConnPolicy() )
 }
 else if (wbcstr == "false") then {
 	#print.ln("Using reference generator: 3")
@@ -131,7 +131,7 @@ else if (wbcstr == "false") then {
 	RPERA_ReferenceInterpolator.interpolator8 = array (0.0, 10.0, 100.0)
 	connect ("RPERA_ReadReferences.pos_out","RPERA_VectorConcatenate.in1", ConnPolicy() )
  	connect ("RPERA_VectorConcatenate.out","RPERA_ReferenceInterpolator.posin", ConnPolicy() )
-    connect ("RPERA_ReferenceInterpolator.posout","RPERA_ComputeJointErrors.in_plus", ConnPolicy() )
+    connect ("RPERA_ReferenceInterpolator.posout","RPERA_ComputeErrors.in_plus", ConnPolicy() )
 }
 
 ### Output limiter ###
@@ -338,7 +338,7 @@ RPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 #RPERA_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #RPERA_Tracing.configure
 #connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in1", tracingpolicy );				# reference after reference generator
-#connect ("RPERA_ComputeJointErrors.out","RPERA_Tracing.in2", tracingpolicy ) ; 					# error
+#connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in2", tracingpolicy ) ; 					# error
 #connect ("RPERA_AnalogInsPera.out_pos.out","RPERA_Tracing.in3", tracingpolicy ) ; 				
 
 #### SET UP JOINTSTATE AGGREGATOR ####
@@ -357,8 +357,8 @@ connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc7_in" , ConnPoli
 connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
 connect ("Soem.Slave_1012.encoderAngle3","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointAngles.in" , ConnPolicy() ); 
-connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeJointErrors.in_minus", ConnPolicy() )
-connect ("RPERA_ComputeJointErrors.out","RPERA_Gain.in", ConnPolicy() )
+connect ("RPERA_MotorToJointAngles.out","RPERA_ComputeErrors.in_minus", ConnPolicy() )
+connect ("RPERA_ComputeErrors.out","RPERA_Gain.in", ConnPolicy() )
 connect ("RPERA_Gain.out","RPERA_LeadLag.in", ConnPolicy() )
 connect ("RPERA_LeadLag.out","RPERA_Lowpass.in", ConnPolicy() )
 connect ("RPERA_Lowpass.out","RPERA_WeakIntegrator1.in", ConnPolicy() )
@@ -385,7 +385,7 @@ connect ("RPERA_ReadReferences.pos_out","RPERA_Supervisor.requestedJointAnglesPo
 connect ("RPERA_Supervisor.enablePort","Soem.Slave_1010.enablePort", ConnPolicy() )                                
 connect ("RPERA_Supervisor.enablePort","Soem.Slave_1011.enablePort", ConnPolicy() )                                
 connect ("RPERA_Supervisor.enablePort","Soem.Slave_1012.enablePort", ConnPolicy() )                                
-connect ("RPERA_ComputeJointErrors.out","RPERA_Supervisor.errorPort", ConnPolicy() )
+connect ("RPERA_ComputeErrors.out","RPERA_Supervisor.errorPort", ConnPolicy() )
 connect ("RPERA_MotorToJointAngles.out","RPERA_Supervisor.measRelJointAnglesPort", ConnPolicy() )
 connect ("RPERA_Supervisor.resetInterpolatorPort","RPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
 connect ("RPERA_Supervisor.homJntAnglesPort","RPERA_VectorConcatenate.in1", ConnPolicy() )
@@ -407,7 +407,7 @@ connect ("RPERA_RTD.ude","RPERA_Supervisor.jointVelocity", ConnPolicy() )
 
 ## Diagnostics ##
 connect ("RPERA_VectorConcatenate.out", "RPERA_Diagnostics.vec1", ConnPolicy() )
-connect ("RPERA_ComputeJointErrors.out", "RPERA_Diagnostics.vec2", ConnPolicy() )
+connect ("RPERA_ComputeErrors.out", "RPERA_Diagnostics.vec2", ConnPolicy() )
 connect ("RPERA_ReadReferences.pos_out", "RPERA_Diagnostics.vec3", ConnPolicy() )
 connect ("RPERA_Supervisor.enablePort", "RPERA_Diagnostics.bool1", ConnPolicy() )
 connect ("RPERA_Supervisor.enableReadRefPort", "RPERA_Diagnostics.bool2", ConnPolicy() )
@@ -440,7 +440,7 @@ else if (wbcstr == "false") then {
 	Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceInterpolator")
 }
 Supervisor.AddAllwaysOnPeer ("RPERA_MotorToJointAngles")
-Supervisor.AddAllwaysOnPeer ("RPERA_ComputeJointErrors")
+Supervisor.AddAllwaysOnPeer ("RPERA_ComputeErrors")
 Supervisor.AddAllwaysOnPeer ("RPERA_JointToMotorTorques")
 Supervisor.AddAllwaysOnPeer ("RPERA_JointOutputLimiter")
 Supervisor.AddAllwaysOnPeer ("RPERA_WriteCurrentJointAngles")
