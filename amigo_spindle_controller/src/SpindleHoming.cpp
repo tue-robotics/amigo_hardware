@@ -41,7 +41,7 @@ bool SpindleHoming::configureHook()
 		return false;
 	}
 	// Lookup the Encoder component.
-	TaskContext* SpindleReadEncoder = this->getPeer("Spindle_ReadEncoders");
+	TaskContext* SpindleReadEncoder = this->getPeer("SPINDLE_ReadEncoders");
 	if ( !SpindleReadEncoder ) {
 		log(Error) << "Could not find Spindle_ReadEncoders component! Did you add it as Peer in the ops file?"<<endlog();
 		return false;

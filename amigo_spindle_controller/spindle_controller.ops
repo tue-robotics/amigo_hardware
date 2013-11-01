@@ -19,12 +19,12 @@ var strings JOINT_NAMES = strings( "torso_joint" )
 
 ### Loading Components ###
 #Reading Encoders
-loadComponent("Spindle_ReadEncoders","SOEM::ReadEncoders")
-addPeer("Supervisor","Spindle_ReadEncoders")
-Spindle_ReadEncoders.setPeriod(Ts)
-Spindle_ReadEncoders.encoderbits = 65536
-Spindle_ReadEncoders.enc2SI = array (-4.1666667e-7); # Minus because spindle up is defined positive.
-Spindle_ReadEncoders.configure
+loadComponent("SPINDLE_ReadEncoders","SOEM::ReadEncoders")
+addPeer("Supervisor","SPINDLE_ReadEncoders")
+SPINDLE_ReadEncoders.setPeriod(Ts)
+SPINDLE_ReadEncoders.encoderbits = 65536
+SPINDLE_ReadEncoders.enc2SI = array (-4.1666667e-7); # Minus because spindle up is defined positive.
+SPINDLE_ReadEncoders.configure
 
 #Publish component
 #loadComponent("SpindlePositionToROS","ROS::DoublesToROS")
@@ -44,7 +44,7 @@ SpindleWriteJointStates.configure
 #Reading spindle setpoints (old)
 #loadComponent("Spindle_ReadReferences","SPINDLE::ReadSpindleSetpoint")
 #Reading spindle setpoints (new)
-loadComponent("Spindle_ReadReferences","SPINDLE::ReadSpindleSetpointJointState")
+loadComponent("Spindle_ReadReferences","SPINDLE::ReadSpindleSetpointJointState") ;# if you rename this component also rename in spindle homing component
 addPeer("Supervisor","Spindle_ReadReferences")
 Spindle_ReadReferences.min_pos = 0.075
 Spindle_ReadReferences.max_pos = 0.4
@@ -73,7 +73,7 @@ SpindleReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.03); #Velocity is 
 loadComponent("Spindle_Homing","SpindleHoming")
 connectPeers("Supervisor","Spindle_Homing")
 connectPeers("Spindle_Homing","Supervisor")
-connectPeers("Spindle_Homing","Spindle_ReadEncoders")
+connectPeers("Spindle_Homing","SPINDLE_ReadEncoders")
 addPeer("Spindle_Homing","SpindleReferenceGenerator")
 addPeer("Spindle_Homing","Spindle_ReadReferences")
 Spindle_Homing.home_vel = 0.01
@@ -87,7 +87,7 @@ Spindle_Homing.configure
 #loadComponent("Spindle_Homing","AMIGO::Homing")
 #connectPeers("Supervisor","Spindle_Homing")
 #connectPeers("Spindle_Homing","Supervisor")
-#connectPeers("Spindle_Homing","Spindle_ReadEncoders")
+#connectPeers("Spindle_Homing","SPINDLE_ReadEncoders")
 #addPeer("Spindle_Homing","SpindleReferenceGenerator")
 #addPeer("Spindle_Homing","Spindle_ReadReferences")
 #Spindle_Homing.homing_body   		= "Spindle" 			;# name of the body that is stopped/started during homing procedure
@@ -100,15 +100,15 @@ Spindle_Homing.configure
 #Spindle_Homing.homing_midpos		= array (0.35)  		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
 #Spindle_Homing.homing_endpos		= array (0.35)			;# position that the body should go to after homing is finished. (could be same as midpos)
 #connect ("DigitalIns2.out2", "Spindle_Homing.endswitch", ConnPolicy() )
-#connect ("Spindle_ReadEncoders.out", "Spindle_Homing.relPos_in", ConnPolicy() )
+#connect ("SPINDLE_ReadEncoders.out", "Spindle_Homing.relPos_in", ConnPolicy() )
 #connect ("Spindle_Homing.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
 #Spindle_Homing.configure
 
 #Calculating Errors
-loadComponent("SpindleCalculateError","MATH::Subtraction")
-addPeer("Supervisor","SpindleCalculateError")
-SpindleCalculateError.vectorsize = 1
-SpindleCalculateError.configure
+loadComponent("SPINDLE_ComputeError","MATH::Subtraction")
+addPeer("Supervisor","SPINDLE_ComputeError")
+SPINDLE_ComputeError.vectorsize = 1
+SPINDLE_ComputeError.configure
 
 #Loading controller components
 #Gain
@@ -194,37 +194,37 @@ SpindleDiagnostics.boolname1 = "Safe"
 
 #### LOAD COMPONENT TO SET UP TRACING ###
 #var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 2*65536;	tracingpolicy.lock_policy = LOCKED
-#loadComponent("TORSO_Tracing","Signal::Tracing")
-#addPeer("Supervisor","TORSO_Tracing")
-#setActivity("TORSO_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#TORSO_Tracing.vector_sizes = array (1.0 , 1.0 , 1.0 , 1.0, 1.0 )
-#TORSO_Tracing.buffersize = 2*65536;
-#TORSO_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/Teun/Log/spindle_15_10_13.dat"
-#TORSO_Tracing.Ts = Ts
-#TORSO_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
-#TORSO_Tracing.configure
-#connect ("SpindleReferenceGenerator.posout","TORSO_Tracing.in1", tracingpolicy );		# reference after reference generator
-#connect ("SpindleCalculateError.out","TORSO_Tracing.in2", tracingpolicy ) ; 			# error
-#connect ("SpindleAddFeedForward.out","TORSO_Tracing.in3", tracingpolicy ) ; 			# control effort feedback plus feedforward
-#connect ("SpindleSecondOrderLowPass.out","TORSO_Tracing.in4", tracingpolicy ) ; 		# control effort only feedback
-#connect ("SpindleCalculateFFW.FFW_out","TORSO_Tracing.in5", tracingpolicy ) ; 		# control effort only feedforward
+#loadComponent("SPINDLE_Tracing","Signal::Tracing")
+#addPeer("Supervisor","SPINDLE_Tracing")
+#setActivity("SPINDLE_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+#SPINDLE_Tracing.vector_sizes = array (1.0 , 1.0 , 1.0 , 1.0, 1.0 )
+#SPINDLE_Tracing.buffersize = 2*65536;
+#SPINDLE_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/Teun/Log/spindle_15_10_13.dat"
+#SPINDLE_Tracing.Ts = Ts
+#SPINDLE_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+#SPINDLE_Tracing.configure
+#connect ("SpindleReferenceGenerator.posout","SPINDLE_Tracing.in1", tracingpolicy );		# reference after reference generator
+#connect ("SPINDLE_ComputeError.out","SPINDLE_Tracing.in2", tracingpolicy ) ; 			# error
+#connect ("SpindleAddFeedForward.out","SPINDLE_Tracing.in3", tracingpolicy ) ; 			# control effort feedback plus feedforward
+#connect ("SpindleSecondOrderLowPass.out","SPINDLE_Tracing.in4", tracingpolicy ) ; 		# control effort only feedback
+#connect ("SpindleCalculateFFW.FFW_out","SPINDLE_Tracing.in5", tracingpolicy ) ; 		# control effort only feedforward
 
 #### SETTING UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("torso")
 
 #### CONNECT COMPONENTS ####
-connect ("Soem.Slave_1006.Slave_1006_value","Spindle_ReadEncoders.enc1_in", ConnPolicy() )
-#connect ("Spindle_ReadEncoders.out","SpindlePositionToROS.in", ConnPolicy() )
-connect( "Spindle_ReadEncoders.out", "SpindleWriteJointStates.pos_in", ConnPolicy() )
+connect ("Soem.Slave_1006.Slave_1006_value","SPINDLE_ReadEncoders.enc1_in", ConnPolicy() )
+#connect ("SPINDLE_ReadEncoders.out","SpindlePositionToROS.in", ConnPolicy() )
+connect( "SPINDLE_ReadEncoders.out", "SpindleWriteJointStates.pos_in", ConnPolicy() )
 connect ("SpindleWriteJointStates.out", "JointStateAggregator.torso", ConnPolicy() )
 connect ("Spindle_ReadReferences.out","SpindleReferenceGenerator.refin", ConnPolicy() )
-connect ("Spindle_ReadEncoders.out","SpindleReferenceGenerator.actual_pos", ConnPolicy() )
+connect ("SPINDLE_ReadEncoders.out","SpindleReferenceGenerator.actual_pos", ConnPolicy() )
 connect ("DigitalIns2.out2", "Spindle_Homing.endswitch", ConnPolicy() )
 connect ("Spindle_Homing.ref_out","SpindleReferenceGenerator.refin", ConnPolicy() )
-connect ("SpindleReferenceGenerator.posout","SpindleCalculateError.in_plus", ConnPolicy() )
-connect ("Spindle_ReadEncoders.out","SpindleCalculateError.in_minus", ConnPolicy() )
-connect ("SpindleCalculateError.out","SpindleGain.in", ConnPolicy() )
+connect ("SpindleReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
+connect ("SPINDLE_ReadEncoders.out","SPINDLE_ComputeError.in_minus", ConnPolicy() )
+connect ("SPINDLE_ComputeError.out","SpindleGain.in", ConnPolicy() )
 connect ("SpindleGain.out","SpindleIntegrator.in", ConnPolicy() )
 connect ("SpindleIntegrator.out","SpindleLeadLag.in", ConnPolicy() )
 connect ("SpindleLeadLag.out","SpindleSecondOrderLowPass.in", ConnPolicy() )
@@ -235,10 +235,10 @@ connect ("SpindleSecondOrderLowPass.out","SpindleAddFeedForward.in2_event", Conn
 connect ("SpindleAddFeedForward.out","AnalogOuts.spindle", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake","DigitalOuts.in3", ConnPolicy() );   # Spindle brake
 connect ("SpindleSafety.spindle_brake","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
-connect ("SpindleCalculateError.out","SpindleSafety.error_pos", ConnPolicy() )
+connect ("SPINDLE_ComputeError.out","SpindleSafety.error_pos", ConnPolicy() )
 connect ("SpindleSafety.spindle_brake", "SpindleStatus.bool_in1", ConnPolicy() )
 connect ("SpindleReferenceGenerator.posout", "SpindleDiagnostics.vec1", ConnPolicy() )
-connect ("SpindleCalculateError.out", "SpindleDiagnostics.vec2", ConnPolicy() )
+connect ("SPINDLE_ComputeError.out", "SpindleDiagnostics.vec2", ConnPolicy() )
 connect ("SpindleAddFeedForward.out", "SpindleDiagnostics.vec3", ConnPolicy() )
 connect ("SpindleSecondOrderLowPass.out", "SpindleDiagnostics.vec4", ConnPolicy() )
 connect ("SpindleSafety.safety", "SpindleDiagnostics.bool1", ConnPolicy() )
@@ -256,7 +256,7 @@ stream( "SpindleWriteJointStates.out", ros.topic("/amigo/torso/measurements"))
 
 
 #### START COMPONENTS ####
-Supervisor.AddAllwaysOnPeer ("Spindle_ReadEncoders")
+Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
 #Supervisor.AddAllwaysOnPeer ("SpindlePositionToROS")
 Supervisor.AddAllwaysOnPeer ("SpindleWriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SpindleDiagnostics")
@@ -264,7 +264,7 @@ Supervisor.AddAllwaysOnPeer ("SpindleStatus")
 
 Supervisor.AddPeerToBodyPart ("Spindle_ReadReferences",2 )
 Supervisor.AddPeerToBodyPart ("SpindleReferenceGenerator",2 )
-Supervisor.AddPeerToBodyPart ("SpindleCalculateError",2 )
+Supervisor.AddPeerToBodyPart ("SPINDLE_ComputeError",2 )
 Supervisor.AddPeerToBodyPart ("SpindleGain",2 )
 Supervisor.AddPeerToBodyPart ("SpindleIntegrator",2 )
 Supervisor.AddPeerToBodyPart ("SpindleLeadLag",2 )
@@ -274,4 +274,4 @@ Supervisor.AddPeerToBodyPart ("SpindleAddFeedForward",2 )
 Supervisor.AddPeerToBodyPart ("SpindleSafety",2 )
 
 Supervisor.AddAllwaysOnPeer ("Spindle_Homing"); #Homing stops itself after finishing, last component because all others have to be started in order to be stopped ;)
-#Supervisor.AddAllwaysOnPeer ("TORSO_Tracing")
+#Supervisor.AddAllwaysOnPeer ("SPINDLE_Tracing")
