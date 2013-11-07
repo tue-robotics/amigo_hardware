@@ -47,10 +47,10 @@ addPeer("Supervisor","HEAD_Diagnostics")
 setActivity("HEAD_Diagnostics",0.0,HighestPriority,ORO_SCHED_RT)
 HEAD_Diagnostics.setPeriod(1)
 HEAD_Diagnostics.statusname 			= "HEAD"
-HEAD_Diagnostics.NumberOfVectorPorts 	= 1
+HEAD_Diagnostics.NumberOfVectorPorts 	= 0
 HEAD_Diagnostics.NumberOfBoolPorts 		= 1
 HEAD_Diagnostics.configure
-HEAD_Diagnostics.vecname1 				= "Current Pos"
+#HEAD_Diagnostics.vecname1 				= "Current Pos"
 HEAD_Diagnostics.boolname1 				= "Head Status"
 
 #### LOAD COMPONENT TO PUBLISH STATUS ###
@@ -73,7 +73,7 @@ connect ("HEAD_PanTiltController.headStatus", "HEAD_Status.bool_in1", ConnPolicy
 stream("HEAD_Status.bool_out1", ros.topic("/head_status"));
 
 ## Diagnostics ##
-connect ("HEAD_PanTiltController.currentPos", "HEAD_Diagnostics.vec1", ConnPolicy() )
+#connect ("HEAD_PanTiltController.currentPos", "HEAD_Diagnostics.vec1", ConnPolicy() )
 connect ("HEAD_PanTiltController.headStatus", "HEAD_Diagnostics.bool1", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####

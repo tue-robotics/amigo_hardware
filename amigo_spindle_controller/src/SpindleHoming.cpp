@@ -43,13 +43,13 @@ bool SpindleHoming::configureHook()
 	// Lookup the Encoder component.
 	TaskContext* SpindleReadEncoder = this->getPeer("SPINDLE_ReadEncoders");
 	if ( !SpindleReadEncoder ) {
-		log(Error) << "Could not find Spindle_ReadEncoders component! Did you add it as Peer in the ops file?"<<endlog();
+		log(Error) << "Could not find SPINDLE_ReadEncoders component! Did you add it as Peer in the ops file?"<<endlog();
 		return false;
 	}	
 	// Lookup the Setpoint component.
-	TaskContext* Spindle_ReadReferences = this->getPeer("Spindle_ReadReferences");
+	TaskContext* Spindle_ReadReferences = this->getPeer("SPINDLE_ReadReferences");
 	if ( !Spindle_ReadReferences ) {
-		log(Error) << "Could not find Spindle_ReadReferences component! Did you add it as Peer in the ops file?"<<endlog();
+		log(Error) << "Could not find SPINDLE_ReadReferences component! Did you add it as Peer in the ops file?"<<endlog();
 		return false;
 	}
 	
@@ -67,7 +67,7 @@ bool SpindleHoming::configureHook()
 	}	
 	ResetEncoder = SpindleReadEncoder->getOperation("reset");
 	if ( !ResetEncoder.ready() ) {
-		log(Error) << "Could not find Spindle_ReadEncoders.reset Operation!"<<endlog();
+		log(Error) << "Could not find SPINDLE_ReadEncoders.reset Operation!"<<endlog();
 		return false;
 	}	
 	
@@ -83,7 +83,7 @@ bool SpindleHoming::configureHook()
 bool SpindleHoming::startHook()
 { 
 		if ( !homed ) {
-			TaskContext* Spindle_ReadReferences = this->getPeer("Spindle_ReadReferences");
+			TaskContext* Spindle_ReadReferences = this->getPeer("SPINDLE_ReadReferences");
 			if ( ! Spindle_ReadReferences->isRunning() ) {
 				log(Error) << "Spindle component is not running yet, please start this component first" << endlog();
 			}
