@@ -23,6 +23,7 @@ PanTiltControllerJointState::PanTiltControllerJointState(const std::string& name
 	TaskContext(name, PreOperational) {
 	addPort("instruction", instructionPort).doc("Dynamixel instruction packet port");
 	addPort("status", statusPort).doc("Dynamixel status packet port");
+	addPort("headStatus", headStatusPort).doc("head status port, to make dashboard light green");
 	addPort("serialRunning", serialRunningPort).doc("Serial device running port");
 	addPort("serialReadyRx", serialReadyRxPort).doc("Serial device ready receive port");	
 	addPort("goalPos", goalPosPort).doc("Goal head position");
@@ -102,6 +103,10 @@ void PanTiltControllerJointState::updateHook() {
 	if(!(serialRunningPort.read(serialRunning) == NewData)) {
 		return;
 	}
+	
+	bool headStatusBool = true;
+	headStatusPort.write(headStatusBool);
+	
 	currentPos.header.stamp = ros::Time::now();
 	if (commStatus == COMM_RXSUCCESS){
 		trial = 0;
