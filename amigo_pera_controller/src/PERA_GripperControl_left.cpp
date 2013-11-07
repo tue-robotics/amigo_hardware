@@ -9,7 +9,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#include "PERA_GripperControl.hpp"
+#include "PERA_GripperControl_left.hpp"
 
 //#define gripperGain 0.040 // Original
 //#define gripperGain 0.40
@@ -19,7 +19,7 @@ using namespace std;
 using namespace RTT;
 using namespace PERA;
 
-	GripperControl::GripperControl(const std::string& name)
+	GripperControlleft::GripperControlleft(const std::string& name)
         : TaskContext(name, PreOperational)
 
 		{
@@ -45,20 +45,20 @@ using namespace PERA;
 					
 	  }
 
-	GripperControl::~GripperControl(){}
+	GripperControlleft::~GripperControlleft(){}
 
-	bool GripperControl::configureHook(){
+	bool GripperControlleft::configureHook(){
 		torques.resize(8);
 		gripperPos.resize(1,0.0);
 		completed = true;
 		return true;
 	}
 
-	bool GripperControl::startHook(){
+	bool GripperControlleft::startHook(){
 		return true;
 	}
 
-	void GripperControl::updateHook(){
+	void GripperControlleft::updateHook(){
 		
 		bool resetGripper;
 		
@@ -131,7 +131,7 @@ using namespace PERA;
 		}
 	}
 
-void GripperControl::stopHook(){}
+void GripperControlleft::stopHook(){}
 
-ORO_CREATE_COMPONENT(PERA::GripperControl)
+ORO_CREATE_COMPONENT(PERA::GripperControlleft)
 

@@ -190,7 +190,7 @@ LPERA_RTD.bw = 10.0
 LPERA_RTD.configure
 
 ### Gripper force controller ###
-loadComponent("LPERA_GripperControl","PERA::GripperControl")
+loadComponent("LPERA_GripperControl","PERA::GripperControlleft")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed = 10.0

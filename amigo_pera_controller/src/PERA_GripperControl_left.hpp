@@ -23,14 +23,14 @@ namespace PERA
 {
 	typedef std::vector<double> doubles;
 	
-	/*! \class GripperControl
+	/*! \class GripperControlleft
 	 *  \brief Defines Orocos component for controlling the gripper
 	 * 
-	 * The GripperControl closes the gripper using a force threshold. It
+	 * The GripperControlleft closes the gripper using a force threshold. It
 	 * opens the gripper to a predefined position.
 	 */
 	
-	class GripperControl : 
+	class GripperControlleft : 
 
 	  public RTT::TaskContext
 	  {
@@ -75,9 +75,9 @@ namespace PERA
 	  
 	public:
 
-	  GripperControl(const std::string& name);
+	  GripperControlleft(const std::string& name);
 	  
-	  ~GripperControl();
+	  ~GripperControlleft();
 	  
 	  //! Configuration sequence, executed before startHook()
 	  bool configureHook();
