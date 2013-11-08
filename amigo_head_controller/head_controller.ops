@@ -70,6 +70,7 @@ connect ("Soem.Slave_100f.data_rx", "HEAD_PanTiltController.status", ConnPolicy(
 connect ("Soem.Slave_100f.ready_rx", "HEAD_PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "HEAD_PanTiltController.serialRunning", ConnPolicy() )
 connect ("HEAD_PanTiltController.headStatus", "HEAD_Status.bool_in1", ConnPolicy() )
+connect ("HEAD_PanTiltController.currentPos", "JointStateAggregator.head", ConnPolicy() )
 stream("HEAD_Status.bool_out1", ros.topic("/head_status"));
 
 ## Diagnostics ##
