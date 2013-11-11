@@ -40,7 +40,7 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
-var bool REQUIREHOMING   		= false; 
+var bool REQUIREHOMING   		= true; 
 var bool REQUIREGRIPPERHOMING   = false;
 
 #### HIGH PRIORITY COMPONENTS ####
@@ -130,7 +130,7 @@ LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	50.0, 	100.0) 
 LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	20.0)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
-LPERA_Supervisor.homedPos 				= array ( 989.0,   553.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
+LPERA_Supervisor.homedPos 				= array (  43.0,   553.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 LPERA_Supervisor.maxConSatTime 			= 5.0
 LPERA_Supervisor.stepSize 				= 0.5
 LPERA_Supervisor.absSenDir 				= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
