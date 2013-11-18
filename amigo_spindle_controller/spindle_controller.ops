@@ -13,17 +13,9 @@ import("amigo_spindle_controller")
 trigger
 Supervisor.NameBodyPart( 2, "spindle")
 
-### LOAD WBC PARAMETER ### 
-var string wbcstr
-wbcstr = os.getenv("wbc")
-
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "torso_joint" )
-var double UPPERJOINTFORCELIMIT =  10; #ToDo: choose sensible value
-var double LOWERJOINTFORCELIMIT = -10; #ToDo: choose sensible value
-var double UPPERJOINTLIMIT = 0.40; # ToDo: check
-var double LOWERJOINTLIMIT = 0.08; # ToDo: check
 
 ### Loading Components ###
 #Reading Encoders
@@ -34,6 +26,13 @@ SPINDLE_ReadEncoders.encoderbits = 65536
 SPINDLE_ReadEncoders.enc2SI = array (-4.1666667e-7); # Minus because spindle up is defined positive.
 SPINDLE_ReadEncoders.configure
 
+#Publish component
+#loadComponent("SPINDLE_PositionToROS","ROS::DoublesToROS")
+#addPeer("Supervisor","SPINDLE_PositionToROS")
+#setActivity("SPINDLE_PositionToROS",0.01,LowestPriority,ORO_SCHED_OTHER)
+#SPINDLE_PositionToROS.NumberOfDoublesInVector = 1
+#SPINDLE_PositionToROS.configure
+
 # Publish JointState Component
 loadComponent("SPINDLE_WriteJointStates","ROS::DoublesToJointState")
 addPeer("Supervisor","SPINDLE_WriteJointStates")
@@ -41,7 +40,10 @@ setActivity("SPINDLE_WriteJointStates",0.05,HighestPriority,ORO_SCHED_RT)
 SPINDLE_WriteJointStates.JointNames = strings ( "torso_joint" )
 SPINDLE_WriteJointStates.configure
 
-#Read spindle setpoints
+# Select either the old (for amigo_msgs) and new (for jointstate messages) interface
+#Reading spindle setpoints (old)
+#loadComponent("SPINDLE_ReadReferences","SPINDLE::ReadSpindleSetpoint")
+#Reading spindle setpoints (new)
 loadComponent("SPINDLE_ReadReferences","SPINDLE::ReadSpindleSetpointJointState") ;# if you rename this component also rename in spindle homing component
 addPeer("Supervisor","SPINDLE_ReadReferences")
 SPINDLE_ReadReferences.min_pos = 0.075
@@ -49,17 +51,12 @@ SPINDLE_ReadReferences.max_pos = 0.4
 SPINDLE_ReadReferences.max_vel = 0.07
 SPINDLE_ReadReferences.configure
 
-### Admittance controller
-loadComponent("SPINDLE_AdmittanceController","FILTERS::AdmittanceControllers")
-addPeer("Supervisor","SPINDLE_AdmittanceController")
-setActivity("SPINDLE_AdmittanceController",0.0,HighestPriority,ORO_SCHED_RT)
-SPINDLE_AdmittanceController.vector_size 			= 7
-SPINDLE_AdmittanceController.sampling_time 		= Ts
-SPINDLE_AdmittanceController.masses 				= array( 1.0 ); # ToDo: decent value
-SPINDLE_AdmittanceController.damping_coefficients   = array( 1.0 ); # ToDo: decent value
-SPINDLE_AdmittanceController.lower_joint_limits 	= LOWERJOINTLIMIT
-SPINDLE_AdmittanceController.upper_joint_limits 	= UPPERJOINTLIMIT
-SPINDLE_AdmittanceController.configure
+### Read reference joint angles using Jointstate messages###
+# Won't work in the current structure #
+#loadComponent("SpindleReadReferenceJointStates","ROS::JointStateToDoubles")
+#setActivity("SpindleReadReferenceJointStates",0.0,HighestPriority,ORO_SCHED_RT)
+#SpindleReadReferenceJointStates.NumberOfJoints = 1
+#SpindleReadReferenceJointStates.configure
 
 #Loading Reference Generator
 loadComponent("SPINDLE_ReferenceGenerator","ReferenceGenerator")
@@ -112,15 +109,6 @@ loadComponent("SPINDLE_ComputeError","MATH::Subtraction")
 addPeer("Supervisor","SPINDLE_ComputeError")
 SPINDLE_ComputeError.vectorsize = 1
 SPINDLE_ComputeError.configure
-
-## Input force limiter
-loadComponent("SPINDLE_InputForceLimiter", "DISCONTINUITIES::Saturation")
-addPeer("Supervisor","SPINDLE_InputForceLimiter")
-setActivity("SPINDLE_InputForceLimiter", 0.0, HighestPriority, ORO_SCHED_RT)
-SPINDLE_InputForceLimiter.upper_limit = UPPERJOINTFORCELIMIT
-SPINDLE_InputForceLimiter.lower_limit = LOWERJOINTFORCELIMIT
-SPINDLE_InputForceLimiter.vector_size = 1
-SPINDLE_InputForceLimiter.configure
 
 ### GAIN ###
 loadComponent("SPINDLE_Gain","MATH::Gain")
@@ -222,20 +210,21 @@ JointStateAggregator.addAggregationPort("torso")
 
 #### CONNECT COMPONENTS ####
 connect ("Soem.Slave_1006.Slave_1006_value","SPINDLE_ReadEncoders.enc1_in", ConnPolicy() )
+#connect ("SPINDLE_ReadEncoders.out","SPINDLE_PositionToROS.in", ConnPolicy() )
 connect( "SPINDLE_ReadEncoders.out", "SPINDLE_WriteJointStates.pos_in", ConnPolicy() )
 connect ("SPINDLE_WriteJointStates.out", "JointStateAggregator.torso", ConnPolicy() )
-#connect ("SPINDLE_ReadReferences.out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
-#connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
+connect ("SPINDLE_ReadReferences.out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
+connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
 connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch", ConnPolicy() )
-connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() ); #ToDo: what to do with this?
-#connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
+connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
+connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
 connect ("SPINDLE_ReadEncoders.out","SPINDLE_ComputeError.in_minus", ConnPolicy() )
 connect ("SPINDLE_ComputeError.out","SPINDLE_Gain.in", ConnPolicy() )
 connect ("SPINDLE_Gain.out","SPINDLE_Integrator.in", ConnPolicy() )
 connect ("SPINDLE_Integrator.out","SPINDLE_LeadLag.in", ConnPolicy() )
 connect ("SPINDLE_LeadLag.out","SPINDLE_LowPass.in", ConnPolicy() )
-#connect ("SPINDLE_ReferenceGenerator.velout","SPINDLE_FFW.ref_vel", ConnPolicy() )
-#connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy() )
+connect ("SPINDLE_ReferenceGenerator.velout","SPINDLE_FFW.ref_vel", ConnPolicy() )
+connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy() )
 connect ("SPINDLE_FFW.FFW_out","SPINDLE_Addition.in1", ConnPolicy() )
 connect ("SPINDLE_LowPass.out","SPINDLE_Addition.in2_event", ConnPolicy() )
 connect ("SPINDLE_Addition.out","AnalogOuts.spindle", ConnPolicy() )
@@ -243,22 +232,6 @@ connect ("SPINDLE_Safety.spindle_brake","DigitalOuts.in3", ConnPolicy() );   # S
 connect ("SPINDLE_Safety.spindle_brake","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
 connect ("SPINDLE_ComputeError.out","SPINDLE_Safety.error_pos", ConnPolicy() )
 connect ("SPINDLE_Safety.spindle_brake", "SPINDLE_Status.bool_in1", ConnPolicy() )
-
-## Whole body controller or reference generator loop	##
-if (wbcstr == "true") then {
-	connect("SPINDLE_ReadReferences.eff_out","SPINDLE_InputForceLimiter.in", ConnPolicy() )
-	connect ("SPINDLE_InputForceLimiter.out", "SPINDLE_AdmittanceController.force_in", ConnPolicy() )
-	connect ("SPINDLE_ReadEncoders.out","SPINDLE_AdmittanceController.measured_position_in", ConnPolicy() )
-	connect ("SPINDLE_AdmittanceController.out", "SPINDLE_ComputeError.in_plus", ConnPolicy() )
-	# Add FF as well?
-}
-else if (wbcstr == "false") then {
-	connect ("SPINDLE_ReadReferences.pos_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
-    connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeErrors.in_plus", ConnPolicy() )
-    connect ("SPINDLE_ReferenceGenerator.velout","SPINDLE_FFW.ref_vel", ConnPolicy() )
-	connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy() )
-	connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
-}
 
 ## Diagnostics ##
 connect ("SPINDLE_ReferenceGenerator.posout", "SPINDLE_Diagnostics.vec1", ConnPolicy() )
@@ -275,23 +248,18 @@ stream("SPINDLE_ReadReferences.spindle_setpoint", ros.topic("/amigo/torso/refere
 stream("SPINDLE_Status.bool_out1", ros.topic("/spindle_status"));
 stream("SPINDLE_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
+#stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/joint_states"))
+#stream("SPINDLE_PositionToROS.out1", ros.topic("/spindle_position"))
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
+#Supervisor.AddAllwaysOnPeer ("SPINDLE_PositionToROS")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_Diagnostics")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_Status")
 
-if (wbcstr == "true") then {
-	Supervisor.AddAllwaysOnPeer ("SPINDLE_InputForceLimiter")
-	Supervisor.AddAllwaysOnPeer ("SPINDLE_AdmittanceController")
-}
-else if (wbcstr == "false") then {
-	Supervisor.AddAllwaysOnPeer ("SPINDLE_ReferenceGenerator")
-}
-
 Supervisor.AddPeerToBodyPart ("SPINDLE_ReadReferences",2 )
-#Supervisor.AddPeerToBodyPart ("SPINDLE_ReferenceGenerator",2 )
+Supervisor.AddPeerToBodyPart ("SPINDLE_ReferenceGenerator",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_ComputeError",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_Gain",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_Integrator",2 )
