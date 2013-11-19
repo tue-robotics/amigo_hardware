@@ -62,7 +62,7 @@ SPINDLE_AdmittanceController.upper_joint_limits 	= UPPERJOINTLIMIT
 SPINDLE_AdmittanceController.configure
 
 #Loading Reference Generator
-loadComponent("SPINDLE_ReferenceGenerator","ReferenceGenerator")
+loadComponent("SPINDLE_ReferenceGenerator","SPINDLE::SpindleReferenceGenerator")
 addPeer("Supervisor","SPINDLE_ReferenceGenerator")
 SPINDLE_ReferenceGenerator.setPeriod(Ts)
 SPINDLE_ReferenceGenerator.NrInterpolators = 1
@@ -227,7 +227,9 @@ connect ("SPINDLE_WriteJointStates.out", "JointStateAggregator.torso", ConnPolic
 #connect ("SPINDLE_ReadReferences.out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
 #connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
 connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch", ConnPolicy() )
-connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() ); #ToDo: what to do with this?
+#connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() ); #ToDo: what to do with this?
+connect ("SPINDLE_Homing.ref_out","SPINDLE_ComputeErrors.in_plus", ConnPolicy() );
+connect ("SPINDLE_Homing.homing_finished","SPINDLE_ReferenceGenerator.homing_finished, ConnPolicy() );
 #connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
 connect ("SPINDLE_ReadEncoders.out","SPINDLE_ComputeError.in_minus", ConnPolicy() )
 connect ("SPINDLE_ComputeError.out","SPINDLE_Gain.in", ConnPolicy() )

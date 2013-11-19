@@ -21,6 +21,7 @@ namespace AMIGO // Just because it looks nice
     InputPort<std_msgs::Bool> endswitch_inport;
 
     OutputPort< vector<doubles> > ref_outport;
+    OutputPort< bool > homingfinished_outport;
 
     
     // Declaring variables

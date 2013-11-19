@@ -17,6 +17,7 @@ SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperatio
   addEventPort( "endswitch", endswitch_inport );
 
   addPort( "ref_out", ref_outport );
+  addPort( "homing_finished", homingfinished_outport );
 
   
   // Creating variables
@@ -27,7 +28,6 @@ SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperatio
   addProperty( "stroke", stroke );
   addProperty( "endpos", endpos );
   addProperty( "homed", homed );
-  
   
 }
 SpindleHoming::~SpindleHoming(){}
@@ -134,6 +134,8 @@ void SpindleHoming::updateHook()
 		this->stop(); 
 	}
 	if ( homed == true ){
+		
+		homingfinished_outport.write(true);
 		//log(Warning)<<"Spindle: stop component"<<endlog();
 		//Should not happen only if homed == true is defined in ops file
 		this->stop(); 
