@@ -20,10 +20,10 @@ wbcstr = os.getenv("wbc")
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "torso_joint" )
-var double UPPERJOINTFORCELIMIT =  10; #ToDo: choose sensible value
-var double LOWERJOINTFORCELIMIT = -10; #ToDo: choose sensible value
-var double UPPERJOINTLIMIT = 0.40; # ToDo: check
-var double LOWERJOINTLIMIT = 0.08; # ToDo: check
+var double UPPERJOINTFORCELIMIT =  704.0; #ToDo: choose sensible value
+var double LOWERJOINTFORCELIMIT = -704.0; #ToDo: choose sensible value
+var double UPPERJOINTLIMIT = 0.4; 
+var double LOWERJOINTLIMIT = 0.075; 
 
 ### Loading Components ###
 #Reading Encoders
@@ -53,10 +53,10 @@ SPINDLE_ReadReferences.configure
 loadComponent("SPINDLE_AdmittanceController","FILTERS::AdmittanceControllers")
 addPeer("Supervisor","SPINDLE_AdmittanceController")
 setActivity("SPINDLE_AdmittanceController",0.0,HighestPriority,ORO_SCHED_RT)
-SPINDLE_AdmittanceController.vector_size 			= 7
+SPINDLE_AdmittanceController.vector_size 			= 1
 SPINDLE_AdmittanceController.sampling_time 		= Ts
-SPINDLE_AdmittanceController.masses 				= array( 1.0 ); # ToDo: decent value
-SPINDLE_AdmittanceController.damping_coefficients   = array( 1.0 ); # ToDo: decent value
+SPINDLE_AdmittanceController.masses 				= array( 20000.0 ); 
+SPINDLE_AdmittanceController.damping_coefficients   = array( 13000.0 ); 
 SPINDLE_AdmittanceController.lower_joint_limits 	= LOWERJOINTLIMIT
 SPINDLE_AdmittanceController.upper_joint_limits 	= UPPERJOINTLIMIT
 SPINDLE_AdmittanceController.configure
