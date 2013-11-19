@@ -31,6 +31,8 @@ namespace AMIGO // Just because it looks nice
     double home_acc;
     double stroke;
     double endpos;
+    double reference;
+    double referencestep;
     long long int starttime; //Debugging
     
     vector<doubles> ref;
