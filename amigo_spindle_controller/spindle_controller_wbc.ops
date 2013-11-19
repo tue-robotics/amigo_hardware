@@ -20,8 +20,8 @@ wbcstr = os.getenv("wbc")
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "torso_joint" )
-var array UPPERJOINTFORCELIMIT = array( 704.0); #ToDo: choose sensible value
-var array LOWERJOINTFORCELIMIT = array(-704.0); #ToDo: choose sensible value
+var array UPPERJOINTFORCELIMIT = array( 704.0); 
+var array LOWERJOINTFORCELIMIT = array(-704.0); 
 var array UPPERJOINTLIMIT = array( 0.4 ); 
 var array LOWERJOINTLIMIT = array( 0.075 );  
 
@@ -81,7 +81,7 @@ addPeer("SPINDLE_Homing","SPINDLE_ReadReferences")
 SPINDLE_Homing.home_vel = 0.01
 SPINDLE_Homing.home_acc = 0.1; #Fast acc means constant velocity means better reproducing homing
 SPINDLE_Homing.stroke  = 0.41
-SPINDLE_Homing.endpos = 0.38
+SPINDLE_Homing.endpos = 0.398
 SPINDLE_Homing.homed = 0; # =False
 SPINDLE_Homing.configure
 

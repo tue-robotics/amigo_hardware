@@ -131,15 +131,17 @@ void SpindleHomingAdmittance::updateHook()
 		ref[0] = endpos;
 		
 		ref_outport.write(ref);
-		this->stop(); 
+		//this->stop(); 
 	}
 	
-	if (homed == true && cntr < 5000) {
+	if (homed == true && cntr < 5001) {
+		//ToDo, change the stepresponse
 		cntr++;
 	}
 	
-	if ( homed == true && (cntr >= 5000 )){
+	if ( homed == true && cntr >= 5000 ){
 		
+		//ROS_INFO_STREAM( "5 Sec have passed." );
 		homingfinished_outport.write(true);
 		//log(Warning)<<"Spindle: stop component"<<endlog();
 		//Should not happen only if homed == true is defined in ops file
