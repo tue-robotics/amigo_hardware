@@ -20,10 +20,10 @@ wbcstr = os.getenv("wbc")
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "torso_joint" )
-var double UPPERJOINTFORCELIMIT =  704.0; #ToDo: choose sensible value
-var double LOWERJOINTFORCELIMIT = -704.0; #ToDo: choose sensible value
-var double UPPERJOINTLIMIT = 0.4; 
-var double LOWERJOINTLIMIT = 0.075; 
+var array UPPERJOINTFORCELIMIT = array( 704.0); #ToDo: choose sensible value
+var array LOWERJOINTFORCELIMIT = array(-704.0); #ToDo: choose sensible value
+var array UPPERJOINTLIMIT = array( 0.4 ); 
+var array LOWERJOINTLIMIT = array( 0.075 );  
 
 ### Loading Components ###
 #Reading Encoders
@@ -42,20 +42,19 @@ SPINDLE_WriteJointStates.JointNames = strings ( "torso_joint" )
 SPINDLE_WriteJointStates.configure
 
 #Read spindle setpoints
-loadComponent("SPINDLE_ReadReferences","SPINDLE::ReadSpindleSetpointJointState") ;# if you rename this component also rename in spindle homing component
+loadComponent("SPINDLE_ReadReferences","ROS::JointStateToDoubles") ;# if you rename this component also rename in spindle homing component
 addPeer("Supervisor","SPINDLE_ReadReferences")
-SPINDLE_ReadReferences.min_pos = 0.075
-SPINDLE_ReadReferences.max_pos = 0.4
-SPINDLE_ReadReferences.max_vel = 0.07
+setActivity("SPINDLE_ReadReferences",0.0,HighestPriority,ORO_SCHED_RT)
+SPINDLE_ReadReferences.NumberOfJoints = 1
 SPINDLE_ReadReferences.configure
 
 ### Admittance controller
-loadComponent("SPINDLE_AdmittanceController","FILTERS::AdmittanceControllers")
+loadComponent("SPINDLE_AdmittanceController","FILTERS::AdmittanceControllersSpindle")
 addPeer("Supervisor","SPINDLE_AdmittanceController")
 setActivity("SPINDLE_AdmittanceController",0.0,HighestPriority,ORO_SCHED_RT)
 SPINDLE_AdmittanceController.vector_size 			= 1
-SPINDLE_AdmittanceController.sampling_time 		= Ts
-SPINDLE_AdmittanceController.masses 				= array( 20000.0 ); 
+SPINDLE_AdmittanceController.sampling_time 			= Ts
+SPINDLE_AdmittanceController.masses					= array( 20000.0 ); 
 SPINDLE_AdmittanceController.damping_coefficients   = array( 13000.0 ); 
 SPINDLE_AdmittanceController.lower_joint_limits 	= LOWERJOINTLIMIT
 SPINDLE_AdmittanceController.upper_joint_limits 	= UPPERJOINTLIMIT
@@ -73,7 +72,7 @@ SPINDLE_ReferenceGenerator.configure
 SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.03); #Velocity is carefully tuned. Do not increase because integrator will fill!
 
 #Loading Homing component
-loadComponent("SPINDLE_Homing","SpindleHoming")
+loadComponent("SPINDLE_Homing","SpindleHomingAdmittance")
 connectPeers("Supervisor","SPINDLE_Homing")
 connectPeers("SPINDLE_Homing","Supervisor")
 connectPeers("SPINDLE_Homing","SPINDLE_ReadEncoders")
@@ -82,7 +81,7 @@ addPeer("SPINDLE_Homing","SPINDLE_ReadReferences")
 SPINDLE_Homing.home_vel = 0.01
 SPINDLE_Homing.home_acc = 0.1; #Fast acc means constant velocity means better reproducing homing
 SPINDLE_Homing.stroke  = 0.41
-SPINDLE_Homing.endpos = 0.35
+SPINDLE_Homing.endpos = 0.38
 SPINDLE_Homing.homed = 0; # =False
 SPINDLE_Homing.configure
 
@@ -157,7 +156,7 @@ SPINDLE_LowPass.configure
 
 #Calculating Feed Forward
 loadComponent("SPINDLE_FFW","CalculateFFW")
-addPeer("Supervisor","SPINDLE_FFW")
+#addPeer("Supervisor","SPINDLE_FFW")
 SPINDLE_FFW.FFWgrav = 0.07
 SPINDLE_FFW.FFWstat = 0.05
 SPINDLE_FFW.FFWdyn = 0.4
@@ -228,8 +227,7 @@ connect ("SPINDLE_WriteJointStates.out", "JointStateAggregator.torso", ConnPolic
 #connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
 connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch", ConnPolicy() )
 #connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() ); #ToDo: what to do with this?
-connect ("SPINDLE_Homing.ref_out","SPINDLE_ComputeErrors.in_plus", ConnPolicy() );
-connect ("SPINDLE_Homing.homing_finished","SPINDLE_ReferenceGenerator.homing_finished, ConnPolicy() );
+connect ("SPINDLE_Homing.ref_out","SPINDLE_ComputeError.in_plus", ConnPolicy() );
 #connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
 connect ("SPINDLE_ReadEncoders.out","SPINDLE_ComputeError.in_minus", ConnPolicy() )
 connect ("SPINDLE_ComputeError.out","SPINDLE_Gain.in", ConnPolicy() )
@@ -252,14 +250,16 @@ if (wbcstr == "true") then {
 	connect ("SPINDLE_InputForceLimiter.out", "SPINDLE_AdmittanceController.force_in", ConnPolicy() )
 	connect ("SPINDLE_ReadEncoders.out","SPINDLE_AdmittanceController.measured_position_in", ConnPolicy() )
 	connect ("SPINDLE_AdmittanceController.out", "SPINDLE_ComputeError.in_plus", ConnPolicy() )
+	connect ("SPINDLE_Homing.homing_finished","SPINDLE_AdmittanceController.homing_finished", ConnPolicy() );
 	# Add FF as well?
 }
 else if (wbcstr == "false") then {
 	connect ("SPINDLE_ReadReferences.pos_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
-    connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeErrors.in_plus", ConnPolicy() )
+    connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
     connect ("SPINDLE_ReferenceGenerator.velout","SPINDLE_FFW.ref_vel", ConnPolicy() )
 	connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy() )
 	connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
+	connect ("SPINDLE_Homing.homing_finished","SPINDLE_ReferenceGenerator.homing_finished", ConnPolicy() );
 }
 
 ## Diagnostics ##
@@ -273,7 +273,7 @@ connect ("SPINDLE_Safety.safety", "SPINDLE_Diagnostics.bool1", ConnPolicy() )
 stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup"))
 stream( "Supervisor.spindle_enabled", ros.topic("/spindle_enabled"))
 
-stream("SPINDLE_ReadReferences.spindle_setpoint", ros.topic("/amigo/torso/references"));
+stream("SPINDLE_ReadReferences.in", ros.topic("/amigo/torso/references"));
 stream("SPINDLE_Status.bool_out1", ros.topic("/spindle_status"));
 stream("SPINDLE_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
