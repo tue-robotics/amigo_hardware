@@ -116,8 +116,8 @@ bool Supervisor::configureHook()
 
 	// Set variables for homingprocedure
 	jntNr=STRT_JNT;	
-	FastStep = 0.175;
-	SlowStep = 0.0425;
+	FastStep = 0.15;
+	SlowStep = 0.01;
 	Ts = 1000; 
 	
 	// Pressed is true. Assume emergency button pressed untill informed otherwise.
@@ -431,7 +431,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go forward fast
 						if (cntr3 > (Ts/10)) {
-						log(Warning)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"Homing q"<<jntNr<<". Moving forward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -439,7 +439,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go back fast
 						if (cntr3 > (Ts/10)) {
-						log(Warning)<<"SUPERVISOR: 1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"Homing q"<<jntNr<<". Moving backward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -447,15 +447,14 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go forward slowly
 						if (cntr3 > (Ts/10)) {
-						log(Warning)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
-						cntr3 = 1;
+						log(Warning)<<"Homing q"<<jntNr<<". Moving forward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();						cntr3 = 1;
 						}
 						cntr3++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go back slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"SUPERVISOR: 2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"Homing q"<<jntNr<<". Moving backward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -469,7 +468,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go forward fast 
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"Homing q"<<jntNr<<". Moving forward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;					
@@ -477,7 +476,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go back fast
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"SUPERVISOR: -1.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"Homing q"<<jntNr<<". Moving backward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;				
@@ -485,7 +484,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go forward slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" decreasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]"  <<endlog();
+						log(Warning)<<"Homing q"<<jntNr<<". Moving forward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -493,7 +492,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go back slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"SUPERVISOR: -2.0 for joint q"<<jntNr<<" increasing despos towards:"<<homJntAngles[jntNr-1] << ", [" << absJntAngles[1] << "," << absJntAngles[0] << "]" <<endlog();
+						log(Warning)<<"Homing q"<<jntNr<<". Moving backward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;					
@@ -505,6 +504,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 			// Homing position reached
 			else if(fabs(HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<1.0){
 				goodToGo = false;
+				log(Warning)<<"Homed joint q"<<jntNr<<". ["<< HOMEDPOS[jntNr-1] << "-" << absJntAngles[jntNr-1] << " = " << fabs(HOMEDPOS[jntNr-1]- absJntAngles[jntNr-1]) << "]" <<endlog();
 			}
 
 		}
