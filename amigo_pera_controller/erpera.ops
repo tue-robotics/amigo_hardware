@@ -130,7 +130,7 @@ RPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 RPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	100.0)
 RPERA_Supervisor.maxJointErrors 		= array (  0.09,     0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	20.0)
 RPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 		1.0, 	 1.0, 	 	1.0, 	 1.0)
-RPERA_Supervisor.homedPos 				= array (1380.0,   	640.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
+RPERA_Supervisor.homedPos 				= array (1385.0,   	648.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 RPERA_Supervisor.maxConSatTime 			= 3.0
 RPERA_Supervisor.stepSize 				= 0.5
 RPERA_Supervisor.absSenDir 				= array (1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
@@ -313,19 +313,19 @@ RPERA_Diagnostics.boolname1 			= "Amplifiers"
 RPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*2;	tracingpolicy.lock_policy = LOCKED
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*3;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("RPERA_Tracing","Signal::Tracing")
 #addPeer("Supervisor","RPERA_Tracing")
 #setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
 #RPERA_Tracing.vector_sizes = array (8.0, 8.0, 9.0)
-#RPERA_Tracing.buffersize = 32768*2;
-#RPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/test1.dat"
+#RPERA_Tracing.buffersize = 32768*3;
+#RPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/testforce3.dat"
 #RPERA_Tracing.Ts = Ts
 #RPERA_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #RPERA_Tracing.configure
 #connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in1", tracingpolicy );			# reference after reference generator
 #connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in2", tracingpolicy ) ; 					# error
-#connect ("RPERA_AnalogInsPera.out_pos","RPERA_Tracing.in3", tracingpolicy ) ; 				# absolute sensors	
+#connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in3", tracingpolicy ) ; 				# force sensors	
 
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
