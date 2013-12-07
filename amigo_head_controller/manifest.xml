@@ -17,4 +17,7 @@
   <depend package="amigo_msgs"/>
   <depend package="rtt_sensor_msgs"/>
   <depend package="roscpp"/>
+  <depend package="rtt_ROS_interfacing"/>
+  <depend package="rtt_soem_interfacing"/>
+  <depend package="rtt_supervisory_components"/>
 </package>
