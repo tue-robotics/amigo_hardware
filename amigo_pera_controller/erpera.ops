@@ -127,8 +127,8 @@ setActivity("RPERA_Supervisor",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_Supervisor.setPeriod(Ts)
 RPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 RPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
-RPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	100.0)
-RPERA_Supervisor.maxJointErrors 		= array (  0.09,     0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	20.0)
+RPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	25.0)
+RPERA_Supervisor.maxJointErrors 		= array (  0.09,     0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 1.0)
 RPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 		1.0, 	 1.0, 	 	1.0, 	 1.0)
 RPERA_Supervisor.homedPos 				= array (1385.0,   	648.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 RPERA_Supervisor.maxConSatTime 			= 3.0
@@ -218,7 +218,7 @@ loadComponent("RPERA_Gains","MATH::Gains")
 addPeer("Supervisor","RPERA_Gains")
 setActivity("RPERA_Gains",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gains.vectorsize = 8
-RPERA_Gains.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 0.0); #Grippergain set to zero
+RPERA_Gains.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 0.0);
 RPERA_Gains.configure
 
 ### LEADLAGS ###
