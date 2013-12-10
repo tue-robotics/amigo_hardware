@@ -82,24 +82,27 @@ SPINDLE_Homing.stroke  = 0.41
 SPINDLE_Homing.endpos = 0.35
 SPINDLE_Homing.homed = 0; # =False
 SPINDLE_Homing.configure
+connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch", ConnPolicy() )
+connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
 
 #Loading Homing component
-#loadComponent("SPINDLE_Homing","AMIGO::Homing")
+#loadComponent("SPINDLE_Homing","SUPERVISORY::Homing")
 #connectPeers("Supervisor","SPINDLE_Homing")
 #connectPeers("SPINDLE_Homing","Supervisor")
 #connectPeers("SPINDLE_Homing","SPINDLE_ReadEncoders")
 #addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
 #addPeer("SPINDLE_Homing","SPINDLE_ReadReferences")
-#SPINDLE_Homing.homing_body   		= "Spindle" 			;# name of the body that is stopped/started during homing procedure
+#SPINDLE_Homing.homing_body   		= "spindle" 			;# name of the body that is stopped/started during homing procedure
+#SPINDLE_Homing.homing_compname		= "SPINDLE" 			;# orocos prefix
 #SPINDLE_Homing.require_homing   	= true		 			;# require homing
 #SPINDLE_Homing.homing_type			= array (3.0)			;# 0 = abs sen homing 1 = servo error homing  2 = Force sen homing  3 = endSwitch homing
-#SPINDLE_Homing.homing_order		= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
+#SPINDLE_Homing.homing_order			= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
 #SPINDLE_Homing.homing_refPos		= array (1.0)   		;# Pos Reference for the homing joint
 #SPINDLE_Homing.homing_refVel		= array (0.01)  		;# Vel Reference for the homing joint
 #SPINDLE_Homing.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
 #SPINDLE_Homing.homing_midpos		= array (0.35)  		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
 #SPINDLE_Homing.homing_endpos		= array (0.35)			;# position that the body should go to after homing is finished. (could be same as midpos)
-#connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch", ConnPolicy() )
+#connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch_in", ConnPolicy() )
 #connect ("SPINDLE_ReadEncoders.out", "SPINDLE_Homing.relPos_in", ConnPolicy() )
 #connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
 #SPINDLE_Homing.configure
@@ -215,8 +218,6 @@ connect( "SPINDLE_ReadEncoders.out", "SPINDLE_WriteJointStates.pos_in", ConnPoli
 connect ("SPINDLE_WriteJointStates.out", "JointStateAggregator.torso", ConnPolicy() )
 connect ("SPINDLE_ReadReferences.out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
 connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
-connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch", ConnPolicy() )
-connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
 connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
 connect ("SPINDLE_ReadEncoders.out","SPINDLE_ComputeError.in_minus", ConnPolicy() )
 connect ("SPINDLE_ComputeError.out","SPINDLE_Gain.in", ConnPolicy() )
