@@ -155,7 +155,7 @@ namespace PERA
 		//! Specifies if the abs sensors measure opposite (-1.0) to the joint angles or in the same direction (1.0)
 		doubles ABS_SEN_DIR;
 		//! Memory array storing if controller saturation was already reached
-		int firstSatInstance [8];
+		int firstSatInstance [9];
 
         sensor_msgs::JointState out_msg;
 	

@@ -40,7 +40,7 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
-var bool REQUIREHOMING   		= false; 
+var bool REQUIREHOMING   		= true; 
 var bool REQUIREGRIPPERHOMING   = true;
 
 #### HIGH PRIORITY COMPONENTS ####
@@ -128,7 +128,7 @@ RPERA_Supervisor.setPeriod(Ts)
 RPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 RPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 RPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   25.0, 	25.0, 	25.0)
-RPERA_Supervisor.maxJointErrors 		= array (  0.09,     0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 1.0)
+RPERA_Supervisor.maxJointErrors 		= array (  0.09,     0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 0.5)
 RPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 		1.0, 	 1.0, 	 	1.0, 	 1.0)
 RPERA_Supervisor.homedPos 				= array (1385.0,   	648.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 RPERA_Supervisor.maxConSatTime 			= 3.0
@@ -154,9 +154,9 @@ loadComponent("RPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_GripperControl.setPeriod(Ts)
-RPERA_GripperControl.threshold_closed = 8.0
+RPERA_GripperControl.threshold_closed = 80.0
 RPERA_GripperControl.max_pos = 5.0
-RPERA_GripperControl.gripper_gain = 0.1
+RPERA_GripperControl.gripper_gain = 5.0
 RPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -218,7 +218,7 @@ loadComponent("RPERA_Gains","MATH::Gains")
 addPeer("Supervisor","RPERA_Gains")
 setActivity("RPERA_Gains",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gains.vectorsize = 8
-RPERA_Gains.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 0.0);
+RPERA_Gains.gain = array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 250.0);
 RPERA_Gains.configure
 
 ### LEADLAGS ###

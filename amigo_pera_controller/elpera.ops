@@ -40,7 +40,7 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
-var bool REQUIREHOMING   		= true; 
+var bool REQUIREHOMING   		= false; 
 var bool REQUIREGRIPPERHOMING   = false;
 
 #### HIGH PRIORITY COMPONENTS ####
@@ -127,7 +127,8 @@ setActivity("LPERA_Supervisor",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_Supervisor.setPeriod(Ts)		;# To do check if this works without setPeriod()
 LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
-LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	25.0) 
+#LPERA_Supervisor.motorSaturations 		= array ( 1.0, 	1.0,     1.0, 	 1.0, 	   1.0,  	1.0, 	   1.0, 	 1.0, 	1.0) 
+LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   40.0, 	 40.0, 	25.0) 
 LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 1.0)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
 LPERA_Supervisor.homedPos 				= array (  392.0,   553.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
@@ -313,19 +314,20 @@ LPERA_Diagnostics.boolname1 			= "Amplifiers"
 LPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*3;	tracingpolicy.lock_policy = LOCKED
+#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*2;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("LPERA_Tracing","Signal::Tracing")
 #addPeer("Supervisor","LPERA_Tracing")
 #setActivity("LPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#LPERA_Tracing.vector_sizes = array (8.0, 8.0, 9.0)
-#LPERA_Tracing.buffersize = 32768*3;
-#LPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/test4.dat"
+#LPERA_Tracing.vector_sizes = array (8.0, 8.0, 8.0, 9.0, 9.0)
+#LPERA_Tracing.buffersize = 32768*2;
+#LPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/gripperlefttest2.dat"
 #LPERA_Tracing.Ts = Ts
-#LPERA_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #LPERA_Tracing.configure
-#connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in1", tracingpolicy );			# reference after reference generator
+#connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in1", tracingpolicy );		# reference after reference generator
 #connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in2", tracingpolicy ) ; 					# error
-#connect ("LPERA_AnalogInsPera.out_for","LPERA_Tracing.in3", tracingpolicy ) ; 				# force sensors	
+#connect ("LPERA_Addition.out","LPERA_Tracing.in3", tracingpolicy ) ; 						# control effort
+#connect ("LPERA_AnalogInsPera.out_for","LPERA_Tracing.in4", tracingpolicy ) ; 				# force sensors	voltage input
+#connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Tracing.in5", tracingpolicy ) ; 	# force sensors	after sensor calculation
 
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)

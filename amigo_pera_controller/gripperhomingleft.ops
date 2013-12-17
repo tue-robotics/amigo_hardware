@@ -40,7 +40,7 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
-var bool REQUIREHOMING   		= false; 
+var bool REQUIREHOMING   		= true; 
 var bool REQUIREGRIPPERHOMING   = true;
 
 #### HIGH PRIORITY COMPONENTS ####
@@ -128,7 +128,7 @@ LPERA_Supervisor.setPeriod(Ts)		;# To do check if this works without setPeriod()
 LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	25.0) 
-LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 1.0)
+LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 0.5)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
 LPERA_Supervisor.homedPos 				= array (  392.0,   553.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
 LPERA_Supervisor.maxConSatTime 			= 5.0
@@ -154,9 +154,9 @@ loadComponent("LPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.setPeriod(Ts)
-LPERA_GripperControl.threshold_closed 		= 10.0
+LPERA_GripperControl.threshold_closed 		= 100.0
 LPERA_GripperControl.max_pos 				= 4.5
-LPERA_GripperControl.gripper_gain 			= 0.1
+LPERA_GripperControl.gripper_gain 			= 2.0
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -460,31 +460,6 @@ Supervisor.AddAllwaysOnPeer ("LPERA_GripperControl")
 Supervisor.AddAllwaysOnPeer ("LPERA_Diagnostics")
 Supervisor.AddAllwaysOnPeer ("LPERA_ReadEncoders")
 #Supervisor.AddAllwaysOnPeer ("LPERA_Tracing")
-
-
-#Loading Homing component
-loadComponent("LPERA_Homing","Homing")
-connectPeers("Supervisor","LPERA_Homing")
-connectPeers("LPERA_Homing","Supervisor")
-connectPeers("LPERA_Homing","LPERA_ReadEncoders")
-addPeer("LPERA_Homing","LPERA_ReferenceInterpolator")
-addPeer("LPERA_Homing","LPERA_ReadReferences")
-addPeer("LPERA_Homing","LPERA_ReadEncoders")
-LPERA_Homing.homing_body   		= "LPERA" 				;# name of the body that is stopped/started during homing procedure
-LPERA_Homing.require_homing   	= true		 			;# require homing
-LPERA_Homing.homing_type		= array (1.0)			;# 0 = abs sen homing 1 = servo error homing  2 = Force sen homing  3 = endSwitch homing
-LPERA_Homing.homing_order		= array (5.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
-LPERA_Homing.homing_refPos		= array (5.0)   		;# Pos Reference for the homing joint
-LPERA_Homing.homing_refVel		= array (0.01)  		;# Vel Reference for the homing joint
-LPERA_Homing.homing_stroke		= array (1.57)			;# Stroke from zero point to homing point (encoders are resetted using this value)
-LPERA_Homing.homing_midpos		= array (0.0)  	 		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
-LPERA_Homing.homing_endpos		= array (0.1)			;# position that the body should go to after homing is finished. (could be same as midpos)
-LPERA_Homing.homing_error		= array (0.04)
-LPERA_Homing.configure
-connect ("LPERA_ReadEncoders.out", "LPERA_Homing.relPos_in", ConnPolicy() )
-connect ("LPERA_Homing.ref_out","LPERA_ReferenceInterpolator.posin", ConnPolicy() )
-connect ("LPERA_ComputeErrors.out", "LPERA_Homing.servo_error_in", ConnPolicy() )
-Supervisor.AddAllwaysOnPeer ("LPERA_Homing")
 
 #Loading Homing component
 #loadComponent("LPERA_Homing","Homing")

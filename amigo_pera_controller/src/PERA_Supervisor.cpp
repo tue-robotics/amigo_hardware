@@ -71,7 +71,7 @@ bool Supervisor::configureHook()
 	jointErrors.resize(8);
 	homJntAngles.resize(8);
 	previousAngles.resize(8);
-	timeReachedSaturation.resize(8);
+	timeReachedSaturation.resize(9);
     out_msg.position.resize(7);
 
 	// Set initial counters
@@ -90,6 +90,7 @@ bool Supervisor::configureHook()
 	firstSatInstance[5] = 0;
 	firstSatInstance[6] = 0;
 	firstSatInstance[7] = 0;
+	firstSatInstance[8] = 0;
 
 	// Errors is false by default
 	errors=false;
@@ -195,12 +196,18 @@ void Supervisor::updateHook()
 			controllerOutputs.resize(9);
 			controllerOutputPort.read(controllerOutputs);
 			
+			//log(Warning)<<"SUPERVISOR: CONTROL EFFORT:[ "<< controllerOutputs[0] << "," << controllerOutputs[1] << "," << controllerOutputs[2] << "," << controllerOutputs[3] << "," << controllerOutputs[4] << "," << controllerOutputs[5] << "," << controllerOutputs[6] << "," << controllerOutputs[7] << "," << controllerOutputs[8] << "]" <<endlog();
+			//log(Warning)<<"SUPERVISOR: CONTROL EFFORT:>[ "<< fabs(controllerOutputs[0]) << "," << fabs(controllerOutputs[1]) << "," << fabs(controllerOutputs[2]) << "," << fabs(controllerOutputs[3]) << "," << fabs(controllerOutputs[4]) << "," << fabs(controllerOutputs[5]) << "," << fabs(controllerOutputs[6]) << "," << fabs(controllerOutputs[7]) << "," << fabs(controllerOutputs[8]) << "]" <<endlog();
+
+			//log(Warning)<<"SUPERVISOR: MOTOR SAT:>[ "<< fabs(MOTORSAT[0]) << "," << fabs(MOTORSAT[1]) << "," << fabs(MOTORSAT[2]) << "," << fabs(MOTORSAT[3]) << "," << fabs(MOTORSAT[4]) << "," << fabs(MOTORSAT[5]) << "," << fabs(MOTORSAT[6]) << "," << fabs(MOTORSAT[7]) << "," << fabs(MOTORSAT[8]) << "]" <<endlog();
+
 			long double timeNow = os::TimeService::Instance()->getNSecs()*1e-9; 
 			
-			for(unsigned int i = 0;i<7;i++){
+			for(unsigned int i = 0;i<9;i++){
 				if(firstSatInstance[i]==0 && fabs(controllerOutputs[i])>=MOTORSAT[i]){
 					timeReachedSaturation[i]=timeNow;
 					firstSatInstance[i]=1;
+					log(Warning)<<"Motor Sat reached for joint :" << i <<endlog();
 				}
 				else if(fabs(controllerOutputs[i])<MOTORSAT[i]){
 					timeReachedSaturation[i]=timeNow;
@@ -431,7 +438,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go forward fast
 						if (cntr3 > (Ts/10)) {
-						log(Warning)<<"Homing q"<<jntNr<<". Moving forward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving forward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -439,7 +446,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go back fast
 						if (cntr3 > (Ts/10)) {
-						log(Warning)<<"Homing q"<<jntNr<<". Moving backward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving backward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -447,14 +454,14 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go forward slowly
 						if (cntr3 > (Ts/10)) {
-						log(Warning)<<"Homing q"<<jntNr<<". Moving forward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();						cntr3 = 1;
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving forward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();						cntr3 = 1;
 						}
 						cntr3++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go back slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"Homing q"<<jntNr<<". Moving backward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving backward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -468,7 +475,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go forward fast 
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"Homing q"<<jntNr<<". Moving forward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving forward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;					
@@ -476,7 +483,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go back fast
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"Homing q"<<jntNr<<". Moving backward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving backward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;				
@@ -484,7 +491,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go forward slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"Homing q"<<jntNr<<". Moving forward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving forward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;
@@ -492,7 +499,7 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go back slowly
 						if (cntr3 > (Ts/10)) {						
-						log(Warning)<<"Homing q"<<jntNr<<". Moving backward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
+						//log(Warning)<<"Homing q"<<jntNr<<". Moving backward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
 						cntr3++;					
