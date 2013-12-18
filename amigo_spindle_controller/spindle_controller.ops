@@ -69,6 +69,12 @@ SPINDLE_ReferenceGenerator.configure
 #SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.1);
 SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.03); #Velocity is carefully tuned. Do not increase because integrator will fill!
 
+#Calculating Errors
+loadComponent("SPINDLE_ComputeError","MATH::Subtraction")
+addPeer("Supervisor","SPINDLE_ComputeError")
+SPINDLE_ComputeError.vectorsize = 1
+SPINDLE_ComputeError.configure
+
 #Loading Homing component
 loadComponent("SPINDLE_Homing","SpindleHoming")
 connectPeers("Supervisor","SPINDLE_Homing")
@@ -90,7 +96,7 @@ connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy
 #connectPeers("Supervisor","SPINDLE_Homing")
 #connectPeers("SPINDLE_Homing","Supervisor")
 #connectPeers("SPINDLE_Homing","SPINDLE_ReadEncoders")
-#addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
+#addPeer("SPINDLE_Homing","SPINDLE_ComputeError")
 #addPeer("SPINDLE_Homing","SPINDLE_ReadReferences")
 #SPINDLE_Homing.homing_body   		= "spindle" 			;# name of the body that is stopped/started during homing procedure
 #SPINDLE_Homing.homing_compname		= "SPINDLE" 			;# orocos prefix
@@ -102,16 +108,8 @@ connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy
 #SPINDLE_Homing.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
 #SPINDLE_Homing.homing_midpos		= array (0.35)  		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
 #SPINDLE_Homing.homing_endpos		= array (0.35)			;# position that the body should go to after homing is finished. (could be same as midpos)
-#connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch_in", ConnPolicy() )
-#connect ("SPINDLE_ReadEncoders.out", "SPINDLE_Homing.relPos_in", ConnPolicy() )
-#connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
+#SPINDLE_Homing.Ts		= array (0.001)
 #SPINDLE_Homing.configure
-
-#Calculating Errors
-loadComponent("SPINDLE_ComputeError","MATH::Subtraction")
-addPeer("Supervisor","SPINDLE_ComputeError")
-SPINDLE_ComputeError.vectorsize = 1
-SPINDLE_ComputeError.configure
 
 ### GAIN ###
 loadComponent("SPINDLE_Gain","MATH::Gain")
@@ -210,6 +208,12 @@ SPINDLE_Diagnostics.boolname1 = "Safe"
 #### SETTING UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("torso")
+
+connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch_in", ConnPolicy() )
+connect ("SPINDLE_ReadEncoders.out", "SPINDLE_Homing.relPos_in", ConnPolicy() )
+connect ("SPINDLE_Homing.ref_out","SPINDLE_ComputeError.in_plus", ConnPolicy() )
+
+
 
 #### CONNECT COMPONENTS ####
 connect ("Soem.Slave_1006.Slave_1006_value","SPINDLE_ReadEncoders.enc1_in", ConnPolicy() )
