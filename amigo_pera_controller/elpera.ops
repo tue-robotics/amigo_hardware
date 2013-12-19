@@ -96,8 +96,8 @@ addPeer("Supervisor","LPERA_AdmittanceController")
 setActivity("LPERA_AdmittanceController",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_AdmittanceController.vector_size 			= 7
 LPERA_AdmittanceController.sampling_time 		= Ts
-LPERA_AdmittanceController.masses 				= array( 38.0, 38.0, 6.0, 5.5, 5.5, 0.4, 0.4 )
-LPERA_AdmittanceController.damping_coefficients = array( 35.0, 35.0, 8.6, 8.6, 8.4, 1.4, 1.4 )
+LPERA_AdmittanceController.masses 				= array( 38.0, 38.0, 6.0, 5.5, 5.5, 1.6, 1.6 )
+LPERA_AdmittanceController.damping_coefficients = array( 35.0, 35.0, 8.6, 8.6, 8.4, 2.9, 2.9 )
 LPERA_AdmittanceController.lower_joint_limits 	= LOWERJOINTLIMIT
 LPERA_AdmittanceController.upper_joint_limits 	= UPPERJOINTLIMIT
 LPERA_AdmittanceController.configure
