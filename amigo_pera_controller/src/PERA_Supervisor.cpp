@@ -207,7 +207,7 @@ void Supervisor::updateHook()
 				if(firstSatInstance[i]==0 && fabs(controllerOutputs[i])>=MOTORSAT[i]){
 					timeReachedSaturation[i]=timeNow;
 					firstSatInstance[i]=1;
-					log(Warning)<<"Motor Sat reached for joint :" << i <<endlog();
+					//log(Warning)<<"Motor Sat reached for joint :" << i <<endlog();
 				}
 				else if(fabs(controllerOutputs[i])<MOTORSAT[i]){
 					timeReachedSaturation[i]=timeNow;
