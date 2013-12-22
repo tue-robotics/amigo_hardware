@@ -98,6 +98,7 @@ connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy
 #connectPeers("SPINDLE_Homing","SPINDLE_ReadEncoders")
 #addPeer("SPINDLE_Homing","SPINDLE_ComputeError")
 #addPeer("SPINDLE_Homing","SPINDLE_ReadReferences")
+#addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
 #SPINDLE_Homing.homing_body   		= "spindle" 			;# name of the body that is stopped/started during homing procedure
 #SPINDLE_Homing.homing_compname		= "SPINDLE" 			;# orocos prefix
 #SPINDLE_Homing.require_homing   	= true		 			;# require homing
@@ -108,7 +109,8 @@ connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy
 #SPINDLE_Homing.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
 #SPINDLE_Homing.homing_midpos		= array (0.35)  		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
 #SPINDLE_Homing.homing_endpos		= array (0.35)			;# position that the body should go to after homing is finished. (could be same as midpos)
-#SPINDLE_Homing.Ts		= array (0.001)
+#SPINDLE_Homing.fast_step			= 0.10*Ts
+#SPINDLE_Homing.slow_step			= 0.005*Ts
 #SPINDLE_Homing.configure
 
 ### GAIN ###
@@ -209,9 +211,9 @@ SPINDLE_Diagnostics.boolname1 = "Safe"
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("torso")
 
-connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch_in", ConnPolicy() )
-connect ("SPINDLE_ReadEncoders.out", "SPINDLE_Homing.relPos_in", ConnPolicy() )
-connect ("SPINDLE_Homing.ref_out","SPINDLE_ComputeError.in_plus", ConnPolicy() )
+#connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch_in", ConnPolicy() )
+#connect ("SPINDLE_ReadEncoders.out", "SPINDLE_Homing.relPos_in", ConnPolicy() )
+#connect ("SPINDLE_Homing.ref_out","SPINDLE_ComputeError.in_plus", ConnPolicy() )
 
 
 
