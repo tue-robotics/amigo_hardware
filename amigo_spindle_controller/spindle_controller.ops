@@ -109,7 +109,7 @@ connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy
 #SPINDLE_Homing.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
 #SPINDLE_Homing.homing_midpos		= array (0.35)  		;# position that the body should have during homing. To avoid collisions with other bodies/ itself
 #SPINDLE_Homing.homing_endpos		= array (0.35)			;# position that the body should go to after homing is finished. (could be same as midpos)
-#SPINDLE_Homing.fast_step			= 0.10*Ts
+#SPINDLE_Homing.fast_step			= 0.025*Ts
 #SPINDLE_Homing.slow_step			= 0.005*Ts
 #SPINDLE_Homing.configure
 
