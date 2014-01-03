@@ -1,0 +1,29 @@
+########################################################################
+#                                                                      #
+# Simple Open EtherCAT Master (SOEM) deployer file 				   	   #
+#                                                                      #
+#                                                                      #
+#                                                                      #
+#                                                                      #
+########################################################################
+
+#### IMPORT PACKAGE ####
+# To be able to load components from this package and all packages in the manifest
+import("amigo_etherCAT")
+trigger
+
+#### DECLARATION OF PARAMETERS ####
+var double Ts = 0.001
+
+#### LOAD SUPERVISOR ###
+loadComponent("Supervisor","SUPERVISORY::GenSupervisor")
+Supervisor.configure
+setActivity("Supervisor",0.001,LowestPriority,ORO_SCHED_OTHER)
+#Supervisor.start
+stream("Supervisor.rosemergency", ros.topic("/emergency_switch"));
+stream("Supervisor.rosshutdown", ros.topic("/etherCAT_shutdown")); 
+stream("Supervisor.rosetherCATenabled", ros.topic("/etherCAT_enabled")); 
+stream("Supervisor.hardwareStatus", ros.topic("/hardware_status")); 
+
+#### START COMPONENTS ####
+Supervisor.start()
