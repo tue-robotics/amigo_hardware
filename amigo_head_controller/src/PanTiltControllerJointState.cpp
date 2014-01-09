@@ -23,7 +23,7 @@ PanTiltControllerJointState::PanTiltControllerJointState(const std::string& name
 	TaskContext(name, PreOperational) {
 	addPort("instruction", instructionPort).doc("Dynamixel instruction packet port");
 	addPort("status", statusPort).doc("Dynamixel status packet port");
-	addPort("headStatus", headStatusPort).doc("head status port, to make dashboard light green");
+	addPort("headStatus", headStatusPort).doc("head status port, to send head status to dashboard");
 	addPort("serialRunning", serialRunningPort).doc("Serial device running port");
 	addPort("serialReadyRx", serialReadyRxPort).doc("Serial device ready receive port");	
 	addPort("goalPos", goalPosPort).doc("Goal head position");
@@ -103,10 +103,7 @@ void PanTiltControllerJointState::updateHook() {
 	if(!(serialRunningPort.read(serialRunning) == NewData)) {
 		return;
 	}
-	
-	bool headStatusBool = true;
-	headStatusPort.write(headStatusBool);
-	
+		
 	currentPos.header.stamp = ros::Time::now();
 	if (commStatus == COMM_RXSUCCESS){
 		trial = 0;
@@ -336,11 +333,13 @@ int PanTiltControllerJointState::dxl_get_rxpacket_id(void) {
 
 int PanTiltControllerJointState::dxl_rxpacket_isError(void)
 {
-	if(gbStatusPacket[ERRBIT])
+	if(gbStatusPacket[ERRBIT]) {
 		return 1;
-
+	}
+	
 	return 0;
 }
+
 
 int PanTiltControllerJointState::dxl_get_rxpacket_error( int errbit )
 {
@@ -454,6 +453,7 @@ void PanTiltControllerJointState::dxl_write_word( int id, int address, int value
 void PanTiltControllerJointState::printErrorCode(void)
 {
 	int id = dxl_get_rxpacket_id();
+	headStatus.level = 0;	// status is Operational unless one of the errors underneath is true
 	if (dxl_rxpacket_isError()) {
 		if (id == pan_id) {
 			log(Warning) << "PAN Dynamixel: ";
@@ -463,26 +463,49 @@ void PanTiltControllerJointState::printErrorCode(void)
 			log(Warning) << "UNKNOWN Dynamixel id: ";
 		}
 	}
-	if (dxl_get_rxpacket_error(ERRBIT_VOLTAGE) == 1)
+	if (dxl_get_rxpacket_error(ERRBIT_VOLTAGE) == 1) {
 		log(Warning) << "Input voltage error!" << endlog();
+		headStatus.level = 2;
+		headStatus.message = "Input voltage error!";
+	}
 
-	if (dxl_get_rxpacket_error(ERRBIT_ANGLE) == 1)
+	if (dxl_get_rxpacket_error(ERRBIT_ANGLE) == 1) { 
 		log(Warning) << "Angle limit error!" << endlog();
+		headStatus.level = 2;
+		headStatus.message = "Angle limit error!";
+	}
 
-	if (dxl_get_rxpacket_error(ERRBIT_OVERHEAT) == 1)
-		log(Warning) << "Overheat error!" << endlog();	
+	if (dxl_get_rxpacket_error(ERRBIT_OVERHEAT) == 1) {
+		log(Warning) << "Overheat error!" << endlog();
+		headStatus.level = 2;
+		headStatus.message = "Overheat error!";
+	}
 
-	if (dxl_get_rxpacket_error(ERRBIT_RANGE) == 1)
-		log(Warning) << "Out of range error!" << endlog();	
-
-	if (dxl_get_rxpacket_error(ERRBIT_CHECKSUM) == 1)
-		log(Warning) << "Checksum error!" << endlog();		
-
-	if (dxl_get_rxpacket_error(ERRBIT_OVERLOAD) == 1)
-		log(Warning) << "Overload error!" << endlog();			
-
-	if (dxl_get_rxpacket_error(ERRBIT_INSTRUCTION) == 1)
-		log(Warning) << "Instruction code error!" << endlog();				
+	if (dxl_get_rxpacket_error(ERRBIT_RANGE) == 1) {
+		log(Warning) << "Out of range error!" << endlog();
+		headStatus.level = 2;
+		headStatus.message = "Out of range error!";
+	}
+		
+	if (dxl_get_rxpacket_error(ERRBIT_CHECKSUM) == 1) {
+		log(Warning) << "Checksum error!" << endlog();
+		headStatus.level = 2;
+		headStatus.message = "Checksum error!";
+	}
+		
+	if (dxl_get_rxpacket_error(ERRBIT_OVERLOAD) == 1) {
+		log(Warning) << "Overload error!" << endlog();
+		headStatus.level = 2;
+		headStatus.message = "Overload error!";
+	}
+			
+	if (dxl_get_rxpacket_error(ERRBIT_INSTRUCTION) == 1) {
+		log(Warning) << "Instruction code error!" << endlog();
+		headStatus.level = 2;
+		headStatus.message = "Instruction code error!";
+	}
+		
+	headStatusPort.write(headStatus);			
 }
 
 ORO_CREATE_COMPONENT(PanTiltControllerJointState)
