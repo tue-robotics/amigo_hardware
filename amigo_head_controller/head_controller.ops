@@ -71,11 +71,11 @@ connect ("Soem.Slave_100f.ready_rx", "HEAD_PanTiltController.serialReadyRx", Con
 connect ("Soem.Slave_100f.running", "HEAD_PanTiltController.serialRunning", ConnPolicy() )
 connect ("HEAD_PanTiltController.headStatus", "HEAD_Status.bool_in1", ConnPolicy() )
 connect ("HEAD_PanTiltController.currentPos", "JointStateAggregator.head", ConnPolicy() )
-stream("HEAD_Status.bool_out1", ros.topic("/head_status"));
+stream("HEAD_PanTiltController.headStatus", ros.topic("/head_status"));
 
 ## Diagnostics ##
 #connect ("HEAD_PanTiltController.currentPos", "HEAD_Diagnostics.vec1", ConnPolicy() )
-connect ("HEAD_PanTiltController.headStatus", "HEAD_Diagnostics.bool1", ConnPolicy() )
+#connect ("HEAD_PanTiltController.headStatus", "HEAD_Diagnostics.bool1", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream( "Supervisor.head_fireup", ros.topic("/head_fireup") )
