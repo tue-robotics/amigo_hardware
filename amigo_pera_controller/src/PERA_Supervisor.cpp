@@ -42,7 +42,7 @@ Supervisor::Supervisor(const string& name) :
 	addPort("gripper_measurement",gripperMeasurementPort);
 	addPort("gripperResetPort",gripperResetPort).doc("Requests for GripperController reset");
 	addPort("controllerOutputPort",controllerOutputPort).doc("Receives motorspace output of the controller");
-	addPort("peraStatusPort",peraStatusPort).doc("For publishing the PERA status to the AMIGO dashboard");
+	addPort("status",statusPort).doc("For publishing the PERA status to the AMIGO dashboard");
 	addPort("jointVelocity",measVelPort).doc("Receives the reference interpolator joint velocities");
 
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("Maximum joint error allowed [rad]");
@@ -123,6 +123,10 @@ bool Supervisor::configureHook()
 	
 	// Pressed is true. Assume emergency button pressed untill informed otherwise.
 	pressed = true;
+	
+	StatusOperational.level = 0;
+	StatusHoming.level = 3;
+    StatusError.level = 4;  
 	
 	return true;
 }
@@ -375,19 +379,14 @@ void Supervisor::updateHook()
 		enablePort.write(enable);
 	}
 	
-	std_msgs::UInt8 statusToDashboard;
-	
-	if(homed==true && errors==false){
-		statusToDashboard.data = 0;
-		peraStatusPort.write(statusToDashboard);
+	if(homed==true && errors==false) {
+		statusPort.write(StatusOperational);
 	}
-	else if(homed==false && errors==false){
-		statusToDashboard.data = 1;
-		peraStatusPort.write(statusToDashboard);
+	else if(homed==false && errors==false) {
+		statusPort.write(StatusHoming);
 	}
-	else if(errors==true){
-		statusToDashboard.data = 2;
-		peraStatusPort.write(statusToDashboard);
+	else if(errors==true) {
+		statusPort.write(StatusError);
 	}
 
 }

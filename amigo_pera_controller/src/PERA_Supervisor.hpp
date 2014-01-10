@@ -12,6 +12,7 @@
 #include <amigo_msgs/AmigoGripperCommand.h>
 #include <amigo_msgs/AmigoGripperMeasurement.h>
 #include <sensor_msgs/JointState.h>
+#include <diagnostic_msgs/DiagnosticStatus.h>
 
 using namespace std;
 using namespace RTT;
@@ -82,7 +83,7 @@ namespace PERA
 		//! Outputport for ordering gripper to reset its positions
 		OutputPort<bool> gripperResetPort;
 		//! Outputport for publishing the PERA status to the AMIGO dashboard
-		OutputPort<std_msgs::UInt8> peraStatusPort;
+		OutputPort<diagnostic_msgs::DiagnosticStatus> statusPort;
 		//! Emergency button pressed / released (true/false) (message type bool)
 		std_msgs::Bool eButtonPressed;
 		//! Counters for loopcounting
@@ -156,6 +157,10 @@ namespace PERA
 		doubles ABS_SEN_DIR;
 		//! Memory array storing if controller saturation was already reached
 		int firstSatInstance [9];
+		
+		diagnostic_msgs::DiagnosticStatus StatusError;
+		diagnostic_msgs::DiagnosticStatus StatusHoming;
+		diagnostic_msgs::DiagnosticStatus StatusOperational;		
 
         sensor_msgs::JointState out_msg;
 	

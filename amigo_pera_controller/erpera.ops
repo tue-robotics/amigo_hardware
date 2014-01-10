@@ -425,7 +425,7 @@ stream ("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/right_arm/measure
 stream ("RPERA_ReadReferences.in", ros.topic("/amigo/right_arm/references"))
 stream ("RPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
 stream ("RPERA_Supervisor.resetRefPort", ros.topic("/amigo/right_arm/references"))
-stream ("RPERA_Supervisor.peraStatusPort", ros.topic("/arm_right_status"))
+stream ("RPERA_Supervisor.status", ros.topic("/arm_right_status"))
 stream ("RPERA_GripperControl.gripper_measurement", ros.topic("/amigo/right_gripper/measurements"))
 stream ("RPERA_GripperControl.gripper_command", ros.topic("/amigo/right_gripper/references"))
 stream ("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))

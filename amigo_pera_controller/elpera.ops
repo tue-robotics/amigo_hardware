@@ -426,7 +426,7 @@ stream ("LPERA_WriteClippedJointAngles.out", ros.topic("/amigo/left_arm/measurem
 stream ("LPERA_ReadReferences.in", ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_Supervisor.eButtonPort", ros.topic("/emergency_switch"))
 stream ("LPERA_Supervisor.resetRefPort", ros.topic("/amigo/left_arm/references"))
-stream ("LPERA_Supervisor.peraStatusPort", ros.topic("/arm_left_status"))
+stream ("LPERA_Supervisor.status", ros.topic("/arm_left_status"))
 stream ("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
 stream ("LPERA_GripperControl.gripper_command", ros.topic("/amigo/left_gripper/references"))
 stream ("LPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
