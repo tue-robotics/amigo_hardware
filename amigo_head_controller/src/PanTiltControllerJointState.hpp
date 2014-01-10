@@ -39,7 +39,7 @@ class PanTiltControllerJointState : public RTT::TaskContext {
 		InputPort<CommMsgBig> statusPort;
 		InputPort<sensor_msgs::JointState> goalPosPort;
 		OutputPort<sensor_msgs::JointState> currentPosPort;
-		OutputPort<diagnostic_msgs::DiagnosticStatus> headStatusPort;
+		OutputPort<diagnostic_msgs::DiagnosticStatus> statusOutPort;
 		
 		InputPort<bool> serialRunningPort;
 		InputPort<bool> serialReadyRxPort;

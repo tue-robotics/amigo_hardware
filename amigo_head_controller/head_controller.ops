@@ -41,25 +41,6 @@ HEAD_PanTiltController.tilt_speed 	= 25
 HEAD_PanTiltController.setPeriod(0.1)
 HEAD_PanTiltController.configure
 
-#### Diagnostics ###
-loadComponent("HEAD_Diagnostics","ROS::RosDiagnostics")
-addPeer("Supervisor","HEAD_Diagnostics")
-setActivity("HEAD_Diagnostics",0.0,HighestPriority,ORO_SCHED_RT)
-HEAD_Diagnostics.setPeriod(1)
-HEAD_Diagnostics.statusname 			= "HEAD"
-HEAD_Diagnostics.NumberOfVectorPorts 	= 0
-HEAD_Diagnostics.NumberOfBoolPorts 		= 1
-HEAD_Diagnostics.configure
-#HEAD_Diagnostics.vecname1 				= "Current Pos"
-HEAD_Diagnostics.boolname1 				= "Head Status"
-
-#### LOAD COMPONENT TO PUBLISH STATUS ###
-loadComponent("HEAD_Status","ROS::BoolToROS")
-addPeer("Supervisor","HEAD_Status")
-setActivity("HEAD_Status",0.5,LowestPriority,ORO_SCHED_OTHER)
-HEAD_Status.NumberOfBoolPorts = 1
-HEAD_Status.configure
-
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("head")
@@ -69,22 +50,15 @@ connect ("Soem.Slave_100f.data_tx", "HEAD_PanTiltController.instruction", ConnPo
 connect ("Soem.Slave_100f.data_rx", "HEAD_PanTiltController.status", ConnPolicy() )
 connect ("Soem.Slave_100f.ready_rx", "HEAD_PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "HEAD_PanTiltController.serialRunning", ConnPolicy() )
-connect ("HEAD_PanTiltController.headStatus", "HEAD_Status.bool_in1", ConnPolicy() )
 connect ("HEAD_PanTiltController.currentPos", "JointStateAggregator.head", ConnPolicy() )
-stream("HEAD_PanTiltController.headStatus", ros.topic("/head_status"));
-
-## Diagnostics ##
-#connect ("HEAD_PanTiltController.currentPos", "HEAD_Diagnostics.vec1", ConnPolicy() )
-#connect ("HEAD_PanTiltController.headStatus", "HEAD_Diagnostics.bool1", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream( "Supervisor.head_fireup", ros.topic("/head_fireup") )
 stream( "Supervisor.head_enabled", ros.topic("/head_enabled"));
 stream("HEAD_PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
 stream("HEAD_PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
-#stream("HEAD_PanTiltController.currentPos", ros.topic("/amigo/joint_states"))
+stream("HEAD_PanTiltController.status_out", ros.topic("/head_status"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("HEAD_PanTiltController")
 Supervisor.AddAllwaysOnPeer ("HEAD_Status")
-Supervisor.AddAllwaysOnPeer ("HEAD_Diagnostics")

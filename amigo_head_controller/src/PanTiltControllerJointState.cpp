@@ -23,7 +23,7 @@ PanTiltControllerJointState::PanTiltControllerJointState(const std::string& name
 	TaskContext(name, PreOperational) {
 	addPort("instruction", instructionPort).doc("Dynamixel instruction packet port");
 	addPort("status", statusPort).doc("Dynamixel status packet port");
-	addPort("headStatus", headStatusPort).doc("head status port, to send head status to dashboard");
+	addPort("status_out", statusOutPort).doc("head status port, to send head status to dashboard");
 	addPort("serialRunning", serialRunningPort).doc("Serial device running port");
 	addPort("serialReadyRx", serialReadyRxPort).doc("Serial device ready receive port");	
 	addPort("goalPos", goalPosPort).doc("Goal head position");
@@ -340,7 +340,6 @@ int PanTiltControllerJointState::dxl_rxpacket_isError(void)
 	return 0;
 }
 
-
 int PanTiltControllerJointState::dxl_get_rxpacket_error( int errbit )
 {
 	if( gbStatusPacket[ERRBIT] & (unsigned char)errbit )
@@ -465,47 +464,47 @@ void PanTiltControllerJointState::printErrorCode(void)
 	}
 	if (dxl_get_rxpacket_error(ERRBIT_VOLTAGE) == 1) {
 		log(Warning) << "Input voltage error!" << endlog();
-		headStatus.level = 2;
+		headStatus.level = 4;
 		headStatus.message = "Input voltage error!";
 	}
 
 	if (dxl_get_rxpacket_error(ERRBIT_ANGLE) == 1) { 
 		log(Warning) << "Angle limit error!" << endlog();
-		headStatus.level = 2;
+		headStatus.level = 4;
 		headStatus.message = "Angle limit error!";
 	}
 
 	if (dxl_get_rxpacket_error(ERRBIT_OVERHEAT) == 1) {
 		log(Warning) << "Overheat error!" << endlog();
-		headStatus.level = 2;
+		headStatus.level = 4;
 		headStatus.message = "Overheat error!";
 	}
 
 	if (dxl_get_rxpacket_error(ERRBIT_RANGE) == 1) {
 		log(Warning) << "Out of range error!" << endlog();
-		headStatus.level = 2;
+		headStatus.level = 4;
 		headStatus.message = "Out of range error!";
 	}
 		
 	if (dxl_get_rxpacket_error(ERRBIT_CHECKSUM) == 1) {
 		log(Warning) << "Checksum error!" << endlog();
-		headStatus.level = 2;
+		headStatus.level = 4;
 		headStatus.message = "Checksum error!";
 	}
 		
 	if (dxl_get_rxpacket_error(ERRBIT_OVERLOAD) == 1) {
 		log(Warning) << "Overload error!" << endlog();
-		headStatus.level = 2;
+		headStatus.level = 4;
 		headStatus.message = "Overload error!";
 	}
 			
 	if (dxl_get_rxpacket_error(ERRBIT_INSTRUCTION) == 1) {
 		log(Warning) << "Instruction code error!" << endlog();
-		headStatus.level = 2;
+		headStatus.level = 4;
 		headStatus.message = "Instruction code error!";
 	}
 		
-	headStatusPort.write(headStatus);			
+	statusOutPort.write(headStatus);			
 }
 
 ORO_CREATE_COMPONENT(PanTiltControllerJointState)
