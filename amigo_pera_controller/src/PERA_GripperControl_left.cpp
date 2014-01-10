@@ -49,7 +49,8 @@ using namespace PERA;
 
 	bool GripperControlleft::configureHook(){
 		torques.resize(8);
-		gripperPos.resize(1,0.0);
+		gripperPos.assign(1,0.0);
+		measPos.assign(1,0.0);
 		completed = true;
 		return true;
 	}

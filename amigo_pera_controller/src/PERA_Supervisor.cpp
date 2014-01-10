@@ -67,10 +67,14 @@ bool Supervisor::configureHook()
 {
 	Logger::In in("SUPERVISOR"); 
 
-	jointAngles.resize(7);
-	jointErrors.resize(8);
-	homJntAngles.resize(8);
-	previousAngles.resize(8);
+	//jointAngles.resize(7);
+	//jointErrors.resize(8);
+	//homJntAngles.resize(8);
+	//previousAngles.resize(8);
+	jointAngles.assign(7, 0.0);
+	jointErrors.assign(8, 0.0);
+	homJntAngles.assign(8, 0.0);
+	previousAngles.assign(8, 0.0);
 	timeReachedSaturation.resize(9);
     out_msg.position.resize(7);
 
@@ -274,7 +278,7 @@ void Supervisor::updateHook()
 					enable = false;
 
 					if( errors == false ){ // This check makes sure it is printed only once.
-						log(Error)<<"SUPERVISOR: Error of joint q"<<i+1<<" exceeded limit ("<<MAX_ERRORS[i]<<"). PERA output disabled."<<endlog();
+						log(Error)<<"SUPERVISOR: Error of joint q("<<i+1<<") (="<<jointErrors[i]<<") exceeded limit ("<<MAX_ERRORS[i]<<"). PERA output disabled."<<endlog();
 						errors = true;
 					}		
 
