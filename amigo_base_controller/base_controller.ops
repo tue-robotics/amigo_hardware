@@ -194,7 +194,7 @@ connect ("BASE_ReadReferences.out", "BASE_Diagnostics.vec1", ConnPolicy() )
 connect ("BASE_ComputeErrors.out", "BASE_Diagnostics.vec2", ConnPolicy() )
 connect ("BASE_SI2Volt.out", "BASE_Diagnostics.vec3", ConnPolicy() )
 connect ("BASE_Safety.wheel_amplifiers", "BASE_Diagnostics.bool1", ConnPolicy() )
-connect ("BASE_Safety.wheel_amplifiers", "BASE_Status.bool_in1", ConnPolicy() )
+#connect ("BASE_Safety.wheel_amplifiers", "BASE_Status.bool_in1", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream ("Supervisor.base_fireup", ros.topic("/base_fireup") )
@@ -205,7 +205,8 @@ stream ("BASE_OdometryPublisher.reset", ros.topic("/amigo/base/reset_odometry"))
 stream ("BASE_ReadReferences.cmd_vel", ros.topic("/amigo/base/references"));
 stream ("BASE_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 stream ("BASE_Diagnostics.diagnostics", ros.topic("/base_diagnostics"));
-stream ("BASE_Status.bool_out1", ros.topic("/base_status"));
+#stream ("BASE_Status.bool_out1", ros.topic("/base_status"));
+stream ("BASE_Safety.status", ros.topic("/base_status"));
 
 
 #### START COMPONENTS ####

@@ -13,6 +13,7 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
+#include <diagnostic_msgs/DiagnosticStatus.h>
 
 using namespace std;
 using namespace RTT;
@@ -38,6 +39,7 @@ namespace AMIGO
     InputPort<doubles> voltport;
     InputPort<bool> resetport;
     OutputPort<bool> amplifierport;
+    OutputPort<diagnostic_msgs::DiagnosticStatus> statusPort;
 
 
     /* Declaring property variables */
@@ -50,6 +52,8 @@ namespace AMIGO
     bool previousSafe;
     bool laststate;
     bool reset;
+    diagnostic_msgs::DiagnosticStatus StatusError;
+    diagnostic_msgs::DiagnosticStatus StatusOperational;
 
     public:
 

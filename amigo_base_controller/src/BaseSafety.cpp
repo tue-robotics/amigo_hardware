@@ -37,6 +37,7 @@ BaseSafety::BaseSafety(const string& name) :
   addEventPort( "voltage", voltport );
   addEventPort( "reset", resetport );
   addPort( "wheel_amplifiers", amplifierport );
+  addPort( "status", statusPort  );
 }
 
 BaseSafety::~BaseSafety(){}
@@ -57,7 +58,11 @@ bool BaseSafety::configureHook()
   {
     log(Warning)<<"BaseSafety::Maximum voltage is zero!"<<endlog();
   }
-  return true;
+  
+  StatusOperational.level = 0;
+  StatusError.level = 4;  
+  
+  return true; 
 }
 
 bool BaseSafety::startHook()
@@ -136,12 +141,19 @@ void BaseSafety::updateHook()
 	  ROS_INFO_STREAM( "BaseSafety::Base enabled again" );
 	  safe = true;
   }
-	
+  
   // One sample delay is build in to make sure the errors are resetted before enabling the amplifiers
   amplifierport.write( safe&&previousSafe ); //TODO: I think this came irrelevant after the new supervisor...
   
-  previousSafe = safe;
+  if ( safe ) {
+	  statusPort.write(StatusOperational);
+  }
+  else {
+	  statusPort.write(StatusError);
+  }
   
+  previousSafe = safe;
+
 }
 
 ORO_CREATE_COMPONENT(AMIGO::BaseSafety)
