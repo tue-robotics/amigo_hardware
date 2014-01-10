@@ -93,12 +93,12 @@ void SpindleSafety::updateHook()
 	if(safety == false)
 	{
 	    spindlebrakePort.write(BRAKEON);
-	    statusPort.write(StatusOperational);
+	    statusPort.write(StatusError);
 	}
 	else
 	{
 		spindlebrakePort.write(BRAKEOFF);
-		statusPort.write(StatusError);
+		statusPort.write(StatusOperational);
 	}
 }
 
