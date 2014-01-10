@@ -17,11 +17,11 @@ using namespace AMIGO;
 SpindleSafety::SpindleSafety(const string& name) : TaskContext(name, PreOperational)
 {
   // Creating ports:
-  addEventPort( "error_pos", errorpos_inport );
-  addPort( "enable_endswitch_safety", enable_endswitch_safety_inport );
-  addPort( "endswitch_inport", endswitch_inport );
-  addPort( "spindle_brake", spindle_brake_outport );
-  addPort( "safety", safety_outport );
+  addEventPort( "error_pos", errorposPort );
+  addPort( "enable_endswitch_safety", enableEndswitchSafetyPort );
+  addPort( "endswitch_inport", endswitchPort );
+  addPort( "spindle_brake", spindlebrakePort );
+  addPort( "status", statusPort );
   
   addProperty( "error_margin", errormargin );
   
@@ -32,18 +32,20 @@ SpindleSafety::~SpindleSafety(){}
 
 bool SpindleSafety::configureHook()
 {
+  StatusOperational.level = 0;
+  StatusError.level = 4;  	
   return true;
 }
 
 bool SpindleSafety::startHook()
 { 
   // Check validity of Ports:
-  if ( !errorpos_inport.connected() )
+  if ( !errorposPort.connected() )
   {
     log(Error)<<"SpindleSafety::Inputport not connected!"<<endlog();
     return false;
   }
-  if ( !spindle_brake_outport.connected() || !safety_outport.connected() ) {
+  if ( !spindlebrakePort.connected() || !statusPort.connected() ) {
     log(Warning)<<"SpindleSafety::One or more outputports not connected!"<<endlog();
   }
   if ( ! (errormargin > 0.0) ) {
@@ -61,7 +63,7 @@ bool SpindleSafety::startHook()
 void SpindleSafety::updateHook()
 {
 	// Measuring safety
-	errorpos_inport.read(error_pos);
+	errorposPort.read(error_pos);
 	if( abs(error_pos[0]) > errormargin )
 	{
 		if(safety){ // Safety was true, so log now once
@@ -73,11 +75,11 @@ void SpindleSafety::updateHook()
 	
 	/*TODO
 	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
-	if (enable_endswitch_safety_inport.read(enable_endswitch_safety) == NewData) log(Info)<<"Endswitch safety enabled"<<endlog();
+	if (enableEndswitchSafetyPort.read(enable_endswitch_safety) == NewData) log(Info)<<"Endswitch safety enabled"<<endlog();
 	
 	// If endswitch safety is enabled and the endswitch port reads false, the spindle is out of range which is not safe
 	std_msgs::Bool endswitch;
-	endswitch_inport.read(endswitch);
+	endswitchPort.read(endswitch);
 	if (enable_endswitch_safety && !endswitch.data) 
 	{
 		if (safety) {
@@ -90,15 +92,14 @@ void SpindleSafety::updateHook()
 	// Applying brake if necessary
 	if(safety == false)
 	{
-	    spindle_brake_outport.write(BRAKEON);
+	    spindlebrakePort.write(BRAKEON);
+	    statusPort.write(StatusOperational);
 	}
 	else
 	{
-		spindle_brake_outport.write(BRAKEOFF);
+		spindlebrakePort.write(BRAKEOFF);
+		statusPort.write(StatusError);
 	}
-	
-	// Writing boolean safety to port
-	safety_outport.write(safety);
 }
 
 
