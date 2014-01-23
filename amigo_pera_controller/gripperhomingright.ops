@@ -321,7 +321,6 @@ RPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 #RPERA_Tracing.buffersize = 32768*3;
 #RPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/swing/testforce3.dat"
 #RPERA_Tracing.Ts = Ts
-#RPERA_Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
 #RPERA_Tracing.configure
 #connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in1", tracingpolicy );			# reference after reference generator
 #connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in2", tracingpolicy ) ; 					# error

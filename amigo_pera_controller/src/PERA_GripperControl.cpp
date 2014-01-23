@@ -13,7 +13,7 @@
 
 //#define gripperGain 0.040 // Original
 //#define gripperGain 0.40
-#define MAX_TORQUE 100.0
+#define MAX_TORQUE 1000.0
 
 using namespace std;
 using namespace RTT;

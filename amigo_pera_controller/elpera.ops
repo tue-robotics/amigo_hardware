@@ -128,7 +128,7 @@ LPERA_Supervisor.setPeriod(Ts)		;# To do check if this works without setPeriod()
 LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 #LPERA_Supervisor.motorSaturations 		= array ( 1.0, 	1.0,     1.0, 	 1.0, 	   1.0,  	1.0, 	   1.0, 	 1.0, 	1.0) 
-LPERA_Supervisor.motorSaturations 		= array (   90.0, 	 90.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   40.0, 	 40.0, 	40.0) 
+LPERA_Supervisor.motorSaturations 		= array (   90.0, 	 90.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	60.0) 
 LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 1.0)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
 LPERA_Supervisor.homedPos 				= array (  392.0,   553.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
@@ -318,17 +318,15 @@ LPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 #loadComponent("LPERA_Tracing","Signal::Tracing")
 #addPeer("Supervisor","LPERA_Tracing")
 #setActivity("LPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#LPERA_Tracing.vector_sizes = array (8.0, 8.0, 8.0, 8.0, 9.0, 9.0)
+#LPERA_Tracing.vector_sizes = array (8.0, 8.0, 9.0, 9.0 )
 #LPERA_Tracing.buffersize = 32768*3;
-#LPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/FSL/Lhoming.dat"
+#LPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIP/leftgrip2.dat"
 #LPERA_Tracing.Ts = Ts
 #LPERA_Tracing.configure
 #connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in1", tracingpolicy );			# reference after reference generator
-#connect ("LPERA_MotorToJointSpace.out","LPERA_Tracing.in2", tracingpolicy ) ; 				# position
-#connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in3", tracingpolicy ) ; 					# error
-#connect ("LPERA_Addition.out","LPERA_Tracing.in4", tracingpolicy ) ; 						# control effort
-#connect ("LPERA_AnalogInsPera.out_for","LPERA_Tracing.in5", tracingpolicy ) ; 				# force sensors	voltage input
-#connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Tracing.in6", tracingpolicy ) ; 	# force sensors	after sensor calculation
+#connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in2", tracingpolicy ) ; 					# error
+#connect ("LPERA_AnalogInsPera.out_for","LPERA_Tracing.in3", tracingpolicy ) ; 				# force sensors
+#connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Tracing.in4", tracingpolicy ) ; 	# force sensors
 
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
