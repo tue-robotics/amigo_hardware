@@ -61,4 +61,3 @@ stream("HEAD_PanTiltController.status_out", ros.topic("/head_status"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("HEAD_PanTiltController")
-Supervisor.AddAllwaysOnPeer ("HEAD_Status")
