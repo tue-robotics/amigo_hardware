@@ -15,8 +15,13 @@ trigger
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 
+#### LOAD SUPERVISORINTERFACE ###
+loadComponent("SupervisorInterface","SUPERVISORY::SupervisorInterface")
+Supervisor.configure
+setActivity("SupervisorInterface",0.001,LowestPriority,ORO_SCHED_OTHER)
+
 #### LOAD SUPERVISOR ###
-loadComponent("Supervisor","SUPERVISORY::DashboardTest")
+loadComponent("Supervisor","SUPERVISORY::Supervisor")
 Supervisor.configure
 setActivity("Supervisor",0.001,LowestPriority,ORO_SCHED_OTHER)
 
