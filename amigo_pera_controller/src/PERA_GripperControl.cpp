@@ -11,9 +11,8 @@
 
 #include "PERA_GripperControl.hpp"
 
-//#define gripperGain 0.040 // Original
-//#define gripperGain 0.40
-#define MAX_TORQUE 1000.0
+
+#define MAX_TORQUE 100.0
 
 using namespace std;
 using namespace RTT;
@@ -37,19 +36,19 @@ using namespace PERA;
 			addPort("gripper_measurement",gripperMeasurementPort);
 			
 			/// Thresholds for the gripper force
-			addProperty( "threshold_closed", threshold_closed);	
-			addProperty( "gripper_gain", gripperGain);		
+			addProperty( "threshold_closed", threshold_closed);
+			addProperty( "gripper_gain", gripperGain);
 			addProperty( "max_pos", maxPos);
+			addProperty( "sensorPos", sensorPos);
 			
 			gripperHomed = false;
-					
 	  }
 
 	GripperControl::~GripperControl(){}
 
 	bool GripperControl::configureHook(){
-		torques.resize(8);
-		gripperPos.resize(1,0.0);
+		torques.assign(9,0.0); 
+		gripperPos.assign(1,0.0);
 		completed = true;
 		return true;
 	}
@@ -94,7 +93,8 @@ using namespace PERA;
 			
 			amigo_msgs::AmigoGripperMeasurement gripperMeasurement;
 			gripperMeasurement.direction = gripperCommand.direction;
-			gripperMeasurement.torque = torques[GRIPPER_JOINT_INDEX_MOTORSPACE];
+			gripperMeasurement.torque = torques[sensorPos];
+			//log(Warning)<<"GRIPPERCON: torque["<< sensorPos << "] = {"<< torques[sensorPos] << "}" <<endlog();
 			gripperMeasurement.position = measPos[GRIPPER_JOINT_INDEX_JOINTSPACE]/maxPos;
 			gripperMeasurement.end_position_reached = false;
 			gripperMeasurement.max_torque_reached = false;
@@ -110,18 +110,18 @@ using namespace PERA;
 				}
 			} 
 			else{
-				//log(Warning)<<"gripper torques = "<<torques[GRIPPER_JOINT_INDEX_MOTORSPACE]<<endlog();
-				if ( (torques[GRIPPER_JOINT_INDEX_MOTORSPACE] >= threshold_closed && torques[GRIPPER_JOINT_INDEX_MOTORSPACE] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0)) ){
+				//log(Warning)<<"gripper torques = "<<torques[sensorPos]<<endlog();
+				if ( (torques[sensorPos] >= threshold_closed && torques[sensorPos] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0)) ){
 					log(Warning)<<"Gripper is CLOSED"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
-				else if(torques[GRIPPER_JOINT_INDEX_MOTORSPACE] < threshold_closed && torques[GRIPPER_JOINT_INDEX_MOTORSPACE] < MAX_TORQUE){
-					//log(Warning)<<"GRIPPERCON: closing with torque = "<<torques[GRIPPER_JOINT_INDEX_MOTORSPACE]<<endlog();
+				else if(torques[sensorPos] < threshold_closed && torques[sensorPos] < MAX_TORQUE){
+					//log(Warning)<<"GRIPPERCON: closing with torque = "<<torques[sensorPos]<<endlog();
 					gripperPos[0] -= gripperGain*PI/180;
 				}
 				else {
-					log(Error)<<"Gripper torque "<<torques[GRIPPER_JOINT_INDEX_MOTORSPACE]<<" exceeds maximum torque of "<<MAX_TORQUE<<" abort close_gripper"<<endlog();
+					log(Error)<<"Gripper torque "<<torques[sensorPos]<<" exceeds maximum torque of "<<MAX_TORQUE<<" abort close_gripper"<<endlog();
 					completed = true;
 					gripperMeasurement.max_torque_reached = true;
 				}

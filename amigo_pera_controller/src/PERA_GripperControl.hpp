@@ -14,7 +14,6 @@
 
 #define PI 3.141592654
 #define GRIPPER_JOINT_INDEX_JOINTSPACE	7
-#define GRIPPER_JOINT_INDEX_MOTORSPACE	8
 
 using namespace std;
 using namespace RTT;
@@ -61,6 +60,8 @@ namespace PERA
 	  doubles gripperPos;
 	  //! Maximum gripper position
 	  double maxPos;
+	  //! Gripper sensor position
+	  uint sensorPos;
 	  //! Constant defining the speed the gripper opens/closes with
 	  double gripperGain;
 	  //! Bool for storing gripper status

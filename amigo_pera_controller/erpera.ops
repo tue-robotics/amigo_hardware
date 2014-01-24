@@ -41,7 +41,7 @@ var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM;
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
 var bool REQUIREHOMING   		= true;
-var bool REQUIREGRIPPERHOMING   = false;
+var bool REQUIREGRIPPERHOMING   = true;
 
 #### HIGH PRIORITY COMPONENTS ####
 ### Read reference joint angles ###
@@ -150,13 +150,14 @@ RPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM ,0.0 , ENC2SI_S3 , ENC2S
 RPERA_ReadEncoders.configure
 
 ### Gripper force controller ###
-loadComponent("RPERA_GripperControl","PERA::GripperControlleft")
+loadComponent("RPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_GripperControl.setPeriod(Ts)
-RPERA_GripperControl.threshold_closed = 8.0
-RPERA_GripperControl.max_pos = 5.0
-RPERA_GripperControl.gripper_gain = 0.1
+RPERA_GripperControl.threshold_closed 	= 8.0
+RPERA_GripperControl.max_pos 			= 5.2
+RPERA_GripperControl.gripper_gain 		= 0.1
+RPERA_GripperControl.sensorPos 			= 7
 RPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -289,12 +290,12 @@ RPERA_WriteCurrentJointAngles.configure
 loadComponent("RPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",(Ts*10.0),LowestPriority,ORO_SCHED_OTHER)
-RPERA_SensorTorques.setPeriod(Ts*10.0);#			SM1 		SM2			obsolete	SM3 		EM1 			EM2 		WM1 		WM2 		HM
+RPERA_SensorTorques.setPeriod(Ts*10.0);#			SM1 		SM2			obsolete	SM3 		EM1 			EM2 		WM1 		HM 			WM2 
 RPERA_SensorTorques.Ksensor 			= array 	(0.0025		, 0.0025	, 0.0 		, 0.0025	, 0.0025		, 0.0025	, 0.0025	, 0.0025	, 0.0025	)
 RPERA_SensorTorques.Voffset 			= array 	(0.2		, 0.2		, 0.0 		, 0.2		, 0.2			, 0.2		, 0.2		, 0.2		, 0.2		)
-RPERA_SensorTorques.Xoffset 			= array 	(0.00025	, 0.00025	, 0.0 		, 0.00025	, 0.0013875		, 0.0013875	, 0.0034488	, 0.0048276	, 0.00268	)
-RPERA_SensorTorques.Stiffness 			= array 	(777777.7	, 777777.7	, 0.0 		, 700.0		, 2009211.0		, 2009211.0	, 60739.73	, 37274.25	, 12935.0	)
-RPERA_SensorTorques.PivotDistance 		= array 	(0.03		, 0.03		, 0.0 		, 1.0		, 0.025			, 0.025		, 0.017		, 0.017		, 1.0		)
+RPERA_SensorTorques.Xoffset 			= array 	(0.00025	, 0.00025	, 0.0 		, 0.00025	, 0.0013875		, 0.0013875	, 0.0034488	, 0.00268	, 0.0048276	)
+RPERA_SensorTorques.Stiffness 			= array 	(777777.7	, 777777.7	, 0.0 		, 700.0		, 2009211.0		, 2009211.0	, 60739.73	, 12935.0	, 37274.25	)
+RPERA_SensorTorques.PivotDistance 		= array 	(0.03		, 0.03		, 0.0 		, 1.0		, 0.025			, 0.025		, 0.017		, 1.0		, 0.017		)
 RPERA_SensorTorques.configure
 
 #### Diagnostics ###

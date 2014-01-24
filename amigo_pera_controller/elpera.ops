@@ -157,6 +157,7 @@ LPERA_GripperControl.setPeriod(Ts)
 LPERA_GripperControl.threshold_closed 		= 45.0
 LPERA_GripperControl.max_pos 				= 5.5
 LPERA_GripperControl.gripper_gain 			= 0.1
+LPERA_GripperControl.sensorPos 				= 8
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
