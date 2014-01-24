@@ -67,15 +67,11 @@ bool Supervisor::configureHook()
 {
 	Logger::In in("SUPERVISOR"); 
 
-	//jointAngles.resize(7);
-	//jointErrors.resize(8);
-	//homJntAngles.resize(8);
-	//previousAngles.resize(8);
-	jointAngles.assign(7, 0.0);
-	jointErrors.assign(8, 0.0);
-	homJntAngles.assign(8, 0.0);
-	previousAngles.assign(8, 0.0);
-	timeReachedSaturation.resize(9);
+	jointAngles.assign(7,0.0);
+	jointErrors.assign(8,0.0);
+	homJntAngles.assign(8,0.0);
+	previousAngles.assign(8,0.0);
+	timeReachedSaturation.assign(9,0.0);
     out_msg.position.resize(7);
 
 	// Set initial counters
