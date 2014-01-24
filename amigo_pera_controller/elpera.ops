@@ -41,7 +41,7 @@ var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM;
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
 var bool REQUIREHOMING   		= true; 
-var bool REQUIREGRIPPERHOMING   = false;
+var bool REQUIREGRIPPERHOMING   = true;
 
 #### HIGH PRIORITY COMPONENTS ####
 ### Read reference joint angles ###
@@ -127,12 +127,11 @@ setActivity("LPERA_Supervisor",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_Supervisor.setPeriod(Ts)		;# To do check if this works without setPeriod()
 LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
-#LPERA_Supervisor.motorSaturations 		= array ( 1.0, 	1.0,     1.0, 	 1.0, 	   1.0,  	1.0, 	   1.0, 	 1.0, 	1.0) 
-LPERA_Supervisor.motorSaturations 		= array (   90.0, 	 90.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	60.0) 
-LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 1.0)
+LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	50.0) 
+LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 0.5)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
 LPERA_Supervisor.homedPos 				= array (  392.0,   553.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
-LPERA_Supervisor.maxConSatTime 			= 10.0
+LPERA_Supervisor.maxConSatTime 			= 5.0
 LPERA_Supervisor.stepSize 				= 0.5
 LPERA_Supervisor.absSenDir 				= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0)
 LPERA_Supervisor.enableOutput 			= true
@@ -151,12 +150,12 @@ LPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM ,0.0 , ENC2SI_S3 , ENC2S
 LPERA_ReadEncoders.configure
 
 ### Gripper force controller ###
-loadComponent("LPERA_GripperControl","PERA::GripperControlleft")
+loadComponent("LPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.setPeriod(Ts)
-LPERA_GripperControl.threshold_closed 		= 10.0
-LPERA_GripperControl.max_pos 				= 4.5
+LPERA_GripperControl.threshold_closed 		= 45.0
+LPERA_GripperControl.max_pos 				= 5.5
 LPERA_GripperControl.gripper_gain 			= 0.1
 LPERA_GripperControl.configure
 
@@ -356,7 +355,7 @@ connect ("LPERA_JointToMotorSpace.out","LPERA_AnalogOutsPera.in_ev", ConnPolicy(
 
 ## Whole body controller or reference generator loop	##
 if (wbcstr == "true") then {
-	connect("LPERA_ReadReferences.eff_out","LPERA_InputTorqueLimiter.in", ConnPolicy() )
+	connect ("LPERA_ReadReferences.eff_out","LPERA_InputTorqueLimiter.in", ConnPolicy() )
 	connect ("LPERA_InputTorqueLimiter.out", "LPERA_AdmittanceController.force_in", ConnPolicy() )
 	connect ("LPERA_MotorToJointSpace.out","LPERA_AdmittanceController.measured_position_in", ConnPolicy() )
 	connect ("LPERA_AdmittanceController.out", "LPERA_VectorConcatenate.in1", ConnPolicy() )

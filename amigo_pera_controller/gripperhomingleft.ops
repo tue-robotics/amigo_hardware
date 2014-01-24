@@ -127,7 +127,7 @@ setActivity("LPERA_Supervisor",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_Supervisor.setPeriod(Ts)		;# To do check if this works without setPeriod()
 LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
-LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	25.0) 
+LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	50.0) 
 LPERA_Supervisor.maxJointErrors 		= array (   0.09,    0.09,     0.09,     0.09, 	   0.09,    0.09, 	   0.19, 	 0.5)
 LPERA_Supervisor.absOrRel 				= array ( 	0.0, 	  0.0, 		1.0, 	  1.0, 	 	1.0, 	 1.0, 	 	1.0, 	 1.0)
 LPERA_Supervisor.homedPos 				= array (  392.0,   553.0,   1.5708,      0.0, 	 1.8326,   0.985, 	 0.7854)
@@ -154,9 +154,9 @@ loadComponent("LPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.setPeriod(Ts)
-LPERA_GripperControl.threshold_closed 		= 1000.0
-LPERA_GripperControl.max_pos 				= 4.5
-LPERA_GripperControl.gripper_gain 			= 2.0
+LPERA_GripperControl.threshold_closed 		= 45.0
+LPERA_GripperControl.max_pos 				= 5.5
+LPERA_GripperControl.gripper_gain 			= 0.1
 LPERA_GripperControl.configure
 
 ### Gravity Compensation ###
@@ -317,9 +317,9 @@ LPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 #loadComponent("LPERA_Tracing","Signal::Tracing")
 #addPeer("Supervisor","LPERA_Tracing")
 #setActivity("LPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#LPERA_Tracing.vector_sizes = array (8.0, 8.0, 9.0, 9.0 )
+#LPERA_Tracing.vector_sizes = array (8.0, 8.0, 9.0, 9.0)
 #LPERA_Tracing.buffersize = 32768*3;
-#LPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIP/leftgrip3.dat"
+#LPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/GRIP/leftgrip4.dat"
 #LPERA_Tracing.Ts = Ts
 #LPERA_Tracing.configure
 #connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in1", tracingpolicy );			# reference after reference generator
