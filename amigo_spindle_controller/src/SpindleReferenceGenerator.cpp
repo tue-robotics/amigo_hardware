@@ -39,9 +39,9 @@ bool SpindleReferenceGenerator::configureHook()
   addPort( "homing_finished", homingfinished_inport );
   
   mRefGenerators.resize(NrInterpolators);
-  desiredPos.resize(NrInterpolators);
-  desiredVel.resize(NrInterpolators);
-  desiredAcc.resize(NrInterpolators);
+  desiredPos.assign(NrInterpolators,0.0);
+  desiredVel.assign(NrInterpolators,0.0);
+  desiredAcc.assign(NrInterpolators,0.0);
   mRefPoints.resize(NrInterpolators);
   //interpolators.resize(NrInterpolators);
   

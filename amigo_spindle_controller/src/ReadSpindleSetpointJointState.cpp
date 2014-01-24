@@ -28,7 +28,7 @@ bool ReadSpindleSetpointJointState::configureHook()
 {
 	// Set size of reference vector
 	ref.resize(1); //Single joint
-	ref[0].resize(3,0); //pos, vel, acc
+	ref[0].assign(3,0.0); //pos, vel, acc
 	
   return true;
 }
@@ -62,7 +62,7 @@ void ReadSpindleSetpointJointState::updateHook()
 		log(Debug)<<"ReadSpindle: Received new input!"<<endlog();
 	  ref[0][0] = fmin( maxpos, fmax( minpos, input.position[0] ) );
 	  ref[0][1] = maxvel;//fmin( maxvel, input.velocity[0] );
-	  ref[0][2] = 0;//input.effort[0];
+	  ref[0][2] = 0.0;//input.effort[0];
 		
 	  // Write data to ports
 	  ref_outport.write( ref );

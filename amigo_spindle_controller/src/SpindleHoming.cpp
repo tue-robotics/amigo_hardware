@@ -73,7 +73,7 @@ bool SpindleHoming::configureHook()
 	
 	// Set size of reference vector
 	ref.resize(1); //Single joint
-	ref[0].resize(3); //pos, vel, acc
+	ref[0].assign(3,0.0); //pos, vel, acc
 	ref[0][1] = home_vel; //Redundant?
 	ref[0][2] = home_acc; //Redundant?
 	

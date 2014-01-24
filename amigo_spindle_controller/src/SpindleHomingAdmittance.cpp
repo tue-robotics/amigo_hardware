@@ -72,7 +72,7 @@ bool SpindleHomingAdmittance::configureHook()
 	}	
 	
 	// Set size of reference vector
-	ref.resize(1); //Single joint
+	ref.assign(1,0.0); //Single joint
 	
 	reference = 0.0;
 	referencestep = 0.01/1000;
