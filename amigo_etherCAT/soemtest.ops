@@ -10,28 +10,27 @@
 #### IMPORT PACKAGE ####
 # To be able to load components from this package and all packages in the manifest
 import("amigo_etherCAT")
+import("rtt_std_msgs")
 trigger
 
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 
 #### LOAD SUPERVISORINTERFACE ###
-loadComponent("SupervisorInterface","SUPERVISORY::SupervisorInterface")
-Supervisor.configure
-setActivity("SupervisorInterface",0.001,LowestPriority,ORO_SCHED_OTHER)
+loadComponent("DashboardTest","SUPERVISORY::DashboardTest")
+DashboardTest.configure
+setActivity("DashboardTest",0.001,LowestPriority,ORO_SCHED_OTHER)
 
-#### LOAD SUPERVISOR ###
-loadComponent("Supervisor","SUPERVISORY::Supervisor")
-Supervisor.configure
-setActivity("Supervisor",0.001,LowestPriority,ORO_SCHED_OTHER)
 
 # set up ros streams for publisching status to dashboard
-stream("Supervisor.baseStatus", ros.topic("/base_status")); 
-stream("Supervisor.spindleStatus", ros.topic("/spindle_status")); 
-stream("Supervisor.lperaStatus", ros.topic("/arm_left_status")); 
-stream("Supervisor.rperaStatus", ros.topic("/arm_right_status")); 
-stream("Supervisor.headStatus", ros.topic("/head_status")); 
-stream("Supervisor.allStatus", ros.topic("/all_status")); 
+stream("DashboardTest.baseStatus", ros.topic("/base_status")); 
+stream("DashboardTest.spindleStatus", ros.topic("/spindle_status")); 
+stream("DashboardTest.lperaStatus", ros.topic("/arm_left_status")); 
+stream("DashboardTest.rperaStatus", ros.topic("/arm_right_status")); 
+stream("DashboardTest.headStatus", ros.topic("/head_status")); 
+stream("DashboardTest.allStatus", ros.topic("/all_status")); 
+
+stream("DashboardTest.dashboardCmd", ros.topic("/dashboard_ctrlcmds"));
 
 #### START COMPONENTS ####
-Supervisor.start()
+DashboardTest.start()
