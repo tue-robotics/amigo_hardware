@@ -10,7 +10,6 @@
 #### IMPORT PACKAGE ####
 # To be able to load components from this package and all packages in the manifest
 import("amigo_etherCAT")
-import("rtt_std_msgs")
 trigger
 
 #### DECLARATION OF PARAMETERS ####
@@ -23,13 +22,14 @@ setActivity("DashboardTest",0.001,LowestPriority,ORO_SCHED_OTHER)
 
 
 # set up ros streams for publisching status to dashboard
-stream("DashboardTest.baseStatus", ros.topic("/base_status")); 
-stream("DashboardTest.spindleStatus", ros.topic("/spindle_status")); 
-stream("DashboardTest.lperaStatus", ros.topic("/arm_left_status")); 
-stream("DashboardTest.rperaStatus", ros.topic("/arm_right_status")); 
-stream("DashboardTest.headStatus", ros.topic("/head_status")); 
-stream("DashboardTest.allStatus", ros.topic("/all_status")); 
+#stream("DashboardTest.baseStatus", ros.topic("/base_status")); 
+#stream("DashboardTest.spindleStatus", ros.topic("/spindle_status")); 
+#stream("DashboardTest.lperaStatus", ros.topic("/arm_left_status")); 
+#stream("DashboardTest.rperaStatus", ros.topic("/arm_right_status")); 
+#stream("DashboardTest.headStatus", ros.topic("/head_status")); 
+#stream("DashboardTest.allStatus", ros.topic("/all_status")); 
 
+stream("DashboardTest.hardwareStatus", ros.topic("/hardware_status")); 
 stream("DashboardTest.dashboardCmd", ros.topic("/dashboard_ctrlcmds"));
 
 #### START COMPONENTS ####
