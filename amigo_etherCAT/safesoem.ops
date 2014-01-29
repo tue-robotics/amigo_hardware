@@ -1,3 +1,12 @@
+########################################################################
+#                                                                      #
+# Simple Open EtherCAT Master (SOEM) deployer file 		       #
+#                                                                      #
+#                                                                      #
+#                                                                      #
+#                                                                      #
+########################################################################
+
 #Import all the dependencies from the amigo_etherCAT package. 
 #This enables you to import components from all these packages.
 import("amigo_etherCAT")
