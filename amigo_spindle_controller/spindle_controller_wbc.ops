@@ -180,11 +180,11 @@ SPINDLE_Safety.configure
 # Brake and amplifier should be switched simultaneously: it is undesired to either power the motor with the brake on or to have no power with the brake off
 
 #### LOAD COMPONENT TO PUBLISH STATUS ###
-loadComponent("SPINDLE_Status","ROS::BoolToROS")
-addPeer("Supervisor","SPINDLE_Status")
-SPINDLE_Status.NumberOfBoolPorts = 1
-SPINDLE_Status.configure
-SPINDLE_Status.setPeriod(1)
+#loadComponent("SPINDLE_Status","ROS::BoolToROS")
+#addPeer("Supervisor","SPINDLE_Status")
+#SPINDLE_Status.NumberOfBoolPorts = 1
+#SPINDLE_Status.configure
+#SPINDLE_Status.setPeriod(1)
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("SPINDLE_Diagnostics","ROS::RosDiagnostics")
@@ -276,7 +276,7 @@ stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup"))
 stream( "Supervisor.spindle_enabled", ros.topic("/spindle_enabled"))
 
 stream("SPINDLE_ReadReferences.in", ros.topic("/amigo/torso/references"));
-stream("SPINDLE_Status.bool_out1", ros.topic("/spindle_status"));
+stream("SPINDLE_Safety.status", ros.topic("/spindle_status"));
 stream("SPINDLE_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
 
@@ -284,7 +284,7 @@ stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
 Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_Diagnostics")
-Supervisor.AddAllwaysOnPeer ("SPINDLE_Status")
+#Supervisor.AddAllwaysOnPeer ("SPINDLE_Status")
 
 if (wbcstr == "true") then {
 	Supervisor.AddAllwaysOnPeer ("SPINDLE_InputForceLimiter")
