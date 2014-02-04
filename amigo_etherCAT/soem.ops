@@ -41,7 +41,7 @@ addPeer("Supervisor","Soem")
 Soem.configure
 #Set a realtime priority to this component and run it every 1ms.
 setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
-connect ("Soem.Slave_100f.running", "Supervisor.serialRunning", ConnPolicy() )
+connect ("Soem.Slave_1002.Slave_1002_value", "Supervisor.serialRunning", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
 #This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.
