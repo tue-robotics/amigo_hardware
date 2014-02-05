@@ -44,6 +44,7 @@ Supervisor::Supervisor(const string& name) :
 	addPort("controllerOutputPort",controllerOutputPort).doc("Receives motorspace output of the controller");
 	addPort("status",statusPort).doc("For publishing the PERA status to the AMIGO dashboard");
 	addPort("jointVelocity",measVelPort).doc("Receives the reference interpolator joint velocities");
+	addPort( "errortosupervisor", errortosupervisorPort );
 
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("Maximum joint error allowed [rad]");
 	addProperty( "enableOutput", ENABLE_PROPERTY ).doc("Specifies if PERA_IO should be enabled");
@@ -219,6 +220,7 @@ void Supervisor::updateHook()
 				}
 				if(fabs(timeNow-timeReachedSaturation[i])>=MAXCONSATTIME){
 					if(errors==false){ // This check makes sure it is printed only once.
+						errortosupervisorPort.write(true);
 						log(Error)<<"SUPERVISOR: Motor output "<<i+1<<" satured too long (absolute "<<MAXCONSATTIME<<" sec above "<<fabs(MOTORSAT[i])<<"). PERA output disabled."<<endlog();
 						enable = false;
 						errors = true;
@@ -274,6 +276,7 @@ void Supervisor::updateHook()
 					enable = false;
 
 					if( errors == false ){ // This check makes sure it is printed only once.
+						errortosupervisorPort.write(true);
 						log(Error)<<"SUPERVISOR: Error of joint q("<<i+1<<") (="<<jointErrors[i]<<") exceeded limit ("<<MAX_ERRORS[i]<<"). PERA output disabled."<<endlog();
 						errors = true;
 					}		

@@ -84,6 +84,8 @@ namespace PERA
 		OutputPort<bool> gripperResetPort;
 		//! Outputport for publishing the PERA status to the AMIGO dashboard
 		OutputPort<diagnostic_msgs::DiagnosticStatus> statusPort;
+		//! Outputport for publishing bool to supervisor when errors are detected
+		OutputPort<bool> errortosupervisorPort;
 		//! Emergency button pressed / released (true/false) (message type bool)
 		std_msgs::Bool eButtonPressed;
 		//! Counters for loopcounting
@@ -160,7 +162,7 @@ namespace PERA
 		
 		diagnostic_msgs::DiagnosticStatus StatusError;
 		diagnostic_msgs::DiagnosticStatus StatusHoming;
-		diagnostic_msgs::DiagnosticStatus StatusOperational;		
+		diagnostic_msgs::DiagnosticStatus StatusOperational;
 
         sensor_msgs::JointState out_msg;
 	

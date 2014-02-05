@@ -11,6 +11,8 @@
 # To be able to load components from this package and all packages in the manifest
 import("amigo_pera_controller")
 trigger
+Supervisor.NameBodyPart( 3, "left_arm", true)
+
 
 ### LOAD WBC PARAMETER ### 
 var string wbcstr
@@ -415,7 +417,6 @@ connect ("LPERA_Supervisor.enablePort", "LPERA_Diagnostics.bool1", ConnPolicy() 
 connect ("LPERA_Supervisor.enableReadRefPort", "LPERA_Diagnostics.bool2", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
-Supervisor.NameBodyPart( 5, "left_arm")
 stream ("Supervisor.left_arm_fireup", ros.topic("/left_arm_fireup") )
 stream ("Supervisor.left_arm_enabled", ros.topic("/left_arm_enabled"));
 stream ("LPERA_WriteCurrentJointAngles.out", ros.topic("/amigo/left_arm/measurements_raw"))
