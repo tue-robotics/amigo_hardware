@@ -40,6 +40,7 @@ class PanTiltController : public RTT::TaskContext {
 		InputPort<amigo_msgs::head_ref> goalPosPort;
 		OutputPort<std_msgs::Float64> currentPosPanPort;
 		OutputPort<std_msgs::Float64> currentPosTiltPort;
+		OutputPort<bool> errortosupervisorPort;
 		
 		InputPort<bool> serialRunningPort;
 		InputPort<bool> serialReadyRxPort;

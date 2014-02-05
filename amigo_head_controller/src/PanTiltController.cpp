@@ -28,6 +28,7 @@ PanTiltController::PanTiltController(const std::string& name) :
 	addPort("goalPos", goalPosPort).doc("Goal head position");
 	addPort("currentPosPan", currentPosPanPort).doc("Current head pan position");
 	addPort("currentPosTilt", currentPosTiltPort).doc("Current head tilt position");
+	addPort( "errortosupervisor", errortosupervisorPort );
 	addProperty( "pan_id", pan_id).doc("Pan dynamixel id");
 	addProperty( "tilt_id", tilt_id).doc("Tilt dynamixel id");
 	addProperty( "pan_max", pan_max).doc("Pan max angle, 0 to 1023");
@@ -325,8 +326,10 @@ int PanTiltController::dxl_get_rxpacket_id(void) {
 
 int PanTiltController::dxl_rxpacket_isError(void)
 {
-	if(gbStatusPacket[ERRBIT])
+	if(gbStatusPacket[ERRBIT]){
+		errortosupervisorPort.write(true);
 		return 1;
+	}
 
 	return 0;
 }

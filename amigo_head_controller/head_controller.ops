@@ -11,7 +11,7 @@
 # To be able to load components from this package and all packages in the manifest
 import("amigo_head_controller")
 trigger
-Supervisor.NameBodyPart( 3, "head")
+Supervisor.NameBodyPart( 5, "head", false)
 
 #### DECLARATION OF PARAMETERS ####
 var double RAD_TO_STEP 	= 195.37860814; # From header file
