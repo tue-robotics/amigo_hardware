@@ -11,7 +11,7 @@
 # To be able to load components from this package and all packages in the manifest
 import("amigo_base_controller")
 trigger
-Supervisor.NameBodyPart( 1, "base")
+Supervisor.NameBodyPart( 1, "base", false)
 
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001

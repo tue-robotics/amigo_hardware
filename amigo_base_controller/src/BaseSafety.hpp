@@ -40,7 +40,7 @@ namespace AMIGO
     InputPort<bool> resetport;
     OutputPort<bool> amplifierport;
     OutputPort<diagnostic_msgs::DiagnosticStatus> statusPort;
-
+    OutputPort<bool> errortosupervisorPort;
 
     /* Declaring property variables */
     doubles max_velocities;

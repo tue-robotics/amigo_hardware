@@ -38,6 +38,7 @@ BaseSafety::BaseSafety(const string& name) :
   addEventPort( "reset", resetport );
   addPort( "wheel_amplifiers", amplifierport );
   addPort( "status", statusPort  );
+  addPort( "errortosupervisor", errortosupervisorPort );
 }
 
 BaseSafety::~BaseSafety(){}
@@ -96,7 +97,7 @@ void BaseSafety::updateHook()
     if ( !refport.connected() || !errorport.connected() || !voltport.connected() )
     {
       log(Error) << "BaseSafety::Input port not connected!" << endlog();
-      // No connection was made, can't do my job !
+      // No connection was made, can't do my job!
       safe = false;
     }
 
@@ -130,6 +131,7 @@ void BaseSafety::updateHook()
     for ( uint i = 0; i < 4; i++ )
       if ( voltage[i] > max_voltage )
       {
+		errortosupervisorPort.write(true);
         safe = false;
 		ROS_ERROR_STREAM( "BaseSafety::Maximum voltage exeeded! Disabling hardware!" );
         log(Error) << "BaseSafety::Maximum voltage exeeded! Disabling hardware!" << endlog();
