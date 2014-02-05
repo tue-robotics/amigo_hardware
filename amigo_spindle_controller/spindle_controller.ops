@@ -11,7 +11,8 @@
 # To be able to load components from this package and all packages in the manifest
 import("amigo_spindle_controller")
 trigger
-Supervisor.NameBodyPart( 2, "spindle")
+Supervisor.NameBodyPart( 2, "spindle", true)
+
 
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001

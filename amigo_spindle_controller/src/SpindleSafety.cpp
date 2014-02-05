@@ -22,6 +22,7 @@ SpindleSafety::SpindleSafety(const string& name) : TaskContext(name, PreOperatio
   addPort( "endswitch_inport", endswitchPort );
   addPort( "spindle_brake", spindlebrakePort );
   addPort( "status", statusPort );
+  addPort( "errortosupervisor", errortosupervisorPort );
   
   addProperty( "error_margin", errormargin );
   
@@ -69,6 +70,7 @@ void SpindleSafety::updateHook()
 		if(safety){ // Safety was true, so log now once
 			ROS_ERROR_STREAM( "Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." );
 			log(Error) << "Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." << endlog();
+			errortosupervisorPort.write(true);
 		}
 		safety = false;
 	}

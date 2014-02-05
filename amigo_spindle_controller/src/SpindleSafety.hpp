@@ -25,6 +25,7 @@ namespace AMIGO
     InputPort<std_msgs::Bool> endswitchPort;
     OutputPort<bool> spindlebrakePort;
     OutputPort<diagnostic_msgs::DiagnosticStatus> statusPort;
+    OutputPort<bool> errortosupervisorPort;
     
     // Declaring variables
     bool safety;
