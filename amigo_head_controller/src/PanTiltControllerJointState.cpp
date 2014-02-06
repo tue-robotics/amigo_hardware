@@ -34,8 +34,8 @@ PanTiltControllerJointState::PanTiltControllerJointState(const std::string& name
 	addProperty( "pan_min", pan_min).doc("Pan min angle, 0 to 1023");
 	addProperty( "tilt_max", tilt_max).doc("Tilt max angle, 0 to 1023");
 	addProperty( "tilt_min", tilt_min).doc("Tilt min angle, 0 to 1023");
-	addProperty( "pan_speed", pan_speed).doc("Pan speed, 0 to 1023");
-	addProperty( "tilt_speed", tilt_speed).doc("Tilt speed, 0 to 1023");
+	addProperty( "pan_speed", pan_speed_default).doc("Pan speed, 0 to 1023");
+	addProperty( "tilt_speed", tilt_speed_default).doc("Tilt speed, 0 to 1023");
 	addProperty( "pan_offset", pan_offset).doc("Pan offset angle, 0 to 1023");
 	addProperty( "tilt_offset", tilt_offset).doc("Tilt offset angle, 0 to 1023");
 	addProperty( "joint_names", currentPos.name).doc("Array containing strings withjoint names");
@@ -64,8 +64,8 @@ bool PanTiltControllerJointState::startHook() {
 	log(Debug) << "pan_min " << pan_min << endlog();
 	log(Debug) << "tilt_max " << tilt_max << endlog();
 	log(Debug) << "tilt_min " << tilt_min << endlog();
-	log(Debug) << "pan_speed " << pan_speed << endlog();
-	log(Debug) << "tilt_speed " << tilt_speed << endlog();
+	log(Debug) << "pan_speed " << pan_speed_default << endlog();
+	log(Debug) << "tilt_speed " << tilt_speed_default << endlog();
 	log(Debug) << "pan_offset " << pan_offset << endlog();
 	log(Debug) << "tilt_offset " << tilt_offset << endlog();	
 	log(Debug) << "PanTiltController start done." << endlog();
@@ -73,6 +73,8 @@ bool PanTiltControllerJointState::startHook() {
 }
 
 bool PanTiltControllerJointState::readReference() {
+	sensor_msgs::JointState goalPos;
+	//goalPos = sensor_msgs::JointState();
 	if (goalPosPort.read(goalPos) == NewData) {
 		log(Debug) << "PanTiltController: new pan/tilt reference obtained."<< endlog();
 		// ToDo: don't hardcode
@@ -82,17 +84,29 @@ bool PanTiltControllerJointState::readReference() {
 			log(Error)<<"Head controller: JointState message should contain "<<currentPos.name[0]<<" and "<<currentPos.name[1]<<", while these are now "<<goalPos.name[0]<<" and "<<goalPos.name[1]<<endlog();
 		}
 		pan_goal = (int) ((goalPos.position[0])*RAD_TO_STEP+pan_offset);
-		if (pan_goal> pan_max)
+		if (pan_goal > pan_max)
 			pan_goal = pan_max;
 		if (pan_goal < pan_min)
 			pan_goal = pan_min;
+		pan_speed = (int) ((goalPos.velocity[0])*RAD_TO_STEP);
+		log(Debug) << "Incoming pan speed: " << pan_speed <<endlog();
+		if (pan_speed > 1023)
+			pan_speed = 1023;
+		if (pan_speed == 0)
+			pan_speed = pan_speed_default;
 
 		tilt_goal = (int) ((goalPos.position[1])*RAD_TO_STEP+tilt_offset);
 		if (tilt_goal > tilt_max)
 			tilt_goal = tilt_max;
 		if (tilt_goal < tilt_min)
 			tilt_goal = tilt_min;
-			
+		tilt_speed = (int) ((goalPos.velocity[1])*RAD_TO_STEP);
+		log(Debug) << "Incoming tilt speed: " << tilt_speed <<endlog();
+		if (tilt_speed > 1023)
+			tilt_speed = 1023;
+		if (tilt_speed == 0)
+			tilt_speed = tilt_speed_default;
+
 		return true;
 	}
 	return false;
@@ -110,98 +124,95 @@ void PanTiltControllerJointState::updateHook() {
 		pstate = state;
 		switch (state) {
 			case 1:
-				log(Debug) << "PanTiltController: setting pan speed"<< endlog();
-				dxl_write_word(pan_id, AX_MOVING_SPEED_L, pan_speed);
-				//dxl_write_byte(pan_id, AX_STATUS_RETURN, 1);
+				log(Debug) << "PanTiltController: setting speeds" << endlog();
+				dxl_set_txpacket_id(BROADCAST_ID);
+				dxl_set_txpacket_instruction(INST_SYNC_WRITE);
+				dxl_set_txpacket_parameter(0, AX_MOVING_SPEED_L);
+				dxl_set_txpacket_parameter(1, 2);
+				dxl_set_txpacket_parameter(2, pan_id);
+				dxl_set_txpacket_parameter(3, dxl_get_lowbyte(pan_speed_default));
+				dxl_set_txpacket_parameter(4, dxl_get_highbyte(pan_speed_default));
+				dxl_set_txpacket_parameter(5, tilt_id);
+				dxl_set_txpacket_parameter(6, dxl_get_lowbyte(tilt_speed_default));
+				dxl_set_txpacket_parameter(7, dxl_get_highbyte(tilt_speed_default));
+				dxl_set_txpacket_length(10);
+				dxl_tx_rx_packet();
 				state++;
 				break;
 			case 2:
-				log(Debug) << "PanTiltController: setting tilt speed"<< endlog();
-				dxl_write_word(tilt_id, AX_MOVING_SPEED_L, tilt_speed);
-				//dxl_write_byte(tilt_id, AX_STATUS_RETURN, 1);
-				state++;
+				log(Debug) << "PanTiltController: homing"<< endlog();
+				dxl_set_txpacket_id(BROADCAST_ID);
+				dxl_set_txpacket_instruction(INST_SYNC_WRITE);
+				dxl_set_txpacket_parameter(0, AX_GOAL_POSITION_L);
+				dxl_set_txpacket_parameter(1, 2);
+				dxl_set_txpacket_parameter(2, pan_id);
+				dxl_set_txpacket_parameter(3, dxl_get_lowbyte(pan_offset));
+				dxl_set_txpacket_parameter(4, dxl_get_highbyte(pan_offset));
+				dxl_set_txpacket_parameter(5, tilt_id);
+				dxl_set_txpacket_parameter(6, dxl_get_lowbyte(tilt_offset));
+				dxl_set_txpacket_parameter(7, dxl_get_highbyte(tilt_offset));
+				dxl_set_txpacket_length(10);
+				dxl_tx_rx_packet();
+				state ++;
 				break;
 			case 3:
-				log(Debug) << "PanTiltController: homing pan"<< endlog();
-				dxl_write_word(pan_id, AX_GOAL_POSITION_L, pan_offset);
-				state++;
-				break;
-			case 4:
-				log(Debug) << "PanTiltController: homing tilt"<< endlog();
-				dxl_write_word(tilt_id, AX_GOAL_POSITION_L, tilt_offset);
-				state++;
-				break;
-			case 5:
-				if (readReference()) {
-					log(Debug) << "PanTiltController: syncwrite pan/tilt goal position"<< endlog();
-					dxl_set_txpacket_id(BROADCAST_ID);
-					dxl_set_txpacket_instruction(INST_SYNC_WRITE);
-					dxl_set_txpacket_parameter(0, AX_GOAL_POSITION_L);
-					dxl_set_txpacket_parameter(1, 2);
-					dxl_set_txpacket_parameter(2, pan_id);
-					dxl_set_txpacket_parameter(3, dxl_get_lowbyte(pan_goal));
-					dxl_set_txpacket_parameter(4, dxl_get_highbyte(pan_goal));
-					dxl_set_txpacket_parameter(5, tilt_id);
-					dxl_set_txpacket_parameter(6, dxl_get_lowbyte(tilt_goal));
-					dxl_set_txpacket_parameter(7, dxl_get_highbyte(tilt_goal));
-					dxl_set_txpacket_length(10);
-					dxl_tx_rx_packet();
-				}
-				//state++;
-				state = 8;
-				break;
-			/*case 6:
-				log(Debug) << "PanTiltController: checking whether pan is moving"<< endlog();
-				dxl_read_byte(pan_id, AX_MOVING);
-				state++;
-				break;
-			case 7:
-				if (dxl_get_rxpacket_parameter(0) == 1) {
-					log(Debug) << "PanTiltController: Pan is moving."<< endlog();
-					state++;
-				} else  {
-					log(Debug) << "PanTiltController: Pan is not moving."<< endlog();
-					state = 10;
-				}
-				break;*/
-			case 8:
 				log(Debug) << "PanTiltController: Requesting current pan position"<< endlog();				
 				dxl_read_word(pan_id, AX_PRESENT_POSITION_L);
 				state++;
 				break;
-			case 9:
+			case 4:
 				newPosition = dxl_makeword(dxl_get_rxpacket_parameter(0), dxl_get_rxpacket_parameter(1));
 				log(Debug) << "PanTiltController: received new pan position, " << newPosition << endlog();
 				currentPos.position[0] = (newPosition-pan_offset)/RAD_TO_STEP;
 				currentPosPort.write(currentPos);
-				//state++;
-				state = 12;
-				break;		
-			/*case 10:
-				log(Debug) << "PanTiltController: checking whether tilt is moving"<< endlog();
-				dxl_read_byte(tilt_id, AX_MOVING);
 				state++;
 				break;
-			case 11:
-				if (dxl_get_rxpacket_parameter(0) == 1) {
-					log(Debug) << "PanTiltController: Tilt is moving."<< endlog();
-					state++;
-				} else  {
-					log(Debug) << "PanTiltController: Tilt is not moving."<< endlog();
-					state = 5;
-				}
-				break;*/
-			case 12:
+			case 5:
 				log(Debug) << "PanTiltController: Requesting current tilt position"<< endlog();				
 				dxl_read_word(tilt_id, AX_PRESENT_POSITION_L);
 				state++;
 				break;
-			case 13:
+			case 6:
 				newPosition = dxl_makeword(dxl_get_rxpacket_parameter(0), dxl_get_rxpacket_parameter(1));
 				log(Debug) << "PanTiltController: received new tilt position, " << newPosition << endlog();
 				currentPos.position[1] = (newPosition-tilt_offset)/RAD_TO_STEP;
 				currentPosPort.write(currentPos);
-				state = 5;
+				if (readReference())
+					state++;
+				else
+					state = 3;
+				break;
+			case 7:
+				log(Debug) << "PanTiltController: setting speeds" << endlog();
+				dxl_set_txpacket_id(BROADCAST_ID);
+				dxl_set_txpacket_instruction(INST_SYNC_WRITE);
+				dxl_set_txpacket_parameter(0, AX_MOVING_SPEED_L);
+				dxl_set_txpacket_parameter(1, 2);
+				dxl_set_txpacket_parameter(2, pan_id);
+				dxl_set_txpacket_parameter(3, dxl_get_lowbyte(pan_speed));
+				dxl_set_txpacket_parameter(4, dxl_get_highbyte(pan_speed));
+				dxl_set_txpacket_parameter(5, tilt_id);
+				dxl_set_txpacket_parameter(6, dxl_get_lowbyte(tilt_speed));
+				dxl_set_txpacket_parameter(7, dxl_get_highbyte(tilt_speed));
+				dxl_set_txpacket_length(10);
+				dxl_tx_rx_packet();
+				state++;
+				break;
+			case 8:
+				log(Debug) << "PanTiltController: syncwrite pan/tilt goal position"<< endlog();
+				dxl_set_txpacket_id(BROADCAST_ID);
+				dxl_set_txpacket_instruction(INST_SYNC_WRITE);
+				dxl_set_txpacket_parameter(0, AX_GOAL_POSITION_L);
+				dxl_set_txpacket_parameter(1, 2);
+				dxl_set_txpacket_parameter(2, pan_id);
+				dxl_set_txpacket_parameter(3, dxl_get_lowbyte(pan_goal));
+				dxl_set_txpacket_parameter(4, dxl_get_highbyte(pan_goal));
+				dxl_set_txpacket_parameter(5, tilt_id);
+				dxl_set_txpacket_parameter(6, dxl_get_lowbyte(tilt_goal));
+				dxl_set_txpacket_parameter(7, dxl_get_highbyte(tilt_goal));
+				dxl_set_txpacket_length(10);
+				dxl_tx_rx_packet();
+				state = 3;
 				break;
 			default:
 				state = 1;

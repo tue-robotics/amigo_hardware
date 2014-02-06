@@ -47,7 +47,7 @@ class PanTiltControllerJointState : public RTT::TaskContext {
 		CommMsgBig instruction;
 		CommMsgBig status;
 		diagnostic_msgs::DiagnosticStatus headStatus;
-		sensor_msgs::JointState goalPos;
+		//sensor_msgs::JointState goalPos;
 		int trial, newPosition;
 		sensor_msgs::JointState currentPos;
 		
@@ -56,7 +56,7 @@ class PanTiltControllerJointState : public RTT::TaskContext {
 		unsigned char gbInstructionPacket[MAXNUM_TXPARAM+10];
 		unsigned char gbStatusPacket[MAXNUM_TXPARAM+10];
 		int gbStatusSize;
-		int pan_id, tilt_id, pan_goal, tilt_goal, pan_max, pan_min, tilt_max, tilt_min, pan_speed, tilt_speed, pan_offset, tilt_offset;
+		int pan_id, tilt_id, pan_goal, tilt_goal, pan_max, pan_min, tilt_max, tilt_min, pan_speed, tilt_speed, pan_speed_default, tilt_speed_default, pan_offset, tilt_offset;
 	public:
 		PanTiltControllerJointState(const std::string& name);
 		~PanTiltControllerJointState(){};
