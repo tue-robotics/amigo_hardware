@@ -67,8 +67,8 @@ SPINDLE_ReferenceGenerator.NrInterpolators = 1
 SPINDLE_ReferenceGenerator.InterpolatorDt = Ts
 SPINDLE_ReferenceGenerator.InterpolatorEps = 1.0
 SPINDLE_ReferenceGenerator.configure
-#SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.1);
-SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.03); #Velocity is carefully tuned. Do not increase because integrator will fill!
+#SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.03);
+SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.1); #Velocity is carefully tuned. Do not increase because integrator will fill!
 
 #Calculating Errors
 loadComponent("SPINDLE_ComputeError","MATH::Subtraction")
