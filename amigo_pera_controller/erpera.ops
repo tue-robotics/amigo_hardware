@@ -41,8 +41,12 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3;
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM; 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM; 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM;	
-var bool REQUIREHOMING   		= true;
+var bool REQUIREHOMING   		= true; 
 var bool REQUIREGRIPPERHOMING   = true;
+if (wbcstr == "true") then {	
+	REQUIREHOMING   			= false; 
+	REQUIREGRIPPERHOMING   		= false;
+}
 
 #### HIGH PRIORITY COMPONENTS ####
 ### Read reference joint angles ###
