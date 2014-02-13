@@ -35,9 +35,9 @@ using namespace PERA;
 	Concatenate::~Concatenate(){}
 
 	bool Concatenate::configureHook(){
-		invector1.resize(7,0.0);
-		invector2.resize(1,0.0);
-		outvector.resize(8,0.0);
+		invector1.assign(7,0.0);
+		invector2.assign(1,0.0);
+		outvector.assign(8,0.0);
 		return true;
 	}
 

@@ -73,7 +73,7 @@ bool Supervisor::configureHook()
 	homJntAngles.assign(8,0.0);
 	previousAngles.assign(8,0.0);
 	timeReachedSaturation.assign(9,0.0);
-    out_msg.position.resize(7);
+    out_msg.position.assign(7,0.0);
 
 	// Set initial counters
 	cntr=0;   // used to check if it is the first time the loop is running 

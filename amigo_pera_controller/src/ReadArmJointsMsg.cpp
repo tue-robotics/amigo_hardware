@@ -46,9 +46,9 @@ bool ReadArmJointsMsg::startHook()
       log(Warning)<<"Enableport not connected. No component outcome!"<<endlog();
   }
   
-  pos.resize(8.0,0.0);
-  vel.resize(8.0,0.0);
-  acc.resize(8.0,0.0);
+  pos.assign(8, 0.0);
+  vel.assign(8, 0.0);
+  acc.assign(8, 0.0);
   
   goodtogo = false;
   enable = false;

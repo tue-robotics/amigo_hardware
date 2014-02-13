@@ -50,11 +50,11 @@ bool ReadArmJointsMsg2::startHook()
       log(Warning)<<"Enableport not connected. No component outcome!"<<endlog();
   }
   
-  pos.resize(8.0,0.0);
-  vel.resize(8.0,0.0);
-  acc.resize(8.0,0.0);
-  jointdataref1.resize(10.0,0.0); 
-  jointdataref2.resize(10.0,0.0); 
+  pos.assign(8, 0.0);
+  vel.assign(8, 0.0);
+  acc.assign(8, 0.0);
+  jointdataref1.assign(10, 0.0); 
+  jointdataref2.assign(10, 0.0); 
   jointdataref1[0] = 0.0;
   jointdataref1[1] = 0.10; 
   jointdataref1[2] = 0.00; 
