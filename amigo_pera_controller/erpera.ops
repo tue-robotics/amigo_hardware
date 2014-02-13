@@ -162,7 +162,7 @@ RPERA_GripperControl.setPeriod(Ts)
 RPERA_GripperControl.threshold_closed 	= 8.0
 RPERA_GripperControl.max_pos 			= 5.2
 RPERA_GripperControl.gripper_gain 		= 0.1
-RPERA_GripperControl.sensorPos 			= 7
+RPERA_GripperControl.sensorPos 			= 8
 RPERA_GripperControl.configure
 
 ### Gravity Compensation ###

@@ -197,8 +197,7 @@ void Supervisor::updateHook()
 			 * monitored how long this continues. After MAXCONSATTIME
 			 * the PERA_IO is disabled.
 			 */
-			doubles controllerOutputs;
-			controllerOutputs.resize(9);
+			doubles controllerOutputs(9,0.0);
 			controllerOutputPort.read(controllerOutputs);
 			
 			//log(Warning)<<"SUPERVISOR: CONTROL EFFORT:[ "<< controllerOutputs[0] << "," << controllerOutputs[1] << "," << controllerOutputs[2] << "," << controllerOutputs[3] << "," << controllerOutputs[4] << "," << controllerOutputs[5] << "," << controllerOutputs[6] << "," << controllerOutputs[7] << "," << controllerOutputs[8] << "]" <<endlog();
