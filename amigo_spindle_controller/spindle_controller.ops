@@ -27,13 +27,6 @@ SPINDLE_ReadEncoders.encoderbits = 65536
 SPINDLE_ReadEncoders.enc2SI = array (-4.1666667e-7); # Minus because spindle up is defined positive.
 SPINDLE_ReadEncoders.configure
 
-#Publish component
-#loadComponent("SPINDLE_PositionToROS","ROS::DoublesToROS")
-#addPeer("Supervisor","SPINDLE_PositionToROS")
-#setActivity("SPINDLE_PositionToROS",0.01,LowestPriority,ORO_SCHED_OTHER)
-#SPINDLE_PositionToROS.NumberOfDoublesInVector = 1
-#SPINDLE_PositionToROS.configure
-
 # Publish JointState Component
 loadComponent("SPINDLE_WriteJointStates","ROS::DoublesToJointState")
 addPeer("Supervisor","SPINDLE_WriteJointStates")
@@ -170,13 +163,6 @@ SPINDLE_Safety.error_margin = 0.05
 SPINDLE_Safety.configure
 # Brake and amplifier should be switched simultaneously: it is undesired to either power the motor with the brake on or to have no power with the brake off
 
-#### LOAD COMPONENT TO PUBLISH STATUS ###
-#loadComponent("SPINDLE_Status","ROS::BoolToROS")
-#addPeer("Supervisor","SPINDLE_Status")
-#SPINDLE_Status.NumberOfBoolPorts = 1
-#SPINDLE_Status.configure
-#SPINDLE_Status.setPeriod(1)
-
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("SPINDLE_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","SPINDLE_Diagnostics")
@@ -212,15 +198,8 @@ SPINDLE_Diagnostics.boolname1 = "Safe"
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("torso")
 
-#connect ("DigitalIns2.out2", "SPINDLE_Homing.endswitch_in", ConnPolicy() )
-#connect ("SPINDLE_ReadEncoders.out", "SPINDLE_Homing.relPos_in", ConnPolicy() )
-#connect ("SPINDLE_Homing.ref_out","SPINDLE_ComputeError.in_plus", ConnPolicy() )
-
-
-
 #### CONNECT COMPONENTS ####
 connect ("Soem.Slave_1006.Slave_1006_value","SPINDLE_ReadEncoders.enc1_in", ConnPolicy() )
-#connect ("SPINDLE_ReadEncoders.out","SPINDLE_PositionToROS.in", ConnPolicy() )
 connect( "SPINDLE_ReadEncoders.out", "SPINDLE_WriteJointStates.pos_in", ConnPolicy() )
 connect ("SPINDLE_WriteJointStates.out", "JointStateAggregator.torso", ConnPolicy() )
 connect ("SPINDLE_ReadReferences.out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
@@ -239,14 +218,12 @@ connect ("SPINDLE_Addition.out","AnalogOuts.spindle", ConnPolicy() )
 connect ("SPINDLE_Safety.spindle_brake","DigitalOuts.in3", ConnPolicy() );   # Spindle brake
 connect ("SPINDLE_Safety.spindle_brake","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
 connect ("SPINDLE_ComputeError.out","SPINDLE_Safety.error_pos", ConnPolicy() )
-#connect ("SPINDLE_Safety.spindle_brake", "SPINDLE_Status.bool_in1", ConnPolicy() )
 
 ## Diagnostics ##
 connect ("SPINDLE_ReferenceGenerator.posout", "SPINDLE_Diagnostics.vec1", ConnPolicy() )
 connect ("SPINDLE_ComputeError.out", "SPINDLE_Diagnostics.vec2", ConnPolicy() )
 connect ("SPINDLE_Addition.out", "SPINDLE_Diagnostics.vec3", ConnPolicy() )
 connect ("SPINDLE_LowPass.out", "SPINDLE_Diagnostics.vec4", ConnPolicy() )
-#connect ("SPINDLE_Safety.safety", "SPINDLE_Diagnostics.bool1", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup"))
@@ -257,14 +234,11 @@ stream("SPINDLE_Safety.status", ros.topic("/spindle_status"));
 stream("SPINDLE_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
 #stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/joint_states"))
-#stream("SPINDLE_PositionToROS.out1", ros.topic("/spindle_position"))
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
-#Supervisor.AddAllwaysOnPeer ("SPINDLE_PositionToROS")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_Diagnostics")
-#Supervisor.AddAllwaysOnPeer ("SPINDLE_Status")
 
 Supervisor.AddPeerToBodyPart ("SPINDLE_ReadReferences",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_ReferenceGenerator",2 )

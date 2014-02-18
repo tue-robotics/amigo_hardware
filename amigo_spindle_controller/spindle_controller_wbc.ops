@@ -24,8 +24,8 @@ var array UPPERJOINTFORCELIMIT = array( 704.0);
 var array LOWERJOINTFORCELIMIT = array(-704.0); 
 var array UPPERJOINTLIMIT = array( 0.4 ); 
 var array LOWERJOINTLIMIT = array( 0.075 );  
-var array VIRTUAL_MASSES  = array( 500.0 ); 
-var array VIRTUAL_DAMPING = array( 300.0 ); 
+var array VIRTUAL_MASSES  = array( 1000.0 ); 
+var array VIRTUAL_DAMPING = array( 600.0 ); 
 
 ### Loading Components ###
 #Reading Encoders
@@ -179,13 +179,6 @@ SPINDLE_Safety.error_margin = 0.05
 SPINDLE_Safety.configure
 # Brake and amplifier should be switched simultaneously: it is undesired to either power the motor with the brake on or to have no power with the brake off
 
-#### LOAD COMPONENT TO PUBLISH STATUS ###
-#loadComponent("SPINDLE_Status","ROS::BoolToROS")
-#addPeer("Supervisor","SPINDLE_Status")
-#SPINDLE_Status.NumberOfBoolPorts = 1
-#SPINDLE_Status.configure
-#SPINDLE_Status.setPeriod(1)
-
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("SPINDLE_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","SPINDLE_Diagnostics")
@@ -244,32 +237,20 @@ connect ("SPINDLE_Addition.out","AnalogOuts.spindle", ConnPolicy() )
 connect ("SPINDLE_Safety.spindle_brake","DigitalOuts.in3", ConnPolicy() );   # Spindle brake
 connect ("SPINDLE_Safety.spindle_brake","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
 connect ("SPINDLE_ComputeError.out","SPINDLE_Safety.error_pos", ConnPolicy() )
-connect ("SPINDLE_Safety.spindle_brake", "SPINDLE_Status.bool_in1", ConnPolicy() )
+#connect ("SPINDLE_Safety.spindle_brake", "SPINDLE_Status.bool_in1", ConnPolicy() )
 
-## Whole body controller or reference generator loop	##
-if (wbcstr == "true") then {
-	connect("SPINDLE_ReadReferences.eff_out","SPINDLE_InputForceLimiter.in", ConnPolicy() )
-	connect ("SPINDLE_InputForceLimiter.out", "SPINDLE_AdmittanceController.force_in", ConnPolicy() )
-	connect ("SPINDLE_ReadEncoders.out","SPINDLE_AdmittanceController.measured_position_in", ConnPolicy() )
-	connect ("SPINDLE_AdmittanceController.out", "SPINDLE_ComputeError.in_plus", ConnPolicy() )
-	connect ("SPINDLE_Homing.homing_finished","SPINDLE_AdmittanceController.homing_finished", ConnPolicy() );
-	# Add FF as well?
-}
-else if (wbcstr == "false") then {
-	connect ("SPINDLE_ReadReferences.pos_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy() )
-    connect ("SPINDLE_ReferenceGenerator.posout","SPINDLE_ComputeError.in_plus", ConnPolicy() )
-    connect ("SPINDLE_ReferenceGenerator.velout","SPINDLE_FFW.ref_vel", ConnPolicy() )
-	connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy() )
-	connect ("SPINDLE_ReadEncoders.out","SPINDLE_ReferenceGenerator.actual_pos", ConnPolicy() )
-	connect ("SPINDLE_Homing.homing_finished","SPINDLE_ReferenceGenerator.homing_finished", ConnPolicy() );
-}
+connect("SPINDLE_ReadReferences.eff_out","SPINDLE_InputForceLimiter.in", ConnPolicy() )
+connect ("SPINDLE_InputForceLimiter.out", "SPINDLE_AdmittanceController.force_in", ConnPolicy() )
+connect ("SPINDLE_ReadEncoders.out","SPINDLE_AdmittanceController.measured_position_in", ConnPolicy() )
+connect ("SPINDLE_AdmittanceController.out", "SPINDLE_ComputeError.in_plus", ConnPolicy() )
+connect ("SPINDLE_Homing.homing_finished","SPINDLE_AdmittanceController.homing_finished", ConnPolicy() );
+# Add FF as well?
 
 ## Diagnostics ##
 connect ("SPINDLE_ReferenceGenerator.posout", "SPINDLE_Diagnostics.vec1", ConnPolicy() )
 connect ("SPINDLE_ComputeError.out", "SPINDLE_Diagnostics.vec2", ConnPolicy() )
 connect ("SPINDLE_Addition.out", "SPINDLE_Diagnostics.vec3", ConnPolicy() )
 connect ("SPINDLE_LowPass.out", "SPINDLE_Diagnostics.vec4", ConnPolicy() )
-connect ("SPINDLE_Safety.safety", "SPINDLE_Diagnostics.bool1", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup"))
@@ -284,24 +265,19 @@ stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
 Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_Diagnostics")
-#Supervisor.AddAllwaysOnPeer ("SPINDLE_Status")
 
-if (wbcstr == "true") then {
-	Supervisor.AddAllwaysOnPeer ("SPINDLE_InputForceLimiter")
-	Supervisor.AddAllwaysOnPeer ("SPINDLE_AdmittanceController")
-}
-else if (wbcstr == "false") then {
-	Supervisor.AddAllwaysOnPeer ("SPINDLE_ReferenceGenerator")
-}
+# ToDo: check allways on or body part
+Supervisor.AddAllwaysOnPeer ("SPINDLE_InputForceLimiter")
+Supervisor.AddAllwaysOnPeer ("SPINDLE_AdmittanceController")
 
 Supervisor.AddPeerToBodyPart ("SPINDLE_ReadReferences",2 )
-#Supervisor.AddPeerToBodyPart ("SPINDLE_ReferenceGenerator",2 )
+Supervisor.AddPeerToBodyPart ("SPINDLE_ReferenceGenerator",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_ComputeError",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_Gain",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_Integrator",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_LeadLag",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_LowPass",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_FFW",2 )
+#Supervisor.AddPeerToBodyPart ("SPINDLE_FFW",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_Addition",2 )
 Supervisor.AddPeerToBodyPart ("SPINDLE_Safety",2 )
 
