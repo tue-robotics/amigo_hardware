@@ -447,6 +447,7 @@ if (wbcstr == "true") then {
 else if (wbcstr == "false") then {
 	Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceInterpolator")
 }
+Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("RPERA_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer ("RPERA_ComputeErrors")
 Supervisor.AddAllwaysOnPeer ("RPERA_JointToMotorSpace")
@@ -465,7 +466,6 @@ Supervisor.AddAllwaysOnPeer ("RPERA_Addition")
 Supervisor.AddAllwaysOnPeer ("RPERA_SensorTorques")
 Supervisor.AddAllwaysOnPeer ("RPERA_GripperControl")
 Supervisor.AddAllwaysOnPeer ("RPERA_Diagnostics")
-Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
 #Supervisor.AddAllwaysOnPeer ("RPERA_Tracing")
 
 
