@@ -119,7 +119,7 @@ void BaseSafety::updateHook()
     doubles errors(4);
     errorport.read( errors );
     for ( uint i = 0; i < 4; i++ )
-      if ( errors[i] > max_errors[i] )
+      if ( fabs(errors[i]) > max_errors[i] )
       {
         safe = false;
         ROS_ERROR_STREAM( "BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!" );
