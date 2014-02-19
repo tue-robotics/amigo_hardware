@@ -109,7 +109,7 @@ void BaseSafety::updateHook()
     doubles refs(3);
     refport.read( refs );
     for ( uint i = 0; i < 3; i++ )
-      if ( refs[i] > max_velocities[i] )
+      if ( fabs(refs[i]) > max_velocities[i] )
       {
         safe = false;
         ROS_ERROR_STREAM( "BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] << " Disabling hardware!" );
@@ -129,7 +129,7 @@ void BaseSafety::updateHook()
     doubles voltage(4);
     voltport.read( voltage );
     for ( uint i = 0; i < 4; i++ )
-      if ( voltage[i] > max_voltage )
+      if ( fabs(voltage[i]) > max_voltage )
       {
 		errortosupervisorPort.write(true);
         safe = false;
