@@ -108,7 +108,7 @@ RPERA_AdmittanceController.upper_joint_limits 	= UPPERJOINTLIMIT
 RPERA_AdmittanceController.configure
 
 ### Interpolator (DO NOT INCREASE VALUES !!!) ###
-loadComponent("RPERA_ReferenceInterpolator","ReferenceGenerator")
+loadComponent("RPERA_ReferenceInterpolator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","RPERA_ReferenceInterpolator")
 setActivity("RPERA_ReferenceInterpolator",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_ReferenceInterpolator.setPeriod(Ts)
