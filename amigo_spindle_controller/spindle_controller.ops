@@ -53,7 +53,7 @@ SPINDLE_ReadReferences.configure
 #SpindleReadReferenceJointStates.configure
 
 #Loading Reference Generator
-loadComponent("SPINDLE_ReferenceGenerator","ReferenceGenerator")
+loadComponent("SPINDLE_ReferenceGenerator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","SPINDLE_ReferenceGenerator")
 SPINDLE_ReferenceGenerator.setPeriod(Ts)
 SPINDLE_ReferenceGenerator.NrInterpolators = 1
