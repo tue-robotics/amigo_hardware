@@ -88,24 +88,34 @@ bool PanTiltControllerJointState::readReference() {
 			pan_goal = pan_max;
 		if (pan_goal < pan_min)
 			pan_goal = pan_min;
-		pan_speed = (int) ((goalPos.velocity[0])*RAD_TO_STEP);
-		log(Debug) << "Incoming pan speed: " << pan_speed <<endlog();
-		if (pan_speed > 1023)
-			pan_speed = 1023;
-		if (pan_speed == 0)
+		if (goalPos.velocity.size() > 0) {
+			pan_speed = (int) ((goalPos.velocity[0])*RAD_TO_STEP);
+			log(Debug) << "Incoming pan speed: " << pan_speed <<endlog();
+			if (pan_speed > 1023)
+				pan_speed = 1023;
+			if (pan_speed == 0)
+				pan_speed = pan_speed_default;
+		}
+		else {
 			pan_speed = pan_speed_default;
+		}
 
 		tilt_goal = (int) ((goalPos.position[1])*RAD_TO_STEP+tilt_offset);
 		if (tilt_goal > tilt_max)
 			tilt_goal = tilt_max;
 		if (tilt_goal < tilt_min)
 			tilt_goal = tilt_min;
-		tilt_speed = (int) ((goalPos.velocity[1])*RAD_TO_STEP);
-		log(Debug) << "Incoming tilt speed: " << tilt_speed <<endlog();
-		if (tilt_speed > 1023)
-			tilt_speed = 1023;
-		if (tilt_speed == 0)
+		if (goalPos.velocity.size() > 0) {
+			tilt_speed = (int) ((goalPos.velocity[1])*RAD_TO_STEP);
+			log(Debug) << "Incoming tilt speed: " << tilt_speed <<endlog();
+			if (tilt_speed > 1023)
+				tilt_speed = 1023;
+			if (tilt_speed == 0)
+				tilt_speed = tilt_speed_default;
+		}
+		else {
 			tilt_speed = tilt_speed_default;
+		}
 
 		return true;
 	}
