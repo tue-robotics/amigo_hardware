@@ -38,26 +38,27 @@ HEAD_PanTiltController.tilt_max 	= TILT_OFFSET + TILT_MAX * RAD_TO_STEP
 HEAD_PanTiltController.tilt_min 	= TILT_OFFSET + TILT_MIN * RAD_TO_STEP
 HEAD_PanTiltController.pan_speed 	= 50
 HEAD_PanTiltController.tilt_speed 	= 25
-HEAD_PanTiltController.setPeriod(0.1)
+HEAD_PanTiltController.setPeriod(0.001)
 HEAD_PanTiltController.configure
 
-#### SET UP JOINTSTATE AGGREGATOR ####
-JointStateAggregator.addJointNames(JOINT_NAMES)
-JointStateAggregator.addAggregationPort("head")
+#### SET UP JOINTSTATE AGGREGATOR #### (is bypassed to get less delay in tf)
+#JointStateAggregator.addJointNames(JOINT_NAMES)
+#JointStateAggregator.addAggregationPort("head")
 
 #### CONNECT COMPONENTS ####
 connect ("Soem.Slave_100f.data_tx", "HEAD_PanTiltController.instruction", ConnPolicy() )
 connect ("Soem.Slave_100f.data_rx", "HEAD_PanTiltController.status", ConnPolicy() )
 connect ("Soem.Slave_100f.ready_rx", "HEAD_PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "HEAD_PanTiltController.serialRunning", ConnPolicy() )
-connect ("HEAD_PanTiltController.currentPos", "JointStateAggregator.head", ConnPolicy() )
+#connect ("HEAD_PanTiltController.currentPos", "JointStateAggregator.head", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream( "Supervisor.head_fireup", ros.topic("/head_fireup") )
 stream( "Supervisor.head_enabled", ros.topic("/head_enabled"));
-stream("HEAD_PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
-stream("HEAD_PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
-stream("HEAD_PanTiltController.status_out", ros.topic("/head_status"));
+stream( "HEAD_PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
+stream( "HEAD_PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
+stream( "HEAD_PanTiltController.currentPos", ros.topic("/amigo/joint_states"))
+stream( "HEAD_PanTiltController.status_out", ros.topic("/head_status"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("HEAD_PanTiltController")
