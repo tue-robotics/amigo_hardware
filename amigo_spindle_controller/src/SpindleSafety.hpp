@@ -31,10 +31,10 @@ namespace AMIGO
     bool safety;
     bool enable_endswitch_safety;
     doubles error_pos;
-    double errormargin;    
+    double errormargin;
     diagnostic_msgs::DiagnosticStatus StatusError;
     diagnostic_msgs::DiagnosticStatus StatusOperational;
-    
+   
     public:
 
     SpindleSafety(const string& name);
