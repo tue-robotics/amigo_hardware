@@ -41,16 +41,12 @@ HEAD_PanTiltController.tilt_speed 	= 25
 HEAD_PanTiltController.setPeriod(0.001)
 HEAD_PanTiltController.configure
 
-#### SET UP JOINTSTATE AGGREGATOR #### (is bypassed to get less delay in tf)
-#JointStateAggregator.addJointNames(JOINT_NAMES)
-#JointStateAggregator.addAggregationPort("head")
 
 #### CONNECT COMPONENTS ####
 connect ("Soem.Slave_100f.data_tx", "HEAD_PanTiltController.instruction", ConnPolicy() )
 connect ("Soem.Slave_100f.data_rx", "HEAD_PanTiltController.status", ConnPolicy() )
 connect ("Soem.Slave_100f.ready_rx", "HEAD_PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "HEAD_PanTiltController.serialRunning", ConnPolicy() )
-#connect ("HEAD_PanTiltController.currentPos", "JointStateAggregator.head", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream( "Supervisor.head_fireup", ros.topic("/head_fireup") )
