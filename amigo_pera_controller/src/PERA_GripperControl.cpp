@@ -75,7 +75,7 @@ using namespace PERA;
 		bool reNull;
 		if(NewData == reNullPort.read(reNull)){
 			if(reNull == true){
-				log(Warning)<<"Grippercontrol received reNull signal"<<endlog();
+				log(Info)<<"Grippercontrol received reNull signal"<<endlog();
 				// Increase threshold after the gripper has homed
 				threshold_closed = threshold_closed*1.25;
 				// Renull the gripperPos after homing
@@ -101,7 +101,7 @@ using namespace PERA;
 
 			if(gripperCommand.direction == amigo_msgs::AmigoGripperCommand::OPEN){
 				if (gripperPos[0] >= maxPos){
-					log(Warning)<<"Gripper is OPEN"<<endlog();
+					log(Info)<<"Gripper is OPEN"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
@@ -112,7 +112,7 @@ using namespace PERA;
 			else{
 				//log(Warning)<<"gripper torques = "<<torques[sensorPos]<<endlog();
 				if ( (torques[sensorPos] >= threshold_closed && torques[sensorPos] < MAX_TORQUE) || ( gripperHomed && (gripperPos[0] < 0.0)) ){
-					log(Warning)<<"Gripper is CLOSED"<<endlog();
+					log(Info)<<"Gripper is CLOSED"<<endlog();
 					gripperMeasurement.end_position_reached = true;
 					completed = true;
 				} 
