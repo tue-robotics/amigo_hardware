@@ -237,7 +237,7 @@ connect ("SPINDLE_Addition.out","AnalogOuts.spindle", ConnPolicy() )
 connect ("SPINDLE_Safety.spindle_brake","DigitalOuts.in3", ConnPolicy() );   # Spindle brake
 connect ("SPINDLE_Safety.spindle_brake","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
 connect ("SPINDLE_ComputeError.out","SPINDLE_Safety.error_pos", ConnPolicy() )
-#connect ("SPINDLE_Safety.spindle_brake", "SPINDLE_Status.bool_in1", ConnPolicy() )
+
 
 connect("SPINDLE_ReadReferences.eff_out","SPINDLE_InputForceLimiter.in", ConnPolicy() )
 connect ("SPINDLE_InputForceLimiter.out", "SPINDLE_AdmittanceController.force_in", ConnPolicy() )

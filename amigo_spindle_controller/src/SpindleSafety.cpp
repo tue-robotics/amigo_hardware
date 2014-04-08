@@ -23,7 +23,7 @@ SpindleSafety::SpindleSafety(const string& name) : TaskContext(name, PreOperatio
   addPort( "spindle_brake", spindlebrakePort );
   addPort( "status", statusPort );
   addPort( "errortosupervisor", errortosupervisorPort );
-  
+  // properties
   addProperty( "error_margin", errormargin );
   
   // Initialising variables
@@ -43,14 +43,14 @@ bool SpindleSafety::startHook()
   // Check validity of Ports:
   if ( !errorposPort.connected() )
   {
-    log(Error)<<"SpindleSafety::Inputport not connected!"<<endlog();
+    log(Error)<<"SpindleSafety: Inputport not connected!"<<endlog();
     return false;
   }
   if ( !spindlebrakePort.connected() || !statusPort.connected() ) {
-    log(Warning)<<"SpindleSafety::One or more outputports not connected!"<<endlog();
+    log(Warning)<<"SpindleSafety: One or more outputports not connected!"<<endlog();
   }
   if ( ! (errormargin > 0.0) ) {
-	  log(Warning)<<"SpindleSafety::error_margin not (correctly) specified!"<<endlog();
+	  log(Warning)<<"SpindleSafety: error_margin not (correctly) specified!"<<endlog();
   }
   	 
   safety = true;
@@ -68,8 +68,8 @@ void SpindleSafety::updateHook()
 	if( abs(error_pos[0]) > errormargin )
 	{
 		if(safety){ // Safety was true, so log now once
-			ROS_ERROR_STREAM( "Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." );
-			log(Error) << "Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." << endlog();
+			ROS_ERROR_STREAM( "SPINDLE_SAFETY: Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." );
+			log(Error) << "SPINDLE_SAFETY:  Error ( " << error_pos[0] << " ) too large! Spindle is probably blocked, change spindle setpoint." << endlog();
 			errortosupervisorPort.write(true);
 		}
 		safety = false;

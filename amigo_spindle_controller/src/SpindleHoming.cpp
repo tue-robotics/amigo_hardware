@@ -45,14 +45,13 @@ bool SpindleHoming::configureHook()
 	if ( !SpindleReadEncoder ) {
 		log(Error) << "Could not find SPINDLE_ReadEncoders component! Did you add it as Peer in the ops file?"<<endlog();
 		return false;
-	}	
+	}
 	// Lookup the Setpoint component.
 	TaskContext* Spindle_ReadReferences = this->getPeer("SPINDLE_ReadReferences");
 	if ( !Spindle_ReadReferences ) {
 		log(Error) << "Could not find SPINDLE_ReadReferences component! Did you add it as Peer in the ops file?"<<endlog();
 		return false;
 	}
-	
 	
 	// Lookup operations of peers
 	StartBodyPart = Supervisor->getOperation("StartBodyPart");
@@ -69,7 +68,7 @@ bool SpindleHoming::configureHook()
 	if ( !ResetEncoder.ready() ) {
 		log(Error) << "Could not find SPINDLE_ReadEncoders.reset Operation!"<<endlog();
 		return false;
-	}	
+	}
 	
 	// Set size of reference vector
 	ref.resize(1); //Single joint
