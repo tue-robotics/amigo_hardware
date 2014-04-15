@@ -326,12 +326,12 @@ RPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 #RPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/FSL/Rhoming.dat"
 #RPERA_Tracing.Ts = Ts
 #RPERA_Tracing.configure
-#connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in1", tracingpolicy );			# reference after reference generator
+#connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in1", tracingpolicy );		# reference after reference generator
 #connect ("RPERA_MotorToJointSpace.out","RPERA_Tracing.in2", tracingpolicy ) ; 				# position
 #connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in3", tracingpolicy ) ; 					# error
 #connect ("RPERA_Addition.out","RPERA_Tracing.in4", tracingpolicy ) ; 						# control effort
 #connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in5", tracingpolicy ) ; 				# force sensors	voltage input
-#connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", tracingpolicy ) ; 	# force sensors	after sensor calculation
+#connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", tracingpolicy ) ; # force sensors	after sensor calculation
 
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
