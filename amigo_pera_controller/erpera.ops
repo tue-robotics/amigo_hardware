@@ -41,8 +41,8 @@ var double ENC2SI_S3			= TWOPI*GEARRATIO_S3/ENCODERCOUNTS_S3
 var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM 		 									
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM 		
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM	
-var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = true
+var bool REQUIREHOMING   		= false
+var bool REQUIREGRIPPERHOMING   = false
 if (wbcstr == "true") then {	
 	REQUIREHOMING   			= false; 
 	REQUIREGRIPPERHOMING   		= false;
@@ -292,8 +292,8 @@ RPERA_WriteCurrentJointAngles.configure
 ### Conversion analog PERA_IO values to torques ###
 loadComponent("RPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
-setActivity("RPERA_SensorTorques",(Ts*10.0),LowestPriority,ORO_SCHED_OTHER)
-RPERA_SensorTorques.setPeriod(Ts*10.0);#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
+setActivity("RPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
+RPERA_SensorTorques.setPeriod(Ts);		#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
 RPERA_SensorTorques.Ksensor 		= array (0.0025,	0.0025,		0.0,		0.0025,		0.0025,		0.0025,		0.0025,		0.0025,		0.0025		)
 RPERA_SensorTorques.Voffset 		= array (0.2,		0.2,		0.0,		0.2,		0.2,		0.2,		0.2,		0.2,		0.2			)
 RPERA_SensorTorques.Xoffset 		= array (0.00025,	0.00025,	0.0,		0.00025,	0.0013875,	0.0013875,	0.0034488,	0.0048276,  0.00268		)
@@ -317,21 +317,21 @@ RPERA_Diagnostics.boolname1 			= "Amplifiers"
 RPERA_Diagnostics.boolname2 			= "ReadRef Enable"
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*2;	tracingpolicy.lock_policy = LOCKED
-#loadComponent("RPERA_Tracing","Signal::Tracing")
-#addPeer("Supervisor","RPERA_Tracing")
-#setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#RPERA_Tracing.vector_sizes = array (8.0, 8.0, 8.0, 8.0, 9.0, 9.0)
-#RPERA_Tracing.buffersize = 32768*2;
-#RPERA_Tracing.filename = "/home/amigo/ros/fuerte/tue/user/max/FSL/Rhoming.dat"
-#RPERA_Tracing.Ts = Ts
-#RPERA_Tracing.configure
-#connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in1", tracingpolicy );		# reference after reference generator
-#connect ("RPERA_MotorToJointSpace.out","RPERA_Tracing.in2", tracingpolicy ) ; 				# position
-#connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in3", tracingpolicy ) ; 					# error
-#connect ("RPERA_Addition.out","RPERA_Tracing.in4", tracingpolicy ) ; 						# control effort
-#connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in5", tracingpolicy ) ; 				# force sensors	voltage input
-#connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", tracingpolicy ) ; # force sensors	after sensor calculation
+var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*2;	tracingpolicy.lock_policy = LOCKED
+loadComponent("RPERA_Tracing","Signal::Tracing")
+addPeer("Supervisor","RPERA_Tracing")
+setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+RPERA_Tracing.vector_sizes = array (9.0 ,8.0, 8.0, 8.0, 8.0, 9.0)
+RPERA_Tracing.buffersize = 32768*2;
+RPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST5/RQ3I_A.dat"
+RPERA_Tracing.Ts = Ts
+RPERA_Tracing.configure
+connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in1", tracingpolicy ) ; 				# force sensors	voltage input
+connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in2", tracingpolicy );			# reference after reference generator
+connect ("RPERA_MotorToJointSpace.out","RPERA_Tracing.in3", tracingpolicy ) ; 				# position
+connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in4", tracingpolicy ) ; 					# error
+connect ("RPERA_Addition.out","RPERA_Tracing.in5", tracingpolicy ) ; 						# control effort
+connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", tracingpolicy ) ;  # force sensors	after sensor calculation
 
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
