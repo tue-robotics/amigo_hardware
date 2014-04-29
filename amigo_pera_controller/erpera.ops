@@ -294,11 +294,11 @@ loadComponent("RPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
 RPERA_SensorTorques.setPeriod(Ts);		#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
-RPERA_SensorTorques.Ksensor 		= array (0.0025,	0.0025,		0.0,		0.0025,		0.0025,		0.0025,		0.0025,		0.0025,		0.0025		)
-RPERA_SensorTorques.Voffset 		= array (0.2,		0.2,		0.0,		0.2,		0.2,		0.2,		0.2,		0.2,		0.2			)
-RPERA_SensorTorques.Xoffset 		= array (0.00025,	0.00025,	0.0,		0.00025,	0.0013875,	0.0013875,	0.0034488,	0.0048276,  0.00268		)
-RPERA_SensorTorques.Stiffness 		= array (777777.7,	777777.7,	0.0,		700.0,		2009211.0,	2009211.0,	60739.73,	37274.25, 	12935.0		)
-RPERA_SensorTorques.PivotDistance 	= array (0.03,		0.03,		0.0,		1.0,		0.025,		0.025,		0.017,		0.017, 		1.0			)
+RPERA_SensorTorques.Ksensor 		= array (42.0,		4250.0,		1.0,		94.0,		20.0		825.0,		1.0, 		1.0,		0.0025		)
+RPERA_SensorTorques.Voffset 		= array (-0.8,		12.0,		1.0,		1.0,		-2.2,		1.0,		1.0, 		1.0,		0.2			)
+RPERA_SensorTorques.Xoffset 		= array (-35.63,	-294.40,	1.0,		-30.56,		-30.9,		-168.32,	1.0, 		1.0,		0.00268		)
+RPERA_SensorTorques.Stiffness 		= array (1.0, 		1.0,		1.0, 		1.0,		1.0, 		1.0,		1.0, 		1.0,		12935.0		)
+RPERA_SensorTorques.PivotDistance 	= array (1.0, 		1.0,		1.0, 		1.0,		1.0, 		1.0,		1.0, 		1.0,		1.0			)
 RPERA_SensorTorques.configure
 
 #### Diagnostics ###
