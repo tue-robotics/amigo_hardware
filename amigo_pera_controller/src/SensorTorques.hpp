@@ -19,17 +19,13 @@ namespace AMIGO
     private:
 
     InputPort<doubles> voltage_inport;
-    OutputPort<doubles> joint_torques_outport;
     OutputPort<doubles> measured_torques_outport;
 
-	doubles Ksensor;
-	doubles Voffset;
-	doubles Xoffset;
-	doubles Stiffness;
+	doubles c1;
+	doubles c2;
+	doubles c3;
 	doubles Vmeasured;
 	doubles Tmeasured;
-	doubles Tjoint;
-	doubles PivotDistance;
 
     public:
 

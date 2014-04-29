@@ -8,16 +8,13 @@ using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 
-SensorTorques::SensorTorques(const string& name) : TaskContext(name, PreOperational), Vmeasured(N, 0.0), Tmeasured(N, 0.0), Tjoint(N, 0.0)
+SensorTorques::SensorTorques(const string& name) : TaskContext(name, PreOperational), Vmeasured(N, 0.0), Tmeasured(N, 0.0)
 {
-	addProperty( "Ksensor", Ksensor).doc("Ksensor [Vm]");
-	addProperty( "Voffset", Voffset).doc("Voffset [V]");
-	addProperty( "Xoffset", Xoffset).doc("Xoffset [m]");
-	addProperty( "Stiffness", Stiffness).doc("Stiffness [N/m]");
-	addProperty( "PivotDistance", PivotDistance).doc("Distance from the force act point to the pivot point [m]");
+	addProperty( "c1", c1).doc("Calibration Coefficient c1");
+	addProperty( "c2", c2).doc("Calibration Coefficient c1");
+	addProperty( "c3", c3).doc("Calibration Coefficient c1");
 	
 	addEventPort("voltage_in", voltage_inport).doc("Optical sensors voltage [V]");
-	addPort("joint_torques_out", joint_torques_outport).doc("Joint torques [Nm]");
 	addPort("measured_torques_out", measured_torques_outport).doc("Differential (gear) torques [Nm]");
 	
 }
@@ -32,16 +29,13 @@ bool SensorTorques::startHook()
 {
 	Logger::In in("SensorTorques::startHook()");
 	
-	if (Ksensor.size()!=N || Voffset.size()!=N || Xoffset.size()!=N || Stiffness.size()!=N || PivotDistance.size()!=N) {
-		log(Error)<<"Parameters missing! Check the sizes of Ksensor, Voffset, Stiffness and PivotDistance arrays."<< endlog();
+	if (c1.size()!=N || c2.size()!=N || c3.size()!=N ) {
+		log(Error)<<"Parameters missing! Check the sizes of c1, c2 and c3 arrays."<< endlog();
 		return false;
 	}	
 	if (!voltage_inport.connected()) {
 		log(Error)<<"Inputport not connected!"<<endlog();
 		return false;
-	}
-	if (!joint_torques_outport.connected()) {
-		log(Debug)<<"Joint torques outport not connected!"<<endlog();
 	}
 	if (!measured_torques_outport.connected()) {
 		log(Warning)<<"Motor torques outport not connected!"<<endlog();
@@ -54,21 +48,11 @@ void SensorTorques::updateHook()
 	voltage_inport.read(Vmeasured);
 	
 	for (unsigned int i=0; i<N; i++) {
-        Tmeasured[i] = (Ksensor[i]/(Vmeasured[i] + Voffset[i])-Xoffset[i])*Stiffness[i]*PivotDistance[i]; // Differential (gear) torques
+        Tmeasured[i] = (c1[i]/(Vmeasured[i] + c2[i])+c3[i]); // Differential (gear) torques
 	}
 	
-    // Joint torques                                     // TO DO: check these values, but better way would be to multiply the sensor torques with the same matrix as in erpera.ops
-    //Tjoint[0] = -Tmeasured[0] + Tmeasured[1];
-    //Tjoint[1] =  Tmeasured[0] + Tmeasured[1];
-    //Tjoint[2] =  Tmeasured[3];
-    //Tjoint[3] =  Tmeasured[4] + Tmeasured[5];
-    //Tjoint[4] = -Tmeasured[4] + Tmeasured[5];
-    //Tjoint[5] =  Tmeasured[6] + Tmeasured[7];
-    //Tjoint[6] =  Tmeasured[6] - Tmeasured[7];
-    //Tjoint[7] =  Tmeasured[8];
-           
 	measured_torques_outport.write(Tmeasured);
-    //joint_torques_outport.write(Tjoint);
+
 }
 
 ORO_CREATE_COMPONENT(SensorTorques)
