@@ -9,9 +9,7 @@
 #include <rtt/Component.hpp>
 #include <std_msgs/Bool.h>
 #include <std_msgs/UInt8.h>
-//#include <amigo_msgs/arm_joints.h>
 #include <amigo_msgs/pera_status.h>
-#include <diagnostic_msgs/DiagnosticArray.h>
 #include <vector>
 #include <math.h>
 #include <cstdlib>
@@ -42,7 +40,6 @@ Supervisor::Supervisor(const string& name) :
 	addPort("gripper_measurement",gripperMeasurementPort);
 	addPort("gripperResetPort",gripperResetPort).doc("Requests for GripperController reset");
 	addPort("controllerOutputPort",controllerOutputPort).doc("Receives motorspace output of the controller");
-	addPort("status",statusPort).doc("For publishing the PERA status to the AMIGO dashboard");
 	addPort("jointVelocity",measVelPort).doc("Receives the reference interpolator joint velocities");
 	addPort( "errortosupervisor", errortosupervisorPort );
 
@@ -124,11 +121,7 @@ bool Supervisor::configureHook()
 	
 	// Pressed is true. Assume emergency button pressed untill informed otherwise.
 	pressed = true;
-	
-	StatusOperational.level = 0;
-	StatusHoming.level = 3;
-    StatusError.level = 4;  
-	
+		
 	return true;
 }
 
@@ -379,18 +372,7 @@ void Supervisor::updateHook()
 		enable = false;
 		log(Warning)<<"SUPERVISOR (ENABLE_PROPERTY): enable is send to driver. Enable = [" << enable << "]" <<endlog();
 		enablePort.write(enable);
-	}
-	
-	if(homed==true && errors==false) {
-		statusPort.write(StatusOperational);
-	}
-	else if(homed==false && errors==false) {
-		statusPort.write(StatusHoming);
-	}
-	else if(errors==true) {
-		statusPort.write(StatusError);
-	}
-
+	}	
 }
 
 /* Using the absolute sensors and the mechanical endstops the PERA is
@@ -609,7 +591,6 @@ doubles Supervisor::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 				enable = false;
 				enablePort.write(enable);
-
 
 				// Enable the reading of the reference joint angles.
 				bool enableReadRef = false;

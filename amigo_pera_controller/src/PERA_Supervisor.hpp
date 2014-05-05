@@ -82,8 +82,6 @@ namespace PERA
 		OutputPort<amigo_msgs::AmigoGripperCommand> gripperCommandPort;
 		//! Outputport for ordering gripper to reset its positions
 		OutputPort<bool> gripperResetPort;
-		//! Outputport for publishing the PERA status to the AMIGO dashboard
-		OutputPort<diagnostic_msgs::DiagnosticStatus> statusPort;
 		//! Outputport for publishing bool to supervisor when errors are detected
 		OutputPort<bool> errortosupervisorPort;
 		//! Emergency button pressed / released (true/false) (message type bool)
@@ -160,10 +158,6 @@ namespace PERA
 		//! Memory array storing if controller saturation was already reached
 		int firstSatInstance [9];
 		
-		diagnostic_msgs::DiagnosticStatus StatusError;
-		diagnostic_msgs::DiagnosticStatus StatusHoming;
-		diagnostic_msgs::DiagnosticStatus StatusOperational;
-
         sensor_msgs::JointState out_msg;
 	
     public:
