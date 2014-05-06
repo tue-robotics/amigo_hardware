@@ -1,0 +1,60 @@
+var array noise_min = array( 0.0, -0.09, 0.0, 0.0)
+var array noise_max = array( 0.0, 0.09, 0.0, 0.0)
+
+import("sergio_etherCAT")
+var int buffersize = 16384
+var double Ts=0.001
+
+#### ADD NOISE COMPONENT ###
+loadComponent("BaseNoise","SOURCES::UniformRandomNumber")
+setActivity("BaseNoise",Ts/2,HighestPriority,ORO_SCHED_RT); #Since this component is not triggered, it runs at a higher frequency to make sure every timestep a new random number is available
+BaseNoise.vector_size = 4
+BaseNoise.configure
+
+BaseNoise.minimum = noise_min; #These parameters are set by a script
+BaseNoise.maximum = noise_max
+
+
+#### Sum this noise with the signal coming from the controller ###
+loadComponent("BaseAddNoise","MATH::Addition")
+BaseAddNoise.vectorsize = 4
+connect ("BaseNoise.out","BaseAddNoise.in1", ConnPolicy() )
+BASE_LowPasses.out.disconnect()
+connect ("BASE_LowPasses.out","BaseAddNoise.in2_event", ConnPolicy() )
+connect ("BaseAddNoise.out","BASE_SI2Volt.in", ConnPolicy() )
+setActivity("BaseAddNoise",0.0,HighestPriority,ORO_SCHED_RT)
+BaseAddNoise.configure
+
+### Setting up tracing ###
+var ConnPolicy tracingpolicy
+tracingpolicy.type = BUFFER
+tracingpolicy.size = buffersize
+tracingpolicy.lock_policy = LOCKED
+
+loadComponent("Tracing","Signal::Tracing")
+setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+Tracing.vector_sizes = array (4.0, 4.0, 4.0, 4.0)
+Tracing.buffersize = buffersize
+Tracing.filename = "/tmp/testwheel2.dat"
+Tracing.Ts = Ts
+#Tracing.Crash_if_done = 1; #If 1 the controllers are terminated after gathering data
+Tracing.configure
+
+connect ("BASE_ReadEncoders.out","Tracing.in1", tracingpolicy )
+#connect ("BASE_ReadReferences.out","Tracing.in2", tracingpolicy )
+#connect ("BASE_JointToMotorSpace.out","Tracing.in3", tracingpolicy )
+#connect ("BASE_VelocityToPosition.out","Tracing.in4", tracingpolicy )
+connect ("BASE_ComputeErrors.out","Tracing.in2", tracingpolicy )
+
+#connect ("BASE_LowPasses.out","Tracing.in6", tracingpolicy )
+#connect ("BASE_SI2Bits.out","Tracing.in7", tracingpolicy )
+
+connect ("BaseAddNoise.out","Tracing.in3", tracingpolicy )
+connect ("BaseNoise.out","Tracing.in4", tracingpolicy )
+
+
+#Starting components
+BaseNoise.start
+BaseAddNoise.start
+
+Tracing.start
