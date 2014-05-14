@@ -65,6 +65,7 @@ void SensorTorquesParamEstimator::updateHook()
 	
 	// Estimation step, c3 is initialised at zero and in this step c3 is estimated
 	if (EstimationComplete == false) {
+		// step 1: wait 0.5s and then start calculation of Tmean
 		if (cntr >= 500  && EstimationStarted == false) {
 			EstimationStarted = true;
 			cntr = 0;
@@ -76,9 +77,13 @@ void SensorTorquesParamEstimator::updateHook()
 				Tmean[i] = (Tmean_[i]*cntr + Tmeasured[i]) / (cntr + 1);
 			}
 		}
-		else if (cntr >= 1000  && EstimationStarted == true) {
+		
+		// step 2: set c3 to negative mean after 1.5 second (0.5s waiting and 1.5s calculating mean)
+		if (cntr >= 1000  && EstimationStarted == true) {
 			EstimationComplete = true;
-			c3 = Tmean;
+			for (unsigned int i=0; i<N; i++) {
+				c3[i] = -1.0*Tmean[i];
+			}			
 			log(Warning) << "SensorTorquesParamEstimator: Calculated c3 coefficients : [" << c3[0] << "," << c3[1] << "," << c3[2] << "," << c3[3] << "," << c3[4] << "," << c3[5] << "," << c3[6] << "," << c3[7] << "]" <<endlog();
 		}		
 		cntr++;

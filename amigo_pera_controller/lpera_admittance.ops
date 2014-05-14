@@ -266,12 +266,10 @@ LPERA_WriteJointStates.configure
 ### Conversion analog PERA_IO values to torques ###
 loadComponent("LPERA_SensorTorques","SensorTorques")
 setActivity("LPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_SensorTorques.Ksensor = array (0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025)
-LPERA_SensorTorques.Voffset = array (0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2)
-LPERA_SensorTorques.Xoffset = array (0.00025, 0.00025, 0.0013875, 0.0013875, 0.00025, 0.00268, 0.0034488, 0.0048276)
-LPERA_SensorTorques.Stiffness = array (777777.7, 777777.7, 2009211.0, 2009211.0, 700.0, 12935.0, 60739.73, 37274.25)
-LPERA_SensorTorques.PivotDistance = array (0.03, 0.03, 0.025, 0.025, 1.0, 1.0, 0.017, 0.017)
-LPERA_SensorTorques.setPeriod(0.02)
+LPERA_SensorTorques.setPeriod(Ts);#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
+LPERA_SensorTorques.c1 		= array (35.0,		87.0, 		1.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
+LPERA_SensorTorques.c2 		= array (-0.2,		0.2,		1.0,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
+LPERA_SensorTorques.c3 		= array (-76.26,	-95.29,		1.0,		-145.16,	-38.71,		-111.7,		1.0,		1.0,		34.66	)
 LPERA_SensorTorques.configure
 
 #### Diagnostics ###
