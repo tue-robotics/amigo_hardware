@@ -21,41 +21,37 @@ SpindleSafety::SpindleSafety(const string& name) : TaskContext(name, PreOperatio
   addPort( "enable_endswitch_safety", enableEndswitchSafetyPort );
   addPort( "endswitch_inport", endswitchPort );
   addPort( "spindle_brake", spindlebrakePort );
-  addPort( "status", statusPort );
   addPort( "errortosupervisor", errortosupervisorPort );
   // properties
   addProperty( "error_margin", errormargin );
-  
-  // Initialising variables
-  error_pos.assign(1,0.0);  
 }
 SpindleSafety::~SpindleSafety(){}
 
 bool SpindleSafety::configureHook()
 {
-  StatusOperational.level = 0;
-  StatusError.level = 4;  	
+  error_pos.assign(1,0.0);   
   return true;
 }
 
 bool SpindleSafety::startHook()
 { 
+  safety = true;
+  enable_endswitch_safety = false;
+  
   // Check validity of Ports:
   if ( !errorposPort.connected() )
   {
     log(Error)<<"SpindleSafety: Inputport not connected!"<<endlog();
     return false;
   }
-  if ( !spindlebrakePort.connected() || !statusPort.connected() ) {
-    log(Warning)<<"SpindleSafety: One or more outputports not connected!"<<endlog();
+  if ( !spindlebrakePort.connected() ) {
+    log(Error)<<"SpindleSafety: spindlebrakePort not connected!"<<endlog();
+    return false;
   }
   if ( ! (errormargin > 0.0) ) {
-	  log(Warning)<<"SpindleSafety: error_margin not (correctly) specified!"<<endlog();
+	  log(Error)<<"SpindleSafety: error_margin not (correctly) specified!"<<endlog();
   }
-  	 
-  safety = true;
-  enable_endswitch_safety = false;
-  
+    
   log(Warning)<<"SpindleSafety::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
 
   return true;
@@ -75,32 +71,12 @@ void SpindleSafety::updateHook()
 		safety = false;
 	}
 	
-	/*TODO
-	// The endswitch safety is enabled as soon as it receives the go-ahead from the Spindle Homing
-	if (enableEndswitchSafetyPort.read(enable_endswitch_safety) == NewData) log(Info)<<"Endswitch safety enabled"<<endlog();
-	
-	// If endswitch safety is enabled and the endswitch port reads false, the spindle is out of range which is not safe
-	std_msgs::Bool endswitch;
-	endswitchPort.read(endswitch);
-	if (enable_endswitch_safety && !endswitch.data) 
-	{
-		if (safety) {
-			ROS_ERROR_STREAM( "Spindle out of range, endswitch data is false" );
-			log(Error) << "Spindle out of range, endswitch data is false" << endlog();
-			//safety = false; // TIMC: Disabled for debugging purposes
-		}
-	}*/
-	
-	// Applying brake if necessary
-	if(safety == false)
-	{
+
+	if(safety == false)	{
 	    spindlebrakePort.write(BRAKEON);
-	    statusPort.write(StatusError);
 	}
-	else
-	{
+	else {
 		spindlebrakePort.write(BRAKEOFF);
-		statusPort.write(StatusOperational);
 	}
 }
 

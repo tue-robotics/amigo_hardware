@@ -8,9 +8,8 @@
 using namespace std;
 using namespace RTT;
 
-namespace AMIGO // Just because it looks nice
+namespace AMIGO
 {
-  // Define a new type for easy coding:
   typedef vector<double> doubles;
 
   class SpindleHoming

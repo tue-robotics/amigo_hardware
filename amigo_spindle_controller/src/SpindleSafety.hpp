@@ -3,9 +3,6 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
-#include <diagnostic_msgs/DiagnosticStatus.h>
-
-
 
 using namespace std;
 using namespace RTT;
@@ -24,7 +21,6 @@ namespace AMIGO
     InputPort<bool> enableEndswitchSafetyPort;
     InputPort<std_msgs::Bool> endswitchPort;
     OutputPort<bool> spindlebrakePort;
-    OutputPort<diagnostic_msgs::DiagnosticStatus> statusPort;
     OutputPort<bool> errortosupervisorPort;
     
     // Declaring variables
@@ -32,9 +28,7 @@ namespace AMIGO
     bool enable_endswitch_safety;
     doubles error_pos;
     double errormargin;
-    diagnostic_msgs::DiagnosticStatus StatusError;
-    diagnostic_msgs::DiagnosticStatus StatusOperational;
-   
+
     public:
 
     SpindleSafety(const string& name);

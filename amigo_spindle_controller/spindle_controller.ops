@@ -11,12 +11,16 @@
 # To be able to load components from this package and all packages in the manifest
 import("amigo_spindle_controller")
 trigger
-Supervisor.NameBodyPart( 2, "spindle", true)
-
 
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 var strings JOINT_NAMES = strings( "torso_joint" )
+var int BODYNUMBER 		= 2
+var string BODYNAME 	= "spindle"
+var bool HOMEABLE 		= true
+ 
+### NameBodyPart ###
+Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 
 ### Loading Components ###
 #Reading Encoders
@@ -97,7 +101,7 @@ connect ("SPINDLE_Homing.ref_out","SPINDLE_ReferenceGenerator.refin", ConnPolicy
 #SPINDLE_Homing.homing_compname		= "SPINDLE" 			;# orocos prefix
 #SPINDLE_Homing.require_homing   	= true		 			;# require homing
 #SPINDLE_Homing.homing_type			= array (3.0)			;# 0 = abs sen homing 1 = servo error homing  2 = Force sen homing  3 = endSwitch homing
-#SPINDLE_Homing.homing_order			= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
+#SPINDLE_Homing.homing_order		= array (1.0)			;# Order in which the joints are homed providing (2.0 3.0 1.0) will home joint two, then joint three and at last joint one
 #SPINDLE_Homing.homing_refPos		= array (1.0)   		;# Pos Reference for the homing joint
 #SPINDLE_Homing.homing_refVel		= array (0.01)  		;# Vel Reference for the homing joint
 #SPINDLE_Homing.homing_stroke		= array (0.41)			;# Stroke from zero point to homing point (encoders are resetted using this value)
