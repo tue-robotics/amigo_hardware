@@ -11,20 +11,25 @@
 # To be able to load components from this package and all packages in the manifest
 import("amigo_base_controller")
 trigger
-Supervisor.NameBodyPart( 1, "base", false)
 
 #### DECLARATION OF PARAMETERS ####
-var double Ts = 0.001
-var double WHEELRAD = 0.075*0.9825; # Corrected for effective wheel radius
-var double DIS2CENT = 0.29072
-var double HALFSQRT2 = 0.7071
-var double TORQUE2CURRENT = 1.0/0.0302; # [Amp/Nm]
-var double CURRENT2VOLT = 1.0/1.0
-var double GEARRATIO = 8.0/343.0
-var double TWOPI = 2*3.141592
-var double ENCODERCOUNTS = 500.0*4.0
-var double ENC2SI = TWOPI*GEARRATIO/ENCODERCOUNTS
-var double SI2V = TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
+var double Ts 				= 0.001
+var double WHEELRAD 		= 0.075*0.9825; # Corrected for effective wheel radius
+var double DIS2CENT 		= 0.29072
+var double HALFSQRT2		= 0.7071
+var double TORQUE2CURRENT 	= 1.0/0.0302; # [Amp/Nm]
+var double CURRENT2VOLT 	= 1.0/1.0
+var double GEARRATIO 		= 8.0/343.0
+var double TWOPI 			= 2*3.141592
+var double ENCODERCOUNTS 	= 500.0*4.0
+var double ENC2SI 			= TWOPI*GEARRATIO/ENCODERCOUNTS
+var double SI2V 			= TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
+var int BODYNUMBER 			= 1
+var string BODYNAME 		= "base"
+var bool HOMEABLE 			= false
+ 
+### NameBodyPart ###
+Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 
 ### READ WHEEL ENCODERS ###
 loadComponent("BASE_ReadEncoders","SOEM::ReadEncoders")

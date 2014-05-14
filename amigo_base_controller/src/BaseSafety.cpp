@@ -37,7 +37,6 @@ BaseSafety::BaseSafety(const string& name) :
   addEventPort( "voltage", voltport );
   addEventPort( "reset", resetport );
   addPort( "wheel_amplifiers", amplifierport );
-  addPort( "status", statusPort  );
   addPort( "errortosupervisor", errortosupervisorPort );
 }
 
@@ -59,9 +58,6 @@ bool BaseSafety::configureHook()
   {
     log(Warning)<<"BaseSafety::Maximum voltage is zero!"<<endlog();
   }
-  
-  StatusOperational.level = 0;
-  StatusError.level = 4;  
   
   return true; 
 }
@@ -111,6 +107,7 @@ void BaseSafety::updateHook()
     for ( uint i = 0; i < 3; i++ )
       if ( fabs(refs[i]) > max_velocities[i] )
       {
+		errortosupervisorPort.write(true);
         safe = false;
         ROS_ERROR_STREAM( "BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] << " Disabling hardware!" );
         log(Error) << "BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] << " Disabling hardware!" << endlog();
@@ -121,6 +118,7 @@ void BaseSafety::updateHook()
     for ( uint i = 0; i < 4; i++ )
       if ( fabs(errors[i]) > max_errors[i] )
       {
+		errortosupervisorPort.write(true);
         safe = false;
         ROS_ERROR_STREAM( "BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!" );
         log(Error) << "BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!" << endlog();
@@ -146,13 +144,6 @@ void BaseSafety::updateHook()
   
   // One sample delay is build in to make sure the errors are resetted before enabling the amplifiers
   amplifierport.write( safe&&previousSafe ); //TODO: I think this came irrelevant after the new supervisor...
-  
-  if ( safe ) {
-	  statusPort.write(StatusOperational);
-  }
-  else {
-	  statusPort.write(StatusError);
-  }
   
   previousSafe = safe;
 
