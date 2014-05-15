@@ -75,7 +75,6 @@ bool PERAHoming::startHook()
 	}
 	if (!gripperMeasurementPort.connected()) {
 		log(Error)<<"gripperMeasurementPort not connected!"<<endlog();
-		return false;
 	}
 	
 	// checking outports
@@ -85,7 +84,6 @@ bool PERAHoming::startHook()
 	}
 	if (!gripperCommandPort.connected()) {
 		log(Error)<<"gripperCommandPort not connected!"<<endlog();
-		return false;
 	}
 	if (!homJntAngPort.connected()) {
 		log(Error)<<"homJntAngPort not connected!"<<endlog();

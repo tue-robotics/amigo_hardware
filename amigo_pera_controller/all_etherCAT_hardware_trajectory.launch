@@ -1,0 +1,30 @@
+<launch>
+    <include file="$(find amigo_machine_files)/machines/amigo1.machine" />
+    <include file="$(find amigo_machine_files)/machines/amigo2.machine" />
+    <include file="$(find amigo_machine_files)/machines/amigo3.machine" />
+    
+    <arg name="clean" default="false"/>    
+    <arg if="$(arg clean)" name="clean_exit_ops" value="-s $(find rtt_custom_components)/clean_exit.ops"/>
+    <arg unless="$(arg clean)" name="clean_exit_ops" value=""/>
+    
+    <arg name="wbc" default="false"/>    
+    <arg if="$(arg wbc)" name="wbc_ops" value="
+    -s $(find amigo_etherCAT)/wbcistrue.ops
+    -s $(find amigo_spindle_controller)/spindle_controller_wbc.ops"/>
+    <arg unless="$(arg wbc)" name="wbc_ops" value="
+    -s $(find amigo_etherCAT)/wbcisfalse.ops
+    -s $(find amigo_spindle_controller)/spindle_controller.ops"/>
+    
+    
+    <node name="amigo_etherCAT_hardware" pkg="ocl" type="deployer-gnulinux" args="
+    ETHERCAT_HARDWARE
+    -s $(find amigo_etherCAT)/soem.ops 
+    $(arg wbc_ops)
+    -s $(find amigo_base_controller)/base_controller.ops
+    -s $(find amigo_head_controller)/head_controller.ops 
+    -s $(find rgb_lights)/rgb_lights.ops
+    -s $(find amigo_pera_controller)/elpera_trajectory_actionlib.ops 
+    -s $(find amigo_pera_controller)/erpera.ops
+    $(arg clean_exit_ops)
+    --" output="screen" machine="amigo2"></node>   
+</launch>

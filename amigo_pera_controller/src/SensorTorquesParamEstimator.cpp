@@ -22,6 +22,11 @@ SensorTorquesParamEstimator::~SensorTorquesParamEstimator(){}
 bool SensorTorquesParamEstimator::configureHook()
 {	
 	c3.assign(N,0.0);
+	
+	cntr = 0;
+	EstimationComplete = false;
+	EstimationStarted = false;
+	
 	return true;
 }
 
@@ -41,10 +46,6 @@ bool SensorTorquesParamEstimator::startHook()
 		log(Warning)<<"SensorTorquesParamEstimator: Motor torques outport not connected!"<<endlog();
 	}
 	return true;
-	
-	cntr = 0;
-	EstimationComplete = false;
-	EstimationStarted = false;
 }
 
 void SensorTorquesParamEstimator::updateHook()

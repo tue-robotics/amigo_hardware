@@ -374,7 +374,7 @@ addPeer("Supervisor","RPERA_Tracing")
 setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Tracing.vector_sizes = array (8.0, 8.0, 8.0, 8.0)
 RPERA_Tracing.buffersize = 32768*2;
-RPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST6/EXP1.dat"
+RPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST6/EXP2.dat"
 RPERA_Tracing.Ts = Ts
 RPERA_Tracing.configure
 connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in1", tracingpolicy );
@@ -531,6 +531,6 @@ Supervisor.AddEnabledPeer ("RPERA_Safety", BODYNUMBER)
 Supervisor.AddOpOnlyPeer ("RPERA_SensorTorques", BODYNUMBER)
 Supervisor.AddOpOnlyPeer ("RPERA_TorqueFilter", BODYNUMBER )
 Supervisor.AddOpOnlyPeer ("RPERA_TorqueDiff", BODYNUMBER )
-Supervisor.AddAllwaysOnPeer ("RPERA_Tracing")
+Supervisor.AddOpOnlyPeer ("RPERA_Tracing", BODYNUMBER )
 
 

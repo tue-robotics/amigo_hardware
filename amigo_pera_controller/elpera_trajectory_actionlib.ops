@@ -69,7 +69,7 @@ setActivity("LPERA_TrajectoryAction",0.001,HighestPriority,ORO_SCHED_RT)
 LPERA_TrajectoryAction.NumberOfJoints = 7
 LPERA_TrajectoryAction.max_vels = MAX_VELS
 LPERA_TrajectoryAction.max_accs = MAX_ACCS
-LPERA_TrajectoryAction.start_pos = HOMED_POS
+LPERA_TrajectoryAction.start_pos = array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 LPERA_TrajectoryAction.configure
 
 ### Vector concatenate ###
