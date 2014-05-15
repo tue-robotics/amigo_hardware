@@ -160,13 +160,6 @@ BASE_Diagnostics.vecname2 = "Error"
 BASE_Diagnostics.vecname3 = "Voltage"
 BASE_Diagnostics.boolname1 = "Amplifiers"
 
-#### LOAD COMPONENT TO PUBLISH STATUS ###
-loadComponent("BASE_Status","ROS::BoolToROS")
-addPeer("Supervisor","BASE_Status")
-setActivity("BASE_Status",0.5,LowestPriority,ORO_SCHED_OTHER)
-BASE_Status.NumberOfBoolPorts = 1
-BASE_Status.configure
-
 #### SET UP JOINTSTATE AGGREGATOR ####
 # To Do JointState message base
 
@@ -191,44 +184,35 @@ connect ("BASE_JointToMotorSpace.out","BASE_VelocityToPosition.in", ConnPolicy()
 connect ("BASE_ReadEncoders.out","BASE_VelocityToPosition.initial", ConnPolicy() ); # Use current position as initial position
 connect ("BASE_ComputeErrors.out", "BASE_Safety.error", ConnPolicy() )
 connect ("BASE_SI2Volt.out", "BASE_Safety.voltage", ConnPolicy() )
-#connect ("BASE_Safety.wheel_amplifiers", "DigitalOuts.in1", ConnPolicy() ); # for reading back the ebutton info
 connect ("BASE_Safety.wheel_amplifiers", "DigitalOuts2.in2", ConnPolicy() ); # amplifiers
+connect ("BASE_Safety.errortosupervisor","Supervisor.base_error", ConnPolicy() )
 
 ## Diagnostics ##
 connect ("BASE_ReadReferences.out", "BASE_Diagnostics.vec1", ConnPolicy() )
 connect ("BASE_ComputeErrors.out", "BASE_Diagnostics.vec2", ConnPolicy() )
 connect ("BASE_SI2Volt.out", "BASE_Diagnostics.vec3", ConnPolicy() )
 connect ("BASE_Safety.wheel_amplifiers", "BASE_Diagnostics.bool1", ConnPolicy() )
-#connect ("BASE_Safety.wheel_amplifiers", "BASE_Status.bool_in1", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
-stream ("Supervisor.base_fireup", ros.topic("/base_fireup") )
-stream ("Supervisor.base_enabled", ros.topic("/base_enabled"));
-
 stream ("BASE_OdometryPublisher.odom", ros.topic("/amigo/base/measurements"));
 stream ("BASE_OdometryPublisher.reset", ros.topic("/amigo/base/reset_odometry"));
 stream ("BASE_ReadReferences.cmd_vel", ros.topic("/amigo/base/references"));
 stream ("BASE_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 stream ("BASE_Diagnostics.diagnostics", ros.topic("/base_diagnostics"));
-#stream ("BASE_Status.bool_out1", ros.topic("/base_status"));
-stream ("BASE_Safety.status", ros.topic("/base_status"));
-
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("BASE_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer ("BASE_OdometryPublisher")
-
-Supervisor.AddPeerToBodyPart ("BASE_ReadReferences",1 )
-Supervisor.AddPeerToBodyPart ("BASE_JointToMotorSpace",1 )
-Supervisor.AddPeerToBodyPart ("BASE_VelocityToPosition",1 )
-Supervisor.AddPeerToBodyPart ("BASE_ComputeErrors",1 )
-Supervisor.AddPeerToBodyPart ("BASE_Gains",1 )
-Supervisor.AddPeerToBodyPart ("BASE_LeadLags",1 )
-Supervisor.AddPeerToBodyPart ("BASE_Integrators",1 )
-Supervisor.AddPeerToBodyPart ("BASE_LowPasses",1 )
-Supervisor.AddPeerToBodyPart ("BASE_SI2Volt",1 )
-
 Supervisor.AddAllwaysOnPeer ("BASE_Safety" )
 Supervisor.AddAllwaysOnPeer ("BASE_Diagnostics")
-Supervisor.AddAllwaysOnPeer ("BASE_Status")
+
+Supervisor.AddEnabledPeer ("BASE_ReadReferences",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_JointToMotorSpace",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_VelocityToPosition",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_ComputeErrors",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_Gains",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_LeadLags",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_Integrators",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_LowPasses",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_SI2Volt",BODYNUMBER )
