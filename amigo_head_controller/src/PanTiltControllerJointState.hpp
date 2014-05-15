@@ -18,7 +18,6 @@
 #include <soem_beckhoff_drivers/CommMsgBig.h>
 #include <sensor_msgs/JointState.h>
 #include "AX12_control_table.h"
-#include <diagnostic_msgs/DiagnosticStatus.h>
 #include <queue>
 
 #define RAD_TO_STEP             195.37860814
@@ -34,22 +33,23 @@ typedef std::vector<double> doubles;
 
 class PanTiltControllerJointState : public RTT::TaskContext {
 	private:
-
 		OutputPort<CommMsgBig> instructionPort;
 		InputPort<CommMsgBig> statusPort;
 		InputPort<sensor_msgs::JointState> goalPosPort;
 		OutputPort<sensor_msgs::JointState> currentPosPort;
-		OutputPort<diagnostic_msgs::DiagnosticStatus> statusOutPort;
+		OutputPort<bool> errortosupervisorPort; 
+		InputPort<bool> enablerPort; 
+
 		
 		InputPort<bool> serialRunningPort;
 		InputPort<bool> serialReadyRxPort;
 		
 		CommMsgBig instruction;
 		CommMsgBig status;
-		diagnostic_msgs::DiagnosticStatus headStatus;
 		//sensor_msgs::JointState goalPos;
 		int trial, newPosition;
 		sensor_msgs::JointState currentPos;
+		bool enable;
 		
 		int state, pstate;
 		int commStatus;

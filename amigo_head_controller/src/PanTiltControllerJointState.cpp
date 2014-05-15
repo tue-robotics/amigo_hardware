@@ -23,11 +23,13 @@ PanTiltControllerJointState::PanTiltControllerJointState(const std::string& name
 	TaskContext(name, PreOperational) {
 	addPort("instruction", instructionPort).doc("Dynamixel instruction packet port");
 	addPort("status", statusPort).doc("Dynamixel status packet port");
-	addPort("status_out", statusOutPort).doc("head status port, to send head status to dashboard");
 	addPort("serialRunning", serialRunningPort).doc("Serial device running port");
 	addPort("serialReadyRx", serialReadyRxPort).doc("Serial device ready receive port");	
 	addPort("goalPos", goalPosPort).doc("Goal head position");
 	addPort("currentPos", currentPosPort).doc("Current head position");
+	addPort( "errortosupervisor", errortosupervisorPort );
+	addPort( "enabler", enablerPort ); 
+
 	addProperty( "pan_id", pan_id).doc("Pan dynamixel id");
 	addProperty( "tilt_id", tilt_id).doc("Tilt dynamixel id");
 	addProperty( "pan_max", pan_max).doc("Pan max angle, 0 to 1023");
@@ -52,6 +54,7 @@ bool PanTiltControllerJointState::configureHook() {
 	currentPos.position.assign(2, 0.0);
 	newPosition = 0;
 	commStatus = COMM_RXSUCCESS;
+	enable = false;
 	
 	log(Debug) << "PanTiltController configuration done." << endlog();
 	return true;
@@ -123,6 +126,13 @@ bool PanTiltControllerJointState::readReference() {
 }
 
 void PanTiltControllerJointState::updateHook() {
+	enablerPort.read(enable);
+	if (enable == false) {
+		currentPos.header.stamp = ros::Time::now();
+		currentPosPort.write(currentPos);
+		return;
+	}
+	
 	bool serialRunning = false;
 	if(!(serialRunningPort.read(serialRunning) == NewData)) {
 		return;
@@ -354,7 +364,8 @@ int PanTiltControllerJointState::dxl_get_rxpacket_id(void) {
 
 int PanTiltControllerJointState::dxl_rxpacket_isError(void)
 {
-	if(gbStatusPacket[ERRBIT]) {
+	if(gbStatusPacket[ERRBIT]){
+		errortosupervisorPort.write(true);
 		return 1;
 	}
 	
@@ -473,7 +484,6 @@ void PanTiltControllerJointState::dxl_write_word( int id, int address, int value
 void PanTiltControllerJointState::printErrorCode(void)
 {
 	int id = dxl_get_rxpacket_id();
-	headStatus.level = 0;	// status is Operational unless one of the errors underneath is true
 	if (dxl_rxpacket_isError()) {
 		if (id == pan_id) {
 			log(Warning) << "PAN Dynamixel: ";
@@ -485,47 +495,31 @@ void PanTiltControllerJointState::printErrorCode(void)
 	}
 	if (dxl_get_rxpacket_error(ERRBIT_VOLTAGE) == 1) {
 		log(Warning) << "Input voltage error!" << endlog();
-		headStatus.level = 4;
-		headStatus.message = "Input voltage error!";
 	}
 
 	if (dxl_get_rxpacket_error(ERRBIT_ANGLE) == 1) { 
 		log(Warning) << "Angle limit error!" << endlog();
-		headStatus.level = 4;
-		headStatus.message = "Angle limit error!";
 	}
 
 	if (dxl_get_rxpacket_error(ERRBIT_OVERHEAT) == 1) {
 		log(Warning) << "Overheat error!" << endlog();
-		headStatus.level = 4;
-		headStatus.message = "Overheat error!";
 	}
 
 	if (dxl_get_rxpacket_error(ERRBIT_RANGE) == 1) {
 		log(Warning) << "Out of range error!" << endlog();
-		headStatus.level = 4;
-		headStatus.message = "Out of range error!";
 	}
 		
 	if (dxl_get_rxpacket_error(ERRBIT_CHECKSUM) == 1) {
 		log(Warning) << "Checksum error!" << endlog();
-		headStatus.level = 4;
-		headStatus.message = "Checksum error!";
 	}
 		
 	if (dxl_get_rxpacket_error(ERRBIT_OVERLOAD) == 1) {
 		log(Warning) << "Overload error!" << endlog();
-		headStatus.level = 4;
-		headStatus.message = "Overload error!";
 	}
 			
 	if (dxl_get_rxpacket_error(ERRBIT_INSTRUCTION) == 1) {
 		log(Warning) << "Instruction code error!" << endlog();
-		headStatus.level = 4;
-		headStatus.message = "Instruction code error!";
 	}
-		
-	statusOutPort.write(headStatus);			
 }
 
 ORO_CREATE_COMPONENT(PanTiltControllerJointState)

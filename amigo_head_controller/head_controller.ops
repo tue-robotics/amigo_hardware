@@ -11,7 +11,6 @@
 # To be able to load components from this package and all packages in the manifest
 import("amigo_head_controller")
 trigger
-Supervisor.NameBodyPart( 5, "head", false)
 
 #### DECLARATION OF PARAMETERS ####
 var double RAD_TO_STEP 	= 195.37860814; # From header file
@@ -23,6 +22,12 @@ var double PAN_MIN 		= -1.57
 var double PAN_MAX 		= 1.57
 var double TILT_MIN 	= -0.5
 var double TILT_MAX 	= 0.88
+var int BODYNUMBER 		= 5
+var string BODYNAME 	= "head"
+var bool HOMEABLE 		= false
+
+### NameBodyPart ###
+Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 
 ## Pan-tilt controller
 loadComponent("HEAD_PanTiltController", "PanTiltControllerJointState")
@@ -41,20 +46,25 @@ HEAD_PanTiltController.tilt_speed 	= 25
 HEAD_PanTiltController.setPeriod(0.001)
 HEAD_PanTiltController.configure
 
+## Pan-tilt controller
+loadComponent("HEAD_Enabler", "AMIGO::HEADEnabler")
+addPeer("Supervisor","HEAD_Enabler")
+HEAD_Enabler.setPeriod(0.001)
+HEAD_Enabler.configure
 
 #### CONNECT COMPONENTS ####
 connect ("Soem.Slave_100f.data_tx", "HEAD_PanTiltController.instruction", ConnPolicy() )
 connect ("Soem.Slave_100f.data_rx", "HEAD_PanTiltController.status", ConnPolicy() )
 connect ("Soem.Slave_100f.ready_rx", "HEAD_PanTiltController.serialReadyRx", ConnPolicy() )
 connect ("Soem.Slave_100f.running", "HEAD_PanTiltController.serialRunning", ConnPolicy() )
+connect ("HEAD_PanTiltController.errortosupervisor","Supervisor.head_error", ConnPolicy() )
+connect ("HEAD_Enabler.out","HEAD_PanTiltController.enabler", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
-stream( "Supervisor.head_fireup", ros.topic("/head_fireup") )
-stream( "Supervisor.head_enabled", ros.topic("/head_enabled"));
 stream( "HEAD_PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
 stream( "HEAD_PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
 stream( "HEAD_PanTiltController.currentPos", ros.topic("/amigo/joint_states"))
-stream( "HEAD_PanTiltController.status_out", ros.topic("/head_status"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("HEAD_PanTiltController")
+Supervisor.AddEnabledPeer ("HEAD_Enabler",BODYNUMBER)
