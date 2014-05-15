@@ -159,13 +159,23 @@ addPeer("Supervisor","SPINDLE_Addition")
 SPINDLE_Addition.vectorsize = 1
 SPINDLE_Addition.configure
 
-#TODO: Should be passive, only acting on actual errors
-#Loading Safety component
-loadComponent("SPINDLE_Safety","SpindleSafety")
+### SPINDLE Safety ###
+loadComponent("SPINDLE_Safety","SUPERVISORY::SafetyMonitor")
 addPeer("Supervisor","SPINDLE_Safety")
-SPINDLE_Safety.error_margin = 0.05
+setActivity("SPINDLE_Safety",Ts,HighestPriority,ORO_SCHED_RT)
+SPINDLE_Safety.vectorsize_motorspace 	= 1;
+SPINDLE_Safety.vectorsize_jointspace 	= 1;
+SPINDLE_Safety.maxJointErrors 			= array (0.05);
+SPINDLE_Safety.motorSaturations 		= array (100.0);
+SPINDLE_Safety.maxConSatTime 			= 25.0;
+SPINDLE_Safety.partNr					= BODYNUMBER;
 SPINDLE_Safety.configure
-# Brake and amplifier should be switched simultaneously: it is undesired to either power the motor with the brake on or to have no power with the brake off
+
+### SPINDLE ActuatorEnabler ###
+loadComponent("SPINDLE_ActuatorEnabler","SUPERVISORY::ActuatorEnabler")
+addPeer("Supervisor","SPINDLE_ActuatorEnabler")
+setActivity("SPINDLE_ActuatorEnabler",Ts,HighestPriority,ORO_SCHED_RT)
+SPINDLE_ActuatorEnabler.configure
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("SPINDLE_Diagnostics","ROS::RosDiagnostics")
@@ -219,9 +229,18 @@ connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy()
 connect ("SPINDLE_FFW.FFW_out","SPINDLE_Addition.in1", ConnPolicy() )
 connect ("SPINDLE_LowPass.out","SPINDLE_Addition.in2_event", ConnPolicy() )
 connect ("SPINDLE_Addition.out","AnalogOuts.spindle", ConnPolicy() )
-connect ("SPINDLE_Safety.spindle_brake","DigitalOuts.in3", ConnPolicy() );   # Spindle brake
-connect ("SPINDLE_Safety.spindle_brake","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
-connect ("SPINDLE_ComputeError.out","SPINDLE_Safety.error_pos", ConnPolicy() )
+connect ("SPINDLE_Homing.homing_finished","Supervisor.spindle_homingfinished", ConnPolicy() )
+connect ("SPINDLE_ReadEncoders.out","SPINDLE_Homing.position", ConnPolicy() )
+
+## Safety and ActuatorEnabler ##
+connect ("SPINDLE_ComputeError.out","SPINDLE_Safety.jointErrors", ConnPolicy() )
+connect ("SPINDLE_ReadEncoders.out","SPINDLE_Safety.jointAngles", ConnPolicy() )
+connect ("SPINDLE_Addition.out","SPINDLE_Safety.controllerOutput", ConnPolicy() )
+connect ("SPINDLE_Safety.resetInt","SPINDLE_ReferenceGenerator.resetValues", ConnPolicy() )
+connect ("SPINDLE_Safety.safe","Supervisor.spindle_error", ConnPolicy() )
+connect ("SPINDLE_Safety.safe","SPINDLE_ActuatorEnabler.safe_in", ConnPolicy() )
+connect ("SPINDLE_ActuatorEnabler.actuator_enable","DigitalOuts.in3", ConnPolicy() );   # Spindle brake
+connect ("SPINDLE_ActuatorEnabler.actuator_enable","DigitalOuts2.in1", ConnPolicy() );	# Spindle amplifier
 
 ## Diagnostics ##
 connect ("SPINDLE_ReferenceGenerator.posout", "SPINDLE_Diagnostics.vec1", ConnPolicy() )
@@ -230,30 +249,29 @@ connect ("SPINDLE_Addition.out", "SPINDLE_Diagnostics.vec3", ConnPolicy() )
 connect ("SPINDLE_LowPass.out", "SPINDLE_Diagnostics.vec4", ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
-stream( "Supervisor.spindle_fireup", ros.topic("/spindle_fireup"))
-stream( "Supervisor.spindle_enabled", ros.topic("/spindle_enabled"))
-
+stream("SPINDLE_Homing.resetRef", ros.topic("/amigo/torso/references"))
+stream("SPINDLE_Safety.resetRef", ros.topic("/amigo/torso/references"))
 stream("SPINDLE_ReadReferences.spindle_setpoint", ros.topic("/amigo/torso/references"));
-stream("SPINDLE_Safety.status", ros.topic("/spindle_status"));
 stream("SPINDLE_Diagnostics.diagnostics", ros.topic("/diagnostics"));
-stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
-#stream( "SPINDLE_WriteJointStates.out", ros.topic("/amigo/joint_states"))
+stream("SPINDLE_WriteJointStates.out", ros.topic("/amigo/torso/measurements"))
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_Diagnostics")
+Supervisor.AddAllwaysOnPeer ("SPINDLE_ActuatorEnabler")
 
-Supervisor.AddPeerToBodyPart ("SPINDLE_ReadReferences",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_ReferenceGenerator",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_ComputeError",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_Gain",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_Integrator",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_LeadLag",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_LowPass",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_FFW",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_Addition",2 )
-Supervisor.AddPeerToBodyPart ("SPINDLE_Safety",2 )
+Supervisor.AddHomingOnlyPeer ("SPINDLE_Homing", BODYNUMBER );
 
-Supervisor.AddAllwaysOnPeer ("SPINDLE_Homing"); #Homing stops itself after finishing, last component because all others have to be started in order to be stopped ;)
+Supervisor.AddOpOnlyPeer ("SPINDLE_ReadReferences", BODYNUMBER )
+
+Supervisor.AddEnabledPeer ("SPINDLE_ReferenceGenerator", BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_ComputeError", BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_Gain", BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_Integrator", BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_LeadLag", BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_LowPass", BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_FFW", BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_Addition",BODYNUMBER )
+Supervisor.AddEnabledPeer ("SPINDLE_Safety", BODYNUMBER )
 #Supervisor.AddAllwaysOnPeer ("SPINDLE_Tracing")

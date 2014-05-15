@@ -15,9 +15,12 @@ using namespace AMIGO;
 SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperational)
   {
   addEventPort( "endswitch", endswitch_inport );
+  addPort( "position",pos_inport );
 
   addPort( "ref_out", ref_outport );
   addPort( "homing_finished", homingfinished_outport );
+  addPort( "resetRef",resetRefPort).doc("Sends reset joint coordinates to ROS topic");
+
 
   
   // Creating variables
@@ -34,6 +37,24 @@ SpindleHoming::~SpindleHoming(){}
 
 bool SpindleHoming::configureHook()
 {
+	ref.resize(1); //Single joint
+	return true;
+}
+
+bool SpindleHoming::startHook()
+{ 
+	if ( homed == true ){
+		log(Warning)<<"Spindle: stopping component without homing. Homing was set to false in .ops script"<<endlog();
+		this->stop(); 
+	}
+	
+	out_msg.position.assign(1,0.0);
+	
+	homed_ = homed;
+	goToEndpos = false;
+	homingfinished = false;
+	cntr = 0;
+	
 	// Lookup the Supervisor component.
 	TaskContext* Supervisor = this->getPeer("Supervisor");
 	if ( !Supervisor ) {
@@ -70,79 +91,69 @@ bool SpindleHoming::configureHook()
 		return false;
 	}
 	
+	pos_inport.read(position);
+	
 	// Set size of reference vector
-	ref.resize(1); //Single joint
 	ref[0].assign(3,0.0); //pos, vel, acc
 	ref[0][1] = home_vel; //Redundant?
 	ref[0][2] = home_acc; //Redundant?
+	reference = position[0];
 	
-	reference = 0.0;
 	referencestep = 0.01/1000;
 	
-	return true;
-}
-
-bool SpindleHoming::startHook()
-{ 
-		if ( !homed ) {
-			TaskContext* Spindle_ReadReferences = this->getPeer("SPINDLE_ReadReferences");
-			if ( ! Spindle_ReadReferences->isRunning() ) {
-				log(Error) << "Spindle component is not running yet, please start this component first" << endlog();
-			}
-			else {
-				Spindle_ReadReferences->stop(); //Disabling reading of references. Will be enabled automagically at the end by the supervisor.
-			}
-		}
-		
 	starttime = os::TimeService::Instance()->getNSecs()*1e-9;
 	log(Warning)<<"SpindleHoming::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
-
+	
 	return true;
 }
 
 void SpindleHoming::updateHook()
-{   	
-	//log(Warning)<<"Spindle: Reading endswitch"<<endlog();
+{
 	std_msgs::Bool endswitch;
 	endswitch_inport.read(endswitch);
 	
-	//log(Warning)<<"Spindle: Sending reference"<<endlog();
-	if ( homed == false )
+	if ( homed_ == false )
 	{	
 		double oldreference = reference;
 		reference = oldreference + referencestep;
-		ref[0][0] = reference; // You always find the endstop within the meter
+		ref[0][0] = reference;
 		ref[0][1] = home_vel;
 		ref[0][2] = home_acc;
 		ref_outport.write(ref);
 	}
-	//log(Warning)<<"Spindle: Checking whether homed = true"<<endlog();
-	if ( !endswitch.data && homed == false )
+
+	if ( !endswitch.data && homed_ == false )
 	{
-		ROS_INFO_STREAM( "Spindle is homed." );
-		homed = true;
-
-
-		// Actually call the services
-		//log(Warning)<<"SpindleHoming::start calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
+		homed_ = true;
 		StopBodyPart("spindle");
 		ResetEncoder(0,stroke);
 		StartBodyPart("spindle");
-		//log(Warning)<<"SpindleHoming::finshed calling services at " << os::TimeService::Instance()->getNSecs()*1e-9 - starttime <<endlog();
 		
-		// Got to desired position
+		goToEndpos = true;
+	}
+	if (goToEndpos) {
+		goToEndpos = false;
+		// Go to desired position
 		ref[0][0] = endpos;
 		ref[0][1] = 0.0; // Use default
 		ref[0][2] = 0.0; // Use default
 		ref_outport.write(ref);
-		this->stop(); 
+		homingfinished = true;
+		cntr = 0;
 	}
-	if ( homed == true ){
-		
-		homingfinished_outport.write(true);
-		//log(Warning)<<"Spindle: stop component"<<endlog();
-		//Should not happen only if homed == true is defined in ops file
-		this->stop(); 
+	if (homingfinished) {
+		cntr++;
+		if (cntr > 1000) {
+			log(Warning)<<"Spindle: Homing Finished!"<<endlog();
+			// send to supervisor that homing is finished. Supervisor will shutdown homing component
+			homingfinished_outport.write(true);
+			
+			out_msg.position[0] = endpos;
+			// send reset data
+			resetRefPort.write(out_msg);
+			
+			cntr = 0;
+		}
 	}
 }
 
