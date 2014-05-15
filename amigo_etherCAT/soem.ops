@@ -18,11 +18,13 @@ var double Ts = 0.001
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","SUPERVISORY::Supervisor")
 Supervisor.configure
-setActivity("Supervisor",0.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("Supervisor",0.04,HighestPriority,ORO_SCHED_RT)
 #Supervisor.start
-stream("Supervisor.rosemergency", ros.topic("/emergency_switch"));
-stream("Supervisor.rosshutdown", ros.topic("/etherCAT_shutdown")); 
-stream("Supervisor.rosetherCATenabled", ros.topic("/etherCAT_enabled")); 
+stream("Supervisor.rosemergency", ros.topic("/amigo/emergency_switch"));
+stream("Supervisor.rosshutdown", ros.topic("/amigo/etherCAT_shutdown")); 
+stream("Supervisor.rosetherCATenabled", ros.topic("/amigo/etherCAT_enabled")); 
+stream("Supervisor.hardware_status", ros.topic("/amigo/hardware_status"));
+stream("Supervisor.dashboardCmd", ros.topic("/amigo/dashboard_ctrlcmds"));
 
 #### LOAD JOINTSTATEAGGREGATOR ####
 # Is used to push all joint measurement into one message for the /joint_states topic for the state publisher
@@ -58,7 +60,7 @@ addPeer("Supervisor","AnalogIns")
 AnalogIns.configure
 setActivity("AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
 connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
-stream("AnalogIns.out1", ros.topic("/battery_value"))
+stream("AnalogIns.out1", ros.topic("/amigo/battery_value"))
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS (Slave_100b) ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
@@ -84,9 +86,9 @@ stream("DigitalIns.out2", ros.topic("/fuse2"))
 stream("DigitalIns.out3", ros.topic("/fuse3"))
 stream("DigitalIns.out4", ros.topic("/fuse4"))
 DigitalIns.flip_out5 = 1
-stream("DigitalIns.out5", ros.topic("/runstop"))
+stream("DigitalIns.out5", ros.topic("/amigo/runstop"))
 DigitalIns.flip_out6 = 1
-stream("DigitalIns.out6", ros.topic("/emergency_switch"))
+stream("DigitalIns.out6", ros.topic("/amigo/emergency_switch"))
 DigitalIns.configure
 setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
