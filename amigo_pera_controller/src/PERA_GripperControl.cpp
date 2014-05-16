@@ -12,7 +12,7 @@
 #include "PERA_GripperControl.hpp"
 
 
-#define MAX_TORQUE 100.0
+#define MAX_TORQUE 150.0
 
 using namespace std;
 using namespace RTT;
