@@ -204,7 +204,6 @@ stream ("BASE_Diagnostics.diagnostics", ros.topic("/base_diagnostics"));
 Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("BASE_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer ("BASE_OdometryPublisher")
-Supervisor.AddAllwaysOnPeer ("BASE_Safety" )
 Supervisor.AddAllwaysOnPeer ("BASE_Diagnostics")
 
 Supervisor.AddEnabledPeer ("BASE_ReadReferences",BODYNUMBER )
@@ -216,3 +215,4 @@ Supervisor.AddEnabledPeer ("BASE_LeadLags",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_Integrators",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_LowPasses",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_SI2Volt",BODYNUMBER )
+Supervisor.AddEnabledPeer ("BASE_Safety",BODYNUMBER)

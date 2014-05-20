@@ -60,6 +60,7 @@ namespace AMIGO
     bool configureHook();
     bool startHook();
     void updateHook();
+    void stopHook();
 
     };
 }

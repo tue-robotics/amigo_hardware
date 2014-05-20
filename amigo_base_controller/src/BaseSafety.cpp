@@ -149,4 +149,12 @@ void BaseSafety::updateHook()
 
 }
 
+
+void BaseSafety::stopHook()
+{
+	amplifierport.write(false);
+	ROS_INFO_STREAM( "BaseSafety::Stopped BaseSafety again" );
+	safe = false;
+}
+
 ORO_CREATE_COMPONENT(AMIGO::BaseSafety)
