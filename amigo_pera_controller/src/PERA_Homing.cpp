@@ -183,7 +183,7 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 		log(Warning) << "Gripper end postion reached" <<endlog();
 
 		if(gripperMeasurement.end_position_reached || gripperMeasurement.max_torque_reached){
-			log(Warning)<<"PERA_Homing: gripper homed"<<endlog();
+			log(Info)<<"PERA_Homing: gripper homed"<<endlog();
 			gripperhomed_ = true;
 		}
 	}
