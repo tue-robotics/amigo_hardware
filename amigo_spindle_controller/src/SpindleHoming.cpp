@@ -102,7 +102,7 @@ bool SpindleHoming::startHook()
 	referencestep = 0.01/1000;
 	
 	starttime = os::TimeService::Instance()->getNSecs()*1e-9;
-	log(Warning)<<"SpindleHoming::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
+	log(Info)<<"SpindleHoming::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
 	
 	return true;
 }
