@@ -335,7 +335,6 @@ LPERA_Diagnostics.vecname2 				= "Joint Errors"
 LPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*2;	tracingpolicy.lock_policy = LOCKED
 #loadComponent("LPERA_Tracing","Signal::Tracing")
 #addPeer("Supervisor","LPERA_Tracing")
 #setActivity("LPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
@@ -344,12 +343,12 @@ LPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 #LPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST5/GripperLeft.dat"
 #LPERA_Tracing.Ts = Ts
 #LPERA_Tracing.configure
-#connect ("LPERA_AnalogInsPera.out_for","LPERA_Tracing.in1", tracingpolicy );				# force sensors	voltage input
-#connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in2", tracingpolicy );		# reference after reference generator
-#connect ("LPERA_MotorToJointSpace.out","LPERA_Tracing.in3", tracingpolicy ); 				# position
-#connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in4", tracingpolicy ); 					# error
-#connect ("LPERA_Addition.out","LPERA_Tracing.in5", tracingpolicy ); 						# control effort
-#connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Tracing.in6", tracingpolicy );  # force sensors	after sensor calculation
+#connect ("LPERA_AnalogInsPera.out_for","LPERA_Tracing.in1", ConnPolicy() );				# force sensors	voltage input
+#connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in2", ConnPolicy() );		# reference after reference generator
+#connect ("LPERA_MotorToJointSpace.out","LPERA_Tracing.in3", ConnPolicy() ); 				# position
+#connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in4", ConnPolicy() ); 					# error
+#connect ("LPERA_Addition.out","LPERA_Tracing.in5", ConnPolicy() ); 						# control effort
+#connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Tracing.in6", ConnPolicy() );  # force sensors	after sensor calculation
 
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)

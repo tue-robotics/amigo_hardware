@@ -335,21 +335,20 @@ RPERA_Diagnostics.vecname2 				= "Joint Errors"
 RPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 
 ### Setting up tracing ###
-#var ConnPolicy tracingpolicy;	tracingpolicy.type = BUFFER; 	tracingpolicy.size = 32768*2;	tracingpolicy.lock_policy = LOCKED
-#loadComponent("RPERA_Tracing","Signal::Tracing")
-#addPeer("Supervisor","RPERA_Tracing")
-#setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#RPERA_Tracing.vector_sizes = array (9.0, 8.0, 8.0, 8.0, 8.0, 9.0)
-#RPERA_Tracing.buffersize = 32768*2;
-#RPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST5/GripperRight.dat"
-#RPERA_Tracing.Ts = Ts
-#RPERA_Tracing.configure
-#connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in1", tracingpolicy );				# force sensors	voltage input
-#connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in2", tracingpolicy );		# reference after reference generator
-#connect ("RPERA_MotorToJointSpace.out","RPERA_Tracing.in3", tracingpolicy ); 				# position
-#connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in4", tracingpolicy ); 					# error
-#connect ("RPERA_Addition.out","RPERA_Tracing.in5", tracingpolicy ); 						# control effort
-#connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", tracingpolicy );  # force sensors	after sensor calculation
+loadComponent("RPERA_Tracing","Signal::Tracing")
+addPeer("Supervisor","RPERA_Tracing")
+setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+RPERA_Tracing.vector_sizes = array (9.0, 8.0, 8.0, 8.0, 8.0, 9.0)
+RPERA_Tracing.buffersize = 32768*2;
+RPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST5/GripperRight.dat"
+RPERA_Tracing.Ts = Ts
+RPERA_Tracing.configure
+connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in1", ConnPolicy() );				# force sensors	voltage input
+connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in2", ConnPolicy() );			# reference after reference generator
+connect ("RPERA_MotorToJointSpace.out","RPERA_Tracing.in3", ConnPolicy() ); 				# position
+connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in4", ConnPolicy() ); 					# error
+connect ("RPERA_Addition.out","RPERA_Tracing.in5", ConnPolicy() ); 						# control effort
+connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", ConnPolicy() );  	# force sensors	after sensor calculation
 
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
@@ -488,4 +487,4 @@ Supervisor.AddEnabledPeer ("RPERA_Addition", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Safety", BODYNUMBER)
-#Supervisor.AddEnabledPeer ("RPERA_Tracing", BODYNUMBER)
+Supervisor.AddEnabledPeer ("RPERA_Tracing", BODYNUMBER)
