@@ -36,6 +36,7 @@ PERAHoming::PERAHoming(const string& name) : TaskContext(name, PreOperational)
   	addPort("homing_joint", homingjoint_outPort).doc("Sends homing joint to safety such that safety component can temporarily switch off this check");
   	addPort("resetInterpolatorPort",resetIntPort).doc("Sends resetvalues to the ReferenceInterpolator");
   	addPort("resetInterpolatorPort2",resetIntPort2).doc("Sends resetvalues to the ReferenceInterpolator");
+  	addPort("pos_out",endpose_outPort).doc("To send a end pose when homing is finished");
 
 	addProperty( "homedPos", HOMEDPOS ).doc("Homing positions for the joints"); 
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("Maximum joint error allowed [rad]");
@@ -46,6 +47,7 @@ PERAHoming::PERAHoming(const string& name) : TaskContext(name, PreOperational)
 	addProperty( "startJoint", STRT_JNT ).doc("Joint number to start homing with");
 	addProperty( "requireGripperHoming", REQUIRE_GRIPPER_HOMING ).doc("Defines whether the gripper is homed upon startup");
     addProperty( "jointNames", out_msg.name ).doc("Joint state names");
+    addProperty( "endPose", endPose ).doc("end Pose the PERA should go after homing");
 }
 
 PERAHoming::~PERAHoming(){}
@@ -97,7 +99,11 @@ bool PERAHoming::startHook()
 		log(Error)<<"homingjoint_outPort not connected!"<<endlog();
 		return false;
 	}
-		
+	
+	if ((!endpose_outPort.connected()) || (endPose.size() != 7 )) {
+		log(Error)<<"endpose_out not connected or endPose has a wrong size, size should be 7!"<<endlog();
+	}
+	
 	jointAngles.assign(7,0.0);
 	homJntAngles.assign(8,0.0);
 	previousAngles.assign(8,0.0);
@@ -139,12 +145,10 @@ void PERAHoming::updateHook()
 	jointErrorsPort.read(jointErrors);
 
 	if(cntr==0){
-
 		for(unsigned int i = 0;i<7;i++){
 			homJntAngles[i]=measRelJntAngles[i];
 			log(Info)<<"measRelJntAngles :"<<measRelJntAngles[jntNr-1]<<endlog(); 
 		}
-
 		cntr++;
 	}
 
@@ -162,6 +166,13 @@ void PERAHoming::updateHook()
 	double homingjoint = (double) jntNr; 
 	homingjoint_outPort.write(homingjoint);
 	
+	if ( homed_ == true ) {
+		
+		endpose_outPort.write(endPose);
+		
+		log(Warning)<<"PERA_Homing: Finished homing \n"<<endlog();
+		homingfinished_outPort.write(true);
+	}
 }
 
 doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
@@ -247,23 +258,23 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 					if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>15.0){ //if desired point is far ahead
 						tempHomJntAngles[jntNr-1]-=(FastStep/Ts); //go forward fast 
-						if (cntr3 > (Ts/10)) {						
+						if (cntr3 > (Ts/10)) {
 						log(Info)<<"Homing q"<<jntNr<<". Moving forward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
-						cntr3++;					
+						cntr3++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<-15.0){ //if desired point is far behind
 						tempHomJntAngles[jntNr-1]+=(FastStep/Ts); //go back fast
-						if (cntr3 > (Ts/10)) {						
+						if (cntr3 > (Ts/10)) {
 						log(Info)<<"Homing q"<<jntNr<<". Moving backward fast to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
-						cntr3++;				
+						cntr3++;
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<=15.0){ //if desired point is close ahead
 						tempHomJntAngles[jntNr-1]-=(SlowStep/Ts); //go forward slowly
-						if (cntr3 > (Ts/10)) {						
+						if (cntr3 > (Ts/10)) {
 						log(Info)<<"Homing q"<<jntNr<<". Moving forward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
@@ -271,11 +282,11 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 					}
 					else if((HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])<0.0 && (HOMEDPOS[jntNr-1]-absJntAngles[jntNr-1])>=-15.0){ //if desired point is close behind
 						tempHomJntAngles[jntNr-1]+=(SlowStep/Ts); //go back slowly
-						if (cntr3 > (Ts/10)) {						
+						if (cntr3 > (Ts/10)) {
 						log(Info)<<"Homing q"<<jntNr<<". Moving backward slowly to:"<< HOMEDPOS[jntNr-1] << ". Sensor outputs:" << absJntAngles[jntNr-1] << "."<<endlog();
 						cntr3 = 1;
 						}
-						cntr3++;					
+						cntr3++;
 					}
 
 				}
@@ -388,9 +399,6 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 				// Set homing to true
 				homed_ = true;
 				
-				log(Warning)<<"PERA_Homing: Finished homing \n"<<endlog();
-
-				homingfinished_outPort.write(true);
 			}
 		}
 	}

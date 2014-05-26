@@ -41,6 +41,7 @@ namespace PERA
 		OutputPort<double> homingjoint_outPort; 
 		OutputPort<doubles> resetIntPort;// Kept for backwards compatability
         OutputPort<doubles> resetIntPort2; // Used to reset trajectories
+		OutputPort<doubles> endpose_outPort;
 		
 		//properties
 		bool REQUIRE_HOMING;
@@ -75,6 +76,7 @@ namespace PERA
 		doubles jointAngles;
 		doubles previousAngles;
 		doubles homJntAngles;
+		doubles endPose;
 
         sensor_msgs::JointState out_msg;
 	

@@ -166,6 +166,7 @@ RPERA_Homing.startJoint 			= 7
 RPERA_Homing.absSenDir 				= array (	1.0,	-1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
 RPERA_Homing.homedPos 				= HOMED_POS
 RPERA_Homing.absOrRel 				= array (	0.0,	0.0, 	1.0,	1.0,	1.0,	1.0,	1.0,	1.0	)
+RPERA_Homing.endPose				= array (  -0.1,   -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0)
 RPERA_Homing.configure
 
 ### LOAD READENCODERS
@@ -426,6 +427,7 @@ connect ("RPERA_Homing.reNullPort","RPERA_Safety.reNull", ConnPolicy() )
 connect ("RPERA_ComputeErrors.out","RPERA_Homing.errorPort", ConnPolicy() )
 connect ("RPERA_MotorToJointSpace.out","RPERA_Homing.measRelJointAnglesPort", ConnPolicy() )
 connect ("RPERA_MotorToJointSpace.out","RPERA_ReadReferences.pos_in", ConnPolicy() )
+connect ("RPERA_Homing.pos_out","RPERA_VectorConcatenate.in1", ConnPolicy() ) 
 
 ## Gripper control ##
 connect ("RPERA_AnalogInsPera.out_for","RPERA_SensorTorques.voltage_in", ConnPolicy() )
