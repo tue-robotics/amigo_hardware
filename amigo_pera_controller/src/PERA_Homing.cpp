@@ -36,7 +36,7 @@ PERAHoming::PERAHoming(const string& name) : TaskContext(name, PreOperational)
   	addPort("homing_joint", homingjoint_outPort).doc("Sends homing joint to safety such that safety component can temporarily switch off this check");
   	addPort("resetInterpolatorPort",resetIntPort).doc("Sends resetvalues to the ReferenceInterpolator");
   	addPort("resetInterpolatorPort2",resetIntPort2).doc("Sends resetvalues to the ReferenceInterpolator");
-  	addPort("pos_out",endpose_outPort).doc("To send a end pose when homing is finished");
+  	addPort("endpos_out",endpose_outPort).doc("To send a end pose when homing is finished");
 
 	addProperty( "homedPos", HOMEDPOS ).doc("Homing positions for the joints"); 
 	addProperty( "maxJointErrors", MAX_ERRORS).doc("Maximum joint error allowed [rad]");
