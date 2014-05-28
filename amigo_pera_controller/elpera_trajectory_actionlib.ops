@@ -12,7 +12,7 @@
 import("amigo_pera_controller")
 trigger
 
-### LOAD WBC PARAMETER ### 
+### LOAD WBC PARAMETER ###
 var string wbcstr
 wbcstr = os.getenv("wbc")
 
@@ -53,9 +53,8 @@ var bool REQUIREHOMING   		= true
 var bool REQUIREGRIPPERHOMING   = true
 if (wbcstr == "true") then {	
 	REQUIREHOMING   			= false; 
-	REQUIREGRIPPERHOMING    	= false;
+	REQUIREGRIPPERHOMING		= false;
 }
-
  
 ### NameBodyPart ###
 Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
@@ -138,7 +137,7 @@ LPERA_ReferenceInterpolator.interpolator4 		= array (0.0, 0.8, 0.5)
 LPERA_ReferenceInterpolator.interpolator5 		= array (0.0, 0.8, 0.5)
 LPERA_ReferenceInterpolator.interpolator6 		= array (0.0, 1.0, 0.5)
 LPERA_ReferenceInterpolator.interpolator7 		= array (0.0, 1.0, 0.5)
-LPERA_ReferenceInterpolator.interpolator8 		= array (0.0, 1.0, 10.0)
+LPERA_ReferenceInterpolator.interpolator8 		= array (0.0, 10.0, 100.0)
 
 ### PERA Safety ###
 loadComponent("LPERA_Safety","SUPERVISORY::SafetyMonitor")
@@ -147,7 +146,7 @@ setActivity("LPERA_Safety",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_Safety.vectorsize_motorspace 	= Nm;
 LPERA_Safety.vectorsize_jointspace 	= Nj;
 LPERA_Safety.maxJointErrors 		= MAXERRORS;
-LPERA_Safety.motorSaturations 		= array (  100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	50.0, 	90.0)
+LPERA_Safety.motorSaturations 		= array (  1000.0, 	1000.0,     100.0, 	 400.0, 	   500.0,  	500.0, 	   500.0, 	500.0, 	900.0)
 LPERA_Safety.maxConSatTime 			= 5.0;
 LPERA_Safety.partNr					= BODYNUMBER;
 LPERA_Safety.configure
@@ -165,12 +164,13 @@ setActivity("LPERA_Homing",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_Homing.requireHoming			= REQUIREHOMING
 LPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
 LPERA_Homing.maxJointErrors 		= MAXERRORS
-LPERA_Homing.jointNames 			= JOINT_NAMES
+LPERA_Homing.jointNames				= JOINT_NAMES
 LPERA_Homing.stepSize 				= 0.5
 LPERA_Homing.startJoint 			= 7
 LPERA_Homing.absSenDir 				= array (	1.0,	1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
 LPERA_Homing.homedPos 				= HOMED_POS
 LPERA_Homing.absOrRel 				= array (	0.0,	0.0, 	1.0,	1.0,	1.0,	1.0,	1.0,	1.0	)
+LPERA_Homing.endPose				= array (  -0.1,   -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0)
 LPERA_Homing.configure
 
 ### LOAD READENCODERS
@@ -251,7 +251,7 @@ loadComponent("LPERA_Gains","MATH::Gains")
 addPeer("Supervisor","LPERA_Gains")
 setActivity("LPERA_Gains",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_Gains.vectorsize 	= Nj
-LPERA_Gains.gain 		= array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 100.0);
+LPERA_Gains.gain 		= array (20000.0, 20000.0, 10000.0, 17500.0, 17500.0, 17500.0, 21500.0, 1000.0);
 LPERA_Gains.configure
 
 ### LEADLAGS ###
@@ -296,7 +296,7 @@ LPERA_RTD.configure
 ### Output limiter ###
 loadComponent("LPERA_JointOutputLimiter","DISCONTINUITIES::Saturation")
 addPeer("Supervisor","LPERA_JointOutputLimiter")
-setActivity("LPERA_JointOutputLimiter",0.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("LPERA_JointOutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_JointOutputLimiter.upper_limit = UPPERJOINTLIMIT
 LPERA_JointOutputLimiter.lower_limit = LOWERJOINTLIMIT
 LPERA_JointOutputLimiter.vector_size = Nj
@@ -321,7 +321,7 @@ loadComponent("LPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","LPERA_SensorTorques")
 setActivity("LPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
 LPERA_SensorTorques.setPeriod(Ts);#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
-LPERA_SensorTorques.c1 		= array (35.0,		87.0, 		1.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
+LPERA_SensorTorques.c1 		= array (35.0,		87.0,		1.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
 LPERA_SensorTorques.c2 		= array (-0.2,		0.2,		1.0,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
 LPERA_SensorTorques.c3 		= array (-76.26,	-95.29,		1.0,		-145.16,	-38.71,		-111.7,		1.0,		1.0,		-34.66	)
 LPERA_SensorTorques.configure

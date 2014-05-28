@@ -23,8 +23,7 @@
     -s $(find amigo_base_controller)/base_controller.ops
     -s $(find amigo_head_controller)/head_controller.ops 
     -s $(find rgb_lights)/rgb_lights.ops
-    -s $(find amigo_pera_controller)/elpera_trajectory_actionlib.ops 
-    -s $(find amigo_pera_controller)/erpera.ops
+    -s $(find amigo_pera_controller)/erpera_trajectory_actionlib.ops
     $(arg clean_exit_ops)
     --" output="screen" machine="amigo2"></node>   
 </launch>
