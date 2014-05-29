@@ -30,7 +30,7 @@ var bool HOMEABLE 		= false
 Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 
 ## Pan-tilt controller
-loadComponent("HEAD_PanTiltController", "PanTiltControllerJointState")
+loadComponent("HEAD_PanTiltController", "PanTiltController")
 addPeer("Supervisor","HEAD_PanTiltController")
 HEAD_PanTiltController.joint_names 	= JOINT_NAMES
 HEAD_PanTiltController.pan_id 		= 2
