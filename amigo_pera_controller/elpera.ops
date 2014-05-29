@@ -183,7 +183,7 @@ addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.setPeriod(Ts)
 LPERA_GripperControl.threshold_closed 	= 45.0
-LPERA_GripperControl.max_pos 			= 5.5
+LPERA_GripperControl.max_pos 			= 2.0
 LPERA_GripperControl.gripper_gain 		= 0.1
 LPERA_GripperControl.sensorPos 			= 8
 LPERA_GripperControl.configure
@@ -223,6 +223,7 @@ loadComponent("LPERA_Addition","MATH::Addition")
 addPeer("Supervisor","LPERA_Addition")
 setActivity("LPERA_Addition",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_Addition.vectorsize = Nj
+LPERA_Addition.numberofinputs = 2
 LPERA_Addition.configure
 
 ### Joint to motor torques ###
@@ -373,7 +374,7 @@ connect ("LPERA_ComputeErrors.out","LPERA_Gains.in", ConnPolicy() )
 connect ("LPERA_Gains.out","LPERA_LeadLags.in", ConnPolicy() )
 connect ("LPERA_LeadLags.out","LPERA_Lowpasses.in", ConnPolicy() )
 connect ("LPERA_Lowpasses.out","LPERA_Integrators.in", ConnPolicy() )
-connect ("LPERA_Integrators.out","LPERA_Addition.in2_event", ConnPolicy() )
+connect ("LPERA_Integrators.out","LPERA_Addition.in1_ev", ConnPolicy() )
 connect ("LPERA_Addition.out","LPERA_JointToMotorSpace.in", ConnPolicy() )
 connect ("LPERA_JointToMotorSpace.out","LPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 
@@ -402,7 +403,7 @@ connect ("LPERA_WriteClippedJointAngles.out", "JointStateAggregator.left_arm", C
 connect ("LPERA_ReferenceInterpolator.posout","LPERA_GravityCompensation.in", ConnPolicy() )
 connect ("LPERA_GravityCompensation.out","LPERA_GC_Gains.in", ConnPolicy() )
 connect ("LPERA_GC_Gains.out","LPERA_Polynomials.in", ConnPolicy() )
-connect ("LPERA_Polynomials.out","LPERA_Addition.in1", ConnPolicy() )
+connect ("LPERA_Polynomials.out","LPERA_Addition.in2", ConnPolicy() )
 
 ## Safety and ActuatorEnabler ##
 connect ("LPERA_ComputeErrors.out","LPERA_Safety.jointErrors", ConnPolicy() )

@@ -155,6 +155,7 @@ LPERA_Polynomials.polynomial8= array (0.0)
 loadComponent("LPERA_AddGravComp","MATH::Addition")
 setActivity("LPERA_AddGravComp",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_AddGravComp.vectorsize = 8
+LPERA_AddGravComp.numberofinputs = 2
 LPERA_AddGravComp.configure
 
 ### Motor to joint angles (includes encoder conversion factors) ###
@@ -354,7 +355,7 @@ connect ("LPERA_ComputeJointErrors.out","LPERA_Gain.in", ConnPolicy() )
 connect ("LPERA_Gain.out","LPERA_LeadLag.in", ConnPolicy() )
 connect ("LPERA_LeadLag.out","LPERA_WeakIntegrator1.in", ConnPolicy() )
 connect ("LPERA_WeakIntegrator1.out","LPERA_Lowpass.in", ConnPolicy() )
-connect ("LPERA_Lowpass.out","LPERA_AddGravComp.in2_event", ConnPolicy() )
+connect ("LPERA_Lowpass.out","LPERA_AddGravComp.in1_ev", ConnPolicy() )
 connect ("LPERA_AddGravComp.out","LPERA_JointToMotorTorques.in", ConnPolicy() )
 connect ("LPERA_JointToMotorTorques.out","LPERA_OutputLimiter.in", ConnPolicy() )
 connect ("LPERA_OutputLimiter.out","LPERA_IO.cmdTorqueIn", ConnPolicy() )
@@ -373,7 +374,7 @@ connect ("LPERA_ReferenceInterpolator.posout","LPERA_ComputeJointErrors.in_plus"
 connect ("LPERA_ReferenceInterpolator.posout","LPERA_GravityCompensation.in", ConnPolicy() )
 connect ("LPERA_GravityCompensation.out","LPERA_GC_Gains.in", ConnPolicy() )
 connect ("LPERA_GC_Gains.out","LPERA_Polynomials.in", ConnPolicy() )
-connect ("LPERA_Polynomials.out","LPERA_AddGravComp.in1", ConnPolicy() )
+connect ("LPERA_Polynomials.out","LPERA_AddGravComp.in2", ConnPolicy() )
 
 ### Supervisor ###
 connect ("LPERA_JointToMotorTorques.out","LPERA_Supervisor.controllerOutputPort", ConnPolicy() )

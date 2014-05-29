@@ -158,6 +158,7 @@ loadComponent("RPERA_AddGravComp","MATH::Addition")
 addPeer("Supervisor","RPERA_AddGravComp")
 setActivity("RPERA_AddGravComp",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_AddGravComp.vectorsize = 8
+RPERA_AddGravComp.numberofinputs = 2
 RPERA_AddGravComp.configure
 
 ### Motor to joint angles ###
@@ -315,7 +316,7 @@ connect ("RPERA_ComputeJointErrors.out","RPERA_Gain.in", ConnPolicy() )
 connect ("RPERA_Gain.out","RPERA_LeadLag.in", ConnPolicy() )
 connect ("RPERA_LeadLag.out","RPERA_Lowpass.in", ConnPolicy() )
 connect ("RPERA_Lowpass.out","RPERA_WeakIntegrator1.in", ConnPolicy() )
-connect ("RPERA_WeakIntegrator1.out","RPERA_AddGravComp.in2_event", ConnPolicy() )
+connect ("RPERA_WeakIntegrator1.out","RPERA_AddGravComp.in1_ev", ConnPolicy() )
 connect ("RPERA_AddGravComp.out","RPERA_JointToMotorTorques.in", ConnPolicy() )
 connect ("RPERA_JointToMotorTorques.out","AnalogOutsPera.in_ev", ConnPolicy() )
 
@@ -334,7 +335,7 @@ stream("RPERA_ReadReferenceAngles.joint_references", ros.topic("/arm_right_contr
 
 ### FFW ###
 connect ("RPERA_ReferenceInterpolator.velout","RPERA_FFW.in", ConnPolicy() )
-connect ("RPERA_FFW.out","RPERA_AddGravComp.in1", ConnPolicy() )
+connect ("RPERA_FFW.out","RPERA_AddGravComp.in2", ConnPolicy() )
 
 ### Supervisor ###
 connect ("AnalogInsPera.out_pos","RPERA_Supervisor.measAbsJointAnglesPort", ConnPolicy() )

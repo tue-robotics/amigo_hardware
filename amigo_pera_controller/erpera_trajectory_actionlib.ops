@@ -227,6 +227,7 @@ loadComponent("RPERA_Addition","MATH::Addition")
 addPeer("Supervisor","RPERA_Addition")
 setActivity("RPERA_Addition",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Addition.vectorsize = Nj
+RPERA_Addition.numberofinputs = 2
 RPERA_Addition.configure
 
 ### Joint to motor torques ###
@@ -377,7 +378,7 @@ connect ("RPERA_ComputeErrors.out","RPERA_Gains.in", ConnPolicy() )
 connect ("RPERA_Gains.out","RPERA_LeadLags.in", ConnPolicy() )
 connect ("RPERA_LeadLags.out","RPERA_Lowpasses.in", ConnPolicy() )
 connect ("RPERA_Lowpasses.out","RPERA_Integrators.in", ConnPolicy() )
-connect ("RPERA_Integrators.out","RPERA_Addition.in2_event", ConnPolicy() )
+connect ("RPERA_Integrators.out","RPERA_Addition.in1_ev", ConnPolicy() )
 connect ("RPERA_Addition.out","RPERA_JointToMotorSpace.in", ConnPolicy() )
 connect ("RPERA_JointToMotorSpace.out","RPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 
@@ -407,7 +408,7 @@ connect ("RPERA_WriteClippedJointAngles.out", "JointStateAggregator.right_arm", 
 connect ("RPERA_VectorConcatenate.out","RPERA_GravityCompensation.in", ConnPolicy() )
 connect ("RPERA_GravityCompensation.out","RPERA_GC_Gains.in", ConnPolicy() )
 connect ("RPERA_GC_Gains.out","RPERA_Polynomials.in", ConnPolicy() )
-connect ("RPERA_Polynomials.out","RPERA_Addition.in1", ConnPolicy() )
+connect ("RPERA_Polynomials.out","RPERA_Addition.in2", ConnPolicy() )
 
 ## Safety and ActuatorEnabler ##
 connect ("RPERA_ComputeErrors.out","RPERA_Safety.jointErrors", ConnPolicy() )
