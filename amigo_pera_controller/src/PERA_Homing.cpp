@@ -159,20 +159,25 @@ void PERAHoming::updateHook()
 		homJntAngles[i]=homJntAngTemp[i];
 	}
 	
-	// Forward computed homing angles to the ReferenceInterpolator
-	homJntAngPort.write(homJntAngles);
-		
+	if ( homed_ != true ) {
+		// Forward computed homing angles to the ReferenceInterpolator
+		homJntAngPort.write(homJntAngles);
+	}
+	
+	if ( homed_ == true ) {
+		endpose_outPort.write(endPose);
+		homingfinished_outPort.write(true);
+	}
+	
 	// Send jntNr to safety component such that safety component can be disabled for these joints
 	double homingjoint = (double) jntNr; 
 	homingjoint_outPort.write(homingjoint);
-	
-	if ( homed_ == true ) {
-		
-		endpose_outPort.write(endPose);
-		
-		log(Warning)<<"PERA_Homing: Finished homing \n"<<endlog();
-		homingfinished_outPort.write(true);
-	}
+}
+
+void PERAHoming::stopHook()
+{
+	endpose_outPort.write(endPose);
+	log(Warning)<<"PERA_Homing: Sent to reset pos \n"<<endlog();
 }
 
 doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
@@ -398,6 +403,8 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 				// Set homing to true
 				homed_ = true;
+				
+				log(Warning)<<"PERA_Homing: Finished homing \n"<<endlog();
 				
 			}
 		}

@@ -64,7 +64,6 @@ loadComponent("RPERA_ReadReferences","ROS::JointStateToDoubles")
 addPeer("Supervisor","RPERA_ReadReferences")
 setActivity("RPERA_ReadReferences",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_ReadReferences.NumberOfJoints = 7
-RPERA_ReadReferences.NumberOfJoints2 = 8
 RPERA_ReadReferences.configure
 
 ### Vector concatenate ###
@@ -427,7 +426,6 @@ connect ("RPERA_Homing.reNullPort","RPERA_GripperControl.reNullPort", ConnPolicy
 connect ("RPERA_Homing.reNullPort","RPERA_Safety.reNull", ConnPolicy() )
 connect ("RPERA_ComputeErrors.out","RPERA_Homing.errorPort", ConnPolicy() )
 connect ("RPERA_MotorToJointSpace.out","RPERA_Homing.measRelJointAnglesPort", ConnPolicy() )
-connect ("RPERA_MotorToJointSpace.out","RPERA_ReadReferences.pos_in", ConnPolicy() )
 connect ("RPERA_Homing.endpos_out","RPERA_VectorConcatenate.in1", ConnPolicy() ) 
 
 ## Gripper control ##

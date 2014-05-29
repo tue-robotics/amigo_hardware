@@ -90,6 +90,7 @@ namespace PERA
 		bool configureHook();
 		bool startHook();
 		void updateHook();
+		void stopHook();
         doubles homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles);
 
     };
