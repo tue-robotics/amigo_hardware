@@ -13,15 +13,15 @@ import("amigo_head_controller")
 trigger
 
 #### DECLARATION OF PARAMETERS ####
-var double RAD_TO_STEP 	= 195.37860814; # From header file
+var double RAD_TO_STEP 	= 195.37860814; # IF YOU CHANGE THIS VARIABLE, ALSO RECALCULATE PAN_MIN, PAN_MAX, TILT_MIN AND TILT_MAX, (From header file) 
 var strings JOINT_NAMES = strings( "neck_pan_joint", "neck_tilt_joint" )
 # If you want to correct pan or tilt offsets, please add it EXPLICITLY to the pan or tilt offset, e.g. var int PAN_OFFSET = 512 + 3
 var int PAN_OFFSET 		= 512; # Center pan dynamixel
 var int TILT_OFFSET 	= 512; # Center tilt dynamixel
-var double PAN_MIN 		= -1.57
-var double PAN_MAX 		= 1.57
-var double TILT_MIN 	= -0.5
-var double TILT_MAX 	= 0.88
+var int PAN_MIN 		= -306 	;# -1.57*RAD_TO_STEP
+var int PAN_MAX 		= 306	;#  1.57*RAD_TO_STEP
+var int TILT_MIN 		= -97	;# -0.5 *RAD_TO_STEP
+var int TILT_MAX 		= 171	;#  0.88*RAD_TO_STEP
 var int BODYNUMBER 		= 5
 var string BODYNAME 	= "head"
 var bool HOMEABLE 		= false
@@ -37,10 +37,10 @@ HEAD_PanTiltController.pan_id 		= 2
 HEAD_PanTiltController.tilt_id 		= 1
 HEAD_PanTiltController.pan_offset 	= PAN_OFFSET
 HEAD_PanTiltController.tilt_offset 	= TILT_OFFSET
-HEAD_PanTiltController.pan_max 		= PAN_OFFSET + PAN_MAX * RAD_TO_STEP
-HEAD_PanTiltController.pan_min 		= PAN_OFFSET + PAN_MIN * RAD_TO_STEP
-HEAD_PanTiltController.tilt_max 	= TILT_OFFSET + TILT_MAX * RAD_TO_STEP
-HEAD_PanTiltController.tilt_min 	= TILT_OFFSET + TILT_MIN * RAD_TO_STEP
+HEAD_PanTiltController.pan_max 		= PAN_OFFSET + PAN_MAX
+HEAD_PanTiltController.pan_min 		= PAN_OFFSET + PAN_MIN
+HEAD_PanTiltController.tilt_max 	= TILT_OFFSET + TILT_MAX
+HEAD_PanTiltController.tilt_min 	= TILT_OFFSET + TILT_MIN
 HEAD_PanTiltController.pan_speed 	= 50
 HEAD_PanTiltController.tilt_speed 	= 25
 HEAD_PanTiltController.setPeriod(0.001)
