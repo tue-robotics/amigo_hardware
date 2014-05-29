@@ -157,6 +157,7 @@ SPINDLE_FFW.configure
 loadComponent("SPINDLE_Addition","MATH::Addition")
 addPeer("Supervisor","SPINDLE_Addition")
 SPINDLE_Addition.vectorsize = 1
+SPINDLE_Addition.numberofinputs = 2
 SPINDLE_Addition.configure
 
 ### SPINDLE Safety ###
@@ -226,8 +227,8 @@ connect ("SPINDLE_Integrator.out","SPINDLE_LeadLag.in", ConnPolicy() )
 connect ("SPINDLE_LeadLag.out","SPINDLE_LowPass.in", ConnPolicy() )
 connect ("SPINDLE_ReferenceGenerator.velout","SPINDLE_FFW.ref_vel", ConnPolicy() )
 connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy() )
-connect ("SPINDLE_FFW.FFW_out","SPINDLE_Addition.in1", ConnPolicy() )
-connect ("SPINDLE_LowPass.out","SPINDLE_Addition.in2_event", ConnPolicy() )
+connect ("SPINDLE_LowPass.out","SPINDLE_Addition.in1_ev", ConnPolicy() )
+connect ("SPINDLE_FFW.FFW_out","SPINDLE_Addition.in2", ConnPolicy() )
 connect ("SPINDLE_Addition.out","AnalogOuts.spindle", ConnPolicy() )
 connect ("SPINDLE_Homing.homing_finished","Supervisor.spindle_homingfinished", ConnPolicy() )
 connect ("SPINDLE_ReadEncoders.out","SPINDLE_Homing.position", ConnPolicy() )
