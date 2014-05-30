@@ -187,44 +187,6 @@ RPERA_GripperControl.gripper_gain 		= 0.1
 RPERA_GripperControl.sensorPos 			= 8
 RPERA_GripperControl.configure
 
-### Gravity Compensation ###
-loadComponent("RPERA_GravityCompensation","PERA::GravityCompensation")
-addPeer("Supervisor","RPERA_GravityCompensation")
-setActivity("RPERA_GravityCompensation",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_GravityCompensation.configure
-
-### Gearing and torque constants ###
-loadComponent("RPERA_GC_Gains","MATH::Gains")
-addPeer("Supervisor","RPERA_GC_Gains")
-setActivity("RPERA_GC_Gains",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_GC_Gains.vectorsize 		= Nj
-RPERA_GC_Gains.gain 			= array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-#RPERA_GC_Gains.gain 			= array (0.337952010814464E2, -0.337952010814464E2, -1.040001040001040E2, -1.238604835513278E2, 1.238604835513278E2, -1.626545217957059E2, -1.626545217957059E2, 0.0)
-RPERA_GC_Gains.configure
-
-### Amplifier polynomials ###
-loadComponent("RPERA_Polynomials","MATH::Polynomials")
-addPeer("Supervisor","RPERA_Polynomials")
-setActivity("RPERA_Polynomials",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_Polynomials.vector_size 	= Nj
-RPERA_Polynomials.configure
-RPERA_Polynomials.polynomial1	= array (0.0, 56.973979683065004, -0.060356311372147, 0.000039192263845, -0.000000009835513)
-RPERA_Polynomials.polynomial2	= array (0.0, 56.973979683065004, -0.060356311372147, 0.000039192263845, -0.000000009835513)
-RPERA_Polynomials.polynomial3	= array (0.0, 49.748426243650833, -0.040065286680613, 0.000017587331607, -0.000000002605682)
-RPERA_Polynomials.polynomial4	= array (0.0, 44.604486108032354, -0.042237259213218, 0.000022759847059, -0.000000004411251)
-RPERA_Polynomials.polynomial5	= array (0.0, 44.604486108032354, -0.042237259213218, 0.000022759847059, -0.000000004411251)
-RPERA_Polynomials.polynomial6	= array (0.0, 52.253658384600797, 0.161846062082499, -0.000384960667380, 0.000000239542223)
-RPERA_Polynomials.polynomial7	= array (0.0, 52.253658384600797, 0.161846062082499, -0.000384960667380, 0.000000239542223)
-RPERA_Polynomials.polynomial8	= array (0.0)
-
-### Adding the gravity compensational term ###
-loadComponent("RPERA_Addition","MATH::Addition")
-addPeer("Supervisor","RPERA_Addition")
-setActivity("RPERA_Addition",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_Addition.vectorsize = Nj
-RPERA_Addition.numberofinputs = 2
-RPERA_Addition.configure
-
 ### Joint to motor torques ###
 loadComponent("RPERA_JointToMotorSpace","MatrixTransform")
 addPeer("Supervisor","RPERA_JointToMotorSpace")
@@ -348,7 +310,7 @@ RPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 #connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in2", ConnPolicy() );			# reference after reference generator
 #connect ("RPERA_MotorToJointSpace.out","RPERA_Tracing.in3", ConnPolicy() ); 				# position
 #connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in4", ConnPolicy() ); 					# error
-#connect ("RPERA_Addition.out","RPERA_Tracing.in5", ConnPolicy() ); 						# control effort
+#connect ("RPERA_Integrators.out","RPERA_Tracing.in5", ConnPolicy() ); 						# control effort
 #connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", ConnPolicy() );  	# force sensors	after sensor calculation
 
 #### SET UP JOINTSTATE AGGREGATOR ####
@@ -373,8 +335,7 @@ connect ("RPERA_ComputeErrors.out","RPERA_Gains.in", ConnPolicy() )
 connect ("RPERA_Gains.out","RPERA_LeadLags.in", ConnPolicy() )
 connect ("RPERA_LeadLags.out","RPERA_Lowpasses.in", ConnPolicy() )
 connect ("RPERA_Lowpasses.out","RPERA_Integrators.in", ConnPolicy() )
-connect ("RPERA_Integrators.out","RPERA_Addition.in1_ev", ConnPolicy() )
-connect ("RPERA_Addition.out","RPERA_JointToMotorSpace.in", ConnPolicy() )
+connect ("RPERA_Integrators.out","RPERA_JointToMotorSpace.in", ConnPolicy() )
 connect ("RPERA_JointToMotorSpace.out","RPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 
 ## Whole body controller or reference generator loop	##
@@ -397,12 +358,6 @@ connect ("RPERA_MotorToJointSpace.out","RPERA_WriteCurrentJointAngles.pos_in", C
 connect ("RPERA_MotorToJointSpace.out","RPERA_JointOutputLimiter.in", ConnPolicy() )
 connect ("RPERA_JointOutputLimiter.out","RPERA_WriteClippedJointAngles.pos_in", ConnPolicy() )
 connect ("RPERA_WriteClippedJointAngles.out", "JointStateAggregator.right_arm", ConnPolicy() )
-
-## Gravity compensation ##
-connect ("RPERA_ReferenceInterpolator.posout","RPERA_GravityCompensation.in", ConnPolicy() )
-connect ("RPERA_GravityCompensation.out","RPERA_GC_Gains.in", ConnPolicy() )
-connect ("RPERA_GC_Gains.out","RPERA_Polynomials.in", ConnPolicy() )
-connect ("RPERA_Polynomials.out","RPERA_Addition.in2", ConnPolicy() )
 
 ## Safety and ActuatorEnabler ##
 connect ("RPERA_ComputeErrors.out","RPERA_Safety.jointErrors", ConnPolicy() )
@@ -481,10 +436,6 @@ Supervisor.AddEnabledPeer ("RPERA_Gains", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_LeadLags", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Lowpasses", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Integrators", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_GravityCompensation", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_GC_Gains", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_Polynomials", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_Addition", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Safety", BODYNUMBER)

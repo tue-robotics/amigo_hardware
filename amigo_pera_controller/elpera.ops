@@ -187,44 +187,6 @@ LPERA_GripperControl.gripper_gain 		= 0.1
 LPERA_GripperControl.sensorPos 			= 8
 LPERA_GripperControl.configure
 
-### Gravity Compensation ###
-loadComponent("LPERA_GravityCompensation","PERA::GravityCompensation")
-addPeer("Supervisor","LPERA_GravityCompensation")
-setActivity("LPERA_GravityCompensation",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_GravityCompensation.configure
-
-### Gearing and torque constants ###
-loadComponent("LPERA_GC_Gains","MATH::Gains")
-addPeer("Supervisor","LPERA_GC_Gains")
-setActivity("LPERA_GC_Gains",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_GC_Gains.vectorsize 		= Nj
-LPERA_GC_Gains.gain 			= array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-#LPERA_GC_Gains.gain 			= array (0.337952010814464E2, 0.337952010814464E2, -1.040001040001040E2, -1.238604835513278E2, 1.238604835513278E2, -1.626545217957059E2, -1.626545217957059E2, 0.0)
-LPERA_GC_Gains.configure
-
-### Amplifier polynomials ###
-loadComponent("LPERA_Polynomials","MATH::Polynomials")
-addPeer("Supervisor","LPERA_Polynomials")
-setActivity("LPERA_Polynomials",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_Polynomials.vector_size 	= Nj
-LPERA_Polynomials.configure
-LPERA_Polynomials.polynomial1	= array (0.0, 56.973979683065004, -0.060356311372147, 0.000039192263845, -0.000000009835513)
-LPERA_Polynomials.polynomial2	= array (0.0, 56.973979683065004, -0.060356311372147, 0.000039192263845, -0.000000009835513)
-LPERA_Polynomials.polynomial3	= array (0.0, 49.748426243650833, -0.040065286680613, 0.000017587331607, -0.000000002605682)
-LPERA_Polynomials.polynomial4	= array (0.0, 44.604486108032354, -0.042237259213218, 0.000022759847059, -0.000000004411251)
-LPERA_Polynomials.polynomial5	= array (0.0, 44.604486108032354, -0.042237259213218, 0.000022759847059, -0.000000004411251)
-LPERA_Polynomials.polynomial6	= array (0.0, 52.253658384600797, 0.161846062082499, -0.000384960667380, 0.000000239542223)
-LPERA_Polynomials.polynomial7	= array (0.0, 52.253658384600797, 0.161846062082499, -0.000384960667380, 0.000000239542223)
-LPERA_Polynomials.polynomial8	= array (0.0)
-
-### Adding the gravity compensational term ###
-loadComponent("LPERA_Addition","MATH::Addition")
-addPeer("Supervisor","LPERA_Addition")
-setActivity("LPERA_Addition",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_Addition.vectorsize = Nj
-LPERA_Addition.numberofinputs = 2
-LPERA_Addition.configure
-
 ### Joint to motor torques ###
 loadComponent("LPERA_JointToMotorSpace","MatrixTransform")
 addPeer("Supervisor","LPERA_JointToMotorSpace")
@@ -348,7 +310,7 @@ LPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 #connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in2", ConnPolicy() );		# reference after reference generator
 #connect ("LPERA_MotorToJointSpace.out","LPERA_Tracing.in3", ConnPolicy() ); 				# position
 #connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in4", ConnPolicy() ); 					# error
-#connect ("LPERA_Addition.out","LPERA_Tracing.in5", ConnPolicy() ); 						# control effort
+#connect ("LPERA_Integrators.out","LPERA_Tracing.in5", ConnPolicy() ); 						# control effort
 #connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Tracing.in6", ConnPolicy() );  # force sensors	after sensor calculation
 
 #### SET UP JOINTSTATE AGGREGATOR ####
@@ -373,8 +335,7 @@ connect ("LPERA_ComputeErrors.out","LPERA_Gains.in", ConnPolicy() )
 connect ("LPERA_Gains.out","LPERA_LeadLags.in", ConnPolicy() )
 connect ("LPERA_LeadLags.out","LPERA_Lowpasses.in", ConnPolicy() )
 connect ("LPERA_Lowpasses.out","LPERA_Integrators.in", ConnPolicy() )
-connect ("LPERA_Integrators.out","LPERA_Addition.in1_ev", ConnPolicy() )
-connect ("LPERA_Addition.out","LPERA_JointToMotorSpace.in", ConnPolicy() )
+connect ("LPERA_Integrators.out","LPERA_JointToMotorSpace.in", ConnPolicy() )
 connect ("LPERA_JointToMotorSpace.out","LPERA_AnalogOutsPera.in_ev", ConnPolicy() )
 
 ## Whole body controller or reference generator loop	##
@@ -397,12 +358,6 @@ connect ("LPERA_MotorToJointSpace.out","LPERA_WriteCurrentJointAngles.pos_in", C
 connect ("LPERA_MotorToJointSpace.out","LPERA_JointOutputLimiter.in", ConnPolicy() )
 connect ("LPERA_JointOutputLimiter.out","LPERA_WriteClippedJointAngles.pos_in", ConnPolicy() )
 connect ("LPERA_WriteClippedJointAngles.out", "JointStateAggregator.left_arm", ConnPolicy() )
-
-## Gravity compensation ##
-connect ("LPERA_ReferenceInterpolator.posout","LPERA_GravityCompensation.in", ConnPolicy() )
-connect ("LPERA_GravityCompensation.out","LPERA_GC_Gains.in", ConnPolicy() )
-connect ("LPERA_GC_Gains.out","LPERA_Polynomials.in", ConnPolicy() )
-connect ("LPERA_Polynomials.out","LPERA_Addition.in2", ConnPolicy() )
 
 ## Safety and ActuatorEnabler ##
 connect ("LPERA_ComputeErrors.out","LPERA_Safety.jointErrors", ConnPolicy() )
@@ -481,10 +436,6 @@ Supervisor.AddEnabledPeer ("LPERA_Gains", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_LeadLags", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_Lowpasses", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_Integrators", BODYNUMBER )
-Supervisor.AddEnabledPeer ("LPERA_GravityCompensation", BODYNUMBER )
-Supervisor.AddEnabledPeer ("LPERA_GC_Gains", BODYNUMBER )
-Supervisor.AddEnabledPeer ("LPERA_Polynomials", BODYNUMBER )
-Supervisor.AddEnabledPeer ("LPERA_Addition", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_SensorTorques", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_GripperControl", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_Safety", BODYNUMBER)
