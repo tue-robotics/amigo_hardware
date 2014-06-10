@@ -32,6 +32,7 @@ Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 ## Pan-tilt controller
 loadComponent("HEAD_PanTiltController", "PanTiltController")
 addPeer("Supervisor","HEAD_PanTiltController")
+setActivity("HEAD_PanTiltController",0.001,HighestPriority,ORO_SCHED_RT)
 HEAD_PanTiltController.joint_names 	= JOINT_NAMES
 HEAD_PanTiltController.pan_id 		= 2
 HEAD_PanTiltController.tilt_id 		= 1
@@ -43,13 +44,12 @@ HEAD_PanTiltController.tilt_max 	= TILT_OFFSET + TILT_MAX
 HEAD_PanTiltController.tilt_min 	= TILT_OFFSET + TILT_MIN
 HEAD_PanTiltController.pan_speed 	= 50
 HEAD_PanTiltController.tilt_speed 	= 25
-HEAD_PanTiltController.setPeriod(0.001)
 HEAD_PanTiltController.configure
 
 ## Pan-tilt controller
 loadComponent("HEAD_Enabler", "AMIGO::HEADEnabler")
 addPeer("Supervisor","HEAD_Enabler")
-HEAD_Enabler.setPeriod(0.001)
+setActivity("HEAD_Enabler",0.001,HighestPriority,ORO_SCHED_RT)
 HEAD_Enabler.configure
 
 #### CONNECT COMPONENTS ####

@@ -79,7 +79,7 @@ setActivity("DigitalOuts2",0.0,HighestPriority/2,ORO_SCHED_RT)
 #### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_1009) ###
 loadComponent("DigitalIns","SOEM::DigitalIns")
 addPeer("Supervisor","DigitalIns")
-DigitalIns.setPeriod(0.1)
+setActivity("DigitalOuts2",0.1,HighestPriority/2,ORO_SCHED_RT)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
 stream("DigitalIns.out1", ros.topic("/fuse1"))
 stream("DigitalIns.out2", ros.topic("/fuse2"))

@@ -26,7 +26,7 @@ Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 #Reading Encoders
 loadComponent("SPINDLE_ReadEncoders","SOEM::ReadEncoders")
 addPeer("Supervisor","SPINDLE_ReadEncoders")
-SPINDLE_ReadEncoders.setPeriod(Ts)
+setActivity("SPINDLE_ReadEncoders",Ts,HighestPriority,ORO_SCHED_RT)
 SPINDLE_ReadEncoders.encoderbits = 65536
 SPINDLE_ReadEncoders.enc2SI = array (-4.1666667e-7); # Minus because spindle up is defined positive.
 SPINDLE_ReadEncoders.configure
@@ -59,7 +59,7 @@ SPINDLE_ReadReferences.configure
 #Loading Reference Generator
 loadComponent("SPINDLE_ReferenceGenerator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","SPINDLE_ReferenceGenerator")
-SPINDLE_ReferenceGenerator.setPeriod(Ts)
+setActivity("SPINDLE_ReferenceGenerator",Ts,HighestPriority,ORO_SCHED_RT)
 SPINDLE_ReferenceGenerator.NrInterpolators = 1
 SPINDLE_ReferenceGenerator.InterpolatorDt = Ts
 SPINDLE_ReferenceGenerator.InterpolatorEps = 1.0
