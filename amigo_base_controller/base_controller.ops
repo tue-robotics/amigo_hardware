@@ -15,7 +15,7 @@ trigger
 #### DECLARATION OF PARAMETERS ####
 var double Ts 				= 0.001
 var double WHEELRAD 		= 0.075*0.9825; # Corrected for effective wheel radius
-var double DIS2CENT 		= 0.29072
+var double DIS2CENT 		= 0.29072 * 64.0 / 62.8; # (Correction for corrected TWOPI)
 var double HALFSQRT2		= 0.7071
 var double TORQUE2CURRENT 	= 1.0/0.0302; # [Amp/Nm]
 var double CURRENT2VOLT 	= 1.0/1.0
