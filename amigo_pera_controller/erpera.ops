@@ -299,7 +299,7 @@ RPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 #setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
 #RPERA_Tracing.vector_sizes = array (9.0, 8.0, 8.0, 8.0, 8.0, 9.0)
 #RPERA_Tracing.buffersize = 32768*2;
-#RPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST5/GripperRight.dat"
+#RPERA_Tracing.filename = "/home/amigo/ros/data/hardware_tracing/max/270514/pwmvscurrent.dat" 
 #RPERA_Tracing.Ts = Ts
 #RPERA_Tracing.configure
 #connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in1", ConnPolicy() );				# force sensors	voltage input
