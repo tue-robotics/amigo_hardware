@@ -140,7 +140,7 @@ setActivity("RPERA_Safety",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_Safety.vectorsize_motorspace 	= Nm;
 RPERA_Safety.vectorsize_jointspace 	= Nj;
 RPERA_Safety.maxJointErrors 		= MAXERRORS;
-RPERA_Safety.motorSaturations 		= array (  100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	50.0, 	90.0)
+RPERA_Safety.motorSaturations 		= array (  1000.0, 	1000.0,     100.0, 	 400.0, 	   500.0,  	500.0, 	   500.0, 	500.0, 	900.0)
 RPERA_Safety.maxConSatTime 			= 5.0;
 RPERA_Safety.partNr					= BODYNUMBER;
 RPERA_Safety.configure
@@ -207,7 +207,7 @@ loadComponent("RPERA_Gains","MATH::Gains")
 addPeer("Supervisor","RPERA_Gains")
 setActivity("RPERA_Gains",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_Gains.vectorsize 	= Nj
-RPERA_Gains.gain 		= array (2000.0, 2000.0, 1000.0, 1750.0, 1750.0, 1750.0, 2150.0, 500.0);
+RPERA_Gains.gain 		= array (20000.0, 20000.0, 10000.0, 17500.0, 17500.0, 17500.0, 21500.0, 5000.0);
 RPERA_Gains.configure
 
 ### LEADLAGS ###
