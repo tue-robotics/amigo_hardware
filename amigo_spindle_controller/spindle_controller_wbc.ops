@@ -174,7 +174,7 @@ SPINDLE_Addition.configure
 
 #TODO: Should be passive, only acting on actual errors
 #Loading Safety component
-loadComponent("SPINDLE_Safety","SpindleSafety")
+loadComponent("SPINDLE_Safety","SpindleSafety") ;# ToDo use safety component in rtt_supervisory_components
 addPeer("Supervisor","SPINDLE_Safety")
 SPINDLE_Safety.error_margin = 0.05
 SPINDLE_Safety.configure

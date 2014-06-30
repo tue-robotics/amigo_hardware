@@ -33,6 +33,7 @@ CalculateFFW::CalculateFFW(const string& name) : TaskContext(name, PreOperationa
   ref_vel.assign(1,0.0);
   ref_acc.assign(1,0.0);
 }
+
 CalculateFFW::~CalculateFFW(){}
 
 bool CalculateFFW::configureHook()

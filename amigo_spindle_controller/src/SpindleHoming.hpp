@@ -18,36 +18,35 @@ namespace AMIGO
     {
     private:
 
+	// inports
     InputPort<std_msgs::Bool> endswitch_inport;
     InputPort<doubles> pos_inport;
 
+	// outports
     OutputPort< vector<doubles> > ref_outport;
     OutputPort< bool > homingfinished_outport;
     OutputPort<sensor_msgs::JointState> resetRefPort;
     
-    // Declaring variables
-    bool homed;
-	bool homed_;
-	bool goToEndpos;
-	bool homingfinished;
-	int cntr;
-
+    // Properties
+	bool homed;
     double home_vel;
     double home_acc;
     double stroke;
     double endpos;
-    double reference;
+    
+    // constants
     double referencestep;
+    
+	// variables
+	bool homed_;
+	bool goToEndpos;
+	bool homingfinished;
+	int cntr;
+    double reference;
     doubles position;
-    long long int starttime; //Debugging
-	sensor_msgs::JointState out_msg;
-    
+	sensor_msgs::JointState out_msg;    
     vector<doubles> ref;
-
-    //double homing_correction;
-
-	
-    
+   
     protected:
     OperationCaller<bool(string)> StartBodyPart;
     OperationCaller<bool(string)> StopBodyPart;

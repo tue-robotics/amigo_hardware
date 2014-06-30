@@ -15,9 +15,8 @@
 using namespace std;
 using namespace RTT;
 
-namespace SPINDLE // Just because it looks nice
+namespace SPINDLE
 {
-  // Define a new type for easy coding:
   typedef vector<double> doubles;
 
   class ReadSpindleSetpointJointState
@@ -30,8 +29,7 @@ namespace SPINDLE // Just because it looks nice
     OutputPort<amigo_msgs::spindle_setpoint> afterhoming_outport;
     OutputPort< vector<doubles> > ref_outport;
 
-    // Declaring message types
-    
+	// Properties
     vector<doubles> ref;
     double minpos;
     double maxpos;

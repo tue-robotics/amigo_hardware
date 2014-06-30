@@ -13,48 +13,45 @@ using namespace AMIGO;
 
 
 SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperational)
-  {
-  addEventPort( "endswitch", endswitch_inport );
-  addPort( "position",pos_inport );
+{  
+	// inports
+	addEventPort( "endswitch", endswitch_inport );
+	addPort( "position",pos_inport );
+	// outports
+	addPort( "ref_out", ref_outport );
+	addPort( "homing_finished", homingfinished_outport );
+	addPort( "resetRef",resetRefPort).doc("Sends reset joint coordinates to ROS topic");
 
-  addPort( "ref_out", ref_outport );
-  addPort( "homing_finished", homingfinished_outport );
-  addPort( "resetRef",resetRefPort).doc("Sends reset joint coordinates to ROS topic");
-
-
-  
-  // Creating variables
-  home_vel = 0.01;
-  home_acc = 0.01;
-  addProperty( "home_vel", home_vel );
-  addProperty( "home_acc", home_acc );
-  addProperty( "stroke", stroke );
-  addProperty( "endpos", endpos );
-  addProperty( "homed", homed );
-  
+	// Properties
+	addProperty( "home_vel", home_vel );
+	addProperty( "home_acc", home_acc );
+	addProperty( "stroke", stroke );
+	addProperty( "endpos", endpos );
+	addProperty( "homed", homed );  
 }
-SpindleHoming::~SpindleHoming(){}
+
+SpindleHoming::~SpindleHoming()
+{
+}
 
 bool SpindleHoming::configureHook()
 {
-	ref.resize(1); //Single joint
+	ref.resize(1);
+	position.assign(1,0.0);
+	reference = 0.0;
+	referencestep = 0.01/1000;
+	out_msg.position.assign(1,0.0);
 	return true;
 }
 
 bool SpindleHoming::startHook()
 { 
+	// if homing is not required, then this component is stopped: To Do is this function still required in the new structure?
 	if ( homed == true ){
 		log(Warning)<<"Spindle: stopping component without homing. Homing was set to false in .ops script"<<endlog();
 		this->stop(); 
-	}
-	
-	out_msg.position.assign(1,0.0);
-	
-	homed_ = homed;
-	goToEndpos = false;
-	homingfinished = false;
-	cntr = 0;
-	
+	}	
+		
 	// Lookup the Supervisor component.
 	TaskContext* Supervisor = this->getPeer("Supervisor");
 	if ( !Supervisor ) {
@@ -91,19 +88,15 @@ bool SpindleHoming::startHook()
 		return false;
 	}
 	
+	homed_ = homed;
+	goToEndpos = false;
+	homingfinished = false;
+	cntr = 0;
+	ref[0].assign(3,0.0);
+
 	pos_inport.read(position);
-	
-	// Set size of reference vector
-	ref[0].assign(3,0.0); //pos, vel, acc
-	ref[0][1] = home_vel; //Redundant?
-	ref[0][2] = home_acc; //Redundant?
 	reference = position[0];
-	
-	referencestep = 0.01/1000;
-	
-	starttime = os::TimeService::Instance()->getNSecs()*1e-9;
-	log(Info)<<"SpindleHoming::started at " << os::TimeService::Instance()->getNSecs()*1e-9 <<endlog();
-	
+		
 	return true;
 }
 
@@ -156,7 +149,5 @@ void SpindleHoming::updateHook()
 		}
 	}
 }
-
-
 
 ORO_CREATE_COMPONENT(SpindleHoming)

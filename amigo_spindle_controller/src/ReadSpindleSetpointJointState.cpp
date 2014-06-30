@@ -10,47 +10,50 @@ using namespace SPINDLE;
 
 ReadSpindleSetpointJointState::ReadSpindleSetpointJointState(const string& name) : TaskContext(name, PreOperational)
 {
-  // Creating ports:
-  addEventPort( "spindle_setpoint", spindle_setpoint_inport );
-  addPort( "out", ref_outport );
-  
-  // Creating variables
-  minpos = -1.0;
-  maxpos = -1.0;
-  maxvel = -1.0;
-  addProperty( "min_pos", minpos );
-  addProperty( "max_pos", maxpos );
-  addProperty( "max_vel", maxvel );
+	// Creating ports:
+	addEventPort( "spindle_setpoint", spindle_setpoint_inport );
+	addPort( "out", ref_outport );
+
+	// Creating variables
+	minpos = -1.0;
+	maxpos = -1.0;
+	maxvel = -1.0;
+	addProperty( "min_pos", minpos );
+	addProperty( "max_pos", maxpos );
+	addProperty( "max_vel", maxvel );
 }
-ReadSpindleSetpointJointState::~ReadSpindleSetpointJointState(){}
+
+ReadSpindleSetpointJointState::~ReadSpindleSetpointJointState()
+{
+}
 
 bool ReadSpindleSetpointJointState::configureHook()
 {
 	// Set size of reference vector
 	ref.resize(1); //Single joint
 	ref[0].assign(3,0.0); //pos, vel, acc
-	
-  return true;
+
+	return true;
 }
 
 bool ReadSpindleSetpointJointState::startHook()
 {
-  // Check validity of Ports:
-  if ( !spindle_setpoint_inport.connected() ) {
-    log(Error)<<"ReadSpindleSetpoint::inputport not connected!"<<endlog();
-    // No connection was made, can't do my job !
-    return false;
-  }
-  
-  if ( !ref_outport.connected() ) {
-    log(Warning)<<"ReadSpindleSetpoint::Outputport not connected!"<<endlog();
-  }
-  
-  if ( minpos < 0.0 || maxpos < 0.0 || maxvel <= 0.0 ) {
-	log(Error)<<"ReadSpindleSetpoint::Minima or maxima not correctly indicated!"<<endlog();
-	return false;
-  }
-  return true;
+	// Check validity of Ports:
+	if ( !spindle_setpoint_inport.connected() ) {
+		log(Error)<<"ReadSpindleSetpoint::inputport not connected!"<<endlog();
+		return false;
+	}
+
+	if ( !ref_outport.connected() ) {
+		log(Warning)<<"ReadSpindleSetpoint::Outputport not connected!"<<endlog();
+	}
+
+	if ( minpos < 0.0 || maxpos < 0.0 || maxvel <= 0.0 ) {
+		log(Error)<<"ReadSpindleSetpoint::Minima or maxima not correctly indicated!"<<endlog();
+		return false;
+	}
+	
+	return true;
 }
 
 void ReadSpindleSetpointJointState::updateHook()
