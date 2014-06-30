@@ -17,51 +17,46 @@ using namespace std;
 using namespace RTT;
 using namespace PERA;
 
-	Concatenate::Concatenate(const std::string& name)
-        : TaskContext(name, PreOperational)
-
-		{
-			// Creating the ports
-			
-			/// Inports
-			addEventPort("in1", invector1Port);
-			addEventPort("in2", invector2Port);
-			
-			/// Outports
-			addPort("out",outPort);
+Concatenate::Concatenate(const std::string& name) : TaskContext(name, PreOperational)
+{
+	/// Inports
+	addEventPort("in1", invector1Port);
+	addEventPort("in2", invector2Port);
 	
-	  }
+	/// Outports
+	addPort("out",outPort);
+}
 
-	Concatenate::~Concatenate(){}
+Concatenate::~Concatenate(){}
 
-	bool Concatenate::configureHook(){
-		invector1.assign(7,0.0);
-		invector2.assign(1,0.0);
-		outvector.assign(8,0.0);
-		return true;
-	}
+bool Concatenate::configureHook(){
+	invector1.assign(7,0.0);
+	invector2.assign(1,0.0);
+	outvector.assign(8,0.0);
+	return true;
+}
 
-	bool Concatenate::startHook(){
-		return true;
-	}
+bool Concatenate::startHook(){
+	return true;
+}
 
-	void Concatenate::updateHook(){
-		
-		invector1Port.read(invector1);
-		invector2Port.read(invector2);
-		
-		outvector[0]=invector1[0];
-		outvector[1]=invector1[1];
-		outvector[2]=invector1[2];
-		outvector[3]=invector1[3];
-		outvector[4]=invector1[4];
-		outvector[5]=invector1[5];
-		outvector[6]=invector1[6];
-		outvector[7]=invector2[0];
-		
-		outPort.write(outvector);
-		
-	}
+void Concatenate::updateHook(){
+	
+	invector1Port.read(invector1);
+	invector2Port.read(invector2);
+	
+	outvector[0]=invector1[0];
+	outvector[1]=invector1[1];
+	outvector[2]=invector1[2];
+	outvector[3]=invector1[3];
+	outvector[4]=invector1[4];
+	outvector[5]=invector1[5];
+	outvector[6]=invector1[6];
+	outvector[7]=invector2[0];
+	
+	outPort.write(outvector);
+	
+}
 
 void Concatenate::stopHook(){}
 

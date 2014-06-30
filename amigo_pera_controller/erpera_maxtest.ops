@@ -339,7 +339,7 @@ RPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 
 
 ### Conversion analog PERA_IO values to torques ###
-loadComponent("RPERA_SensorTorques","SensorTorquesParamEstimator")
+loadComponent("RPERA_SensorTorques","ARM::SensorTorquesAutoC3")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
 RPERA_SensorTorques.setPeriod(Ts);#	SM1 		SM2			SM3 		EM1 		EM2 		WM1 		WM2 		HM

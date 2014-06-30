@@ -46,13 +46,13 @@ namespace PERA
 		//properties
 		bool REQUIRE_HOMING;
 		bool REQUIRE_GRIPPER_HOMING;
-		bool Q6HOMED;
 		double STRT_JNT;	
 		double STEPSIZE;	
 		doubles HOMEDPOS;	
 		doubles ABS_OR_REL;
 		doubles ABS_SEN_DIR;
 		doubles MAX_ERRORS;
+		doubles END_POSE;
 		
 		//constants
 		double FastStep;
@@ -66,17 +66,15 @@ namespace PERA
 		int cntr4;
 		
 		//variables
+		bool Q6homed;
 		bool homed_;
 		bool gripperhomed_;
 		bool goodToGo;
-		double prevJntNr;
 		double jntNr;
-		double prevAngle;
 		doubles jointErrors;
 		doubles jointAngles;
 		doubles previousAngles;
 		doubles homJntAngles;
-		doubles endPose;
 
         sensor_msgs::JointState out_msg;
 	

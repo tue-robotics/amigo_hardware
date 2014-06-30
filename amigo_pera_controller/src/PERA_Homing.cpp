@@ -46,8 +46,8 @@ PERAHoming::PERAHoming(const string& name) : TaskContext(name, PreOperational)
 	addProperty( "requireHoming", REQUIRE_HOMING ).doc("Specifies if the arm will home yes or no");
 	addProperty( "startJoint", STRT_JNT ).doc("Joint number to start homing with");
 	addProperty( "requireGripperHoming", REQUIRE_GRIPPER_HOMING ).doc("Defines whether the gripper is homed upon startup");
+    addProperty( "endPose", END_POSE ).doc("end Pose the PERA should go after homing");
     addProperty( "jointNames", out_msg.name ).doc("Joint state names");
-    addProperty( "endPose", endPose ).doc("end Pose the PERA should go after homing");
 }
 
 PERAHoming::~PERAHoming(){}
@@ -100,13 +100,15 @@ bool PERAHoming::startHook()
 		return false;
 	}
 	
-	if ((!endpose_outPort.connected()) || (endPose.size() != 7 )) {
-		log(Error)<<"endpose_out not connected or endPose has a wrong size, size should be 7!"<<endlog();
+	if ((!endpose_outPort.connected()) || (END_POSE.size() != 7 )) {
+		log(Error)<<"endpose_out not connected or END_POSE has a wrong size, size should be 7!"<<endlog();
 	}
 	
 	jointAngles.assign(7,0.0);
 	homJntAngles.assign(8,0.0);
 	previousAngles.assign(8,0.0);
+	jointErrors.assign(8,0.0);	
+	
 	cntr=0;   // used to check if it is the first time the loop is running 
 	cntr2=0;  // used for timing in the homing procedure (to wait after a joint reached its endstop to let it go back to homedPOS)
 	cntr3=0;  // used for warning in homing procedure to make sure it is printed only once per X seconds
@@ -115,7 +117,7 @@ bool PERAHoming::startHook()
 	goodToGo = true;
 	homed_ = !REQUIRE_HOMING;
 	gripperhomed_ = !REQUIRE_GRIPPER_HOMING;
-	Q6HOMED = false;
+	Q6homed = false;
 	jntNr=STRT_JNT;
 	
 	return true;
@@ -165,7 +167,7 @@ void PERAHoming::updateHook()
 	}
 	
 	if ( homed_ == true ) {
-		endpose_outPort.write(endPose);
+		endpose_outPort.write(END_POSE);
 		homingfinished_outPort.write(true);
 	}
 	
@@ -176,7 +178,7 @@ void PERAHoming::updateHook()
 
 void PERAHoming::stopHook()
 {
-	endpose_outPort.write(endPose);
+	endpose_outPort.write(END_POSE);
 	log(Warning)<<"PERA_Homing: Sent to reset pos \n"<<endlog();
 }
 
@@ -205,15 +207,15 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 	}
 	
 	// This code makes sure q6 is homed first
-	if (jntNr == 7 && Q6HOMED == false ) {
+	if (jntNr == 7 && Q6homed == false ) {
 		jntNr = 6;
 	}
 	
-	if (jntNr == 5 && Q6HOMED == false) {
+	if (jntNr == 5 && Q6homed == false) {
 		jntNr = 7;
-		Q6HOMED = true;		
+		Q6homed = true;		
 	}
-	if (jntNr == 6 && Q6HOMED == true) {
+	if (jntNr == 6 && Q6homed == true) {
 		jntNr = 5;		
 	}
 
