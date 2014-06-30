@@ -18,10 +18,8 @@ using namespace std;
 using namespace RTT;
 using namespace AMIGO;
 
-BaseWheelReset::BaseWheelReset(const string& name) :
-                                                    TaskContext(name, PreOperational)
+BaseWheelReset::BaseWheelReset(const string& name) : TaskContext(name, PreOperational)
 {
-
     /// Adding ports
     addPort( "safe", safePort );
     addPort( "emergency", rosEmergencyPort );
@@ -37,13 +35,11 @@ BaseWheelReset::~BaseWheelReset(){}
 
 bool BaseWheelReset::configureHook()
 {
-
     return true;
 }
 
 bool BaseWheelReset::startHook()
 {
-
     currentStatus = NO_INFO;
     previousStatus = NO_INFO;
     correctionPos.assign(4,0.0);

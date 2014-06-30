@@ -51,7 +51,6 @@ class BaseWheelReset
         NO_INFO = 0, // TODO can be given a unique number
         OK = 0,
         UNSAFE = 1
-
     };
 
     Status currentStatus;

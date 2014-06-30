@@ -49,7 +49,6 @@ namespace AMIGO
     /* Declaring global variables */
     bool safe;
     bool previousSafe;
-    bool laststate;
     bool reset;
 
     public:

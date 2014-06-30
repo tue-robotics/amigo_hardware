@@ -79,6 +79,7 @@ bool BaseSafety::startHook()
 
   safe = true;
   previousSafe = true;
+  reset = false;
 
   return true;
 }
