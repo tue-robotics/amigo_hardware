@@ -13,22 +13,30 @@
 using namespace std;
 using namespace RTT;
 
-namespace AMIGO {
-  class HEADEnabler
-  : public RTT::TaskContext
-    {
-    private:
-    OutputPort<bool> outport;
+namespace AMIGO 
+{
+	/*! \class HeadEnabler
+	*  	\brief Defines Orocos component for enabling the head
+	* 
+	*	This component sends true over a boolean port once started,
+	*  	and sends a false when this component is stopped.
+	*/
+	
+	class HEADEnabler
+	: public RTT::TaskContext
+	{
+		private:
+		OutputPort<bool> outport;
 
-    public:
+		public:
 
-    HEADEnabler(const string& name);
-    ~HEADEnabler();
+		HEADEnabler(const string& name);
+		~HEADEnabler();
 
-	bool configureHook();
-	bool startHook();
-	void updateHook();
-	void stopHook();
-    };
+		bool configureHook();
+		bool startHook();
+		void updateHook();
+		void stopHook();
+	};
 }
 #endif
