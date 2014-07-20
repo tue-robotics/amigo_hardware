@@ -54,8 +54,7 @@ RPERA_VectorConcatenate.configure
 ### Interpolator (DO NOT INCREASE VALUES !!!) ###
 loadComponent("RPERA_ReferenceInterpolator","ReferenceGenerator")
 addPeer("Supervisor","RPERA_ReferenceInterpolator")
-setActivity("RPERA_ReferenceInterpolator",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_ReferenceInterpolator.setPeriod(0.001)
+setActivity("RPERA_ReferenceInterpolator",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_ReferenceInterpolator.NrInterpolators = 8
 RPERA_ReferenceInterpolator.InterpolatorDt = 0.001
 RPERA_ReferenceInterpolator.InterpolatorEps = 1.0
@@ -91,8 +90,7 @@ RPERA_WriteClippedJointAngles.configure
 ### PERA Supervisor ###
 loadComponent("RPERA_Supervisor","PERA::SupervisorE")
 addPeer("Supervisor","RPERA_Supervisor")
-setActivity("RPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_Supervisor.setPeriod(0.001)
+setActivity("RPERA_Supervisor",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_Supervisor.jointUpperBounds = 	array (	   0.0,  1.57,  1.57, 2.23,  1.83,  0.95,  0.61 )
 RPERA_Supervisor.jointLowerBounds = 	array (  -1.57, -1.57, -1.57,  0.0, -1.83, -0.95, -0.61 )
 RPERA_Supervisor.motorSaturations = array ( 100.0, 100.0, 10.0, 40.0, 50.0, 50.0, 25.0, 25.0, 100.0);        # Watch out of size 9 not 8 since it is in motorspace # third output is set to 10 since it is an unused motoroutput.
@@ -125,8 +123,7 @@ RPERA_ReadEncoders.configure
 ### Velocity and acceleration estimator ###
 loadComponent("RPERA_RTD","AMIGO::RealTimeDerivator")
 addPeer("Supervisor","RPERA_RTD")
-setActivity("RPERA_RTD",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_RTD.setPeriod(0.001)
+setActivity("RPERA_RTD",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_RTD.vector_size=8
 RPERA_RTD.bw = 10.0
 RPERA_RTD.configure
@@ -134,10 +131,9 @@ RPERA_RTD.configure
 ### Gripper force controller ###
 loadComponent("RPERA_GripperControl","PERA::GripperControlE")
 addPeer("Supervisor","RPERA_GripperControl")
-setActivity("RPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("RPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 #RPERA_GripperControl.threshold_closed = 5.0
 RPERA_GripperControl.threshold_closed = 2.25
-RPERA_GripperControl.setPeriod(0.001)
 RPERA_GripperControl.max_pos = 28
 RPERA_GripperControl.gripper_gain = 0.6
 RPERA_GripperControl.configure
@@ -251,7 +247,7 @@ RPERA_WriteCurrentJointAngles.configure
 loadComponent("RPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
-RPERA_SensorTorques.setPeriod(Ts);#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
+#									SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
 RPERA_SensorTorques.c1 		= array (42.0,		4250.0,		1.0,		94.0,		20.0,		825.0,		1.0, 		1.0,		32.3375		)
 RPERA_SensorTorques.c2 		= array (-0.8,		12.0,		1.0,		1.0,		-2.2,		1.0,		1.0, 		1.0,		0.2			)
 RPERA_SensorTorques.c3 		= array (-35.63,	-294.40,	1.0,		-30.56,		-30.9,		-168.32,	1.0, 		1.0,		34.66		)
@@ -260,9 +256,8 @@ RPERA_SensorTorques.configure
 #### Diagnostics ###
 loadComponent("RPERA_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","RPERA_Diagnostics")
-setActivity("RPERA_Diagnostics",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("RPERA_Diagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
 stream("RPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
-RPERA_Diagnostics.setPeriod(1)
 RPERA_Diagnostics.statusname = "RPERA"
 RPERA_Diagnostics.NumberOfVectorPorts = 3
 RPERA_Diagnostics.NumberOfBoolPorts = 2

@@ -121,7 +121,6 @@ RPERA_AdmittanceController.configure
 loadComponent("RPERA_ReferenceInterpolator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","RPERA_ReferenceInterpolator")
 setActivity("RPERA_ReferenceInterpolator",Ts,HighestPriority,ORO_SCHED_RT)
-RPERA_ReferenceInterpolator.setPeriod(Ts)
 RPERA_ReferenceInterpolator.NrInterpolators 	= Nj
 RPERA_ReferenceInterpolator.InterpolatorDt 		= Ts
 RPERA_ReferenceInterpolator.InterpolatorEps 	= 1.0
@@ -181,7 +180,6 @@ RPERA_ReadEncoders.configure
 loadComponent("RPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
-RPERA_GripperControl.setPeriod(Ts)
 RPERA_GripperControl.threshold_closed 	= 20.0
 RPERA_GripperControl.max_pos 			= 5.5
 RPERA_GripperControl.gripper_gain 		= 0.1
@@ -285,7 +283,6 @@ RPERA_Integrators.configure
 loadComponent("RPERA_RTD","AMIGO::RealTimeDerivator")
 addPeer("Supervisor","RPERA_RTD")
 setActivity("RPERA_RTD",Ts,LowestPriority,ORO_SCHED_OTHER)
-RPERA_RTD.setPeriod(Ts)
 RPERA_RTD.vector_size	= Nj
 RPERA_RTD.bw 			= 10.0
 RPERA_RTD.configure
@@ -317,7 +314,7 @@ RPERA_WriteCurrentJointAngles.configure
 loadComponent("RPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
-RPERA_SensorTorques.setPeriod(Ts);#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
+#									SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
 RPERA_SensorTorques.c1 		= array (42.0,		4250.0,		1.0,		94.0,		20.0,		825.0,		1.0, 		1.0,		32.3375		)
 RPERA_SensorTorques.c2 		= array (-0.8,		12.0,		1.0,		1.0,		-2.2,		1.0,		1.0, 		1.0,		0.2			)
 RPERA_SensorTorques.c3 		= array (-35.63,	-294.40,	1.0,		-30.56,		-30.9,		-168.32,	1.0, 		1.0,		-34.66		)
@@ -327,7 +324,6 @@ RPERA_SensorTorques.configure
 loadComponent("RPERA_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","RPERA_Diagnostics")
 setActivity("RPERA_Diagnostics",1.0,LowestPriority,ORO_SCHED_RT)
-RPERA_Diagnostics.setPeriod(1.0)
 RPERA_Diagnostics.statusname 			= "RPERA"
 RPERA_Diagnostics.NumberOfVectorPorts 	= 3
 RPERA_Diagnostics.NumberOfBoolPorts 	= 0

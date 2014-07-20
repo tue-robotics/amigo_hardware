@@ -113,7 +113,6 @@ LPERA_AdmittanceController.configure
 loadComponent("LPERA_ReferenceInterpolator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","LPERA_ReferenceInterpolator")
 setActivity("LPERA_ReferenceInterpolator",Ts,HighestPriority,ORO_SCHED_RT)
-LPERA_ReferenceInterpolator.setPeriod(Ts)
 LPERA_ReferenceInterpolator.NrInterpolators 	= 8
 LPERA_ReferenceInterpolator.InterpolatorDt 		= Ts
 LPERA_ReferenceInterpolator.InterpolatorEps 	= 1.0
@@ -131,7 +130,6 @@ LPERA_ReferenceInterpolator.interpolator8 		= array (0.0, 1.0, 10.0)
 loadComponent("LPERA_Supervisor","PERA::Supervisor")
 addPeer("Supervisor","LPERA_Supervisor")
 setActivity("LPERA_Supervisor",Ts,HighestPriority,ORO_SCHED_RT)
-LPERA_Supervisor.setPeriod(Ts)		;# To do check if this works without setPeriod()
 LPERA_Supervisor.jointUpperBounds 		= UPPERJOINTLIMIT
 LPERA_Supervisor.jointLowerBounds 		= LOWERJOINTLIMIT
 LPERA_Supervisor.motorSaturations 		= array ( 100.0, 	100.0,     10.0, 	 40.0, 	   50.0,  	50.0, 	   50.0, 	 50.0, 	50.0) 
@@ -160,7 +158,6 @@ LPERA_ReadEncoders.configure
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
-LPERA_GripperControl.setPeriod(Ts)
 LPERA_GripperControl.threshold_closed 		= 45.0
 LPERA_GripperControl.max_pos 				= 5.5
 LPERA_GripperControl.gripper_gain 			= 0.1
@@ -264,7 +261,6 @@ LPERA_Integrators.configure
 loadComponent("LPERA_RTD","AMIGO::RealTimeDerivator")
 addPeer("Supervisor","LPERA_RTD")
 setActivity("LPERA_RTD",Ts,LowestPriority,ORO_SCHED_OTHER)
-LPERA_RTD.setPeriod(Ts)
 LPERA_RTD.vector_size	= 8
 LPERA_RTD.bw 			= 10.0
 LPERA_RTD.configure
@@ -298,7 +294,7 @@ LPERA_WriteCurrentJointAngles.configure
 loadComponent("LPERA_SensorTorques","SensorTorques")
 addPeer("Supervisor","LPERA_SensorTorques")
 setActivity("LPERA_SensorTorques",(Ts*10.0),LowestPriority,ORO_SCHED_OTHER)
-LPERA_SensorTorques.setPeriod(Ts*10.0);#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM  
+#											SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM  
 LPERA_SensorTorques.Ksensor 		= array (0.0025, 	0.0025, 	0.0,		0.0025,		0.0025, 	0.0025, 	0.0025,		0.0025, 	0.0025)
 LPERA_SensorTorques.Voffset 		= array (0.2, 		0.2, 		0.0,		0.2,		0.2, 		0.2, 		0.2, 		0.2, 		0.2)
 LPERA_SensorTorques.Xoffset 		= array (0.00025, 	0.00025, 	0.0,		0.00025, 	0.0013875,	0.0013875, 	0.0048276, 	0.0034488, 	0.00268)
@@ -310,7 +306,6 @@ LPERA_SensorTorques.configure
 loadComponent("LPERA_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","LPERA_Diagnostics")
 setActivity("LPERA_Diagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
-LPERA_Diagnostics.setPeriod(1.0)
 LPERA_Diagnostics.statusname 			= "LPERA"
 LPERA_Diagnostics.NumberOfVectorPorts 	= 3
 LPERA_Diagnostics.NumberOfBoolPorts 	= 2

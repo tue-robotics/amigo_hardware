@@ -57,8 +57,7 @@ LPERA_VectorConcatenate.configure
 
 ### Interpolator (DO NOT INCREASE VALUES !!!) ###
 loadComponent("LPERA_ReferenceInterpolator","ReferenceGenerator")
-setActivity("LPERA_ReferenceInterpolator",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_ReferenceInterpolator.setPeriod(0.004)
+setActivity("LPERA_ReferenceInterpolator",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_ReferenceInterpolator.NrInterpolators = 8
 LPERA_ReferenceInterpolator.InterpolatorDt = 0.004
 LPERA_ReferenceInterpolator.InterpolatorEps = 1.0
@@ -74,8 +73,7 @@ LPERA_ReferenceInterpolator.interpolator8 = array (0.0, 1.0, 10.0)
 
 ### PERA Supervisor ###
 loadComponent("LPERA_Supervisor","PERA::Supervisor")
-setActivity("LPERA_Supervisor",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_Supervisor.setPeriod(0.004)
+setActivity("LPERA_Supervisor",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_Supervisor.jointLowerBounds = JOINTLOWERBOUNDS
 LPERA_Supervisor.jointUpperBounds = JOINTUPPERBOUNDS
 LPERA_Supervisor.motorSaturations = array ( 30000.0, 30000.0, 20000.0, 20000.0, 25000.0, 25000.0, 30000.0, 32000.0 )
@@ -101,25 +99,22 @@ LPERA_Supervisor.configure
 ### PERA USB IO ###
 loadComponent("LPERA_IO","PERA::PERA_USB_IO")
 setActivity("LPERA_IO",Ts,HighestPriority,ORO_SCHED_RT)
-LPERA_IO.setPeriod(0.004)
 LPERA_IO.configure
 LPERA_IO.absSenJumpPosProperty = array (1024.0, 732.0, 721.0, 1024.0, 706.0, 1024.0, 1024.0)
 LPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.0)
 
 ### Velocity and acceleration estimator ###
 loadComponent("LPERA_RTD","AMIGO::RealTimeDerivator")
-setActivity("LPERA_RTD",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_RTD.setPeriod(0.004)
+setActivity("LPERA_RTD",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_RTD.vector_size=8
 LPERA_RTD.bw = 10.0
 LPERA_RTD.configure
 
 ### Gripper force controller ###
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
-setActivity("LPERA_GripperControl",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 #LPERA_GripperControl.threshold_closed = 14.0
 LPERA_GripperControl.threshold_closed = 14.0
-LPERA_GripperControl.setPeriod(0.004)
 LPERA_GripperControl.max_pos = 4.0
 #LPERA_GripperControl.gripper_gain = 0.30
 LPERA_GripperControl.gripper_gain = 0.60
@@ -267,7 +262,7 @@ LPERA_WriteJointStates.configure
 ### Conversion analog PERA_IO values to torques ###
 loadComponent("LPERA_SensorTorques","SensorTorques")
 setActivity("LPERA_SensorTorques",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_SensorTorques.setPeriod(Ts);#	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
+#									SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
 LPERA_SensorTorques.c1 		= array (35.0,		87.0, 		1.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
 LPERA_SensorTorques.c2 		= array (-0.2,		0.2,		1.0,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
 LPERA_SensorTorques.c3 		= array (-76.26,	-95.29,		1.0,		-145.16,	-38.71,		-111.7,		1.0,		1.0,		34.66	)
@@ -275,9 +270,8 @@ LPERA_SensorTorques.configure
 
 #### Diagnostics ###
 loadComponent("LPERA_Diagnostics","ROS::RosDiagnostics")
-setActivity("LPERA_Diagnostics",0.0,HighestPriority,ORO_SCHED_RT)
+setActivity("LPERA_Diagnostics",1.0,HighestPriority,ORO_SCHED_RT)
 stream("LPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
-LPERA_Diagnostics.setPeriod(1)
 LPERA_Diagnostics.statusname = "LPERA"
 LPERA_Diagnostics.NumberOfVectorPorts = 3
 LPERA_Diagnostics.NumberOfBoolPorts = 2
