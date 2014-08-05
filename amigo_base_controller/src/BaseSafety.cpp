@@ -111,7 +111,6 @@ void BaseSafety::updateHook()
 		errortosupervisorPort.write(true);
         safe = false;
         ROS_ERROR_STREAM( "BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] << " Disabling hardware!" );
-        log(Error) << "BaseSafety::Maximum reference velocity exeeded! Axis " << i << " Value " << refs[i] << " Disabling hardware!" << endlog();
       }
 
     doubles errors(4);
@@ -122,7 +121,6 @@ void BaseSafety::updateHook()
 		errortosupervisorPort.write(true);
         safe = false;
         ROS_ERROR_STREAM( "BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!" );
-        log(Error) << "BaseSafety::Maximum errors exeeded! Errors: "<< errors[0] << " " << errors[1] << " " << errors[2] << " " << errors[3] << " " << "Disabling hardware!" << endlog();
       }
 
     doubles voltage(4);
@@ -132,9 +130,7 @@ void BaseSafety::updateHook()
       {
 		errortosupervisorPort.write(true);
         safe = false;
-		ROS_ERROR_STREAM( "BaseSafety::Maximum voltage exeeded! Disabling hardware!" );
-        log(Error) << "BaseSafety::Maximum voltage exeeded! Disabling hardware!" << endlog();
-        log(Error) << "BaseSafety::Voltages: "<<voltage[0]<<"   "<<voltage[1]<<"   "<<voltage[2]<<"   "<<voltage[3]<<"   "<<voltage[4]<<"   "<<voltage[5]<<"   "<<voltage[6]<<"   "<<voltage[7]<<endlog();
+		ROS_ERROR_STREAM( "BaseSafety::Maximum voltage exeeded! Disabling hardware! Voltages: ["<<voltage[0]<<","<<voltage[1]<<","<<voltage[2]<<","<<voltage[3]<<"]"
       }
   }
   else if ( resetport.read( reset ) == NewData )
