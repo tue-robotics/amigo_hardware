@@ -51,7 +51,6 @@ loadComponent("AnalogOuts","SOEM::AnalogOuts")
 addPeer("Supervisor","AnalogOuts")
 AnalogOuts.configure
 setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
-AnalogOuts.max_volt = array ( 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0 )
 connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
