@@ -130,7 +130,7 @@ void BaseSafety::updateHook()
       {
 		errortosupervisorPort.write(true);
         safe = false;
-		ROS_ERROR_STREAM( "BaseSafety::Maximum voltage exeeded! Disabling hardware! Voltages: ["<<voltage[0]<<","<<voltage[1]<<","<<voltage[2]<<","<<voltage[3]<<"]"
+		ROS_ERROR_STREAM( "BaseSafety::Maximum voltage exeeded! Disabling hardware! Voltages: ["<<voltage[0]<<","<<voltage[1]<<","<<voltage[2]<<","<<voltage[3]<<"]" );
       }
   }
   else if ( resetport.read( reset ) == NewData )
