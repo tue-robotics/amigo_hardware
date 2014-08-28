@@ -73,7 +73,7 @@ setActivity("RPERA_VectorConcatenate",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_VectorConcatenate.configure
 
 ### Motor to joint angles ###
-loadComponent("RPERA_MotorToJointSpace","MatrixTransform")
+loadComponent("RPERA_MotorToJointSpace","MATH::MatrixTransform")
 addPeer("Supervisor","RPERA_MotorToJointSpace")
 setActivity("RPERA_MotorToJointSpace",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_MotorToJointSpace.Nrows 		= Nj
@@ -186,7 +186,7 @@ RPERA_GripperControl.sensorPos 			= 8
 RPERA_GripperControl.configure
 
 ### Joint to motor torques ###
-loadComponent("RPERA_JointToMotorSpace","MatrixTransform")
+loadComponent("RPERA_JointToMotorSpace","MATH::MatrixTransform")
 addPeer("Supervisor","RPERA_JointToMotorSpace")
 setActivity("RPERA_JointToMotorSpace",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_JointToMotorSpace.Nrows 		= Nm

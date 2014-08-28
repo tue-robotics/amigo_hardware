@@ -154,7 +154,7 @@ LPERA_AddGravComp.numberofinputs = 2
 LPERA_AddGravComp.configure
 
 ### Motor to joint angles (includes encoder conversion factors) ###
-loadComponent("LPERA_MotorToJointAngles","MatrixTransform")
+loadComponent("LPERA_MotorToJointAngles","MATH::MatrixTransform")
 setActivity("LPERA_MotorToJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_MotorToJointAngles.Nrows = 8
 LPERA_MotorToJointAngles.Ncolumns = 8
@@ -176,7 +176,7 @@ LPERA_ComputeJointErrors.vectorsize = 8
 LPERA_ComputeJointErrors.configure
 
 ### Joint to motor torques ###
-loadComponent("LPERA_JointToMotorTorques","MatrixTransform")
+loadComponent("LPERA_JointToMotorTorques","MATH::MatrixTransform")
 setActivity("LPERA_JointToMotorTorques",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_JointToMotorTorques.Nrows = 8
 LPERA_JointToMotorTorques.Ncolumns = 8

@@ -74,7 +74,7 @@ LPERA_JointInputLimiter.vector_size = 8
 LPERA_JointInputLimiter.configure
 
 ### Motor to joint angles ###
-loadComponent("LPERA_MotorToJointSpace","MatrixTransform")
+loadComponent("LPERA_MotorToJointSpace","MATH::MatrixTransform")
 addPeer("Supervisor","LPERA_MotorToJointSpace")
 setActivity("LPERA_MotorToJointSpace",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_MotorToJointSpace.Nrows 		= 8
@@ -213,7 +213,7 @@ LPERA_Addition.vectorsize = 8
 LPERA_Addition.configure
 
 ### Joint to motor torques ###
-loadComponent("LPERA_JointToMotorSpace","MatrixTransform")
+loadComponent("LPERA_JointToMotorSpace","MATH::MatrixTransform")
 addPeer("Supervisor","LPERA_JointToMotorSpace")
 setActivity("LPERA_JointToMotorSpace",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_JointToMotorSpace.Nrows 		= 9

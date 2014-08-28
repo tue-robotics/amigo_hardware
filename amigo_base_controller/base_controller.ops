@@ -40,7 +40,7 @@ BASE_ReadEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI, ENC2SI)
 BASE_ReadEncoders.configure
 
 ### DECOUPLE POSITION ###
-loadComponent("BASE_MotorToJointSpace","MatrixTransform")
+loadComponent("BASE_MotorToJointSpace","MATH::MatrixTransform")
 addPeer("Supervisor","BASE_MotorToJointSpace")
 setActivity("BASE_MotorToJointSpace",0.0,HighestPriority,ORO_SCHED_RT)
 BASE_MotorToJointSpace.Nrows = 3
@@ -68,7 +68,7 @@ BASE_ReadReferences.max_interval = 1.0
 BASE_ReadReferences.configure
 
 ### DECOUPLE REFERENCE ###
-loadComponent("BASE_JointToMotorSpace","MatrixTransform")
+loadComponent("BASE_JointToMotorSpace","MATH::MatrixTransform")
 addPeer("Supervisor","BASE_JointToMotorSpace")
 setActivity("BASE_JointToMotorSpace",0.0,LowestPriority,ORO_SCHED_OTHER)
 BASE_JointToMotorSpace.Nrows = 4

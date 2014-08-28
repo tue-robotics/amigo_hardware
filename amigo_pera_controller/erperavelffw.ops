@@ -158,7 +158,7 @@ RPERA_AddGravComp.numberofinputs = 2
 RPERA_AddGravComp.configure
 
 ### Motor to joint angles ###
-loadComponent("RPERA_MotorToJointAngles","MatrixTransform")
+loadComponent("RPERA_MotorToJointAngles","MATH::MatrixTransform")
 addPeer("Supervisor","RPERA_MotorToJointAngles")
 setActivity("RPERA_MotorToJointAngles",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_MotorToJointAngles.Nrows = 8
@@ -181,7 +181,7 @@ RPERA_ComputeJointErrors.vectorsize = 8
 RPERA_ComputeJointErrors.configure
 
 ### Joint to motor torques ###
-loadComponent("RPERA_JointToMotorTorques","MatrixTransform")
+loadComponent("RPERA_JointToMotorTorques","MATH::MatrixTransform")
 addPeer("Supervisor","RPERA_JointToMotorTorques")
 setActivity("RPERA_JointToMotorTorques",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_JointToMotorTorques.Nrows = 9
