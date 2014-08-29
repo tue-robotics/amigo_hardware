@@ -8,7 +8,7 @@
 ########################################################################
 
 #### IMPORT PACKAGE ####
-# To be able to load components from this package and all packages in the manifest
+# To be able to load components from this package and all packages in the ,"ROS::
 import("amigo_base_controller")
 trigger
 
@@ -51,7 +51,7 @@ BASE_MotorToJointSpace.function2 = array ( 0.25*WHEELRAD/HALFSQRT2, -0.25*WHEELR
 BASE_MotorToJointSpace.function3 = array ( 0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT,   0.25*WHEELRAD/DIS2CENT)
 
 #### LOAD COMPONENT TO PUBLISH ODOMETRY ###
-loadComponent("BASE_OdometryPublisher","MSG::PublishOdometry")
+loadComponent("BASE_OdometryPublisher","ROS::PublishOdometry")
 addPeer("Supervisor","BASE_OdometryPublisher")
 setActivity("BASE_OdometryPublisher",0.05,LowestPriority,ORO_SCHED_OTHER)
 BASE_OdometryPublisher.base_link_frame = "/amigo/base_link"
@@ -59,7 +59,7 @@ BASE_OdometryPublisher.odom_frame = "/amigo/odom"
 BASE_OdometryPublisher.configure
 
 ### READ REFERENCE VELOCITIES ###
-loadComponent("BASE_ReadReferences","MSG::ReadTwistMsg")
+loadComponent("BASE_ReadReferences","ROS::ReadTwistMsg")
 addPeer("Supervisor","BASE_ReadReferences")
 setActivity("BASE_ReadReferences",0.01,LowestPriority,ORO_SCHED_OTHER)
 BASE_ReadReferences.max_start_vel = 0.7
