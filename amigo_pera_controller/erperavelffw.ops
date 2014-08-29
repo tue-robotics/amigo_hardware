@@ -121,7 +121,7 @@ RPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM ,ENC2ZERO , ENC2SI_S3 , 
 RPERA_ReadEncoders.configure
 
 ### Velocity and acceleration estimator ###
-loadComponent("RPERA_RTD","AMIGO::RealTimeDerivator")
+loadComponent("RPERA_RTD","MATH::RealTimeDerivator")
 addPeer("Supervisor","RPERA_RTD")
 setActivity("RPERA_RTD",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_RTD.vector_size=8

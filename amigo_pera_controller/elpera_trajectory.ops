@@ -280,7 +280,7 @@ LPERA_Integrators.configure
 
 #### LOWER PRIORITY COMPONENTS ####
 ### Velocity and acceleration estimator ###
-loadComponent("LPERA_RTD","AMIGO::RealTimeDerivator")
+loadComponent("LPERA_RTD","MATH::RealTimeDerivator")
 addPeer("Supervisor","LPERA_RTD")
 setActivity("LPERA_RTD",Ts,LowestPriority,ORO_SCHED_OTHER)
 LPERA_RTD.vector_size	= Nj

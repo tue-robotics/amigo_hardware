@@ -104,7 +104,7 @@ LPERA_IO.absSenJumpPosProperty = array (1024.0, 732.0, 721.0, 1024.0, 706.0, 102
 LPERA_IO.afterAbsSenJumpProperty = array (0.0, 100.0, 250.0, 0.0, 100.0, 0.0, 0.0)
 
 ### Velocity and acceleration estimator ###
-loadComponent("LPERA_RTD","AMIGO::RealTimeDerivator")
+loadComponent("LPERA_RTD","MATH::RealTimeDerivator")
 setActivity("LPERA_RTD",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_RTD.vector_size=8
 LPERA_RTD.bw = 10.0
