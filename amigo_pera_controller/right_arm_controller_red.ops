@@ -47,7 +47,7 @@ var int BODYNUMBER 				= 4
 var string BODYNAME 			= "right_arm"
 var bool HOMEABLE 				= true
 var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = true;
+var bool REQUIREGRIPPERHOMING   = true
 if (wbcstr == "true") then {	
 	REQUIREHOMING   			= false; 
 	REQUIREGRIPPERHOMING		= false;
@@ -167,7 +167,7 @@ loadComponent("RPERA_Controller","FILTERS::Controller")
 setActivity("RPERA_Controller",0.0,LowestPriority,ORO_SCHED_OTHER)
 addPeer("Supervisor","RPERA_Controller")
 RPERA_Controller.vector_size    				= N
-RPERA_Controller.gains							= array(100.0, 		100.0, 		100.0, 		100.0, 		100.0, 		100.0, 		100.0, 		100.0)
+RPERA_Controller.gains							= array(20000.0, 	20000.0, 	10000.0, 	17500.0, 	17500.0, 	17500.0, 	21500.0, 	5000.0);
 RPERA_Controller.zero_freq_WeakIntegrator		= array(0.0065,	  	0.0065,		0.009, 		0.004, 		0.004, 		0.02, 		0.02, 		0.000001); 
 RPERA_Controller.zero_freq_LeadLag				= array(25.0, 		25.0, 		15.0, 		100.0, 		100.0,		5.0,  		5.0,  		4.5)
 RPERA_Controller.pole_freq_LeadLag				= array(80.0, 		80.0, 		40.0, 		200.0, 		200.0, 		40.0, 		40.0, 		45.0)
