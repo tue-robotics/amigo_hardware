@@ -59,7 +59,6 @@ Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 
 #### HIGH PRIORITY COMPONENTS ####
 ### Read reference joint angles ###
-#loadComponent("LPERA_ReadReferences","PERA::ReadArmJointsMsg")
 loadComponent("LPERA_ReadReferences","ROS::JointStateToDoubles")
 addPeer("Supervisor","LPERA_ReadReferences")
 setActivity("LPERA_ReadReferences",0.0,HighestPriority,ORO_SCHED_RT)
@@ -77,16 +76,16 @@ loadComponent("LPERA_MotorToJointSpace","MATH::MatrixTransform")
 addPeer("Supervisor","LPERA_MotorToJointSpace")
 setActivity("LPERA_MotorToJointSpace",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_MotorToJointSpace.Nrows 		= Nj
-LPERA_MotorToJointSpace.Ncolumns 	= Nm
+LPERA_MotorToJointSpace.Ncolumns 	= Nj
 LPERA_MotorToJointSpace.configure
-LPERA_MotorToJointSpace.function1 	= array  ( 0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-LPERA_MotorToJointSpace.function2 	= array  (-0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-LPERA_MotorToJointSpace.function3 	= array  ( 0.0,  0.0,  0.0, -1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-LPERA_MotorToJointSpace.function4 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
-LPERA_MotorToJointSpace.function5 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
-LPERA_MotorToJointSpace.function6 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-LPERA_MotorToJointSpace.function7 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
-LPERA_MotorToJointSpace.function8 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
+LPERA_MotorToJointSpace.function1 	= array  ( 0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+LPERA_MotorToJointSpace.function2 	= array  (-0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+LPERA_MotorToJointSpace.function3 	= array  ( 0.0,  0.0, -1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+LPERA_MotorToJointSpace.function4 	= array  ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
+LPERA_MotorToJointSpace.function5 	= array  ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
+LPERA_MotorToJointSpace.function6 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+LPERA_MotorToJointSpace.function7 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+LPERA_MotorToJointSpace.function8 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Compute tracking error ###
 loadComponent("LPERA_ComputeErrors","MATH::Subtraction")
@@ -172,7 +171,7 @@ loadComponent("LPERA_ReadEncoders","SOEM::ReadEncoders")
 addPeer("Supervisor","LPERA_ReadEncoders")
 setActivity("LPERA_ReadEncoders",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_ReadEncoders.encoderbits = 65536
-LPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM ,0.0 , ENC2SI_S3 , ENC2SI_EM , ENC2SI_EM , ENC2SI_WM , ENC2SI_WM , ENC2SI_HM )
+LPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM, ENC2SI_S3 , ENC2SI_EM , ENC2SI_EM , ENC2SI_WM , ENC2SI_WM , ENC2SI_HM )
 LPERA_ReadEncoders.configure
 
 ### Gripper force controller ###
@@ -189,18 +188,17 @@ LPERA_GripperControl.configure
 loadComponent("LPERA_JointToMotorSpace","MATH::MatrixTransform")
 addPeer("Supervisor","LPERA_JointToMotorSpace")
 setActivity("LPERA_JointToMotorSpace",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_JointToMotorSpace.Nrows 		= Nm
+LPERA_JointToMotorSpace.Nrows 		= Nj
 LPERA_JointToMotorSpace.Ncolumns 	= Nj
 LPERA_JointToMotorSpace.configure
 LPERA_JointToMotorSpace.function1	= array ( 0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
 LPERA_JointToMotorSpace.function2	= array (-0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-LPERA_JointToMotorSpace.function3 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-LPERA_JointToMotorSpace.function4 	= array ( 0.0,  0.0, -1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-LPERA_JointToMotorSpace.function5 	= array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
-LPERA_JointToMotorSpace.function6 	= array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
-LPERA_JointToMotorSpace.function7 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-LPERA_JointToMotorSpace.function8 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
-LPERA_JointToMotorSpace.function9 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
+LPERA_JointToMotorSpace.function3 	= array ( 0.0,  0.0, -1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+LPERA_JointToMotorSpace.function4 	= array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
+LPERA_JointToMotorSpace.function5 	= array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
+LPERA_JointToMotorSpace.function6 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+LPERA_JointToMotorSpace.function7 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+LPERA_JointToMotorSpace.function8 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### GAINS ###
 loadComponent("LPERA_Gains","MATH::Gains")
@@ -238,15 +236,6 @@ LPERA_Integrators.zero_frequency = array(0.0065, 0.0065, 0.009, 0.004, 0.004, 0.
 LPERA_Integrators.vector_size 	 = Nj
 LPERA_Integrators.sampling_time  = Ts
 LPERA_Integrators.configure
-
-#### LOWER PRIORITY COMPONENTS ####
-### Velocity and acceleration estimator ###
-loadComponent("LPERA_RTD","MATH::RealTimeDerivator")
-addPeer("Supervisor","LPERA_RTD")
-setActivity("LPERA_RTD",Ts,HighestPriority,ORO_SCHED_RT)
-LPERA_RTD.vector_size	= Nj
-LPERA_RTD.bw 			= 10.0
-LPERA_RTD.configure
 
 ### Output limiter ###
 loadComponent("LPERA_JointOutputLimiter","DISCONTINUITIES::Saturation")
@@ -293,22 +282,6 @@ LPERA_Diagnostics.vecname1 				= "Reference Interpolator"
 LPERA_Diagnostics.vecname2 				= "Joint Errors"
 LPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 
-### Setting up tracing ###
-#loadComponent("LPERA_Tracing","Signal::Tracing")
-#addPeer("Supervisor","LPERA_Tracing")
-#setActivity("LPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#LPERA_Tracing.vector_sizes = array (9.0, 8.0, 8.0, 8.0, 8.0, 9.0)
-#LPERA_Tracing.buffersize = 32768*2;
-#LPERA_Tracing.filename = "/home/amigo/ros/groovy/rosbuild_ws/tue/user/max/FST5/GripperLeft.dat"
-#LPERA_Tracing.Ts = Ts
-#LPERA_Tracing.configure
-#connect ("LPERA_AnalogInsPera.out_for","LPERA_Tracing.in1", ConnPolicy() );				# force sensors	voltage input
-#connect ("LPERA_ReferenceInterpolator.posout","LPERA_Tracing.in2", ConnPolicy() );		# reference after reference generator
-#connect ("LPERA_MotorToJointSpace.out","LPERA_Tracing.in3", ConnPolicy() ); 				# position
-#connect ("LPERA_ComputeErrors.out","LPERA_Tracing.in4", ConnPolicy() ); 					# error
-#connect ("LPERA_Integrators.out","LPERA_Tracing.in5", ConnPolicy() ); 						# control effort
-#connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Tracing.in6", ConnPolicy() );  # force sensors	after sensor calculation
-
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
@@ -318,13 +291,12 @@ JointStateAggregator.addAggregationPort(BODYNAME)
 ## Control loop	##
 connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1014.encoderAngle3","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1016.encoderAngle1","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1016.encoderAngle2","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
-connect ("Soem.Slave_1016.encoderAngle3","LPERA_ReadEncoders.enc9_in" , ConnPolicy() );
+connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1016.encoderAngle1","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1016.encoderAngle2","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1016.encoderAngle3","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
 connect ("LPERA_ReadEncoders.out","LPERA_MotorToJointSpace.in" , ConnPolicy() ); 
 connect ("LPERA_MotorToJointSpace.out","LPERA_ComputeErrors.in_minus", ConnPolicy() )
 connect ("LPERA_ComputeErrors.out","LPERA_Gains.in", ConnPolicy() )
@@ -332,7 +304,7 @@ connect ("LPERA_Gains.out","LPERA_LeadLags.in", ConnPolicy() )
 connect ("LPERA_LeadLags.out","LPERA_Lowpasses.in", ConnPolicy() )
 connect ("LPERA_Lowpasses.out","LPERA_Integrators.in", ConnPolicy() )
 connect ("LPERA_Integrators.out","LPERA_JointToMotorSpace.in", ConnPolicy() )
-connect ("LPERA_JointToMotorSpace.out","LPERA_AnalogOutsPera.in_ev", ConnPolicy() )
+connect ("LPERA_JointToMotorSpace.out","LPERA_AnalogOuts.in1", ConnPolicy() )
 
 ## Whole body controller or reference generator loop	##
 if (wbcstr == "true") then {
@@ -369,7 +341,7 @@ connect ("LPERA_ActuatorEnabler.actuator_enable","Soem.Slave_1016.enablePort", C
 
 ## Homing ##
 connect ("LPERA_Homing.homing_finished","Supervisor.left_arm_homingfinished", ConnPolicy() )
-connect ("LPERA_AnalogInsPera.out_pos","LPERA_Homing.measAbsJointAnglesPort", ConnPolicy() )
+connect ("LPERA_AnalogIns.out2","LPERA_Homing.measAbsJointAnglesPort", ConnPolicy() )
 connect ("LPERA_Homing.homJntAnglesPort","LPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("LPERA_Homing.resetInterpolatorPort","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
 connect ("LPERA_Homing.reNullPort","LPERA_ReadEncoders.in_reNull", ConnPolicy() )
@@ -380,14 +352,11 @@ connect ("LPERA_MotorToJointSpace.out","LPERA_Homing.measRelJointAnglesPort", Co
 connect ("LPERA_Homing.endpos_out","LPERA_VectorConcatenate.in1", ConnPolicy() ) 
 
 ## Gripper control ##
-connect ("LPERA_AnalogInsPera.out_for","LPERA_SensorTorques.voltage_in", ConnPolicy() )
+connect ("LPERA_AnalogIns.out1","LPERA_SensorTorques.voltage_in", ConnPolicy() )
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", ConnPolicy() )
 connect ("LPERA_MotorToJointSpace.out", "LPERA_GripperControl.position_in", ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_measurement","LPERA_Homing.gripper_measurement", ConnPolicy() )
 connect ("LPERA_Homing.gripper_command","LPERA_GripperControl.gripper_command", ConnPolicy() )
-
-## REAL TIME DERIVATOR ##
-connect ("LPERA_MotorToJointSpace.out","LPERA_RTD.u", ConnPolicy() )
 
 ## Diagnostics ##
 connect ("LPERA_VectorConcatenate.out", "LPERA_Diagnostics.vec1", ConnPolicy() )
@@ -401,7 +370,6 @@ stream ("LPERA_WriteClippedJointAngles.out", ros.topic("/amigo/left_arm/measurem
 stream ("LPERA_ReadReferences.in", ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
 stream ("LPERA_GripperControl.gripper_command", ros.topic("/amigo/left_gripper/references"))
-stream ("LPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 stream ("LPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 
 #### START COMPONENTS ####
@@ -427,7 +395,6 @@ Supervisor.AddEnabledPeer ("LPERA_MotorToJointSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_ComputeErrors", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_JointToMotorSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_JointOutputLimiter", BODYNUMBER )
-Supervisor.AddEnabledPeer ("LPERA_RTD", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_Gains", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_LeadLags", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_Lowpasses", BODYNUMBER )
@@ -435,4 +402,3 @@ Supervisor.AddEnabledPeer ("LPERA_Integrators", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_SensorTorques", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_GripperControl", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_Safety", BODYNUMBER)
-#Supervisor.AddEnabledPeer ("LPERA_Tracing", BODYNUMBER)

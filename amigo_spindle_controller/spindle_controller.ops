@@ -229,7 +229,7 @@ connect ("SPINDLE_ReferenceGenerator.velout","SPINDLE_FFW.ref_vel", ConnPolicy()
 connect ("SPINDLE_ReferenceGenerator.accout","SPINDLE_FFW.ref_acc", ConnPolicy() )
 connect ("SPINDLE_LowPass.out","SPINDLE_Addition.in1_ev", ConnPolicy() )
 connect ("SPINDLE_FFW.FFW_out","SPINDLE_Addition.in2", ConnPolicy() )
-connect ("SPINDLE_Addition.out","AnalogOuts.spindle", ConnPolicy() )
+connect ("SPINDLE_Addition.out","BASESPINDLE_AnalogOuts.in2", ConnPolicy() )
 connect ("SPINDLE_Homing.homing_finished","Supervisor.spindle_homingfinished", ConnPolicy() )
 connect ("SPINDLE_ReadEncoders.out","SPINDLE_Homing.position", ConnPolicy() )
 

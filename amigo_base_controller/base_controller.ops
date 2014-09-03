@@ -8,7 +8,6 @@
 ########################################################################
 
 #### IMPORT PACKAGE ####
-# To be able to load components from this package and all packages in the ,"ROS::
 import("amigo_base_controller")
 trigger
 
@@ -177,7 +176,7 @@ connect ("BASE_Gains.out","BASE_Integrators.in", ConnPolicy() )
 connect ("BASE_Integrators.out","BASE_LeadLags.in", ConnPolicy() )
 connect ("BASE_LeadLags.out","BASE_LowPasses.in", ConnPolicy() )
 connect ("BASE_LowPasses.out","BASE_SI2Volt.in", ConnPolicy() )
-connect ("BASE_SI2Volt.out", "AnalogOuts.wheels", ConnPolicy() ); # Send to Soem again for output
+connect ("BASE_SI2Volt.out", "BASESPINDLE_AnalogOuts.in1", ConnPolicy() );
 connect ("BASE_ReadReferences.out", "BASE_Safety.ref", ConnPolicy() )
 connect ("BASE_ReadReferences.out","BASE_JointToMotorSpace.in", ConnPolicy() )
 connect ("BASE_JointToMotorSpace.out","BASE_VelocityToPosition.in", ConnPolicy() )

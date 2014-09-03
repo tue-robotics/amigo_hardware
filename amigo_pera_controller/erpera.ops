@@ -59,7 +59,6 @@ Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
 
 #### HIGH PRIORITY COMPONENTS ####
 ### Read reference joint angles ###
-#loadComponent("RPERA_ReadReferences","PERA::ReadArmJointsMsg")
 loadComponent("RPERA_ReadReferences","ROS::JointStateToDoubles")
 addPeer("Supervisor","RPERA_ReadReferences")
 setActivity("RPERA_ReadReferences",0.0,HighestPriority,ORO_SCHED_RT)
@@ -77,16 +76,16 @@ loadComponent("RPERA_MotorToJointSpace","MATH::MatrixTransform")
 addPeer("Supervisor","RPERA_MotorToJointSpace")
 setActivity("RPERA_MotorToJointSpace",0.0,HighestPriority,ORO_SCHED_RT)
 RPERA_MotorToJointSpace.Nrows 		= Nj
-RPERA_MotorToJointSpace.Ncolumns 	= Nm
+RPERA_MotorToJointSpace.Ncolumns 	= Nj
 RPERA_MotorToJointSpace.configure
-RPERA_MotorToJointSpace.function1 	= array  ( 0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_MotorToJointSpace.function2 	= array  ( 0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_MotorToJointSpace.function3 	= array  ( 0.0,  0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_MotorToJointSpace.function4 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
-RPERA_MotorToJointSpace.function5 	= array  ( 0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0,  0.0,  0.0)
-RPERA_MotorToJointSpace.function6 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-RPERA_MotorToJointSpace.function7 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0)
-RPERA_MotorToJointSpace.function8 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
+RPERA_MotorToJointSpace.function1 	= array  ( 0.5, -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_MotorToJointSpace.function2 	= array  ( 0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_MotorToJointSpace.function3 	= array  ( 0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_MotorToJointSpace.function4 	= array  ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
+RPERA_MotorToJointSpace.function5 	= array  ( 0.0,  0.0,  0.0, -0.5,  0.5,  0.0,  0.0,  0.0)
+RPERA_MotorToJointSpace.function6 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+RPERA_MotorToJointSpace.function7 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0)
+RPERA_MotorToJointSpace.function8 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Compute tracking error ###
 loadComponent("RPERA_ComputeErrors","MATH::Subtraction")
@@ -172,7 +171,7 @@ loadComponent("RPERA_ReadEncoders","SOEM::ReadEncoders")
 addPeer("Supervisor","RPERA_ReadEncoders")
 setActivity("RPERA_ReadEncoders",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_ReadEncoders.encoderbits = 65536
-RPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM ,0.0 , ENC2SI_S3 , ENC2SI_EM , ENC2SI_EM , ENC2SI_WM , ENC2SI_WM , ENC2SI_HM )
+RPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM, ENC2SI_S3 , ENC2SI_EM , ENC2SI_EM , ENC2SI_WM , ENC2SI_WM , ENC2SI_HM )
 RPERA_ReadEncoders.configure
 
 ### Gripper force controller ###
@@ -189,18 +188,17 @@ RPERA_GripperControl.configure
 loadComponent("RPERA_JointToMotorSpace","MATH::MatrixTransform")
 addPeer("Supervisor","RPERA_JointToMotorSpace")
 setActivity("RPERA_JointToMotorSpace",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_JointToMotorSpace.Nrows 		= Nm
+RPERA_JointToMotorSpace.Nrows 		= Nj
 RPERA_JointToMotorSpace.Ncolumns 	= Nj
 RPERA_JointToMotorSpace.configure
 RPERA_JointToMotorSpace.function1	= array ( 0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
 RPERA_JointToMotorSpace.function2	= array (-0.5,  0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_JointToMotorSpace.function3 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_JointToMotorSpace.function4 	= array ( 0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
-RPERA_JointToMotorSpace.function5 	= array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
-RPERA_JointToMotorSpace.function6 	= array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
-RPERA_JointToMotorSpace.function7 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
-RPERA_JointToMotorSpace.function8 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
-RPERA_JointToMotorSpace.function9 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
+RPERA_JointToMotorSpace.function3 	= array ( 0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0)
+RPERA_JointToMotorSpace.function4 	= array ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,  0.0,  0.0)
+RPERA_JointToMotorSpace.function5 	= array ( 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0)
+RPERA_JointToMotorSpace.function6 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
+RPERA_JointToMotorSpace.function7 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
+RPERA_JointToMotorSpace.function8 	= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### GAINS ###
 loadComponent("RPERA_Gains","MATH::Gains")
@@ -238,15 +236,6 @@ RPERA_Integrators.zero_frequency = array(0.0065, 0.0065, 0.009, 0.004, 0.004, 0.
 RPERA_Integrators.vector_size 	 = Nj
 RPERA_Integrators.sampling_time  = Ts
 RPERA_Integrators.configure
-
-#### LOWER PRIORITY COMPONENTS ####
-### Velocity and acceleration estimator ###
-loadComponent("RPERA_RTD","MATH::RealTimeDerivator")
-addPeer("Supervisor","RPERA_RTD")
-setActivity("RPERA_RTD",Ts,HighestPriority,ORO_SCHED_RT)
-RPERA_RTD.vector_size	= Nj
-RPERA_RTD.bw 			= 10.0
-RPERA_RTD.configure
 
 ### Output limiter ###
 loadComponent("RPERA_JointOutputLimiter","DISCONTINUITIES::Saturation")
@@ -293,22 +282,6 @@ RPERA_Diagnostics.vecname1 				= "Reference Interpolator"
 RPERA_Diagnostics.vecname2 				= "Joint Errors"
 RPERA_Diagnostics.vecname3 				= "Reference Path Planning"
 
-### Setting up tracing ###
-#loadComponent("RPERA_Tracing","Signal::Tracing")
-#addPeer("Supervisor","RPERA_Tracing")
-#setActivity("RPERA_Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#RPERA_Tracing.vector_sizes = array (9.0, 8.0, 8.0, 8.0, 8.0, 9.0)
-#RPERA_Tracing.buffersize = 32768*2;
-#RPERA_Tracing.filename = "/home/amigo/ros/data/hardware_tracing/max/270514/pwmvscurrent.dat" 
-#RPERA_Tracing.Ts = Ts
-#RPERA_Tracing.configure
-#connect ("RPERA_AnalogInsPera.out_for","RPERA_Tracing.in1", ConnPolicy() );				# force sensors	voltage input
-#connect ("RPERA_ReferenceInterpolator.posout","RPERA_Tracing.in2", ConnPolicy() );			# reference after reference generator
-#connect ("RPERA_MotorToJointSpace.out","RPERA_Tracing.in3", ConnPolicy() ); 				# position
-#connect ("RPERA_ComputeErrors.out","RPERA_Tracing.in4", ConnPolicy() ); 					# error
-#connect ("RPERA_Integrators.out","RPERA_Tracing.in5", ConnPolicy() ); 						# control effort
-#connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Tracing.in6", ConnPolicy() );  	# force sensors	after sensor calculation
-
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
@@ -318,13 +291,12 @@ JointStateAggregator.addAggregationPort(BODYNAME)
 ## Control loop	## 
 connect ("Soem.Slave_1010.encoderAngle1","RPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
 connect ("Soem.Slave_1010.encoderAngle2","RPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1010.encoderAngle3","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle2","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1011.encoderAngle3","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
-connect ("Soem.Slave_1012.encoderAngle3","RPERA_ReadEncoders.enc9_in" , ConnPolicy() );
+connect ("Soem.Slave_1011.encoderAngle1","RPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1011.encoderAngle2","RPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1011.encoderAngle3","RPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle1","RPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle2","RPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
+connect ("Soem.Slave_1012.encoderAngle3","RPERA_ReadEncoders.enc8_in" , ConnPolicy() );
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointSpace.in" , ConnPolicy() ); 
 connect ("RPERA_MotorToJointSpace.out","RPERA_ComputeErrors.in_minus", ConnPolicy() )
 connect ("RPERA_ComputeErrors.out","RPERA_Gains.in", ConnPolicy() )
@@ -332,7 +304,7 @@ connect ("RPERA_Gains.out","RPERA_LeadLags.in", ConnPolicy() )
 connect ("RPERA_LeadLags.out","RPERA_Lowpasses.in", ConnPolicy() )
 connect ("RPERA_Lowpasses.out","RPERA_Integrators.in", ConnPolicy() )
 connect ("RPERA_Integrators.out","RPERA_JointToMotorSpace.in", ConnPolicy() )
-connect ("RPERA_JointToMotorSpace.out","RPERA_AnalogOutsPera.in_ev", ConnPolicy() )
+connect ("RPERA_JointToMotorSpace.out","RPERA_AnalogOuts.in1", ConnPolicy() )
 
 ## Whole body controller or reference generator loop	##
 if (wbcstr == "true") then {
@@ -369,7 +341,7 @@ connect ("RPERA_ActuatorEnabler.actuator_enable","Soem.Slave_1012.enablePort", C
 
 ## Homing ##
 connect ("RPERA_Homing.homing_finished","Supervisor.right_arm_homingfinished", ConnPolicy() )
-connect ("RPERA_AnalogInsPera.out_pos","RPERA_Homing.measAbsJointAnglesPort", ConnPolicy() )
+connect ("RPERA_AnalogIns.out2","RPERA_Homing.measAbsJointAnglesPort", ConnPolicy() )
 connect ("RPERA_Homing.homJntAnglesPort","RPERA_VectorConcatenate.in1", ConnPolicy() )
 connect ("RPERA_Homing.resetInterpolatorPort","RPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
 connect ("RPERA_Homing.reNullPort","RPERA_ReadEncoders.in_reNull", ConnPolicy() )
@@ -380,14 +352,11 @@ connect ("RPERA_MotorToJointSpace.out","RPERA_Homing.measRelJointAnglesPort", Co
 connect ("RPERA_Homing.endpos_out","RPERA_VectorConcatenate.in1", ConnPolicy() ) 
 
 ## Gripper control ##
-connect ("RPERA_AnalogInsPera.out_for","RPERA_SensorTorques.voltage_in", ConnPolicy() )
+connect ("RPERA_AnalogIns.out1","RPERA_SensorTorques.voltage_in", ConnPolicy() )
 connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque_in", ConnPolicy() )
 connect ("RPERA_MotorToJointSpace.out", "RPERA_GripperControl.position_in", ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_measurement","RPERA_Homing.gripper_measurement", ConnPolicy() )
 connect ("RPERA_Homing.gripper_command","RPERA_GripperControl.gripper_command", ConnPolicy() )
-
-## REAL TIME DERIVATOR ##
-connect ("RPERA_MotorToJointSpace.out","RPERA_RTD.u", ConnPolicy() )
 
 ## Diagnostics ##
 connect ("RPERA_VectorConcatenate.out", "RPERA_Diagnostics.vec1", ConnPolicy() )
@@ -401,7 +370,6 @@ stream ("RPERA_WriteClippedJointAngles.out", ros.topic("/amigo/right_arm/measure
 stream ("RPERA_ReadReferences.in", ros.topic("/amigo/right_arm/references"))
 stream ("RPERA_GripperControl.gripper_measurement", ros.topic("/amigo/right_gripper/measurements"))
 stream ("RPERA_GripperControl.gripper_command", ros.topic("/amigo/right_gripper/references"))
-stream ("RPERA_RTD.derivatives", ros.topic("/pera_rtd_data"))
 stream ("RPERA_Diagnostics.diagnostics", ros.topic("/diagnostics"));
 
 #### START COMPONENTS ####
@@ -427,7 +395,6 @@ Supervisor.AddEnabledPeer ("RPERA_MotorToJointSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_ComputeErrors", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_JointToMotorSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_JointOutputLimiter", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_RTD", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Gains", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_LeadLags", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Lowpasses", BODYNUMBER )
@@ -435,4 +402,3 @@ Supervisor.AddEnabledPeer ("RPERA_Integrators", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Safety", BODYNUMBER)
-#Supervisor.AddEnabledPeer ("RPERA_Tracing", BODYNUMBER)

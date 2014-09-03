@@ -1,6 +1,6 @@
 ########################################################################
 #                                                                      #
-# Simple Open EtherCAT Master (SOEM) deployer file 		       #
+# Simple Open EtherCAT Master (SOEM) deployer file 		       		   #
 #                                                                      #
 #                                                                      #
 #                                                                      #
@@ -19,7 +19,6 @@ var double Ts = 0.001
 loadComponent("Supervisor","SUPERVISORY::Supervisor")
 Supervisor.configure
 setActivity("Supervisor",0.04,HighestPriority,ORO_SCHED_RT)
-#Supervisor.start
 stream("Supervisor.rosemergency", ros.topic("/amigo/emergency_switch"));
 stream("Supervisor.rosshutdown", ros.topic("/amigo/etherCAT_shutdown")); 
 stream("Supervisor.rosetherCATenabled", ros.topic("/amigo/etherCAT_enabled")); 
@@ -27,8 +26,6 @@ stream("Supervisor.hardware_status", ros.topic("/amigo/hardware_status"));
 stream("Supervisor.dashboardCmd", ros.topic("/amigo/dashboard_ctrlcmds"));
 
 #### LOAD JOINTSTATEAGGREGATOR ####
-# Is used to push all joint measurement into one message for the /joint_states topic for the state publisher
-# By listing ALL joints, rviz and the environment server will work properly even if some components are not initialized
 loadComponent("JointStateAggregator","ROS::JointStateAggregator")
 addPeer("Supervisor","JointStateAggregator")
 setActivity("JointStateAggregator",0.02,LowestPriority, ORO_SCHED_OTHER)
@@ -36,30 +33,101 @@ JointStateAggregator.configure
 stream("JointStateAggregator.out", ros.topic("/amigo/joint_states"))
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
-#This component enables communication with EtherCAT through the SoemMaster component.
 loadComponent("Soem","soem_master::SoemMasterComponent")
 addPeer("Supervisor","Soem")
-#Configure the component. This looks for connected EtherCAT slaves and creates ports for all of the slaves.
 Soem.configure
-#Set a realtime priority to this component and run it every 1ms.
 setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_1002.Slave_1002_value", "Supervisor.serialRunning", ConnPolicy() )
 
-#### LOAD COMPONENT TO ENABLE ANALOG OUTS ###
-#This component aggregates all the signals from the controllers and sends them to the EtherCAT stack at once.
-loadComponent("AnalogOuts","SOEM::AnalogOuts")
-addPeer("Supervisor","AnalogOuts")
-AnalogOuts.configure
-setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
-connect ("AnalogOuts.Analog_out","Soem.Slave_100d.values", ConnPolicy() ); # 4x[volt]
+#### LOAD COMPONENT TO ENABLE ANALOG OUTS ### 
+loadComponent("BASESPINDLE_AnalogOuts","SOEM::AnalogOutsGeneric")
+addPeer("Supervisor","BASESPINDLE_AnalogOuts")
+setActivity("BASESPINDLE_AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
+BASESPINDLE_AnalogOuts.numberofinports    			= 2
+BASESPINDLE_AnalogOuts.numberofoutports    			= 1
+BASESPINDLE_AnalogOuts.input_sizes 					= array (4.0, 1.0)
+BASESPINDLE_AnalogOuts.output_sizes 				= array (8.0)
+BASESPINDLE_AnalogOuts.output_positions 			= array (1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0)
+BASESPINDLE_AnalogOuts.configure
+connect ("BASESPINDLE_AnalogOuts.out1","Soem.Slave_100d.values", ConnPolicy() );
+
+#### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
+loadComponent("RPERA_AnalogOuts","SOEM::AnalogOutsGeneric")
+addPeer("Supervisor","RPERA_AnalogOuts")
+setActivity("RPERA_AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
+RPERA_AnalogOuts.numberofinports    				= 1
+RPERA_AnalogOuts.numberofoutports    				= 3
+RPERA_AnalogOuts.input_sizes 						= array (8.0)
+RPERA_AnalogOuts.output_sizes 						= array (3.0, 3.0, 3.0)
+RPERA_AnalogOuts.output_positions 					= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+RPERA_AnalogOuts.configure
+connect ("RPERA_AnalogOuts.out1","Soem.Slave_1010.pwmDutyMotorsIn", ConnPolicy() );
+connect ("RPERA_AnalogOuts.out2","Soem.Slave_1011.pwmDutyMotorsIn", ConnPolicy() );
+connect ("RPERA_AnalogOuts.out3","Soem.Slave_1012.pwmDutyMotorsIn", ConnPolicy() );
+
+#### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
+loadComponent("LPERA_AnalogOuts","SOEM::AnalogOutsGeneric")
+addPeer("Supervisor","LPERA_AnalogOuts")
+setActivity("LPERA_AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_AnalogOuts.numberofinports    				= 1
+LPERA_AnalogOuts.numberofoutports    				= 3
+LPERA_AnalogOuts.input_sizes 						= array (8.0)
+LPERA_AnalogOuts.output_sizes 						= array (3.0, 3.0, 3.0)
+LPERA_AnalogOuts.output_positions 					= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+LPERA_AnalogOuts.configure
+connect ("LPERA_AnalogOuts.out1","Soem.Slave_1014.pwmDutyMotorsIn", ConnPolicy() );
+connect ("LPERA_AnalogOuts.out2","Soem.Slave_1015.pwmDutyMotorsIn", ConnPolicy() );
+connect ("LPERA_AnalogOuts.out3","Soem.Slave_1016.pwmDutyMotorsIn", ConnPolicy() );
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
-loadComponent("AnalogIns","SOEM::AnalogIns")
-addPeer("Supervisor","AnalogIns")
-AnalogIns.configure
-setActivity("AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
-connect ("AnalogIns.in","Soem.Slave_100e.values", ConnPolicy() );
-stream("AnalogIns.out1", ros.topic("/amigo/battery_value"))
+loadComponent("BATTERY_AnalogIns","SOEM::AnalogInsGeneric")
+addPeer("Supervisor","BATTERY_AnalogIns")
+setActivity("BATTERY_AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
+BATTERY_AnalogIns.numberofinports    				= 1
+BATTERY_AnalogIns.numberofoutports    				= 1
+BATTERY_AnalogIns.input_sizes 						= array (1.0)
+BATTERY_AnalogIns.input_positions 					= array (1.0)
+BATTERY_AnalogIns.output_sizes 						= array (1.0)
+BATTERY_AnalogIns.direct_to_ROS 					= true
+BATTERY_AnalogIns.configure
+connect ("Soem.Slave_100e.values","BATTERY_AnalogIns.in1", ConnPolicy() );
+stream("BATTERY_AnalogIns.outmsg1", ros.topic("/amigo/battery_value"))
+
+#### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
+loadComponent("RPERA_AnalogIns","SOEM::AnalogInsGeneric")
+addPeer("Supervisor","RPERA_AnalogIns")
+setActivity("RPERA_AnalogIns",Ts,HighestPriority,ORO_SCHED_RT)
+RPERA_AnalogIns.numberofinports    					= 6
+RPERA_AnalogIns.numberofoutports    				= 2
+RPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
+RPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+RPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
+RPERA_AnalogIns.direct_to_ROS 						= false
+RPERA_AnalogIns.configure
+connect ("Soem.Slave_1010.forceSensors","RPERA_AnalogIns.in1", ConnPolicy() )  
+connect ("Soem.Slave_1011.forceSensors","RPERA_AnalogIns.in2", ConnPolicy() )  
+connect ("Soem.Slave_1012.forceSensors","RPERA_AnalogIns.in3", ConnPolicy() )   
+connect ("Soem.Slave_1010.positionSensors","RPERA_AnalogIns.in4", ConnPolicy() )  
+connect ("Soem.Slave_1011.positionSensors","RPERA_AnalogIns.in5", ConnPolicy() )  
+connect ("Soem.Slave_1012.positionSensors","RPERA_AnalogIns.in6", ConnPolicy() )
+
+#### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
+loadComponent("LPERA_AnalogIns","SOEM::AnalogInsGeneric")
+addPeer("Supervisor","LPERA_AnalogIns")
+setActivity("LPERA_AnalogIns",Ts,HighestPriority,ORO_SCHED_RT)
+LPERA_AnalogIns.numberofinports    					= 6
+LPERA_AnalogIns.numberofoutports    				= 2
+LPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
+LPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+LPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
+LPERA_AnalogIns.direct_to_ROS 						= false
+LPERA_AnalogIns.configure
+connect ("Soem.Slave_1014.forceSensors","LPERA_AnalogIns.in1", ConnPolicy() )  
+connect ("Soem.Slave_1015.forceSensors","LPERA_AnalogIns.in2", ConnPolicy() )  
+connect ("Soem.Slave_1016.forceSensors","LPERA_AnalogIns.in3", ConnPolicy() )   
+connect ("Soem.Slave_1014.positionSensors","LPERA_AnalogIns.in4", ConnPolicy() )  
+connect ("Soem.Slave_1015.positionSensors","LPERA_AnalogIns.in5", ConnPolicy() )  
+connect ("Soem.Slave_1016.positionSensors","LPERA_AnalogIns.in6", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS (Slave_100b) ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
@@ -68,7 +136,7 @@ connect ("DigitalOuts.digital_out","Soem.Slave_100b.bits", ConnPolicy() )
 DigitalOuts.configure
 setActivity("DigitalOuts",0.0,HighestPriority/2,ORO_SCHED_RT)
 
-#### LOAD COMPONENT TO ENABLE DIGITAL OUTS (Slave_100c) ###
+#### LOAD COMPONENT TO ENABLE DIGITAL OUTS 2 (Slave_100c) ###
 loadComponent("DigitalOuts2","SOEM::DigitalOuts")
 addPeer("Supervisor","DigitalOuts2")
 connect ("DigitalOuts2.digital_out","Soem.Slave_100c.bits", ConnPolicy() )
@@ -78,7 +146,8 @@ setActivity("DigitalOuts2",0.0,HighestPriority/2,ORO_SCHED_RT)
 #### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_1009) ###
 loadComponent("DigitalIns","SOEM::DigitalIns")
 addPeer("Supervisor","DigitalIns")
-setActivity("DigitalOuts2",0.1,HighestPriority/2,ORO_SCHED_RT)
+DigitalIns.configure
+setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
 stream("DigitalIns.out1", ros.topic("/fuse1"))
 stream("DigitalIns.out2", ros.topic("/fuse2"))
@@ -88,65 +157,14 @@ DigitalIns.flip_out5 = 1
 stream("DigitalIns.out5", ros.topic("/amigo/runstop"))
 DigitalIns.flip_out6 = 1
 stream("DigitalIns.out6", ros.topic("/amigo/emergency_switch"))
-DigitalIns.configure
-setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 
 #### LOAD COMPONENT TO ENABLE DIGITAL INS (Slave_100a) ###
 loadComponent("DigitalIns2","SOEM::DigitalIns")
 addPeer("Supervisor","DigitalIns2")
-connect ("Soem.Slave_100a.bits", "DigitalIns2.in", ConnPolicy() )
 DigitalIns2.configure
 setActivity("DigitalIns2",Ts,HighestPriority,ORO_SCHED_RT)
-# Temp
+connect ("Soem.Slave_100a.bits", "DigitalIns2.in", ConnPolicy() )
 stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
-
-#### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
-#This component splits the doubles vector from the controllers and sends them to the right Soem Slaves
-loadComponent("RPERA_AnalogOutsPera","SOEM::AnalogOutsPera")
-addPeer("Supervisor","RPERA_AnalogOutsPera")
-RPERA_AnalogOutsPera.configure
-setActivity("RPERA_AnalogOutsPera",0.0,HighestPriority,ORO_SCHED_RT)
-connect ("RPERA_AnalogOutsPera.out1","Soem.Slave_1010.pwmDutyMotorsIn", ConnPolicy() );
-connect ("RPERA_AnalogOutsPera.out2","Soem.Slave_1011.pwmDutyMotorsIn", ConnPolicy() );
-connect ("RPERA_AnalogOutsPera.out3","Soem.Slave_1012.pwmDutyMotorsIn", ConnPolicy() );
-
-#### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
-#This component splits the doubles vector from the controllers and sends them to the right Soem Slaves
-loadComponent("LPERA_AnalogOutsPera","SOEM::AnalogOutsPera")
-addPeer("Supervisor","LPERA_AnalogOutsPera")
-LPERA_AnalogOutsPera.configure
-setActivity("LPERA_AnalogOutsPera",0.0,HighestPriority,ORO_SCHED_RT)
-connect ("LPERA_AnalogOutsPera.out1","Soem.Slave_1014.pwmDutyMotorsIn", ConnPolicy() );
-connect ("LPERA_AnalogOutsPera.out2","Soem.Slave_1015.pwmDutyMotorsIn", ConnPolicy() );
-connect ("LPERA_AnalogOutsPera.out3","Soem.Slave_1016.pwmDutyMotorsIn", ConnPolicy() );
-
-#### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
-#This component aggregates all the signals from the Soem Slaves and puts them into a doubles for the position 
-# and a doubles for the force and then sends these doubles to the right component
-loadComponent("RPERA_AnalogInsPera","SOEM::AnalogInsPera")
-addPeer("Supervisor","RPERA_AnalogInsPera")
-RPERA_AnalogInsPera.configure
-setActivity("RPERA_AnalogInsPera",Ts,HighestPriority,ORO_SCHED_RT)
-connect ("Soem.Slave_1010.forceSensors","RPERA_AnalogInsPera.in_for1", ConnPolicy() )  
-connect ("Soem.Slave_1011.forceSensors","RPERA_AnalogInsPera.in_for2", ConnPolicy() )  
-connect ("Soem.Slave_1012.forceSensors","RPERA_AnalogInsPera.in_for3", ConnPolicy() )   
-connect ("Soem.Slave_1010.positionSensors","RPERA_AnalogInsPera.in_pos1", ConnPolicy() )  
-connect ("Soem.Slave_1011.positionSensors","RPERA_AnalogInsPera.in_pos2", ConnPolicy() )  
-connect ("Soem.Slave_1012.positionSensors","RPERA_AnalogInsPera.in_pos3", ConnPolicy() )
-
-#### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
-#This component aggregates all the signals from the Soem Slaves and puts them into a doubles for the position 
-# and a doubles for the force and then sends these doubles to the right component
-loadComponent("LPERA_AnalogInsPera","SOEM::AnalogInsPera")
-addPeer("Supervisor","LPERA_AnalogInsPera")
-LPERA_AnalogInsPera.configure
-setActivity("LPERA_AnalogInsPera",Ts,HighestPriority,ORO_SCHED_RT)
-connect ("Soem.Slave_1014.forceSensors","LPERA_AnalogInsPera.in_for1", ConnPolicy() )  
-connect ("Soem.Slave_1015.forceSensors","LPERA_AnalogInsPera.in_for2", ConnPolicy() )  
-connect ("Soem.Slave_1016.forceSensors","LPERA_AnalogInsPera.in_for3", ConnPolicy() )   
-connect ("Soem.Slave_1014.positionSensors","LPERA_AnalogInsPera.in_pos1", ConnPolicy() )  
-connect ("Soem.Slave_1015.positionSensors","LPERA_AnalogInsPera.in_pos2", ConnPolicy() )  
-connect ("Soem.Slave_1016.positionSensors","LPERA_AnalogInsPera.in_pos3", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE AMPLIFIERS (D04) ####
 loadComponent("EnableAmps","SOURCES::ConstantBool")
@@ -159,15 +177,15 @@ connect ("EnableAmps.out", "DigitalOuts.in2", ConnPolicy() ); # tue-logo
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("JointStateAggregator")
-Supervisor.AddAllwaysOnPeer ("AnalogOuts")
-Supervisor.AddAllwaysOnPeer ("RPERA_AnalogOutsPera")
-Supervisor.AddAllwaysOnPeer ("LPERA_AnalogOutsPera")
+Supervisor.AddAllwaysOnPeer ("BASESPINDLE_AnalogOuts")
+Supervisor.AddAllwaysOnPeer ("RPERA_AnalogOuts")
+Supervisor.AddAllwaysOnPeer ("LPERA_AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("DigitalOuts")
 Supervisor.AddAllwaysOnPeer ("DigitalOuts2")
 Supervisor.AddAllwaysOnPeer ("Soem")
-Supervisor.AddAllwaysOnPeer ("AnalogIns")
-Supervisor.AddAllwaysOnPeer ("RPERA_AnalogInsPera")
-Supervisor.AddAllwaysOnPeer ("LPERA_AnalogInsPera")
+Supervisor.AddAllwaysOnPeer ("BATTERY_AnalogIns")
+Supervisor.AddAllwaysOnPeer ("RPERA_AnalogIns")
+Supervisor.AddAllwaysOnPeer ("LPERA_AnalogIns")
 Supervisor.AddAllwaysOnPeer ("DigitalIns")
 Supervisor.AddAllwaysOnPeer ("DigitalIns2")
 Supervisor.AddAllwaysOnPeer ("EnableAmps")
