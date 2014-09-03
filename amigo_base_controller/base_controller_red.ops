@@ -23,13 +23,11 @@ var double TWOPI 			= 2.0*3.141592
 var double ENCODERCOUNTS 	= 500.0*4.0
 var double ENC2SI 			= TWOPI*GEARRATIO/ENCODERCOUNTS
 var double SI2V 			= TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
-var array MAX_ERRORS 		= = array ( 2.2, 2.2, 2.2, 2.2 )
+var array MAX_ERRORS 		= array ( 2.2, 2.2, 2.2, 2.2 )
 var int N					= 4
 var int BODYNUMBER 			= 1
 var string BODYNAME 		= "base"
 var bool HOMEABLE 			= false
-
-
  
 ### NameBodyPart ###
 Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
@@ -98,10 +96,10 @@ BASE_Controller.gains						= array (5.0, 5.0, 5.0, 5.0)
 BASE_Controller.zero_freq_WeakIntegrator	= array (0.0001, 	0.0001, 	0.0001, 	0.0001)
 BASE_Controller.zero_freq_LeadLag			= array (15.0, 		15.0, 		15.0, 		15.0)
 BASE_Controller.pole_freq_LeadLag			= array (50.0, 		50.0, 		50.0, 		50.0)
-BASE_Controller.zero_frequency_Notch		= array (1000.0,	1000.0,		1000.0,		1000.0)
-BASE_Controller.zero_damping_Notch			= array (0.0,		0.0,		0.0,		0.0)
-BASE_Controller.pole_frequency_Notch		= array (1000.0,	1000.0,		1000.0,		1000.0)
-BASE_Controller.pole_damping_Notch			= array (0.0,		0.0,		0.0,		0.0)
+BASE_Controller.zero_freq_Notch		= array (1000.0,	1000.0,		1000.0,		1000.0)
+BASE_Controller.zero_damp_Notch			= array (0.0,		0.0,		0.0,		0.0)
+BASE_Controller.pole_freq_Notch		= array (1000.0,	1000.0,		1000.0,		1000.0)
+BASE_Controller.pole_damp_Notch			= array (0.0,		0.0,		0.0,		0.0)
 BASE_Controller.pole_freq_LowPass		    = array (100.0, 	100.0, 		100.0, 		100.0)
 BASE_Controller.pole_damp_LowPass			= array (0.7, 		0.7, 		0.7, 		0.7)
 BASE_Controller.sampling_time				= Ts
@@ -145,18 +143,14 @@ connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in", ConnPolicy(
 connect ("BASE_ReadEncoders.out",					"BASE_Controller.pos_in", ConnPolicy() ); #[m \n m \n rad]
 connect ("BASE_Controller.out",						"BASE_SI2Volt.in", ConnPolicy() )
 connect ("BASE_SI2Volt.out", 						"BASESPINDLE_AnalogOuts.in1", ConnPolicy() );
-connect ("BASE_ReadReferences.out",					"BASE_Safety.ref", ConnPolicy() )
 connect ("BASE_ReadReferences.out",					"BASE_JointToMotorSpace.in", ConnPolicy() )
 connect ("BASE_JointToMotorSpace.out",				"BASE_VelocityToPosition.in", ConnPolicy() )
 connect ("BASE_ReadEncoders.out",					"BASE_VelocityToPosition.initial", ConnPolicy() ); # Use current position as initial position
-connect ("BASE_ComputeErrors.out", 					"BASE_Safety.error", ConnPolicy() )
-connect ("BASE_SI2Volt.out", 						"BASE_Safety.voltage", ConnPolicy() )
-connect ("BASE_Safety.wheel_amplifiers", 			"DigitalOuts2.in2", ConnPolicy() ); # amplifiers
-connect ("BASE_Safety.errortosupervisor",			"Supervisor.base_error", ConnPolicy() )
+connect ("BASE_Controller.safe", 					"DigitalOuts2.in2", ConnPolicy() ); # amplifiers
 
 ## Diagnostics ##
 connect ("BASE_ReadReferences.out", 				"BASE_Diagnostics.vec1", ConnPolicy() )
-connect ("BASE_ComputeErrors.out", 					"BASE_Diagnostics.vec2", ConnPolicy() )
+connect ("BASE_Controller.controlerrors", 					"BASE_Diagnostics.vec2", ConnPolicy() )
 connect ("BASE_SI2Volt.out", 						"BASE_Diagnostics.vec3", ConnPolicy() )
 connect ("BASE_Controller.safe", 					"BASE_Diagnostics.bool1", ConnPolicy() )
 
