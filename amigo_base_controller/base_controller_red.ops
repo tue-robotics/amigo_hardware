@@ -98,12 +98,13 @@ BASE_Controller.sampling_time				= Ts
 BASE_Controller.max_errors					= MAX_ERRORS
 BASE_Controller.motor_saturation			= array (9.9, 9.9, 9.9, 9.9)
 BASE_Controller.max_sat_time				= 0.1
-BASE_Controller.configure
 BASE_Controller.zero_freq_WeakIntegrator	= array (0.0001, 	0.0001, 	0.0001, 	0.0001)
 BASE_Controller.zero_freq_LeadLag			= array (15.0, 		15.0, 		15.0, 		15.0)
 BASE_Controller.pole_freq_LeadLag			= array (50.0, 		50.0, 		50.0, 		50.0)
 BASE_Controller.pole_freq_LowPass		    = array (100.0, 	100.0, 		100.0, 		100.0)
 BASE_Controller.pole_damp_LowPass			= array (0.7, 		0.7, 		0.7, 		0.7)
+BASE_Controller.configure
+
 
 ### SI2VOLT ###
 loadComponent("BASE_SI2Volt","MATH::Gains")

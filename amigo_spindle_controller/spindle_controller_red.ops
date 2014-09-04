@@ -76,19 +76,16 @@ setActivity("SPINDLE_Controller",0.0,LowestPriority,ORO_SCHED_OTHER)
 addPeer("Supervisor","SPINDLE_Controller")
 SPINDLE_Controller.vector_size    				= 1
 SPINDLE_Controller.gains						= array(-40.0)
-SPINDLE_Controller.zero_freq_WeakIntegrator		= array (0.3)
-SPINDLE_Controller.zero_freq_LeadLag			= array (1.6)
-SPINDLE_Controller.pole_freq_LeadLag			= array (60.0)
-SPINDLE_Controller.zero_freq_Notch			= array (1000.0)
-SPINDLE_Controller.zero_damp_Notch			= array (0.0)
-SPINDLE_Controller.pole_freq_Notch			= array (1000.0)
-SPINDLE_Controller.pole_damp_Notch			= array (0.0)
-SPINDLE_Controller.pole_freq_LowPass			= array (20.0)
-SPINDLE_Controller.pole_damp_LowPass			= array (0.7)
+SPINDLE_Controller.controllers					= strings("WeakIntegrator","LeadLag","LowPass")
 SPINDLE_Controller.sampling_time				= Ts
 SPINDLE_Controller.max_errors					= array (0.05)
 SPINDLE_Controller.motor_saturation				= array (100.0)
 SPINDLE_Controller.max_sat_time					= 25.0
+SPINDLE_Controller.zero_freq_WeakIntegrator		= array (0.3)
+SPINDLE_Controller.zero_freq_LeadLag			= array (1.6)
+SPINDLE_Controller.pole_freq_LeadLag			= array (60.0)
+SPINDLE_Controller.pole_freq_LowPass			= array (20.0)
+SPINDLE_Controller.pole_damp_LowPass			= array (0.7)
 SPINDLE_Controller.configure
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
