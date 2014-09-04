@@ -96,8 +96,7 @@ bool PERAHoming::startHook()
 		return false;
 	}
 	if (!homingjoint_outPort.connected()) {
-		log(Error)<<"homingjoint_outPort not connected!"<<endlog();
-		return false;
+		log(Error)<<"homingjoint_outPort not connected, safety does not know which joint is homing!"<<endlog();
 	}
 	
 	if ((!endpose_outPort.connected()) || (END_POSE.size() != 7 )) {
