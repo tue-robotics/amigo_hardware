@@ -24,7 +24,7 @@ namespace PERA
   typedef vector<double> doubles;
   typedef std::vector<int> ints;
   
-  class PERAHoming
+  class PeraHoming
   : public RTT::TaskContext
     {
     private:
@@ -81,9 +81,9 @@ namespace PERA
     public:
 
 		//! Class constructor
-		PERAHoming(const string& name);
+		PeraHoming(const string& name);
 		//! Class destructor
-		~PERAHoming();
+		~PeraHoming();
 
 		bool configureHook();
 		bool startHook();

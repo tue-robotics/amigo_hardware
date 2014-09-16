@@ -13,7 +13,7 @@
 #include <vector>
 #include <math.h>
 #include <cstdlib>
-#include "PERA_Homing.hpp"
+#include "PeraHoming.hpp"
 
 #define PI 3.1415926535897932384626433
 
@@ -21,7 +21,7 @@ using namespace std;
 using namespace RTT;
 using namespace PERA;
 
-PERAHoming::PERAHoming(const string& name) : TaskContext(name, PreOperational)
+PeraHoming::PeraHoming(const string& name) : TaskContext(name, PreOperational)
 {
 	// inports
 	addPort("errorPort",jointErrorsPort).doc("Receives joint control errors");
@@ -50,9 +50,9 @@ PERAHoming::PERAHoming(const string& name) : TaskContext(name, PreOperational)
     addProperty( "jointNames", out_msg.name ).doc("Joint state names");
 }
 
-PERAHoming::~PERAHoming(){}
+PeraHoming::~PeraHoming(){}
 
-bool PERAHoming::configureHook()
+bool PeraHoming::configureHook()
 {
 	FastStep = 0.15;
 	SlowStep = 0.01;
@@ -61,7 +61,7 @@ bool PERAHoming::configureHook()
 	return true;
 }
 
-bool PERAHoming::startHook()
+bool PeraHoming::startHook()
 {	// checking inports
 	if (!jointErrorsPort.connected()) {
 		log(Error)<<"jointErrorsPort not connected!"<<endlog();
@@ -134,7 +134,7 @@ bool PERAHoming::startHook()
  * go outside their bounds the amplifiers are disabled. 
  */
  
-void PERAHoming::updateHook()
+void PeraHoming::updateHook()
 {
 	doubles measRelJntAngles(8,0.0);
 	doubles measAbsJntAngles(9,0.0);
@@ -175,13 +175,13 @@ void PERAHoming::updateHook()
 	homingjoint_outPort.write(homingjoint);
 }
 
-void PERAHoming::stopHook()
+void PeraHoming::stopHook()
 {
 	endpose_outPort.write(END_POSE);
-	log(Warning)<<"PERA_Homing: Sent to reset pos \n"<<endlog();
+	log(Warning)<<"PeraHoming: Sent to reset pos \n"<<endlog();
 }
 
-doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
+doubles PeraHoming::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
 	
 	if(!gripperhomed_) {
 		amigo_msgs::AmigoGripperCommand gripperCommand;
@@ -194,13 +194,13 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 		gripperMeasurementPort.read(gripperMeasurement);
 		
 		if (gripperMeasurement.max_torque_reached)
-		log(Warning) << "Gripper Max torque reached" <<endlog();
+		log(Warning) << "PeraHoming: Gripper Max torque reached" <<endlog();
 		
 		if (gripperMeasurement.end_position_reached)
-		log(Warning) << "Gripper end postion reached" <<endlog();
+		log(Warning) << "PeraHoming: Gripper end postion reached" <<endlog();
 
 		if(gripperMeasurement.end_position_reached || gripperMeasurement.max_torque_reached){
-			log(Info)<<"PERA_Homing: gripper homed"<<endlog();
+			log(Info)<<"PeraHoming: gripper homed"<<endlog();
 			gripperhomed_ = true;
 		}
 	}
@@ -340,7 +340,7 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 		if( ((ABS_OR_REL[jntNr-1]==0 && jntNr!=1) || (ABS_OR_REL[jntNr-1]==1 && jntNr==4) ) && (cntr2==(1*Ts))){
 			cntr2=0;
 			jntNr--;
-			log(Info)<<"PERA_Homing: Proceeded to joint "<<jntNr<<"\n"<<endlog();
+			log(Info)<<"PeraHoming: Proceeded to joint "<<jntNr<<"\n"<<endlog();
 			goodToGo = true;
 		}
 		// If joint is moved to endstop using rel enc waiting time is required to move to homing position
@@ -351,7 +351,7 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 		else if(ABS_OR_REL[jntNr-1]==1 && cntr2==(5*Ts) && jntNr!=1 && jntNr!=4){
 			cntr2=0;
 			jntNr--;
-			log(Info)<<"PERA_Homing: Proceeded to joint "<<jntNr<<"\n"<<endlog();
+			log(Info)<<"PeraHoming: Proceeded to joint "<<jntNr<<"\n"<<endlog();
 			goodToGo=true;
 
 		}
@@ -386,7 +386,7 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 				// Null the PERA_IO.
 				bool reNull = true;
 				reNullPort.write(reNull);
-				log(Info)<<"PERA_Homing: Renulled PERA_IO \n"<<endlog();
+				log(Info)<<"PeraHoming: Renulled PERA_IO \n"<<endlog();
 				
 				cntr2++;
 
@@ -405,7 +405,7 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 				// Set homing to true
 				homed_ = true;
 				
-				log(Warning)<<"PERA_Homing: Finished homing \n"<<endlog();
+				log(Warning)<<"PeraHoming: Finished homing \n"<<endlog();
 				
 			}
 		}
@@ -416,4 +416,4 @@ doubles PERAHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 }
 
 
-ORO_CREATE_COMPONENT(PERA::PERAHoming)
+ORO_CREATE_COMPONENT(PERA::PeraHoming)

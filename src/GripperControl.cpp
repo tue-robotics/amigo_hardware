@@ -9,7 +9,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/Component.hpp>
 
-#include "PERA_GripperControl.hpp"
+#include "GripperControl.hpp"
 
 #define MAX_TORQUE 150.0
 
