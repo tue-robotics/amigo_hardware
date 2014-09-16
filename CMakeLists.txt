@@ -38,6 +38,10 @@ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 ### Specific Hardware Components - Spindle ###
 
 ### Specific Hardware Components - Arm ###
+orocos_component(GripperControl src/GripperControl.cpp)
+orocos_component(PeraHoming src/PeraHoming.cpp)
+target_link_libraries(GripperControl ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
+target_link_libraries(PeraHoming ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 
 ### Specific Hardware Components - Head ###
 orocos_component(PanTiltController src/PanTiltController.cpp)
