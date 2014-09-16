@@ -15,7 +15,7 @@
 
 using namespace std;
 using namespace RTT;
-using namespace PERA;
+using namespace AMIGOPERA;
 
 GripperControl::GripperControl(const std::string& name) : TaskContext(name, PreOperational)
 {
@@ -133,5 +133,5 @@ void GripperControl::updateHook()
 
 void GripperControl::stopHook(){}
 
-ORO_CREATE_COMPONENT(PERA::GripperControl)
+ORO_CREATE_COMPONENT(AMIGOPERA::GripperControl)
 

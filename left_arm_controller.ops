@@ -95,7 +95,7 @@ LPERA_ReferenceInterpolator.interpolator7 		= array (0.0, 1.0, 0.5)
 LPERA_ReferenceInterpolator.interpolator8 		= array (0.0, 10.0, 100.0)
 
 ### PERA Homing ###
-loadComponent("LPERA_Homing","PERA::PERAHoming")
+loadComponent("LPERA_Homing","AMIGOPERA::PERAHoming")
 addPeer("Supervisor","LPERA_Homing")
 setActivity("LPERA_Homing",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_Homing.requireHoming			= REQUIREHOMING
@@ -119,7 +119,7 @@ LPERA_ReadEncoders.enc2SI = array (ENC2SI_SM ,ENC2SI_SM, ENC2SI_S3 , ENC2SI_EM ,
 LPERA_ReadEncoders.configure
 
 ### Gripper force controller ###
-loadComponent("LPERA_GripperControl","PERA::GripperControl")
+loadComponent("LPERA_GripperControl","AMIGOPERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed 	= 50.0

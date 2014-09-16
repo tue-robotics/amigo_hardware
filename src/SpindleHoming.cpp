@@ -9,7 +9,7 @@
 
 using namespace std;
 using namespace RTT;
-using namespace AMIGO;
+using namespace AMIGOSPINDLE;
 
 
 SpindleHoming::SpindleHoming(const string& name) : TaskContext(name, PreOperational)
@@ -150,4 +150,4 @@ void SpindleHoming::updateHook()
 	}
 }
 
-ORO_CREATE_COMPONENT(SpindleHoming)
+ORO_CREATE_COMPONENT(AMIGOSPINDLE::SpindleHoming)

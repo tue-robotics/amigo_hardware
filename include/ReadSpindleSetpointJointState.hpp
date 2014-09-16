@@ -15,7 +15,7 @@
 using namespace std;
 using namespace RTT;
 
-namespace SPINDLE
+namespace AMIGOSPINDLE
 {
   typedef vector<double> doubles;
 

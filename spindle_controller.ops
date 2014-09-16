@@ -34,7 +34,7 @@ SPINDLE_WriteJointStates.JointNames = strings ( "torso_joint" )
 SPINDLE_WriteJointStates.configure
 
 #Reading spindle setpoints
-loadComponent("SPINDLE_ReadReferences","SPINDLE::ReadSpindleSetpointJointState") ;# if you rename this component also rename in spindle homing component
+loadComponent("SPINDLE_ReadReferences","AMIGOSPINDLE::ReadSpindleSetpointJointState") ;# if you rename this component also rename in spindle homing component
 addPeer("Supervisor","SPINDLE_ReadReferences")
 SPINDLE_ReadReferences.min_pos = 0.075
 SPINDLE_ReadReferences.max_pos = 0.4
@@ -52,7 +52,7 @@ SPINDLE_ReferenceGenerator.configure
 SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.1); #Velocity is carefully tuned. Do not increase because integrator will fill!
 
 #Loading Homing component
-loadComponent("SPINDLE_Homing","SpindleHoming")
+loadComponent("SPINDLE_Homing","AMIGOSPINDLE::SpindleHoming")
 connectPeers("Supervisor","SPINDLE_Homing")
 connectPeers("SPINDLE_Homing","Supervisor")
 connectPeers("SPINDLE_Homing","SPINDLE_ReadEncoders")

@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace RTT;
-using namespace SPINDLE;
+using namespace AMIGOSPINDLE;
 
 ReadSpindleSetpointJointState::ReadSpindleSetpointJointState(const string& name) : TaskContext(name, PreOperational)
 {
@@ -72,4 +72,4 @@ void ReadSpindleSetpointJointState::updateHook()
 	}
 }
 
-ORO_CREATE_COMPONENT(SPINDLE::ReadSpindleSetpointJointState)
+ORO_CREATE_COMPONENT(AMIGOSPINDLE::ReadSpindleSetpointJointState)

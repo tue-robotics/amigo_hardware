@@ -9,7 +9,7 @@
 using namespace std;
 using namespace RTT;
 
-namespace AMIGO
+namespace AMIGOSPINDLE
 {
   typedef vector<double> doubles;
 

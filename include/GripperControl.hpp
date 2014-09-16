@@ -18,7 +18,7 @@
 using namespace std;
 using namespace RTT;
 
-namespace PERA
+namespace AMIGOPERA
 {
 	typedef std::vector<double> doubles;
 	

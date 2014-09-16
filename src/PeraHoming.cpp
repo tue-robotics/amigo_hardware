@@ -19,7 +19,7 @@
 
 using namespace std;
 using namespace RTT;
-using namespace PERA;
+using namespace AMIGOPERA;
 
 PeraHoming::PeraHoming(const string& name) : TaskContext(name, PreOperational)
 {
@@ -416,4 +416,4 @@ doubles PeraHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 }
 
 
-ORO_CREATE_COMPONENT(PERA::PeraHoming)
+ORO_CREATE_COMPONENT(AMIGOPERA::PeraHoming)

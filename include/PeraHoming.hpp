@@ -18,7 +18,7 @@ using namespace std;
 using namespace RTT;
 
 //! Philips Experimental Robotic Arm namespace
-namespace PERA
+namespace AMIGOPERA
 {
   
   typedef vector<double> doubles;
