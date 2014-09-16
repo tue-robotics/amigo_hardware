@@ -8,9 +8,9 @@
 
 #### DECLARATION OF PARAMETERS ####
 var double TS 					= 0.001
-var string RIGHT_ARM_SHOULDER 	= "Soem.Slave_1012"
-var string RIGHT_ARM_UPPERARM 	= "Soem.Slave_1013"
-var string RIGHT_ARM_LOWERARM 	= "Soem.Slave_1014"
+var string RIGHT_ARM_SHOULDER 	= "Soem.Slave_1015"
+var string RIGHT_ARM_UPPERARM 	= "Soem.Slave_1016"
+var string RIGHT_ARM_LOWERARM 	= "Soem.Slave_1017"
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_right", "shoulder_pitch_joint_right", "shoulder_roll_joint_right", "elbow_pitch_joint_right", "elbow_roll_joint_right", "wrist_pitch_joint_right", "wrist_yaw_joint_right" ) 
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_right", "finger1_tip_joint_right", "finger2_joint_right", "finger2_tip_joint_right" )
 var array UPPERJOINTLIMIT 		= array (   0.0,  		1.57,  		1.57, 		2.23,  		1.83,  		0.95,  		0.61,  4.0		)
@@ -40,7 +40,7 @@ var int BODYNUMBER 				= 4
 var string BODYNAME 			= "right_arm"
 var bool HOMEABLE 				= true
 var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = true
+var bool REQUIREGRIPPERHOMING   = false
  
 ### NameBodyPart ###
 Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
@@ -125,7 +125,7 @@ setActivity("RPERA_GripperControl",TS,HighestPriority,ORO_SCHED_RT)
 RPERA_GripperControl.threshold_closed 	= 9.0
 RPERA_GripperControl.max_pos 			= 5.3
 RPERA_GripperControl.gripper_gain 		= 0.1
-RPERA_GripperControl.sensorPos 			= 8
+RPERA_GripperControl.sensorPos 			= 7
 RPERA_GripperControl.configure
 
 ### Joint to motor torques ###
@@ -228,7 +228,7 @@ connect ("RPERA_ReferenceInterpolator.posout",		"RPERA_Controller.ref_in", 					
 
 ## Gripper control ##
 connect ("RPERA_AnalogIns.out1",					"RPERA_SensorTorques.voltage_in", 			ConnPolicy() )
-#connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque_in", 			ConnPolicy() )
+connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque_in", 			ConnPolicy() )
 connect ("RPERA_MotorToJointSpace.out", 			"RPERA_GripperControl.position_in", 		ConnPolicy() )
 connect ("RPERA_GripperControl.gripper_measurement","RPERA_Homing.gripper_measurement", 		ConnPolicy() )
 connect ("RPERA_Homing.gripper_command",			"RPERA_GripperControl.gripper_command", 	ConnPolicy() )
@@ -282,5 +282,5 @@ Supervisor.AddEnabledPeer ("RPERA_VectorConcatenate", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_MotorToJointSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_JointToMotorSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_JointOutputLimiter", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )
+#Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
+#Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )

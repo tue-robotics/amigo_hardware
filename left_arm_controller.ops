@@ -8,9 +8,9 @@
 
 #### DECLARATION OF PARAMETERS ####
 var double TS 					= 0.001
-var string LEFT_ARM_SHOULDER 	= "Soem.Slave_1015"
-var string LEFT_ARM_UPPERARM 	= "Soem.Slave_1016"
-var string LEFT_ARM_LOWERARM 	= "Soem.Slave_1017"
+var string LEFT_ARM_SHOULDER 	= "Soem.Slave_1012"
+var string LEFT_ARM_UPPERARM 	= "Soem.Slave_1013"
+var string LEFT_ARM_LOWERARM 	= "Soem.Slave_1014"
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_left", "finger1_tip_joint_left", "finger2_joint_left", "finger2_tip_joint_left" )
 var array UPPERJOINTLIMIT 		= array (   0.0,	 	1.57,	  	1.57, 	 	2.23,  		1.83, 		0.95,  		0.61,   	4.0		)
@@ -40,7 +40,7 @@ var int BODYNUMBER 				= 3
 var string BODYNAME 			= "left_arm"
 var bool HOMEABLE 				= true
 var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = true
+var bool REQUIREGRIPPERHOMING   = false
  
 ### NameBodyPart ###
 Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
@@ -125,7 +125,7 @@ setActivity("LPERA_GripperControl",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed 	= 50.0
 LPERA_GripperControl.max_pos 			= 5.3
 LPERA_GripperControl.gripper_gain 		= 0.1
-LPERA_GripperControl.sensorPos 			= 8
+LPERA_GripperControl.sensorPos 			= 7
 LPERA_GripperControl.configure
 
 ### Joint to motor torques ###
@@ -207,14 +207,14 @@ JointStateAggregator.addAggregationPort(BODYNAME)
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
-connect ("Soem.Slave_1014.encoderAngle1",			"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ) 
-connect ("Soem.Slave_1014.encoderAngle2",			"LPERA_ReadEncoders.enc2_in", 				ConnPolicy() ) 
-connect ("Soem.Slave_1015.encoderAngle1",			"LPERA_ReadEncoders.enc3_in", 				ConnPolicy() ) 
-connect ("Soem.Slave_1015.encoderAngle2",			"LPERA_ReadEncoders.enc4_in", 				ConnPolicy() ) 
-connect ("Soem.Slave_1015.encoderAngle3",			"LPERA_ReadEncoders.enc5_in", 				ConnPolicy() ) 
-connect ("Soem.Slave_1016.encoderAngle1",			"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ) 
-connect ("Soem.Slave_1016.encoderAngle2",			"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ) 
-connect ("Soem.Slave_1016.encoderAngle3",			"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() )
+connect (LEFT_ARM_SHOULDER+".encoderAngle1",		"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_SHOULDER+".encoderAngle2",		"LPERA_ReadEncoders.enc2_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_UPPERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc3_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_UPPERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc4_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_UPPERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc5_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_LOWERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_LOWERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_LOWERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() )
 connect ("LPERA_ReadEncoders.out",					"LPERA_MotorToJointSpace.in", 				ConnPolicy() ) 
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 					ConnPolicy() )
 connect ("LPERA_Controller.out",					"LPERA_JointToMotorSpace.in", 				ConnPolicy() )
@@ -228,7 +228,7 @@ connect ("LPERA_ReferenceInterpolator.posout",		"LPERA_Controller.ref_in", 					
 
 ## Gripper control ##
 connect ("LPERA_AnalogIns.out1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() )
-##connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() )
+connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() )
 connect ("LPERA_MotorToJointSpace.out", 			"LPERA_GripperControl.position_in", 		ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_measurement","LPERA_Homing.gripper_measurement", 		ConnPolicy() )
 connect ("LPERA_Homing.gripper_command",			"LPERA_GripperControl.gripper_command", 	ConnPolicy() )
@@ -240,9 +240,9 @@ connect ("LPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.left_arm",
 
 ## Safety ##
 connect ("LPERA_Controller.safe",					"Supervisor.left_arm_error", 				ConnPolicy() )
-connect ("LPERA_Controller.safe",					"Soem.Slave_1014.enablePort", 				ConnPolicy() )
-connect ("LPERA_Controller.safe",					"Soem.Slave_1015.enablePort", 				ConnPolicy() )
-connect ("LPERA_Controller.safe",					"Soem.Slave_1016.enablePort", 				ConnPolicy() )
+connect ("LPERA_Controller.safe",					LEFT_ARM_SHOULDER+".enablePort", 			ConnPolicy() )
+connect ("LPERA_Controller.safe",					LEFT_ARM_UPPERARM+".enablePort", 			ConnPolicy() )
+connect ("LPERA_Controller.safe",					LEFT_ARM_LOWERARM+".enablePort", 			ConnPolicy() )
 
 ## Homing ##
 connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() )
@@ -282,5 +282,5 @@ Supervisor.AddEnabledPeer ("LPERA_VectorConcatenate", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_MotorToJointSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_JointToMotorSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_JointOutputLimiter", BODYNUMBER )
-Supervisor.AddEnabledPeer ("LPERA_SensorTorques", BODYNUMBER )
-Supervisor.AddEnabledPeer ("LPERA_GripperControl", BODYNUMBER )
+#Supervisor.AddEnabledPeer ("LPERA_SensorTorques", BODYNUMBER )
+#Supervisor.AddEnabledPeer ("LPERA_GripperControl", BODYNUMBER )

@@ -19,12 +19,12 @@ ros.import("rtt_control_components")
 
 #### DECLARATION OF PARAMETERS ####
 var double TS = 0.001
-var string RIGHT_ARM_SHOULDER = "Soem.Slave_1012"
-var string RIGHT_ARM_UPPERARM = "Soem.Slave_1013"
-var string RIGHT_ARM_LOWERARM = "Soem.Slave_1014"
-var string LEFT_ARM_SHOULDER = "Soem.Slave_1015"
-var string LEFT_ARM_UPPERARM = "Soem.Slave_1016"
-var string LEFT_ARM_LOWERARM = "Soem.Slave_1017"
+var string LEFT_ARM_SHOULDER = "Soem.Slave_1012"
+var string LEFT_ARM_UPPERARM = "Soem.Slave_1013"
+var string LEFT_ARM_LOWERARM = "Soem.Slave_1014"
+var string RIGHT_ARM_SHOULDER = "Soem.Slave_1015"
+var string RIGHT_ARM_UPPERARM = "Soem.Slave_1016"
+var string RIGHT_ARM_LOWERARM = "Soem.Slave_1017"
 
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","SUPERVISORY::Supervisor")
