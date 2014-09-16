@@ -36,6 +36,13 @@ head_controller.ops
 DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ### Specific Hardware Components - Spindle ###
+# None - That's the way to go!
+
+### Specific Hardware Components - Spindle ###
+orocos_component(SpindleHoming src/SpindleHoming.cpp)
+orocos_component(ReadSpindleSetpointJointState src/ReadSpindleSetpointJointState.cpp)
+target_link_libraries(SpindleHoming ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
+target_link_libraries(ReadSpindleSetpointJointState ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 
 ### Specific Hardware Components - Arm ###
 orocos_component(GripperControl src/GripperControl.cpp)
