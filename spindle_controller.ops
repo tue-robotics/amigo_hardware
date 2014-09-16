@@ -2,13 +2,12 @@
 #                                                                      #
 # Spindle Controller deployer file. deployer file.                	   #
 #                                                                      #
-# Generic Structure	by Max Baeten				                       #
-# September 2011                                                       #
+# Max Baeten				                       					   #
 #                                                                      #
 ########################################################################
 
 #### DECLARATION OF PARAMETERS ####
-var double Ts = 0.001
+var double Ts 			= 0.001
 var strings JOINT_NAMES = strings( "torso_joint" )
 var int BODYNUMBER 		= 2
 var string BODYNAME 	= "spindle"
