@@ -13,7 +13,7 @@
 using namespace std;
 using namespace RTT;
 
-namespace AMIGO 
+namespace AMIGOHEAD
 {
 	/*! \class HeadEnabler
 	*  	\brief Defines Orocos component for enabling the head

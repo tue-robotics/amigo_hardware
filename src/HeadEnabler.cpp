@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace RTT;
-using namespace AMIGO;
+using namespace AMIGOHEAD;
 
 HeadEnabler::HeadEnabler(const string& name) : TaskContext(name, PreOperational)
 {

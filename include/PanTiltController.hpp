@@ -27,7 +27,7 @@ using namespace std;
 using namespace RTT;
 using namespace soem_beckhoff_drivers;
 
-namespace AMIGO {
+namespace AMIGOHEAD {
 
 typedef std::vector<double> doubles;
 

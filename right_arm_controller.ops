@@ -23,8 +23,8 @@ var array HOMED_POS 			= array (	1377.0, 	644.0,  	1.5708, 	0.0, 		1.8326,		0.98
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
-var double GEARRATIO_EM			= 1.0/410.0 ;# value (348.0) from philips manual does not make sense
-var double GEARRATIO_WM			= 1.0/350.0 ;# value (290.0) note that motors are replaced with a different transmission
+var double GEARRATIO_EM			= 1.0/410.0
+var double GEARRATIO_WM			= 1.0/290.0
 var double GEARRATIO_HM			= 196.0/3249.0
 var double ENCODERCOUNTS_SM		= 256.0*4.0
 var double ENCODERCOUNTS_S3	    = 256.0*4.0
@@ -55,9 +55,10 @@ RPERA_ReadReferences.NumberOfJoints = 7
 RPERA_ReadReferences.configure
 
 ### Vector concatenate ###
-loadComponent("RPERA_VectorConcatenate","PERA::Concatenate")
+loadComponent("RPERA_VectorConcatenate","SIGNALROUTING::VectorConcatenate")
 addPeer("Supervisor","RPERA_VectorConcatenate")
 setActivity("RPERA_VectorConcatenate",0.0,HighestPriority,ORO_SCHED_RT)
+RPERA_VectorConcatenate.number_of_inputs = 2
 RPERA_VectorConcatenate.configure
 
 ### Motor to joint angles ###
@@ -76,15 +77,6 @@ RPERA_MotorToJointSpace.function6 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,
 RPERA_MotorToJointSpace.function7 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0, -0.5,  0.5,  0.0)
 RPERA_MotorToJointSpace.function8 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
-## Input torque limiter
-loadComponent("RPERA_InputTorqueLimiter", "DISCONTINUITIES::Saturation")
-addPeer("Supervisor","RPERA_InputTorqueLimiter")
-setActivity("RPERA_InputTorqueLimiter", 0.0, HighestPriority, ORO_SCHED_RT)
-RPERA_InputTorqueLimiter.upper_limit = UPPERJOINTTORQUELIMIT
-RPERA_InputTorqueLimiter.lower_limit = LOWERJOINTTORQUELIMIT
-RPERA_InputTorqueLimiter.vector_size = 7
-RPERA_InputTorqueLimiter.configure
-	
 ### Interpolator (DO NOT INCREASE VALUES !!!) ###
 loadComponent("RPERA_ReferenceInterpolator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","RPERA_ReferenceInterpolator")
@@ -186,15 +178,8 @@ setActivity("RPERA_WriteClippedJointAngles",0.05,LowestPriority,ORO_SCHED_OTHER)
 RPERA_WriteClippedJointAngles.JointNames = JOINT_NAMES
 RPERA_WriteClippedJointAngles.configure
 
-### Publishing joint angles on ROS-topic ###
-loadComponent("RPERA_WriteCurrentJointAngles","ROS::DoublesToJointState")
-addPeer("Supervisor","RPERA_WriteCurrentJointAngles")
-setActivity("RPERA_WriteCurrentJointAngles",0.05,LowestPriority,ORO_SCHED_OTHER)
-RPERA_WriteCurrentJointAngles.JointNames = JOINT_NAMES
-RPERA_WriteCurrentJointAngles.configure
-
 ### Conversion analog PERA_IO values to torques ###
-loadComponent("RPERA_SensorTorques","SensorTorques")
+loadComponent("RPERA_SensorTorques","ARM::SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
                                   #	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
@@ -249,7 +234,6 @@ connect ("RPERA_GripperControl.gripper_measurement","RPERA_Homing.gripper_measur
 connect ("RPERA_Homing.gripper_command",			"RPERA_GripperControl.gripper_command", 	ConnPolicy() )
 
 ## Ros communication ##
-connect ("RPERA_MotorToJointSpace.out",				"RPERA_WriteCurrentJointAngles.pos_in", 	ConnPolicy() )
 connect ("RPERA_MotorToJointSpace.out",				"RPERA_JointOutputLimiter.in", 				ConnPolicy() )
 connect ("RPERA_JointOutputLimiter.out",			"RPERA_WriteClippedJointAngles.pos_in", 	ConnPolicy() )
 connect ("RPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.right_arm", 			ConnPolicy() )
@@ -277,7 +261,6 @@ connect ("RPERA_Controller.controlerrors",			"RPERA_Diagnostics.vec2", 					Conn
 connect ("RPERA_ReadReferences.pos_out", 			"RPERA_Diagnostics.vec3", 					ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
-stream ("RPERA_WriteCurrentJointAngles.out", 		ros.topic("/amigo/right_arm/measurements_raw"))
 stream ("RPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/right_arm/measurements"))
 stream ("RPERA_ReadReferences.in", 					ros.topic("/amigo/right_arm/references"))
 stream ("RPERA_GripperControl.gripper_measurement", ros.topic("/amigo/right_gripper/measurements"))
@@ -286,7 +269,6 @@ stream ("RPERA_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("RPERA_Diagnostics")
-Supervisor.AddAllwaysOnPeer ("RPERA_WriteCurrentJointAngles")
 Supervisor.AddAllwaysOnPeer ("RPERA_WriteClippedJointAngles")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("RPERA_Controller")

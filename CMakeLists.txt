@@ -11,7 +11,14 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   )
 
-orocos_install_headers(DIRECTORY include/${PROJECT_NAME})
+include_directories(
+	include
+	${catkin_INCLUDE_DIRS} 
+	${scl_filters_INCLUDE_DIRS} 
+	${USE_OROCOS_INCLUDE_DIRS})
+
+orocos_install_headers(DIRECTORY 
+	include)
 
 orocos_generate_package(
   INCLUDE_DIRS include
@@ -21,6 +28,11 @@ orocos_generate_package(
 install(FILES
 amigohardware.launch
 soem.ops
+base_controller.ops
+spindle_controller.ops
+left_arm_controller.ops
+right_arm_controller.ops
+head_controller.ops
 DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ### Specific Hardware Components - Spindle ###

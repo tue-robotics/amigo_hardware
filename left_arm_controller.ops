@@ -23,7 +23,7 @@ var array HOMED_POS 			= array (  	390.0,		544.0,		1.5708,		0.0,		1.8326,		0.985
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
-var double GEARRATIO_EM			= 1.0/410.0 ;# value (348.0) from philips manual does not make sense
+var double GEARRATIO_EM			= 1.0/410.0
 var double GEARRATIO_WM			= 1.0/290.0
 var double GEARRATIO_HM			= 196.0/3249.0
 var double ENCODERCOUNTS_SM		= 256.0*4.0
@@ -55,9 +55,10 @@ LPERA_ReadReferences.NumberOfJoints = 7
 LPERA_ReadReferences.configure
 
 ### Vector concatenate ###
-loadComponent("LPERA_VectorConcatenate","PERA::Concatenate")
+loadComponent("LPERA_VectorConcatenate","SIGNALROUTING::VectorConcatenate")
 addPeer("Supervisor","LPERA_VectorConcatenate")
 setActivity("LPERA_VectorConcatenate",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_VectorConcatenate.number_of_inputs = 2
 LPERA_VectorConcatenate.configure
 
 ### Motor to joint angles ###
@@ -75,15 +76,6 @@ LPERA_MotorToJointSpace.function5 	= array  ( 0.0,  0.0,  0.0,  0.5, -0.5,  0.0,
 LPERA_MotorToJointSpace.function6 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,  0.5,  0.0)
 LPERA_MotorToJointSpace.function7 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5, -0.5,  0.0)
 LPERA_MotorToJointSpace.function8 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
-
-## Input torque limiter
-loadComponent("LPERA_InputTorqueLimiter", "DISCONTINUITIES::Saturation")
-addPeer("Supervisor","LPERA_InputTorqueLimiter")
-setActivity("LPERA_InputTorqueLimiter", 0.0, HighestPriority, ORO_SCHED_RT)
-LPERA_InputTorqueLimiter.upper_limit = UPPERJOINTTORQUELIMIT
-LPERA_InputTorqueLimiter.lower_limit = LOWERJOINTTORQUELIMIT
-LPERA_InputTorqueLimiter.vector_size = 7
-LPERA_InputTorqueLimiter.configure
 
 ### Interpolator (DO NOT INCREASE VALUES !!!) ###
 loadComponent("LPERA_ReferenceInterpolator","SOURCES::ReferenceGenerator")
@@ -186,15 +178,8 @@ setActivity("LPERA_WriteClippedJointAngles",0.05,LowestPriority,ORO_SCHED_OTHER)
 LPERA_WriteClippedJointAngles.JointNames = JOINT_NAMES
 LPERA_WriteClippedJointAngles.configure
 
-### Publishing joint angles on ROS-topic ###
-loadComponent("LPERA_WriteCurrentJointAngles","ROS::DoublesToJointState")
-addPeer("Supervisor","LPERA_WriteCurrentJointAngles")
-setActivity("LPERA_WriteCurrentJointAngles",0.05,LowestPriority,ORO_SCHED_OTHER)
-LPERA_WriteCurrentJointAngles.JointNames = JOINT_NAMES
-LPERA_WriteCurrentJointAngles.configure
-
 ### Conversion analog PERA_IO values to torques ###
-loadComponent("LPERA_SensorTorques","SensorTorques")
+loadComponent("LPERA_SensorTorques","ARM::SensorTorques")
 addPeer("Supervisor","LPERA_SensorTorques")
 setActivity("LPERA_SensorTorques",(Ts),LowestPriority,ORO_SCHED_OTHER)
                                   #	SM1 		SM2			obsolete	SM3 		EM1 		EM2 		WM1 		WM2 		HM
@@ -249,7 +234,6 @@ connect ("LPERA_GripperControl.gripper_measurement","LPERA_Homing.gripper_measur
 connect ("LPERA_Homing.gripper_command",			"LPERA_GripperControl.gripper_command", 	ConnPolicy() )
 
 ## Ros communication ##
-connect ("LPERA_MotorToJointSpace.out",				"LPERA_WriteCurrentJointAngles.pos_in", 	ConnPolicy() )
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_JointOutputLimiter.in", 				ConnPolicy() )
 connect ("LPERA_JointOutputLimiter.out",			"LPERA_WriteClippedJointAngles.pos_in", 	ConnPolicy() )
 connect ("LPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.right_arm", 			ConnPolicy() )
@@ -277,7 +261,6 @@ connect ("LPERA_Controller.controlerrors",			"LPERA_Diagnostics.vec2", 					Conn
 connect ("LPERA_ReadReferences.pos_out", 			"LPERA_Diagnostics.vec3", 					ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
-stream ("LPERA_WriteCurrentJointAngles.out", 		ros.topic("/amigo/left_arm/measurements_raw"))
 stream ("LPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/left_arm/measurements"))
 stream ("LPERA_ReadReferences.in", 					ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
@@ -286,7 +269,6 @@ stream ("LPERA_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("LPERA_Diagnostics")
-Supervisor.AddAllwaysOnPeer ("LPERA_WriteCurrentJointAngles")
 Supervisor.AddAllwaysOnPeer ("LPERA_WriteClippedJointAngles")
 Supervisor.AddAllwaysOnPeer ("LPERA_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("LPERA_Controller")

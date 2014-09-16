@@ -17,7 +17,7 @@
 using namespace std;
 using namespace RTT;
 using namespace soem_beckhoff_drivers;
-using namespace AMIGO;
+using namespace AMIGOHEAD;
 
 PanTiltController::PanTiltController(const std::string& name) :
 	TaskContext(name, PreOperational) {
