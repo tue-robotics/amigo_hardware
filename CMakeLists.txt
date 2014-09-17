@@ -45,9 +45,7 @@ target_link_libraries(SpindleHoming ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 target_link_libraries(ReadSpindleSetpointJointState ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 
 ### Specific Hardware Components - Arm ###
-orocos_component(GripperControl src/GripperControl.cpp)
 orocos_component(PeraHoming src/PeraHoming.cpp)
-target_link_libraries(GripperControl ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 target_link_libraries(PeraHoming ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 
 ### Specific Hardware Components - Head ###
