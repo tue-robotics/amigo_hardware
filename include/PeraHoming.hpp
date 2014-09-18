@@ -53,6 +53,7 @@ namespace AMIGOPERA
 		doubles ABS_SEN_DIR;
 		doubles MAX_ERRORS;
 		doubles END_POSE;
+		string CONTROLLER_NAME;
 		
 		//constants
 		double FastStep;
@@ -78,11 +79,11 @@ namespace AMIGOPERA
 
         sensor_msgs::JointState out_msg;
 	
+	protected:
+		OperationCaller<void(doubles)> Controller_SetMaxErrors;
+	
     public:
-
-		//! Class constructor
 		PeraHoming(const string& name);
-		//! Class destructor
 		~PeraHoming();
 
 		bool configureHook();

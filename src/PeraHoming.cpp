@@ -47,6 +47,7 @@ PeraHoming::PeraHoming(const string& name) : TaskContext(name, PreOperational)
 	addProperty( "startJoint", STRT_JNT ).doc("Joint number to start homing with");
 	addProperty( "requireGripperHoming", REQUIRE_GRIPPER_HOMING ).doc("Defines whether the gripper is homed upon startup");
     addProperty( "endPose", END_POSE ).doc("end Pose the PERA should go after homing");
+    addProperty( "controllerName", CONTROLLER_NAME ).doc("Name of the controller component");
     addProperty( "jointNames", out_msg.name ).doc("Joint state names");
 }
 
@@ -119,6 +120,25 @@ bool PeraHoming::startHook()
 	Q6homed = false;
 	jntNr=STRT_JNT;
 	
+	// Lookup the Controller component.
+	TaskContext* Controller = this->getPeer(CONTROLLER_NAME);
+	if ( !Controller ) {
+		log(Error) << "Could not find " << CONTROLLER_NAME << " component! Did you add it as Peer in the ops file?"<<endlog();
+		return false;
+	}
+	// Lookup operations of peers
+	Controller_SetMaxErrors = Controller->getOperation("SetMaxErrors");
+	if ( !Controller_SetMaxErrors.ready() ) {
+		log(Error) << "Could not find " << CONTROLLER_NAME << ".SetMaxErrors Operation!"<<endlog();
+		return false;
+	}	
+	// At start of Homing, double MAX_ERRORS in safety check in Controller
+	doubles DOUBLE_MAX_ERRORS(0.0,MAX_ERRORS.size());
+	for (uint i = 0; i < MAX_ERRORS.size(); i++) {
+		DOUBLE_MAX_ERRORS[i] = 2.0*MAX_ERRORS[i];
+	}
+	Controller_SetMaxErrors(DOUBLE_MAX_ERRORS);
+	
 	return true;
 }
 
@@ -173,12 +193,6 @@ void PeraHoming::updateHook()
 	// Send jntNr to safety component such that safety component can be disabled for these joints
 	double homingjoint = (double) jntNr; 
 	homingjoint_outPort.write(homingjoint);
-}
-
-void PeraHoming::stopHook()
-{
-	endpose_outPort.write(END_POSE);
-	log(Warning)<<"PeraHoming: Sent to reset pos \n"<<endlog();
 }
 
 doubles PeraHoming::homing(doubles jointErrors, doubles absJntAngles, doubles tempHomJntAngles, doubles measRelJntAngles){
@@ -415,5 +429,13 @@ doubles PeraHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 
 }
 
+void PeraHoming::stopHook()
+{
+	// Now reset the 2.0*MAX_ERRORS to MAX_ERRORS in the controller
+	Controller_SetMaxErrors(MAX_ERRORS);
+
+	endpose_outPort.write(END_POSE);
+	log(Warning)<<"PeraHoming: Sent to reset pos \n"<<endlog();
+}
 
 ORO_CREATE_COMPONENT(AMIGOPERA::PeraHoming)

@@ -102,6 +102,7 @@ LPERA_Homing.requireHoming			= REQUIREHOMING
 LPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
 LPERA_Homing.maxJointErrors 		= MAXERRORS
 LPERA_Homing.jointNames				= JOINT_NAMES
+LPERA_Homing.controllerName			= "LPERA_Controller"
 LPERA_Homing.stepSize 				= 0.5
 LPERA_Homing.startJoint 			= 7
 LPERA_Homing.absSenDir 				= array (	1.0,	1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)

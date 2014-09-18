@@ -102,6 +102,7 @@ RPERA_Homing.requireHoming			= REQUIREHOMING
 RPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
 RPERA_Homing.maxJointErrors 		= MAXERRORS
 RPERA_Homing.jointNames				= JOINT_NAMES
+RPERA_Homing.controllerName			= "RPERA_Controller"
 RPERA_Homing.stepSize 				= 0.5
 RPERA_Homing.startJoint 			= 7
 RPERA_Homing.absSenDir 				= array (	1.0,	-1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
