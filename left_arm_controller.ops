@@ -18,7 +18,7 @@ var array LOWERJOINTLIMIT 		= array ( 	-1.57,		-1.57,	 	-1.57,  	0.0, 		-1.83,		
 var array UPPERJOINTTORQUELIMIT = array (  	26.4,	 	26.4,	   	9.8, 	 	11.8,  		11.8,  		2.5,   		2.5 				)
 var array LOWERJOINTTORQUELIMIT = array (  	-26.4, 		-26.4,	  	-9.8, 		-11.8, 		-11.8, 		-2.5,  		-2.5 				)
 var array MAXERRORS 			= array (  	0.09,     	0.09,     	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.19, 	 	5.0		)
-var array HOMED_POS 			= array (  	390.0,		544.0,		1.5708,		0.0,		1.8326,		0.985,		0.7854				)
+var array HOMED_POS 			= array (  	394.0,		597.0,		1.5708,		0.0,		1.8326,		0.985,		0.7854				)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -122,7 +122,7 @@ LPERA_ReadEncoders.configure
 loadComponent("LPERA_GripperControl","ARM::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",TS,HighestPriority,ORO_SCHED_RT)
-LPERA_GripperControl.threshold_closed 	= 50.0
+LPERA_GripperControl.threshold_closed 	= 25.0
 LPERA_GripperControl.max_pos 			= 5.3
 LPERA_GripperControl.gripper_gain 		= 0.1
 LPERA_GripperControl.configure
@@ -184,7 +184,7 @@ setActivity("LPERA_SensorTorques",(TS),LowestPriority,ORO_SCHED_OTHER)
 LPERA_SensorTorques.vector_size	= N
 LPERA_SensorTorques.c1 			= array (35.0,		87.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
 LPERA_SensorTorques.c2 			= array (-0.2,		0.2,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
-LPERA_SensorTorques.c3 			= array (-76.26,	-95.29,	    -145.16,	-38.71,		-111.7,		1.0,		1.0,		-34.66	)
+LPERA_SensorTorques.c3 			= array (-76.26,	-95.29,	    -145.16,	-38.71,		-111.7,		1.0,		1.0,		0.0		)
 LPERA_SensorTorques.configure
 
 #### Diagnostics ###
