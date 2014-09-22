@@ -431,7 +431,7 @@ void PeraHoming::stopHook()
 	Controller_SetMaxErrors(MAX_ERRORS);
 
 	endpose_outPort.write(END_POSE);
-	log(Warning)<<"PeraHoming: Sent to reset pos \n"<<endlog();
+	log(Info)<<"PeraHoming: Sent to reset pos \n"<<endlog();
 }
 
 ORO_CREATE_COMPONENT(AMIGOPERA::PeraHoming)
