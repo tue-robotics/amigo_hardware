@@ -133,7 +133,7 @@ bool PeraHoming::startHook()
 		return false;
 	}	
 	// At start of Homing, double MAX_ERRORS in safety check in Controller
-	doubles DOUBLE_MAX_ERRORS(0.0,MAX_ERRORS.size());
+	doubles DOUBLE_MAX_ERRORS(MAX_ERRORS.size(),0.0);
 	for (uint i = 0; i < MAX_ERRORS.size(); i++) {
 		DOUBLE_MAX_ERRORS[i] = 2.0*MAX_ERRORS[i];
 	}
