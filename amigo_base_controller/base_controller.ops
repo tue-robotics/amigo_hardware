@@ -62,6 +62,7 @@ loadComponent("BASE_ReadReferences","ROS::ReadTwistMsg")
 addPeer("Supervisor","BASE_ReadReferences")
 setActivity("BASE_ReadReferences",0.01,LowestPriority,ORO_SCHED_OTHER)
 BASE_ReadReferences.max_start_vel = 0.7
+BASE_ReadReferences.max_vel = array (1.8, 1.0, 3.1415)
 BASE_ReadReferences.max_acc = array (0.7, 0.7, 2.0)
 BASE_ReadReferences.max_interval = 1.0
 BASE_ReadReferences.configure
