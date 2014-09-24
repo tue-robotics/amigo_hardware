@@ -17,14 +17,17 @@ var string wbcstr
 wbcstr = os.getenv("wbc")
 
 #### DECLARATION OF PARAMETERS ####
-var double Ts = 0.001
-var strings JOINT_NAMES = strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
-var strings DUMMY_JOINT_NAMES = strings( "finger1_joint_left", "finger1_tip_joint_left", "finger2_joint_left", "finger2_tip_joint_left" )
+var double Ts 					= 0.001
+var string LEFT_ARM_SHOULDER 	= "Soem.Slave_1012"
+var string LEFT_ARM_UPPERARM 	= "Soem.Slave_1013"
+var string LEFT_ARM_LOWERARM 	= "Soem.Slave_1014"
+var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
+var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_left", "finger1_tip_joint_left", "finger2_joint_left", "finger2_tip_joint_left" )
 var array UPPERJOINTLIMIT 		= array (   0.0,	 	1.57,	  	1.57, 	 	2.23,  		1.83, 		0.95,  		0.61,   	4.0		)
 var array LOWERJOINTLIMIT 		= array ( 	-1.57,		-1.57,	 	-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61,  	-4.0	)
 var array UPPERJOINTTORQUELIMIT = array (  	26.4,	 	26.4,	   	9.8, 	 	11.8,  		11.8,  		2.5,   		2.5 				)
 var array LOWERJOINTTORQUELIMIT = array (  	-26.4, 		-26.4,	  	-9.8, 		-11.8, 		-11.8, 		-2.5,  		-2.5 				)
-var array MAXERRORS 			= array (  	0.09,     	0.09,     	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.19, 	 	5.0		)
+var array MAXERRORS 			= array (  	0.09,     	0.09,     	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.19, 	 	1.0		)
 var array HOMED_POS 			= array (  	394.0,		600.0,		1.5708,		0.0,		1.8326,		0.985,		0.7854				)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
@@ -178,7 +181,7 @@ LPERA_ReadEncoders.configure
 loadComponent("LPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
-LPERA_GripperControl.threshold_closed 	= 50.0
+LPERA_GripperControl.threshold_closed 	= 15.0
 LPERA_GripperControl.max_pos 			= 5.3
 LPERA_GripperControl.gripper_gain 		= 0.1
 LPERA_GripperControl.sensorPos 			= 8
@@ -288,15 +291,15 @@ JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
 JointStateAggregator.addAggregationPort(BODYNAME)
 
 #### CONNECT COMPONENTS ####
-## Control loop	##
-connect ("Soem.Slave_1014.encoderAngle1","LPERA_ReadEncoders.enc1_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1014.encoderAngle2","LPERA_ReadEncoders.enc2_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle1","LPERA_ReadEncoders.enc3_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle2","LPERA_ReadEncoders.enc4_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1015.encoderAngle3","LPERA_ReadEncoders.enc5_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1016.encoderAngle1","LPERA_ReadEncoders.enc6_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1016.encoderAngle2","LPERA_ReadEncoders.enc7_in" , ConnPolicy() ); 
-connect ("Soem.Slave_1016.encoderAngle3","LPERA_ReadEncoders.enc8_in" , ConnPolicy() );
+## Control loop	## 
+connect (LEFT_ARM_SHOULDER+".encoderAngle1",		"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_SHOULDER+".encoderAngle2",		"LPERA_ReadEncoders.enc2_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_UPPERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc3_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_UPPERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc4_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_UPPERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc5_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_LOWERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_LOWERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ) 
+connect (LEFT_ARM_LOWERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() )
 connect ("LPERA_ReadEncoders.out","LPERA_MotorToJointSpace.in" , ConnPolicy() ); 
 connect ("LPERA_MotorToJointSpace.out","LPERA_ComputeErrors.in_minus", ConnPolicy() )
 connect ("LPERA_ComputeErrors.out","LPERA_Gains.in", ConnPolicy() )
@@ -335,9 +338,9 @@ connect ("LPERA_Homing.homing_joint","LPERA_Safety.homing", ConnPolicy() )
 connect ("LPERA_Safety.resetInt","LPERA_ReferenceInterpolator.resetValues", ConnPolicy() )
 connect ("LPERA_Safety.safe","Supervisor.left_arm_error", ConnPolicy() )
 connect ("LPERA_Safety.safe","LPERA_ActuatorEnabler.safe_in", ConnPolicy() )
-connect ("LPERA_ActuatorEnabler.actuator_enable","Soem.Slave_1014.enablePort", ConnPolicy() )
-connect ("LPERA_ActuatorEnabler.actuator_enable","Soem.Slave_1015.enablePort", ConnPolicy() )
-connect ("LPERA_ActuatorEnabler.actuator_enable","Soem.Slave_1016.enablePort", ConnPolicy() )
+connect ("LPERA_ActuatorEnabler.actuator_enable",LEFT_ARM_SHOULDER+".enablePort", 			ConnPolicy() )
+connect ("LPERA_ActuatorEnabler.actuator_enable",LEFT_ARM_UPPERARM+".enablePort", 			ConnPolicy() )
+connect ("LPERA_ActuatorEnabler.actuator_enable",LEFT_ARM_LOWERARM+".enablePort", 			ConnPolicy() )
 
 ## Homing ##
 connect ("LPERA_Homing.homing_finished","Supervisor.left_arm_homingfinished", ConnPolicy() )
