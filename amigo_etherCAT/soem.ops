@@ -14,6 +14,12 @@ trigger
 
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
+var string LEFT_ARM_SHOULDER = "Soem.Slave_1012"
+var string LEFT_ARM_UPPERARM = "Soem.Slave_1013"
+var string LEFT_ARM_LOWERARM = "Soem.Slave_1014"
+var string RIGHT_ARM_SHOULDER = "Soem.Slave_1015"
+var string RIGHT_ARM_UPPERARM = "Soem.Slave_1016"
+var string RIGHT_ARM_LOWERARM = "Soem.Slave_1017"
 
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","SUPERVISORY::Supervisor")
@@ -61,9 +67,9 @@ RPERA_AnalogOuts.input_sizes 						= array (8.0)
 RPERA_AnalogOuts.output_sizes 						= array (3.0, 3.0, 3.0)
 RPERA_AnalogOuts.output_positions 					= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 RPERA_AnalogOuts.configure
-connect ("RPERA_AnalogOuts.out1","Soem.Slave_1010.pwmDutyMotorsIn", ConnPolicy() );
-connect ("RPERA_AnalogOuts.out2","Soem.Slave_1011.pwmDutyMotorsIn", ConnPolicy() );
-connect ("RPERA_AnalogOuts.out3","Soem.Slave_1012.pwmDutyMotorsIn", ConnPolicy() );
+connect ("RPERA_AnalogOuts.out1",RIGHT_ARM_SHOULDER+".pwmDutyMotors", ConnPolicy() );
+connect ("RPERA_AnalogOuts.out2",RIGHT_ARM_UPPERARM+".pwmDutyMotors", ConnPolicy() );
+connect ("RPERA_AnalogOuts.out3",RIGHT_ARM_LOWERARM+".pwmDutyMotors", ConnPolicy() );
 
 #### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
 loadComponent("LPERA_AnalogOuts","SOEM::AnalogOutsGeneric")
@@ -75,9 +81,9 @@ LPERA_AnalogOuts.input_sizes 						= array (8.0)
 LPERA_AnalogOuts.output_sizes 						= array (3.0, 3.0, 3.0)
 LPERA_AnalogOuts.output_positions 					= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 LPERA_AnalogOuts.configure
-connect ("LPERA_AnalogOuts.out1","Soem.Slave_1014.pwmDutyMotorsIn", ConnPolicy() );
-connect ("LPERA_AnalogOuts.out2","Soem.Slave_1015.pwmDutyMotorsIn", ConnPolicy() );
-connect ("LPERA_AnalogOuts.out3","Soem.Slave_1016.pwmDutyMotorsIn", ConnPolicy() );
+connect ("LPERA_AnalogOuts.out1",LEFT_ARM_SHOULDER+".pwmDutyMotors", ConnPolicy() );
+connect ("LPERA_AnalogOuts.out2",LEFT_ARM_UPPERARM+".pwmDutyMotors", ConnPolicy() );
+connect ("LPERA_AnalogOuts.out3",LEFT_ARM_LOWERARM+".pwmDutyMotors", ConnPolicy() );
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS ###
 loadComponent("BATTERY_AnalogIns","SOEM::AnalogInsGeneric")
@@ -104,12 +110,12 @@ RPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0,
 RPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
 RPERA_AnalogIns.direct_to_ROS 						= false
 RPERA_AnalogIns.configure
-connect ("Soem.Slave_1010.forceSensors","RPERA_AnalogIns.in1", ConnPolicy() )  
-connect ("Soem.Slave_1011.forceSensors","RPERA_AnalogIns.in2", ConnPolicy() )  
-connect ("Soem.Slave_1012.forceSensors","RPERA_AnalogIns.in3", ConnPolicy() )   
-connect ("Soem.Slave_1010.positionSensors","RPERA_AnalogIns.in4", ConnPolicy() )  
-connect ("Soem.Slave_1011.positionSensors","RPERA_AnalogIns.in5", ConnPolicy() )  
-connect ("Soem.Slave_1012.positionSensors","RPERA_AnalogIns.in6", ConnPolicy() )
+connect (RIGHT_ARM_SHOULDER+".forceSensors","RPERA_AnalogIns.in1", ConnPolicy() )  
+connect (RIGHT_ARM_UPPERARM+".forceSensors","RPERA_AnalogIns.in2", ConnPolicy() )  
+connect (RIGHT_ARM_LOWERARM+".forceSensors","RPERA_AnalogIns.in3", ConnPolicy() )   
+connect (RIGHT_ARM_SHOULDER+".positionSensors","RPERA_AnalogIns.in4", ConnPolicy() )  
+connect (RIGHT_ARM_UPPERARM+".positionSensors","RPERA_AnalogIns.in5", ConnPolicy() )  
+connect (RIGHT_ARM_LOWERARM+".positionSensors","RPERA_AnalogIns.in6", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
 loadComponent("LPERA_AnalogIns","SOEM::AnalogInsGeneric")
@@ -118,16 +124,16 @@ setActivity("LPERA_AnalogIns",Ts,HighestPriority,ORO_SCHED_RT)
 LPERA_AnalogIns.numberofinports    					= 6
 LPERA_AnalogIns.numberofoutports    				= 2
 LPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
-LPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-LPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
+LPERA_AnalogIns.input_positions						= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+LPERA_AnalogIns.output_sizes 						= array (9.0, 9.0)
 LPERA_AnalogIns.direct_to_ROS 						= false
 LPERA_AnalogIns.configure
-connect ("Soem.Slave_1014.forceSensors","LPERA_AnalogIns.in1", ConnPolicy() )  
-connect ("Soem.Slave_1015.forceSensors","LPERA_AnalogIns.in2", ConnPolicy() )  
-connect ("Soem.Slave_1016.forceSensors","LPERA_AnalogIns.in3", ConnPolicy() )   
-connect ("Soem.Slave_1014.positionSensors","LPERA_AnalogIns.in4", ConnPolicy() )  
-connect ("Soem.Slave_1015.positionSensors","LPERA_AnalogIns.in5", ConnPolicy() )  
-connect ("Soem.Slave_1016.positionSensors","LPERA_AnalogIns.in6", ConnPolicy() )
+connect (LEFT_ARM_SHOULDER+".forceSensors","LPERA_AnalogIns.in1", ConnPolicy() )  
+connect (LEFT_ARM_UPPERARM+".forceSensors","LPERA_AnalogIns.in2", ConnPolicy() )  
+connect (LEFT_ARM_LOWERARM+".forceSensors","LPERA_AnalogIns.in3", ConnPolicy() )   
+connect (LEFT_ARM_SHOULDER+".positionSensors","LPERA_AnalogIns.in4", ConnPolicy() )  
+connect (LEFT_ARM_UPPERARM+".positionSensors","LPERA_AnalogIns.in5", ConnPolicy() )  
+connect (LEFT_ARM_LOWERARM+".positionSensors","LPERA_AnalogIns.in6", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS (Slave_100b) ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
