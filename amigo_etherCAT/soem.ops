@@ -106,8 +106,8 @@ setActivity("RPERA_AnalogIns",Ts,HighestPriority,ORO_SCHED_RT)
 RPERA_AnalogIns.numberofinports    					= 6
 RPERA_AnalogIns.numberofoutports    				= 2
 RPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
-RPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-RPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
+RPERA_AnalogIns.input_positions						= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+RPERA_AnalogIns.output_sizes 						= array (9.0, 9.0)
 RPERA_AnalogIns.direct_to_ROS 						= false
 RPERA_AnalogIns.configure
 connect (RIGHT_ARM_SHOULDER+".forceSensors","RPERA_AnalogIns.in1", ConnPolicy() )  
