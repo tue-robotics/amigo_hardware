@@ -94,23 +94,6 @@ RPERA_ReferenceInterpolator.interpolator6 		= array (0.0, 1.0, 0.5)
 RPERA_ReferenceInterpolator.interpolator7 		= array (0.0, 1.0, 0.5)
 RPERA_ReferenceInterpolator.interpolator8 		= array (0.0, 10.0, 100.0)
 
-### PERA Homing ###
-loadComponent("RPERA_Homing","AMIGOPERA::PeraHoming")
-addPeer("Supervisor","RPERA_Homing")
-setActivity("RPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
-RPERA_Homing.requireHoming			= REQUIREHOMING
-RPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
-RPERA_Homing.maxJointErrors 		= MAXERRORS
-RPERA_Homing.jointNames				= JOINT_NAMES
-RPERA_Homing.controllerName			= "RPERA_Controller"
-RPERA_Homing.stepSize 				= 0.5
-RPERA_Homing.startJoint 			= 7
-RPERA_Homing.absSenDir 				= array (	1.0,	-1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
-RPERA_Homing.homedPos 				= HOMED_POS
-RPERA_Homing.absOrRel 				= array (	0.0,	0.0, 	1.0,	1.0,	1.0,	1.0,	1.0,	1.0	)
-RPERA_Homing.endPose				= array (  -0.1,   -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0)
-RPERA_Homing.configure
-
 ### LOAD READENCODERS
 loadComponent("RPERA_ReadEncoders","SOEM::ReadEncoders")
 addPeer("Supervisor","RPERA_ReadEncoders")
@@ -195,6 +178,24 @@ RPERA_SensorTorques.c1 			= array (42.0,		4250.0,		94.0,		20.0,		825.0,		1.0,		1
 RPERA_SensorTorques.c2 			= array (-0.8,		12.0,	     1.0,		-2.2,		1.0,		1.0,		1.0,		0.2			)
 RPERA_SensorTorques.c3 			= array (-35.63,	-294.40,	-30.56,		-30.9,		-168.32,	1.0, 		1.0,		-22.66		)
 RPERA_SensorTorques.configure
+
+### PERA Homing ###
+loadComponent("RPERA_Homing","AMIGOPERA::PeraHoming")
+addPeer("Supervisor","RPERA_Homing")
+addPeer("RPERA_Homing","RPERA_Safety")
+setActivity("RPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
+RPERA_Homing.requireHoming			= REQUIREHOMING
+RPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
+RPERA_Homing.maxJointErrors 		= MAXERRORS
+RPERA_Homing.jointNames				= JOINT_NAMES
+RPERA_Homing.controllerName			= "RPERA_Safety"
+RPERA_Homing.stepSize 				= 0.5
+RPERA_Homing.startJoint 			= 7
+RPERA_Homing.absSenDir 				= array (	1.0,	-1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
+RPERA_Homing.homedPos 				= HOMED_POS
+RPERA_Homing.absOrRel 				= array (	0.0,	0.0, 	1.0,	1.0,	1.0,	1.0,	1.0,	1.0	)
+RPERA_Homing.endPose				= array (  -0.1,   -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0)
+RPERA_Homing.configure
 
 #### Diagnostics ###
 loadComponent("RPERA_Diagnostics","ROS::RosDiagnostics")
@@ -285,15 +286,15 @@ Supervisor.AddAllwaysOnPeer ("RPERA_WriteClippedJointAngles")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("RPERA_Controller")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceInterpolator")
-Supervisor.AddAllwaysOnPeer ("RPERA_Safety")
 
 Supervisor.AddHomingOnlyPeer ("RPERA_Homing", BODYNUMBER )
 
 Supervisor.AddOpOnlyPeer ("RPERA_ReadReferences", BODYNUMBER )
 
+Supervisor.AddEnabledPeer ("RPERA_Safety", BODYNUMBER)
 Supervisor.AddEnabledPeer ("RPERA_VectorConcatenate", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_MotorToJointSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_JointToMotorSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_JointOutputLimiter", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )
+#Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
+#Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )

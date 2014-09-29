@@ -157,5 +157,6 @@ Supervisor.AddHomingOnlyPeer ("SPINDLE_Homing", BODYNUMBER );
 
 Supervisor.AddOpOnlyPeer ("SPINDLE_ReadReferences", BODYNUMBER )
 
+Supervisor.AddEnabledPeer ("SPINDLE_Safety", BODYNUMBER )
 Supervisor.AddEnabledPeer ("SPINDLE_ReferenceGenerator", BODYNUMBER )
 Supervisor.AddEnabledPeer ("SPINDLE_Controller", BODYNUMBER )
