@@ -17,6 +17,9 @@ include_directories(
 	${scl_filters_INCLUDE_DIRS} 
 	${USE_OROCOS_INCLUDE_DIRS})
 
+# Get all the headers
+file(GLOB_RECURSE HEADER_FILES include/*.hpp)
+
 orocos_install_headers(DIRECTORY 
 	include)
 
@@ -35,21 +38,21 @@ right_arm_controller.ops
 head_controller.ops
 DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
-### Specific Hardware Components - Spindle ###
+### Specific Hardware Components - Base ###
 # None - That's the way to go!
 
 ### Specific Hardware Components - Spindle ###
-orocos_component(SpindleHoming src/SpindleHoming.cpp)
-orocos_component(ReadSpindleSetpointJointState src/ReadSpindleSetpointJointState.cpp)
+orocos_component(SpindleHoming src/SpindleHoming.cpp ${HEADER_FILES})
+orocos_component(ReadSpindleSetpointJointState src/ReadSpindleSetpointJointState.cpp ${HEADER_FILES})
 target_link_libraries(SpindleHoming ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 target_link_libraries(ReadSpindleSetpointJointState ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 
 ### Specific Hardware Components - Arm ###
-orocos_component(PeraHoming src/PeraHoming.cpp)
+orocos_component(PeraHoming src/PeraHoming.cpp ${HEADER_FILES})
 target_link_libraries(PeraHoming ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 
 ### Specific Hardware Components - Head ###
-orocos_component(PanTiltController src/PanTiltController.cpp)
-orocos_component(HeadEnabler src/HeadEnabler.cpp)
+orocos_component(PanTiltController src/PanTiltController.cpp ${HEADER_FILES})
+orocos_component(HeadEnabler src/HeadEnabler.cpp ${HEADER_FILES})
 target_link_libraries(PanTiltController ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 target_link_libraries(HeadEnabler ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
