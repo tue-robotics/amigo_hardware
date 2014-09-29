@@ -12,6 +12,7 @@ var strings JOINT_NAMES = strings( "torso_joint" )
 var int BODYNUMBER 		= 2
 var string BODYNAME 	= "spindle"
 var bool HOMEABLE 		= true
+var int N 				= 1
  
 ### NameBodyPart ###
 Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
@@ -44,7 +45,7 @@ SPINDLE_ReadReferences.configure
 loadComponent("SPINDLE_ReferenceGenerator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","SPINDLE_ReferenceGenerator")
 setActivity("SPINDLE_ReferenceGenerator",Ts,HighestPriority,ORO_SCHED_RT)
-SPINDLE_ReferenceGenerator.NrInterpolators = 1
+SPINDLE_ReferenceGenerator.NrInterpolators = N
 SPINDLE_ReferenceGenerator.InterpolatorDt = Ts
 SPINDLE_ReferenceGenerator.InterpolatorEps = 1.0
 SPINDLE_ReferenceGenerator.configure
@@ -68,19 +69,27 @@ SPINDLE_Homing.configure
 loadComponent("SPINDLE_Controller","FILTERS::Controller")
 setActivity("SPINDLE_Controller",0.0,LowestPriority,ORO_SCHED_OTHER)
 addPeer("Supervisor","SPINDLE_Controller")
-SPINDLE_Controller.vector_size    				= 1
+SPINDLE_Controller.vector_size    				= N
 SPINDLE_Controller.gains						= array(-40.0)
 SPINDLE_Controller.controllers					= strings("WeakIntegrator","LeadLag","LowPass")
 SPINDLE_Controller.sampling_time				= Ts
-SPINDLE_Controller.max_errors					= array (0.05)
-SPINDLE_Controller.motor_saturation				= array (100.0)
-SPINDLE_Controller.max_sat_time					= 25.0
 SPINDLE_Controller.zero_freq_WeakIntegrator		= array (0.3)
 SPINDLE_Controller.zero_freq_LeadLag			= array (1.6)
 SPINDLE_Controller.pole_freq_LeadLag			= array (60.0)
 SPINDLE_Controller.pole_freq_LowPass			= array (20.0)
 SPINDLE_Controller.pole_damp_LowPass			= array (0.7)
 SPINDLE_Controller.configure
+
+### Safety ###
+loadComponent("SPINDLE_Safety","SUPERVISORY::Safety")
+addPeer("Supervisor","SPINDLE_Safety")
+setActivity("SPINDLE_Safety",0.0,HighestPriority,ORO_SCHED_RT)
+SPINDLE_Safety.NJ							= N
+SPINDLE_Safety.NM							= N
+SPINDLE_Safety.maxJointErrors				= array (0.05)
+SPINDLE_Safety.motorSaturations				= array (200.0)
+SPINDLE_Safety.maxConSatTime				= 5.0
+SPINDLE_Safety.configure
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("SPINDLE_Diagnostics","ROS::RosDiagnostics")
@@ -121,16 +130,17 @@ connect ("DigitalIns2.out2", 						"SPINDLE_Homing.endswitch", 				ConnPolicy() 
 connect ("SPINDLE_Homing.ref_out",					"SPINDLE_ReferenceGenerator.refin", 		ConnPolicy() )
 
 ## Safety ##
-#connect ("SPINDLE_Safety.resetInt",				"SPINDLE_ReferenceGenerator.resetValues", 	ConnPolicy() )
-connect ("SPINDLE_Controller.safe",					"Supervisor.spindle_error", 				ConnPolicy() )
-connect ("SPINDLE_Controller.safe",					"DigitalOuts.in3", 							ConnPolicy() ); # Spindle brake
-connect ("SPINDLE_Controller.safe",					"DigitalOuts2.in1", 						ConnPolicy() );	# Spindle amplifier
+connect ("SPINDLE_Controller.jointErrors",			"SPINDLE_Safety.jointErrors", 				ConnPolicy() )
+connect ("SPINDLE_Controller.out",					"SPINDLE_Safety.controlEffort", 			ConnPolicy() )
+connect ("SPINDLE_Safety.safe",						"Supervisor.spindle_error", 				ConnPolicy() )
+connect ("SPINDLE_Safety.safe",						"DigitalOuts.in3", 							ConnPolicy() ); # Spindle brake
+connect ("SPINDLE_Safety.safe",						"DigitalOuts2.in1", 						ConnPolicy() );	# Spindle amplifier
 
 ## Diagnostics ##
 connect ("SPINDLE_ReferenceGenerator.posout", 		"SPINDLE_Diagnostics.vec1", 				ConnPolicy() )
-connect ("SPINDLE_Controller.controlerrors", 		"SPINDLE_Diagnostics.vec2", 				ConnPolicy() )
+connect ("SPINDLE_Controller.jointErrors", 			"SPINDLE_Diagnostics.vec2", 				ConnPolicy() )
 connect ("SPINDLE_Controller.out", 					"SPINDLE_Diagnostics.vec3", 				ConnPolicy() )
-connect ("SPINDLE_Controller.safe", 				"SPINDLE_Diagnostics.bool1", 				ConnPolicy() )
+connect ("SPINDLE_Safety.safe", 				"SPINDLE_Diagnostics.bool1", 				ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream("SPINDLE_Homing.resetRef", 					ros.topic("/amigo/torso/references"))

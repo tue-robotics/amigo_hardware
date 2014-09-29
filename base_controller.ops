@@ -92,9 +92,6 @@ BASE_Controller.vector_size    				= N
 BASE_Controller.gains						= array (5.0, 5.0, 5.0, 5.0)
 BASE_Controller.controllers					= strings("WeakIntegrator","LeadLag","LowPass")
 BASE_Controller.sampling_time				= Ts
-BASE_Controller.max_errors					= MAX_ERRORS
-BASE_Controller.motor_saturation			= array (9.9, 9.9, 9.9, 9.9)
-BASE_Controller.max_sat_time				= 0.1
 BASE_Controller.zero_freq_WeakIntegrator	= array (0.0001, 	0.0001, 	0.0001, 	0.0001)
 BASE_Controller.zero_freq_LeadLag			= array (15.0, 		15.0, 		15.0, 		15.0)
 BASE_Controller.pole_freq_LeadLag			= array (50.0, 		50.0, 		50.0, 		50.0)
@@ -102,6 +99,16 @@ BASE_Controller.pole_freq_LowPass		    = array (100.0, 	100.0, 		100.0, 		100.0)
 BASE_Controller.pole_damp_LowPass			= array (0.7, 		0.7, 		0.7, 		0.7)
 BASE_Controller.configure
 
+### Safety ###
+loadComponent("BASE_Safety","SUPERVISORY::Safety")
+addPeer("Supervisor","BASE_Safety")
+setActivity("BASE_Safety",0.0,HighestPriority,ORO_SCHED_RT)
+BASE_Safety.NJ							= N
+BASE_Safety.NM							= N
+BASE_Safety.maxJointErrors				= MAX_ERRORS
+BASE_Safety.motorSaturations			= array (9.9, 9.9, 9.9, 9.9)
+BASE_Safety.maxConSatTime				= 0.1
+BASE_Safety.configure
 
 ### SI2VOLT ###
 loadComponent("BASE_SI2Volt","MATH::Gain")
@@ -128,26 +135,31 @@ BASE_Diagnostics.boolname1 = "Amplifiers"
 # To Do JointState message base
 
 #### CONNECT COMPONENTS ####
-connect ("Soem.Slave_1002.Slave_1002_value",		"BASE_ReadEncoders.enc1_in", ConnPolicy() ); #enc1[-]
-connect ("Soem.Slave_1003.Slave_1003_value",		"BASE_ReadEncoders.enc2_in", ConnPolicy() ); #enc2[-]
-connect ("Soem.Slave_1004.Slave_1004_value",		"BASE_ReadEncoders.enc3_in", ConnPolicy() ); #enc3[-]
-connect ("Soem.Slave_1005.Slave_1005_value",		"BASE_ReadEncoders.enc4_in", ConnPolicy() ); #enc4[-]
-connect ("BASE_ReadEncoders.out",					"BASE_MotorToJointSpace.in", ConnPolicy() )
-connect ("BASE_MotorToJointSpace.out", 				"BASE_OdometryPublisher.pos", ConnPolicy() );
-connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in", ConnPolicy() );
-connect ("BASE_ReadEncoders.out",					"BASE_Controller.pos_in", ConnPolicy() ); #[m \n m \n rad]
-connect ("BASE_Controller.out",						"BASE_SI2Volt.in", ConnPolicy() )
-connect ("BASE_SI2Volt.out", 						"BASESPINDLE_AnalogOuts.in1", ConnPolicy() );
-connect ("BASE_ReadReferences.out",					"BASE_JointToMotorSpace.in", ConnPolicy() )
-connect ("BASE_JointToMotorSpace.out",				"BASE_VelocityToPosition.in", ConnPolicy() )
-connect ("BASE_ReadEncoders.out",					"BASE_VelocityToPosition.initial", ConnPolicy() ); # Use current position as initial position
-connect ("BASE_Controller.safe", 					"DigitalOuts2.in2", ConnPolicy() ); # amplifiers
+connect ("Soem.Slave_1002.Slave_1002_value",		"BASE_ReadEncoders.enc1_in", 		ConnPolicy() ); #enc1[-]
+connect ("Soem.Slave_1003.Slave_1003_value",		"BASE_ReadEncoders.enc2_in", 		ConnPolicy() ); #enc2[-]
+connect ("Soem.Slave_1004.Slave_1004_value",		"BASE_ReadEncoders.enc3_in", 		ConnPolicy() ); #enc3[-]
+connect ("Soem.Slave_1005.Slave_1005_value",		"BASE_ReadEncoders.enc4_in", 		ConnPolicy() ); #enc4[-]
+connect ("BASE_ReadEncoders.out",					"BASE_MotorToJointSpace.in", 		ConnPolicy() )
+connect ("BASE_MotorToJointSpace.out", 				"BASE_OdometryPublisher.pos", 		ConnPolicy() );
+connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in", 			ConnPolicy() );
+connect ("BASE_ReadEncoders.out",					"BASE_Controller.pos_in", 			ConnPolicy() ); #[m \n m \n rad]
+connect ("BASE_Controller.out",						"BASE_SI2Volt.in", 					ConnPolicy() )
+connect ("BASE_SI2Volt.out", 						"BASESPINDLE_AnalogOuts.in1", 		ConnPolicy() );
+connect ("BASE_ReadReferences.out",					"BASE_JointToMotorSpace.in", 		ConnPolicy() )
+connect ("BASE_JointToMotorSpace.out",				"BASE_VelocityToPosition.in", 		ConnPolicy() )
+connect ("BASE_ReadEncoders.out",					"BASE_VelocityToPosition.initial", 	ConnPolicy() ); # Use current position as initial position
+
+## Safety
+connect ("BASE_Safety.safe", 						"DigitalOuts2.in2", 				ConnPolicy() ); # amplifiers
+connect ("BASE_Controller.jointErrors",				"BASE_Safety.jointErrors", 			ConnPolicy() )
+connect ("BASE_Controller.out",						"BASE_Safety.controlEffort", 		ConnPolicy() )
+connect ("BASE_Safety.safe",						"Supervisor.base_error", 		ConnPolicy() )
 
 ## Diagnostics ##
-connect ("BASE_ReadReferences.out", 				"BASE_Diagnostics.vec1", ConnPolicy() )
-connect ("BASE_Controller.controlerrors", 			"BASE_Diagnostics.vec2", ConnPolicy() )
-connect ("BASE_SI2Volt.out", 						"BASE_Diagnostics.vec3", ConnPolicy() )
-connect ("BASE_Controller.safe", 					"BASE_Diagnostics.bool1", ConnPolicy() )
+connect ("BASE_ReadReferences.out", 				"BASE_Diagnostics.vec1", 			ConnPolicy() )
+connect ("BASE_Controller.jointErrors", 			"BASE_Diagnostics.vec2", 			ConnPolicy() )
+connect ("BASE_SI2Volt.out", 						"BASE_Diagnostics.vec3", 			ConnPolicy() )
+connect ("BASE_Safety.safe", 						"BASE_Diagnostics.bool1", 			ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream ("BASE_OdometryPublisher.odom", 				ros.topic("/amigo/base/measurements"));
