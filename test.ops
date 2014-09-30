@@ -13,6 +13,8 @@ import("rtt_control_components")
 import("soem_master")
 import("soem_beckhoff_drivers")
 import("tue_ethercat_drivers")
+import("amigo_force_controller")
+
 
 #### DECLARATION OF PARAMETERS ####
 var double TS = 0.001
@@ -30,7 +32,7 @@ loadComponent("Soem","soem_master::SoemMasterComponent")
 Soem.configure
 setActivity("Soem",TS,HighestPriority,ORO_SCHED_RT)
 
-### Constant Bool (Fake safety) ###
+### Constant Signal to provide runtime goals ###
 loadComponent("ConstantGoal","SOURCES::ConstantSignal")
 setActivity("ConstantGoal",TS,HighestPriority,ORO_SCHED_RT)
 ConstantGoal.vector_size	= N
@@ -65,12 +67,10 @@ ReadEncoders.configure
 loadComponent("Controller","FILTERS::Controller")
 setActivity("Controller",0.0,HighestPriority,ORO_SCHED_RT)
 Controller.vector_size    				= N
-Controller.gains						= array(20000.0, 	20000.0, 	10000.0)
+var double GAIN = (20000.0/1024.0)*24.0
+Controller.gains						= array (GAIN, 		GAIN, 		GAIN)
 Controller.controllers					= strings("WeakIntegrator","LeadLag","LowPass")
 Controller.sampling_time				= TS
-Controller.max_errors					= array (1.0, 		1.0, 		1.0)
-Controller.motor_saturation				= array (1000.0, 	1000.0,	 	400.0)
-Controller.max_sat_time					= 5.0
 Controller.zero_freq_WeakIntegrator		= array(0.0065,	  	0.0065,		0.009)
 Controller.zero_freq_LeadLag			= array(25.0, 		25.0, 		15.0)
 Controller.pole_freq_LeadLag			= array(80.0, 		80.0, 		40.0)
@@ -88,17 +88,31 @@ AnalogOuts.output_sizes 					= array (3.0)
 AnalogOuts.output_positions 				= array (1.0, 1.0, 1.0)
 AnalogOuts.configure
 
+#### DECLARATION OF COMPONENTS ####
+loadComponent("CurrentFFW","FORCECONTROL::CurrentFFW")
+setActivity("CurrentFFW",TS,HighestPriority,ORO_SCHED_RT)
+CurrentFFW.Ts 							= TS
+CurrentFFW.N 							= N
+CurrentFFW.MotorVoltageConstant			= array (0.0259, 1.0, 1.0)
+CurrentFFW.GearRatio 					= array (245.0/16224.0, 1.0, 1.0)
+CurrentFFW.TerminalResistance			= array (0.611, 1.0, 1.0)
+CurrentFFW.ArmatureWindingInductance	= array (0.000119, 1.0, 1.0)
+CurrentFFW.VoltageGains					= array (1.0/24.0*1024.0, 0.0, 0.0)
+CurrentFFW.configure
+
 ### Setting up tracing ###
 loadComponent("Tracing","Signal::Tracing")
 setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-Tracing.vector_sizes = array (3.0, 3.0, 3.0)
+Tracing.vector_sizes = array (3.0, 3.0, 3.0, 4.0)
 Tracing.buffersize =  25000;
 Tracing.filename = "/home/maxbaeten/ros/data/hardware_tracing/max/230914/singlemotortest1.dat"
 Tracing.Ts = TS
 Tracing.configure
 connect ("RefInt.posout","Tracing.in1", ConnPolicy()) 		;# Reference
 connect ("ReadEncoders.out","Tracing.in2", ConnPolicy()) 	;# Position
-connect ("Controller.out","Tracing.in3", ConnPolicy()) 		;# Control output
+connect ("Controller.out","Tracing.in3", ConnPolicy()) 		;# Control output before current FFW
+connect ("CurrentFFW.out_voltage","Tracing.in4", ConnPolicy()) 		;# Control output after current FFW
+
 
 #### DECLARATION OF CONECTIONS ####
 connect ("Soem.Slave_1002.encoder1","ReadEncoders.enc1_in", ConnPolicy()) 
@@ -107,7 +121,9 @@ connect ("Soem.Slave_1002.encoder3","ReadEncoders.enc3_in", ConnPolicy())
 connect ("ReadEncoders.out","Controller.pos_in", ConnPolicy())
 connect ("ConstantGoal.out","RefInt.posin", ConnPolicy()) 
 connect ("RefInt.posout","Controller.ref_in", ConnPolicy()) 
-connect ("Controller.out","AnalogOuts.in1", ConnPolicy()) 
+connect ("ReadEncoders.out","CurrentFFW.in_position", ConnPolicy()) 
+connect ("Controller.out","CurrentFFW.in_current", ConnPolicy()) 
+connect ("CurrentFFW.out_voltage","AnalogOuts.in1", ConnPolicy())
 connect ("AnalogOuts.out1","Soem.Slave_1002.pwmDutyMotors", ConnPolicy() );
 connect ("FakeSafety.out", "Soem.Slave_1002.enablePort", ConnPolicy() );
 
@@ -119,5 +135,6 @@ RefInt.start()
 AnalogOuts.start()
 FakeSafety.start()
 ConstantGoal.start()
+CurrentFFW.start()
 Tracing.start()
 

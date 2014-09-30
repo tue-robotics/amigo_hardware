@@ -291,10 +291,11 @@ Supervisor.AddHomingOnlyPeer ("LPERA_Homing", BODYNUMBER )
 
 Supervisor.AddOpOnlyPeer ("LPERA_ReadReferences", BODYNUMBER )
 
-Supervisor.AddEnabledPeer ("LPERA_Safety", BODYNUMBER)
 Supervisor.AddEnabledPeer ("LPERA_VectorConcatenate", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_MotorToJointSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_JointToMotorSpace", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_JointOutputLimiter", BODYNUMBER )
 #Supervisor.AddEnabledPeer ("LPERA_SensorTorques", BODYNUMBER )
 #Supervisor.AddEnabledPeer ("LPERA_GripperControl", BODYNUMBER )
+Supervisor.AddEnabledPeer ("LPERA_Safety", BODYNUMBER)
+

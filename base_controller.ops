@@ -174,10 +174,9 @@ Supervisor.AddAllwaysOnPeer ("BASE_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer ("BASE_OdometryPublisher")
 Supervisor.AddAllwaysOnPeer ("BASE_Diagnostics")
 
-Supervisor.AddEnabledPeer ("BASE_Safety", BODYNUMBER)
 Supervisor.AddEnabledPeer ("BASE_ReadReferences",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_JointToMotorSpace",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_VelocityToPosition",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_Controller", BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_SI2Volt",BODYNUMBER )
-
+Supervisor.AddEnabledPeer ("BASE_Safety", BODYNUMBER)
