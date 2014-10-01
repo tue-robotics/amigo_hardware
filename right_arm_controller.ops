@@ -282,19 +282,19 @@ stream ("RPERA_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("RPERA_Diagnostics")
+Supervisor.AddAllwaysOnPeer ("RPERA_JointOutputLimiter")
 Supervisor.AddAllwaysOnPeer ("RPERA_WriteClippedJointAngles")
 Supervisor.AddAllwaysOnPeer ("RPERA_ReadEncoders")
+Supervisor.AddAllwaysOnPeer ("RPERA_MotorToJointSpace" )
+Supervisor.AddAllwaysOnPeer ("RPERA_JointToMotorSpace" )
 Supervisor.AddAllwaysOnPeer ("RPERA_Controller")
-Supervisor.AddAllwaysOnPeer ("RPERA_ReferenceInterpolator")
 
 Supervisor.AddHomingOnlyPeer ("RPERA_Homing", BODYNUMBER )
 
 Supervisor.AddOpOnlyPeer ("RPERA_ReadReferences", BODYNUMBER )
 
+Supervisor.AddEnabledPeer ("RPERA_ReferenceInterpolator", BODYNUMBER)
 Supervisor.AddEnabledPeer ("RPERA_VectorConcatenate", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_MotorToJointSpace", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_JointToMotorSpace", BODYNUMBER )
-Supervisor.AddEnabledPeer ("RPERA_JointOutputLimiter", BODYNUMBER )
 #Supervisor.AddEnabledPeer ("RPERA_SensorTorques", BODYNUMBER )
 #Supervisor.AddEnabledPeer ("RPERA_GripperControl", BODYNUMBER )
 Supervisor.AddEnabledPeer ("RPERA_Safety", BODYNUMBER)
