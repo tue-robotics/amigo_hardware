@@ -132,15 +132,16 @@ connect ("SPINDLE_Homing.ref_out",					"SPINDLE_ReferenceGenerator.refin", 		Con
 ## Safety ##
 connect ("SPINDLE_Controller.jointErrors",			"SPINDLE_Safety.jointErrors", 				ConnPolicy() )
 connect ("SPINDLE_Controller.out",					"SPINDLE_Safety.controlEffort", 			ConnPolicy() )
-connect ("SPINDLE_Safety.safe",						"Supervisor.spindle_error", 				ConnPolicy() )
-connect ("SPINDLE_Safety.safe",						"DigitalOuts.in3", 							ConnPolicy() ); # Spindle brake
-connect ("SPINDLE_Safety.safe",						"DigitalOuts2.in1", 						ConnPolicy() );	# Spindle amplifier
+connect ("SPINDLE_Safety.enable",					"SPINDLE_Controller.safe", 					ConnPolicy() )
+connect ("SPINDLE_Safety.error",					"Supervisor.spindle_error", 				ConnPolicy() )
+connect ("SPINDLE_Safety.enable",					"DigitalOuts.in3", 							ConnPolicy() ); # Spindle brake
+connect ("SPINDLE_Safety.enable",					"DigitalOuts2.in1", 						ConnPolicy() );	# Spindle amplifier
 
 ## Diagnostics ##
 connect ("SPINDLE_ReferenceGenerator.posout", 		"SPINDLE_Diagnostics.vec1", 				ConnPolicy() )
 connect ("SPINDLE_Controller.jointErrors", 			"SPINDLE_Diagnostics.vec2", 				ConnPolicy() )
 connect ("SPINDLE_Controller.out", 					"SPINDLE_Diagnostics.vec3", 				ConnPolicy() )
-connect ("SPINDLE_Safety.safe", 				"SPINDLE_Diagnostics.bool1", 				ConnPolicy() )
+connect ("SPINDLE_Safety.enable",					"SPINDLE_Diagnostics.bool1", 				ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream("SPINDLE_Homing.resetRef", 					ros.topic("/amigo/torso/references"))
@@ -152,11 +153,11 @@ stream("SPINDLE_WriteJointStates.out", 				ros.topic("/amigo/torso/measurements"
 Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer ("SPINDLE_Diagnostics")
+Supervisor.AddAllwaysOnPeer ("SPINDLE_Controller")
 
 Supervisor.AddHomingOnlyPeer ("SPINDLE_Homing", BODYNUMBER );
 
 Supervisor.AddOpOnlyPeer ("SPINDLE_ReadReferences", BODYNUMBER )
 
 Supervisor.AddEnabledPeer ("SPINDLE_ReferenceGenerator", BODYNUMBER )
-Supervisor.AddEnabledPeer ("SPINDLE_Controller", BODYNUMBER )
 Supervisor.AddEnabledPeer ("SPINDLE_Safety", BODYNUMBER )

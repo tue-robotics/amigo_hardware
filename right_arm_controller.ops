@@ -251,10 +251,11 @@ connect ("RPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.right_arm"
 ## Safety ##
 connect ("RPERA_Controller.jointErrors",			"RPERA_Safety.jointErrors", 				ConnPolicy() )
 connect ("RPERA_Controller.out",					"RPERA_Safety.controlEffort", 				ConnPolicy() )
-connect ("RPERA_Safety.safe",						"Supervisor.right_arm_error", 				ConnPolicy() )
-connect ("RPERA_Safety.safe",						RIGHT_ARM_SHOULDER+".enablePort", 			ConnPolicy() )
-connect ("RPERA_Safety.safe",						RIGHT_ARM_UPPERARM+".enablePort", 			ConnPolicy() )
-connect ("RPERA_Safety.safe",						RIGHT_ARM_LOWERARM+".enablePort", 			ConnPolicy() )
+connect ("RPERA_Safety.enable",						"RPERA_Controller.safe", 					ConnPolicy() )
+connect ("RPERA_Safety.error",						"Supervisor.right_arm_error", 				ConnPolicy() )
+connect ("RPERA_Safety.enable",						RIGHT_ARM_SHOULDER+".enablePort", 			ConnPolicy() )
+connect ("RPERA_Safety.enable",						RIGHT_ARM_UPPERARM+".enablePort", 			ConnPolicy() )
+connect ("RPERA_Safety.enable",						RIGHT_ARM_LOWERARM+".enablePort", 			ConnPolicy() )
 
 ## Homing ##
 connect ("RPERA_Homing.homing_finished",			"Supervisor.right_arm_homingfinished", 		ConnPolicy() )
@@ -271,7 +272,7 @@ connect ("RPERA_Homing.endpos_out",					"RPERA_VectorConcatenate.in1", 				ConnP
 connect ("RPERA_VectorConcatenate.out", 			"RPERA_Diagnostics.vec1", 					ConnPolicy() )
 connect ("RPERA_Controller.jointErrors",			"RPERA_Diagnostics.vec2", 					ConnPolicy() )
 connect ("RPERA_ReadReferences.pos_out", 			"RPERA_Diagnostics.vec3", 					ConnPolicy() )
-connect ("RPERA_Safety.safe", 						"RPERA_Diagnostics.bool1", 					ConnPolicy() )
+connect ("RPERA_Safety.enable",						"RPERA_Diagnostics.bool1", 					ConnPolicy() )
 
 #### CONNECT ROS STREAMS ####
 stream ("RPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/right_arm/measurements"))
