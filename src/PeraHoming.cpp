@@ -373,6 +373,12 @@ doubles PeraHoming::homing(doubles jointErrors, doubles absJntAngles, doubles te
 				cntr2++;
 			}
 			else if ( cntr2==Ts ) {
+				// At start of Nulling, set MAX_ERRORS extremely high in safety check
+				doubles LARGE_MAX_ERRORS(MAX_ERRORS.size(),0.0);
+				for (uint i = 0; i < MAX_ERRORS.size(); i++) {
+					LARGE_MAX_ERRORS[i] = 20.0*MAX_ERRORS[i];
+				}
+				Safety_SetMaxErrors(LARGE_MAX_ERRORS);
 				
 				// Reset the referenceInterpolator and PERA_IO.
 				doubles resetdata(32,0.0);
