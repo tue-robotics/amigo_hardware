@@ -7,15 +7,15 @@
 ########################################################################
 
 #### DECLARATION OF PARAMETERS ####
-var double Ts 			= 0.001
-var strings JOINT_NAMES = strings( "torso_joint" )
-var int BODYNUMBER 		= 2
-var string BODYNAME 	= "spindle"
-var bool HOMEABLE 		= true
-var int N 				= 1
+var double Ts 				= 0.001
+var strings JOINT_NAMES 	= strings( "torso_joint" )
+var int BODYNUMBER 			= 2
+var string BODYPARTNAME 	= "spindle"
+var bool HOMEABLE 			= true
+var int N 					= 1
  
 ### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
+Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 
 ### Loading Components ###
 #Reading Encoders
@@ -51,18 +51,36 @@ SPINDLE_ReferenceGenerator.InterpolatorEps = 1.0
 SPINDLE_ReferenceGenerator.configure
 SPINDLE_ReferenceGenerator.interpolator1 = array (0.0, 0.07, 0.1); #Velocity is carefully tuned. Do not increase because integrator will fill!
 
+# #Loading Homing component
+# loadComponent("SPINDLE_Homing","AMIGOSPINDLE::SpindleHoming")
+# connectPeers("Supervisor","SPINDLE_Homing")
+# connectPeers("SPINDLE_Homing","Supervisor")
+# connectPeers("SPINDLE_Homing","SPINDLE_ReadEncoders")
+# addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
+# addPeer("SPINDLE_Homing","SPINDLE_ReadReferences")
+# SPINDLE_Homing.home_vel = 0.01
+# SPINDLE_Homing.home_acc = 0.1; #Fast acc means constant velocity means better reproducing homing
+# SPINDLE_Homing.stroke  = 0.41
+# SPINDLE_Homing.endpos = 0.35
+# SPINDLE_Homing.homed = 0; # =False
+# SPINDLE_Homing.configure
+
 #Loading Homing component
-loadComponent("SPINDLE_Homing","AMIGOSPINDLE::SpindleHoming")
-connectPeers("Supervisor","SPINDLE_Homing")
-connectPeers("SPINDLE_Homing","Supervisor")
-connectPeers("SPINDLE_Homing","SPINDLE_ReadEncoders")
-addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
-addPeer("SPINDLE_Homing","SPINDLE_ReadReferences")
-SPINDLE_Homing.home_vel = 0.01
-SPINDLE_Homing.home_acc = 0.1; #Fast acc means constant velocity means better reproducing homing
-SPINDLE_Homing.stroke  = 0.41
-SPINDLE_Homing.endpos = 0.35
-SPINDLE_Homing.homed = 0; # =False
+loadComponent("SPINDLE_Homing","AMIGOGENERIC::Homing")
+connectPeers("Supervisor","SPINDLE_Homing")	
+addPeer("SPINDLE_Homing","SPINDLE_ReadEncoders")
+setActivity("SPINDLE_Homing",Ts,HighestPriority,ORO_SCHED_RT)
+SPINDLE_Homing.vector_size 			= N
+SPINDLE_Homing.bodypart 			= BODYPARTNAME
+SPINDLE_Homing.prefix 				= "SPINDLE"
+SPINDLE_Homing.homing_type			= strings("endswitch")
+SPINDLE_Homing.require_homing		= array (1.0)
+SPINDLE_Homing.homing_order			= array (1.0)
+SPINDLE_Homing.homing_direction		= array (1.0)
+SPINDLE_Homing.homing_velocity		= array (0.01)
+SPINDLE_Homing.homing_stroke		= array (0.41)
+SPINDLE_Homing.homing_midpos		= array (0.41)
+SPINDLE_Homing.homing_endpos		= array (0.35)
 SPINDLE_Homing.configure
 
 ### Negative feedback controller ###

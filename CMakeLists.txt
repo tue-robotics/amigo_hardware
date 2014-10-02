@@ -38,6 +38,10 @@ right_arm_controller.ops
 head_controller.ops
 DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
+### Generic Hardware Components - If done move to rtt_control_components ###
+orocos_component(Homing2 src/Homing.cpp ${HEADER_FILES})
+target_link_libraries(Homing2 ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
+
 ### Specific Hardware Components - Base ###
 # None - That's the way to go!
 
