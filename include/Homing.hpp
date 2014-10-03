@@ -84,6 +84,7 @@ namespace AMIGOGENERIC
         OperationCaller<bool(string)> StartBodyPart;
         OperationCaller<bool(string)> StopBodyPart;
         OperationCaller<void(int,double)> ResetEncoder;
+        OperationCaller<void(double)> SetMaxRefGenVel;
 
         public:
 

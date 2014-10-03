@@ -1,6 +1,6 @@
 ########################################################################
 #                                                                      #
-# left Philips Experimental Robotic Arm deployer file.                 #
+# Left Philips Experimental Robotic Arm deployer file.                 #
 #                                                                      #
 # Max Baeten                       									   #
 #                                                                      #
@@ -37,13 +37,13 @@ var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
 var int N						= 8
 var int BODYNUMBER 				= 3
-var string BODYNAME 			= "left_arm"
+var string BODYPARTNAME 		= "left_arm"
 var bool HOMEABLE 				= true
 var bool REQUIREHOMING   		= true
 var bool REQUIREGRIPPERHOMING   = false
  
 ### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
+Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 
 #### HIGH PRIORITY COMPONENTS ####
 ### Read reference joint angles ###
@@ -78,21 +78,21 @@ LPERA_MotorToJointSpace.function7 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.5,
 LPERA_MotorToJointSpace.function8 	= array  ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0)
 
 ### Interpolator ###
-loadComponent("LPERA_ReferenceInterpolator","SOURCES::ReferenceGenerator")
-addPeer("Supervisor","LPERA_ReferenceInterpolator")
-setActivity("LPERA_ReferenceInterpolator",TS,HighestPriority,ORO_SCHED_RT)
-LPERA_ReferenceInterpolator.NrInterpolators 	= N
-LPERA_ReferenceInterpolator.InterpolatorDt 		= TS
-LPERA_ReferenceInterpolator.InterpolatorEps 	= 1.0
-LPERA_ReferenceInterpolator.configure
-LPERA_ReferenceInterpolator.interpolator1 		= array (0.0, 0.4, 0.2)
-LPERA_ReferenceInterpolator.interpolator2 		= array (0.0, 0.4, 0.2)
-LPERA_ReferenceInterpolator.interpolator3 		= array (0.0, 0.6, 0.3)
-LPERA_ReferenceInterpolator.interpolator4 		= array (0.0, 0.8, 0.5)
-LPERA_ReferenceInterpolator.interpolator5 		= array (0.0, 0.8, 0.5)
-LPERA_ReferenceInterpolator.interpolator6 		= array (0.0, 1.0, 0.5)
-LPERA_ReferenceInterpolator.interpolator7 		= array (0.0, 1.0, 0.5)
-LPERA_ReferenceInterpolator.interpolator8 		= array (0.0, 10.0, 100.0)
+loadComponent("LPERA_ReferenceGenerator","SOURCES::ReferenceGenerator")
+addPeer("Supervisor","LPERA_ReferenceGenerator")
+setActivity("LPERA_ReferenceGenerator",TS,HighestPriority,ORO_SCHED_RT)
+LPERA_ReferenceGenerator.NrInterpolators 	= N
+LPERA_ReferenceGenerator.InterpolatorDt 		= TS
+LPERA_ReferenceGenerator.InterpolatorEps 	= 1.0
+LPERA_ReferenceGenerator.configure
+LPERA_ReferenceGenerator.interpolator1 		= array (0.0, 0.4, 0.2)
+LPERA_ReferenceGenerator.interpolator2 		= array (0.0, 0.4, 0.2)
+LPERA_ReferenceGenerator.interpolator3 		= array (0.0, 0.6, 0.3)
+LPERA_ReferenceGenerator.interpolator4 		= array (0.0, 0.8, 0.5)
+LPERA_ReferenceGenerator.interpolator5 		= array (0.0, 0.8, 0.5)
+LPERA_ReferenceGenerator.interpolator6 		= array (0.0, 1.0, 0.5)
+LPERA_ReferenceGenerator.interpolator7 		= array (0.0, 1.0, 0.5)
+LPERA_ReferenceGenerator.interpolator8 		= array (0.0, 10.0, 100.0)
 
 ### LOAD READENCODERS
 loadComponent("LPERA_ReadEncoders","SOEM::ReadEncoders")
@@ -201,7 +201,7 @@ LPERA_Homing.configure
 loadComponent("LPERA_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","LPERA_Diagnostics")
 setActivity("LPERA_Diagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
-LPERA_Diagnostics.statusname 			= "LPERA"
+LPERA_Diagnostics.statusname 			= BODYPARTNAME+"_Controller"
 LPERA_Diagnostics.NumberOfVectorPorts 	= 3
 LPERA_Diagnostics.NumberOfBoolPorts 	= 1
 LPERA_Diagnostics.configure
@@ -213,7 +213,7 @@ LPERA_Diagnostics.boolname1 			= "Safe"
 #### SET UP JOINTSTATE AGGREGATOR ####
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
-JointStateAggregator.addAggregationPort(BODYNAME)
+JointStateAggregator.addAggregationPort(BODYPARTNAME)
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
@@ -233,8 +233,8 @@ connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 					ConnPoli
 ## References ##
 connect ("LPERA_ReadReferences.pos_out",			"LPERA_VectorConcatenate.in1", 				ConnPolicy() )
 connect ("LPERA_GripperControl.gripper_ref",		"LPERA_VectorConcatenate.in2",				ConnPolicy() )
-connect ("LPERA_VectorConcatenate.out",				"LPERA_ReferenceInterpolator.posin", 		ConnPolicy() )
-connect ("LPERA_ReferenceInterpolator.posout",		"LPERA_Controller.ref_in", 					ConnPolicy() )
+connect ("LPERA_VectorConcatenate.out",				"LPERA_ReferenceGenerator.posin", 		ConnPolicy() )
+connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in", 					ConnPolicy() )
 
 ## Gripper control ##
 connect ("LPERA_AnalogIns.out1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() )
@@ -251,7 +251,7 @@ connect ("LPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.left_arm",
 ## Safety ##
 connect ("LPERA_Controller.jointErrors",			"LPERA_Safety.jointErrors", 				ConnPolicy() )
 connect ("LPERA_Controller.out",					"LPERA_Safety.controlEffort", 				ConnPolicy() )
-connect ("LPERA_Safety.enable",						"LPERA_Controller.safe", 					ConnPolicy() )
+connect ("LPERA_Safety.enable",						"LPERA_Controller.enable", 					ConnPolicy() )
 connect ("LPERA_Safety.error",						"Supervisor.left_arm_error", 				ConnPolicy() )
 connect ("LPERA_Safety.enable",						LEFT_ARM_SHOULDER+".enablePort", 			ConnPolicy() )
 connect ("LPERA_Safety.enable",						LEFT_ARM_UPPERARM+".enablePort", 			ConnPolicy() )
@@ -261,7 +261,7 @@ connect ("LPERA_Safety.enable",						LEFT_ARM_LOWERARM+".enablePort", 			ConnPol
 connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() )
 connect ("LPERA_AnalogIns.out2",					"LPERA_Homing.measAbsJointAnglesPort", 		ConnPolicy() )
 connect ("LPERA_Homing.homJntAnglesPort",			"LPERA_VectorConcatenate.in1", 				ConnPolicy() )
-connect ("LPERA_Homing.resetInterpolatorPort",		"LPERA_ReferenceInterpolator.resetValues", 	ConnPolicy() )
+connect ("LPERA_Homing.resetInterpolatorPort",		"LPERA_ReferenceGenerator.resetValues", 	ConnPolicy() )
 connect ("LPERA_Homing.reNullPort",					"LPERA_ReadEncoders.in_reNull", 			ConnPolicy() )
 connect ("LPERA_Homing.reNullPort",					"LPERA_GripperControl.reNullPort", 			ConnPolicy() )
 connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.errorPort", 					ConnPolicy() )
@@ -294,7 +294,7 @@ Supervisor.AddHomingOnlyPeer ("LPERA_Homing", BODYNUMBER )
 
 Supervisor.AddOpOnlyPeer ("LPERA_ReadReferences", BODYNUMBER )
 
-Supervisor.AddEnabledPeer ("LPERA_ReferenceInterpolator", BODYNUMBER)
+Supervisor.AddEnabledPeer ("LPERA_ReferenceGenerator", BODYNUMBER)
 Supervisor.AddEnabledPeer ("LPERA_VectorConcatenate", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_SensorTorques", BODYNUMBER )
 Supervisor.AddEnabledPeer ("LPERA_GripperControl", BODYNUMBER )

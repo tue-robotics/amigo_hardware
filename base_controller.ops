@@ -22,11 +22,11 @@ var array MAX_ERRORS 		= array ( 2.2, 2.2, 2.2, 2.2 )
 var array MAX_VELOCITIES	= array (1.8, 1.0, 3.1415)
 var int N					= 4
 var int BODYNUMBER 			= 1
-var string BODYNAME 		= "base"
+var string BODYPARTNAME 	= "base"
 var bool HOMEABLE 			= false
  
 ### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
+Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 
 ### READ WHEEL ENCODERS ###
 loadComponent("BASE_ReadEncoders","SOEM::ReadEncoders")
@@ -122,7 +122,7 @@ BASE_SI2Volt.configure
 loadComponent("BASE_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","BASE_Diagnostics")
 setActivity("BASE_Diagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
-BASE_Diagnostics.statusname = "BaseController"
+BASE_Diagnostics.statusname = BODYPARTNAME+"_Controller"
 BASE_Diagnostics.NumberOfVectorPorts = 3
 BASE_Diagnostics.NumberOfBoolPorts = 1
 BASE_Diagnostics.configure
@@ -135,32 +135,32 @@ BASE_Diagnostics.boolname1 = "Amplifiers"
 # To Do JointState message base
 
 #### CONNECT COMPONENTS ####
-connect ("Soem.Slave_1002.Slave_1002_value",		"BASE_ReadEncoders.enc1_in", 		ConnPolicy() ); #enc1[-]
-connect ("Soem.Slave_1003.Slave_1003_value",		"BASE_ReadEncoders.enc2_in", 		ConnPolicy() ); #enc2[-]
-connect ("Soem.Slave_1004.Slave_1004_value",		"BASE_ReadEncoders.enc3_in", 		ConnPolicy() ); #enc3[-]
-connect ("Soem.Slave_1005.Slave_1005_value",		"BASE_ReadEncoders.enc4_in", 		ConnPolicy() ); #enc4[-]
-connect ("BASE_ReadEncoders.out",					"BASE_MotorToJointSpace.in", 		ConnPolicy() )
-connect ("BASE_MotorToJointSpace.out", 				"BASE_OdometryPublisher.pos", 		ConnPolicy() );
-connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in", 			ConnPolicy() );
-connect ("BASE_ReadEncoders.out",					"BASE_Controller.pos_in", 			ConnPolicy() ); #[m \n m \n rad]
-connect ("BASE_Controller.out",						"BASE_SI2Volt.in", 					ConnPolicy() )
-connect ("BASE_SI2Volt.out", 						"BASESPINDLE_AnalogOuts.in1", 		ConnPolicy() );
-connect ("BASE_ReadReferences.out",					"BASE_JointToMotorSpace.in", 		ConnPolicy() )
-connect ("BASE_JointToMotorSpace.out",				"BASE_VelocityToPosition.in", 		ConnPolicy() )
-connect ("BASE_ReadEncoders.out",					"BASE_VelocityToPosition.initial", 	ConnPolicy() ); # Use current position as initial position
+connect ("Soem.Slave_1002.Slave_1002_value",		"BASE_ReadEncoders.enc1_in", 		ConnPolicy() ); # Enc 1
+connect ("Soem.Slave_1003.Slave_1003_value",		"BASE_ReadEncoders.enc2_in", 		ConnPolicy() ); # Enc 2
+connect ("Soem.Slave_1004.Slave_1004_value",		"BASE_ReadEncoders.enc3_in", 		ConnPolicy() ); # Enc 3
+connect ("Soem.Slave_1005.Slave_1005_value",		"BASE_ReadEncoders.enc4_in", 		ConnPolicy() ); # Enc 4
+connect ("BASE_ReadEncoders.out",					"BASE_MotorToJointSpace.in", 		ConnPolicy() ); # Positions MS
+connect ("BASE_MotorToJointSpace.out", 				"BASE_OdometryPublisher.pos", 		ConnPolicy() ); # Positions JS
+connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in", 			ConnPolicy() ); # Positions
+connect ("BASE_ReadEncoders.out",					"BASE_Controller.pos_in", 			ConnPolicy() ); # Positions MS
+connect ("BASE_Controller.out",						"BASE_SI2Volt.in", 					ConnPolicy() ); # ControlEffort [SI]
+connect ("BASE_SI2Volt.out", 						"BASESPINDLE_AnalogOuts.in1", 		ConnPolicy() ); # ControlEffort [V]
+connect ("BASE_ReadReferences.out",					"BASE_JointToMotorSpace.in", 		ConnPolicy() ); # Reference JS
+connect ("BASE_JointToMotorSpace.out",				"BASE_VelocityToPosition.in", 		ConnPolicy() ); # Reference MS
+connect ("BASE_ReadEncoders.out",					"BASE_VelocityToPosition.initial", 	ConnPolicy() ); # Initial position
 
 ## Safety
-connect ("BASE_Controller.jointErrors",				"BASE_Safety.jointErrors", 			ConnPolicy() ); # jointerrors
-connect ("BASE_Controller.out",						"BASE_Safety.controlEffort", 		ConnPolicy() )
-connect ("BASE_Safety.enable",						"BASE_Controller.safe", 			ConnPolicy() )
-connect ("BASE_Safety.error",						"Supervisor.base_error", 			ConnPolicy() ); # base_error
-connect ("BASE_Safety.enable", 						"DigitalOuts2.in2", 				ConnPolicy() ); # amplifiers
+connect ("BASE_Controller.jointErrors",				"BASE_Safety.jointErrors", 			ConnPolicy() ); # Jointerrors
+connect ("BASE_Controller.out",						"BASE_Safety.controlEffort", 		ConnPolicy() ); # ControlEffort
+connect ("BASE_Safety.enable",						"BASE_Controller.enable", 			ConnPolicy() ); # Enable
+connect ("BASE_Safety.error",						"Supervisor.base_error", 			ConnPolicy() ); # Base_error
+connect ("BASE_Safety.enable", 						"DigitalOuts2.in2", 				ConnPolicy() ); # Enable (amplifiers)
 
 ## Diagnostics ##
-connect ("BASE_ReadReferences.out", 				"BASE_Diagnostics.vec1", 			ConnPolicy() )
-connect ("BASE_Controller.jointErrors", 			"BASE_Diagnostics.vec2", 			ConnPolicy() )
-connect ("BASE_SI2Volt.out", 						"BASE_Diagnostics.vec3", 			ConnPolicy() )
-connect ("BASE_Safety.enable", 						"BASE_Diagnostics.bool1", 			ConnPolicy() )
+connect ("BASE_ReadReferences.out", 				"BASE_Diagnostics.vec1", 			ConnPolicy() ); # References
+connect ("BASE_Controller.jointErrors", 			"BASE_Diagnostics.vec2", 			ConnPolicy() ); # JointErrors
+connect ("BASE_SI2Volt.out", 						"BASE_Diagnostics.vec3", 			ConnPolicy() ); # Voltage
+connect ("BASE_Safety.enable", 						"BASE_Diagnostics.bool1", 			ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
 stream ("BASE_OdometryPublisher.odom", 				ros.topic("/amigo/base/measurements"));

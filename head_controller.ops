@@ -10,18 +10,20 @@
 var double TS 			= 0.001
 var double RAD_TO_STEP 	= 195.37860814; # IF YOU CHANGE THIS VARIABLE, ALSO RECALCULATE PAN_MIN, PAN_MAX, TILT_MIN AND TILT_MAX, (From header file) 
 var strings JOINT_NAMES = strings( "neck_pan_joint", "neck_tilt_joint" )
-var int PAN_OFFSET 		= 512; # Center pan dynamixel
-var int TILT_OFFSET 	= 512; # Center tilt dynamixel
-var int PAN_MIN 		= -306 	;# -1.57*RAD_TO_STEP
-var int PAN_MAX 		= 306	;#  1.57*RAD_TO_STEP
-var int TILT_MIN 		= -97	;# -0.5 *RAD_TO_STEP
-var int TILT_MAX 		= 171	;#  0.88*RAD_TO_STEP
+var int PAN_OFFSET 		= 512	; # Center pan dynamixel
+var int TILT_OFFSET 	= 512	; # Center tilt dynamixel
+var int PAN_MIN 		= -306 	; # -1.57*RAD_TO_STEP
+var int PAN_MAX 		= 306	; #  1.57*RAD_TO_STEP
+var int TILT_MIN 		= -97	; # -0.5 *RAD_TO_STEP
+var int TILT_MAX 		= 171	; #  0.88*RAD_TO_STEP
+var int PAN_SPEED 		= 50
+var int TILT_SPEED 	 	= 25
 var int BODYNUMBER 		= 5
-var string BODYNAME 	= "head"
+var string BODYPARTNAME = "head"
 var bool HOMEABLE 		= false
 
 ### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYNAME, HOMEABLE)
+Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 
 ## Pan-tilt controller
 loadComponent("HEAD_PanTiltController", "AMIGOHEAD::PanTiltController")
@@ -36,8 +38,8 @@ HEAD_PanTiltController.pan_max 		= PAN_OFFSET + PAN_MAX
 HEAD_PanTiltController.pan_min 		= PAN_OFFSET + PAN_MIN
 HEAD_PanTiltController.tilt_max 	= TILT_OFFSET + TILT_MAX
 HEAD_PanTiltController.tilt_min 	= TILT_OFFSET + TILT_MIN
-HEAD_PanTiltController.pan_speed 	= 50
-HEAD_PanTiltController.tilt_speed 	= 25
+HEAD_PanTiltController.pan_speed 	= PAN_SPEED
+HEAD_PanTiltController.tilt_speed 	= TILT_SPEED
 HEAD_PanTiltController.configure
 
 ## Pan-tilt controller
@@ -47,17 +49,17 @@ setActivity("HEAD_Enabler",TS,HighestPriority,ORO_SCHED_RT)
 HEAD_Enabler.configure
 
 #### CONNECT COMPONENTS ####
-connect ("Soem.Slave_100f.data_tx", "HEAD_PanTiltController.instruction", ConnPolicy() )
-connect ("Soem.Slave_100f.data_rx", "HEAD_PanTiltController.status", ConnPolicy() )
-connect ("Soem.Slave_100f.ready_rx", "HEAD_PanTiltController.serialReadyRx", ConnPolicy() )
-connect ("Soem.Slave_100f.running", "HEAD_PanTiltController.serialRunning", ConnPolicy() )
-connect ("HEAD_PanTiltController.errortosupervisor","Supervisor.head_error", ConnPolicy() )
-connect ("HEAD_Enabler.out","HEAD_PanTiltController.enabler", ConnPolicy() )
+connect ("Soem.Slave_100f.data_tx", 					"HEAD_PanTiltController.instruction",	ConnPolicy() ); # 100f.data_tx
+connect ("Soem.Slave_100f.data_rx", 					"HEAD_PanTiltController.status", 		ConnPolicy() ); # 100f.data_rx
+connect ("Soem.Slave_100f.ready_rx", 					"HEAD_PanTiltController.serialReadyRx",	ConnPolicy() ); # 100f.ready_rx
+connect ("Soem.Slave_100f.running", 					"HEAD_PanTiltController.serialRunning",	ConnPolicy() ); # 100f.running
+connect ("HEAD_PanTiltController.errortosupervisor",	"Supervisor.head_error", 				ConnPolicy() ); # Head_error
+connect ("HEAD_Enabler.out",							"HEAD_PanTiltController.enabler", 		ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
-stream( "HEAD_PanTiltController.goalPos", ros.topic("/amigo/neck/references"))
-stream( "HEAD_PanTiltController.currentPos", ros.topic("/amigo/neck/measurements"))
-stream( "HEAD_PanTiltController.currentPos", ros.topic("/amigo/joint_states"))
+stream( "HEAD_PanTiltController.goalPos", 				ros.topic("/amigo/neck/references"))
+stream( "HEAD_PanTiltController.currentPos", 			ros.topic("/amigo/neck/measurements"))
+stream( "HEAD_PanTiltController.currentPos", 			ros.topic("/amigo/joint_states"))
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("HEAD_PanTiltController")

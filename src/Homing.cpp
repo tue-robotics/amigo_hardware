@@ -102,14 +102,15 @@ bool Homing::startHook()
 {
     // Connect to Components
     TaskContext* Supervisor = this->getPeer("Supervisor");
-    TaskContext* ReadEncodersComponent = this->getPeer( prefix + "_ReadEncoders");
+    TaskContext* ReadEncoders = this->getPeer( prefix + "_ReadEncoders");
+    TaskContext* ReferenceGenerator = this->getPeer( prefix + "_ReferenceGenerator");
 
     // Check Connections
     if ( !Supervisor ) {
         log(Error) << "Could not find Supervisor component! Did you add it as Peer in the ops file?"<<endlog();
         return false;
     }
-    if ( !ReadEncodersComponent ) {
+    if ( !ReadEncoders ) {
         log(Error) << prefix <<"_Homing: Could not find :" << prefix << "_ReadEncoders component! Did you add it as Peer in the ops file?"<<endlog();
         return false;
     }
@@ -117,7 +118,8 @@ bool Homing::startHook()
     // Fetch Operations
     StartBodyPart = Supervisor->getOperation("StartBodyPart");
     StopBodyPart = Supervisor->getOperation("StopBodyPart");
-    ResetEncoder = ReadEncodersComponent->getOperation("reset");
+    ResetEncoder = ReadEncoders->getOperation("reset");
+    SetMaxRefGenVel = ReferenceGenerator->getOperation("SetMaxRefGenVel");
 
     // Check Operations
     if ( !StartBodyPart.ready() ) {
