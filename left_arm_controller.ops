@@ -1,10 +1,10 @@
-########################################################################
-#                                                                      #
-# Left Philips Experimental Robotic Arm deployer file.                 #
-#                                                                      #
-# Max Baeten                       									   #
-#                                                                      #
-########################################################################
+#########################################################################
+#																		#
+# Left Philips Experimental Robotic Arm deployer file.					#
+#																		#
+# Max Baeten															#
+#																		#
+#########################################################################
 
 #### DECLARATION OF PARAMETERS ####
 var double TS 					= 0.001
@@ -13,12 +13,13 @@ var string LEFT_ARM_UPPERARM 	= "Soem.Slave_1013"
 var string LEFT_ARM_LOWERARM 	= "Soem.Slave_1014"
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_left", "finger1_tip_joint_left", "finger2_joint_left", "finger2_tip_joint_left" )
-var array UPPERJOINTLIMIT 		= array (   0.0,	 	1.57,	  	1.57, 	 	2.23,  		1.83, 		0.95,  		0.61,   	4.0		)
-var array LOWERJOINTLIMIT 		= array ( 	-1.57,		-1.57,	 	-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61,  	-4.0	)
-var array UPPERJOINTTORQUELIMIT = array (  	26.4,	 	26.4,	   	9.8, 	 	11.8,  		11.8,  		2.5,   		2.5 				)
-var array LOWERJOINTTORQUELIMIT = array (  	-26.4, 		-26.4,	  	-9.8, 		-11.8, 		-11.8, 		-2.5,  		-2.5 				)
-var array MAXERRORS 			= array (  	0.09,     	0.09,     	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 	 	2.0		)
-var array HOMED_POS 			= array (  	394.0,		597.0,		1.5708,		0.0,		1.8326,		0.985,		0.7854				)
+var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61,  	4.0		)
+var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	-4.0	)
+var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	0.0		)
+var array UPPERJOINTTORQUELIMIT = array (	26.4,		26.4,		9.8, 		11.8, 		11.8, 		2.5, 		2.5 	)
+var array LOWERJOINTTORQUELIMIT = array (	-26.4, 		-26.4,		-9.8, 		-11.8, 		-11.8, 		-2.5, 		-2.5 	)
+var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 	2.0		)
+var ints HOMED_POS 				= ints	(	394,		597,		0,			0,			0,			0,			0,		0		)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -82,17 +83,12 @@ loadComponent("LPERA_ReferenceGenerator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","LPERA_ReferenceGenerator")
 setActivity("LPERA_ReferenceGenerator",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_ReferenceGenerator.NrInterpolators 	= N
-LPERA_ReferenceGenerator.InterpolatorDt 		= TS
+LPERA_ReferenceGenerator.InterpolatorDt 	= TS
 LPERA_ReferenceGenerator.InterpolatorEps 	= 1.0
+LPERA_ReferenceGenerator.maxpos 			= array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+LPERA_ReferenceGenerator.maxvel 			= array (0.4, 0.4, 0.6, 0.8, 0.8, 1.0, 1.0, 10.0)
+LPERA_ReferenceGenerator.maxacc 			= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5, 100.0)
 LPERA_ReferenceGenerator.configure
-LPERA_ReferenceGenerator.interpolator1 		= array (0.0, 0.4, 0.2)
-LPERA_ReferenceGenerator.interpolator2 		= array (0.0, 0.4, 0.2)
-LPERA_ReferenceGenerator.interpolator3 		= array (0.0, 0.6, 0.3)
-LPERA_ReferenceGenerator.interpolator4 		= array (0.0, 0.8, 0.5)
-LPERA_ReferenceGenerator.interpolator5 		= array (0.0, 0.8, 0.5)
-LPERA_ReferenceGenerator.interpolator6 		= array (0.0, 1.0, 0.5)
-LPERA_ReferenceGenerator.interpolator7 		= array (0.0, 1.0, 0.5)
-LPERA_ReferenceGenerator.interpolator8 		= array (0.0, 10.0, 100.0)
 
 ### LOAD READENCODERS
 loadComponent("LPERA_ReadEncoders","SOEM::ReadEncoders")
@@ -157,9 +153,9 @@ LPERA_Safety.configure
 loadComponent("LPERA_JointOutputLimiter","DISCONTINUITIES::Saturation")
 addPeer("Supervisor","LPERA_JointOutputLimiter")
 setActivity("LPERA_JointOutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_JointOutputLimiter.upper_limit = UPPERJOINTLIMIT
-LPERA_JointOutputLimiter.lower_limit = LOWERJOINTLIMIT
-LPERA_JointOutputLimiter.vector_size = N
+LPERA_JointOutputLimiter.upper_limit 	= UPPERJOINTLIMIT
+LPERA_JointOutputLimiter.lower_limit 	= LOWERJOINTLIMIT
+LPERA_JointOutputLimiter.vector_size 	= N
 LPERA_JointOutputLimiter.configure
 
 ### Publishing joint angles on ROS-topic ###
@@ -173,28 +169,32 @@ LPERA_WriteClippedJointAngles.configure
 loadComponent("LPERA_SensorTorques","ARM::SensorTorques")
 addPeer("Supervisor","LPERA_SensorTorques")
 setActivity("LPERA_SensorTorques",(TS),LowestPriority,ORO_SCHED_OTHER)
-LPERA_SensorTorques.vector_size	= N
-LPERA_SensorTorques.c1 			= array (35.0,		87.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
-LPERA_SensorTorques.c2 			= array (-0.2,		0.2,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
-LPERA_SensorTorques.c3 			= array (-76.26,	-95.29,	    -145.16,	-38.71,		-111.7,		1.0,		1.0,		0.0		)
+LPERA_SensorTorques.vector_size		= N
+LPERA_SensorTorques.c1 				= array (35.0,		87.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
+LPERA_SensorTorques.c2 				= array (-0.2,		0.2,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
+LPERA_SensorTorques.c3 				= array (-76.26,	-95.29,	    -145.16,	-38.71,		-111.7,		1.0,		1.0,		0.0		)
 LPERA_SensorTorques.configure
 
 ### PERA Homing ###
 loadComponent("LPERA_Homing","AMIGOPERA::PeraHoming")
 addPeer("Supervisor","LPERA_Homing")
+addPeer("LPERA_Homing","LPERA_ReadReferences")
+addPeer("LPERA_Homing","LPERA_ReadEncoders")
 addPeer("LPERA_Homing","LPERA_Safety")
 setActivity("LPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
-LPERA_Homing.requireHoming			= REQUIREHOMING
-LPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
-LPERA_Homing.maxJointErrors 		= MAXERRORS
-LPERA_Homing.jointNames				= JOINT_NAMES
-LPERA_Homing.controllerName			= "LPERA_Safety"
-LPERA_Homing.stepSize 				= 0.5
-LPERA_Homing.startJoint 			= 7
-LPERA_Homing.absSenDir 				= array (	1.0,	1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
-LPERA_Homing.homedPos 				= HOMED_POS
-LPERA_Homing.absOrRel 				= array (	0.0,	0.0, 	1.0,	1.0,	1.0,	1.0,	1.0,	1.0	)
-LPERA_Homing.endPose				= array (  -0.1,   -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0)
+LPERA_Homing.vector_size 			= N
+LPERA_Homing.bodypart 				= BODYPARTNAME
+LPERA_Homing.prefix 				= "LPERA"
+LPERA_Homing.homing_type			= strings	("absolutesensor","absolutesensor","servoerror","servoerror","servoerror","servoerror","servoerror","servoerror")
+LPERA_Homing.require_homing			= ints 		(0, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
+LPERA_Homing.homing_order			= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
+LPERA_Homing.homing_direction		= ints 		(1, 	1, 		1,	 	1, 		1,	 	1, 		1,	 	1 	)
+LPERA_Homing.homing_velocity		= array 	(0.05,	0.05,	0.05,	0.075,	0.075,	0.05,	0.1,	0.1 )
+LPERA_Homing.homing_stroke			= HOMINGSTROKE
+LPERA_Homing.homing_midpos			= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0)
+LPERA_Homing.homing_endpos			= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0)
+LPERA_Homing.homing_errors			= MAX_ERRORS
+LPERA_Homing.homing_absPos			= ABS_POS
 LPERA_Homing.configure
 
 #### Diagnostics ###
@@ -217,62 +217,59 @@ JointStateAggregator.addAggregationPort(BODYPARTNAME)
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
-connect (LEFT_ARM_SHOULDER+".encoderAngle1",		"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ) 
-connect (LEFT_ARM_SHOULDER+".encoderAngle2",		"LPERA_ReadEncoders.enc2_in", 				ConnPolicy() ) 
-connect (LEFT_ARM_UPPERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc3_in", 				ConnPolicy() ) 
-connect (LEFT_ARM_UPPERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc4_in", 				ConnPolicy() ) 
-connect (LEFT_ARM_UPPERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc5_in", 				ConnPolicy() ) 
-connect (LEFT_ARM_LOWERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ) 
-connect (LEFT_ARM_LOWERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ) 
-connect (LEFT_ARM_LOWERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() )
-connect ("LPERA_ReadEncoders.out",					"LPERA_MotorToJointSpace.in", 				ConnPolicy() ) 
-connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 					ConnPolicy() )
-connect ("LPERA_Controller.out",					"LPERA_JointToMotorSpace.in", 				ConnPolicy() )
-connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 					ConnPolicy() )
+connect (LEFT_ARM_SHOULDER+".encoderAngle1",		"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ); # Enc 1
+connect (LEFT_ARM_SHOULDER+".encoderAngle2",		"LPERA_ReadEncoders.enc2_in", 				ConnPolicy() ); # Enc 2
+connect (LEFT_ARM_UPPERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc3_in", 				ConnPolicy() ); # Enc 3
+connect (LEFT_ARM_UPPERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc4_in", 				ConnPolicy() ); # Enc 4
+connect (LEFT_ARM_UPPERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc5_in", 				ConnPolicy() ); # Enc 5
+connect (LEFT_ARM_LOWERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ); # Enc 6
+connect (LEFT_ARM_LOWERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ); # Enc 7
+connect (LEFT_ARM_LOWERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() ); # Enc 8
+connect ("LPERA_ReadEncoders.out",					"LPERA_MotorToJointSpace.in", 				ConnPolicy() ); # Position MS
+connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
+connect ("LPERA_Controller.out",					"LPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
+connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 					ConnPolicy() ); # ControlEffort MS
+connect ("LPERA_AnalogIns.out1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
-connect ("LPERA_ReadReferences.pos_out",			"LPERA_VectorConcatenate.in1", 				ConnPolicy() )
-connect ("LPERA_GripperControl.gripper_ref",		"LPERA_VectorConcatenate.in2",				ConnPolicy() )
-connect ("LPERA_VectorConcatenate.out",				"LPERA_ReferenceGenerator.posin", 		ConnPolicy() )
-connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in", 					ConnPolicy() )
+connect ("LPERA_ReadReferences.pos_out",			"LPERA_VectorConcatenate.in1", 				ConnPolicy() ); # References
+connect ("LPERA_GripperControl.gripper_ref",		"LPERA_VectorConcatenate.in2",				ConnPolicy() ); # Gripper ref
+connect ("LPERA_VectorConcatenate.out",				"LPERA_ReferenceGenerator.posin", 			ConnPolicy() ); # References
+connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in", 					ConnPolicy() ); # InterpolatedReference
 
 ## Gripper control ##
-connect ("LPERA_AnalogIns.out1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() )
-connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() )
-connect ("LPERA_MotorToJointSpace.out", 			"LPERA_GripperControl.position_in", 		ConnPolicy() )
-connect ("LPERA_GripperControl.gripper_measurement","LPERA_Homing.gripper_measurement", 		ConnPolicy() )
-connect ("LPERA_Homing.gripper_command",			"LPERA_GripperControl.gripper_command", 	ConnPolicy() )
+connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() ); # Torqin
+connect ("LPERA_MotorToJointSpace.out", 			"LPERA_GripperControl.position_in", 		ConnPolicy() ); # Posin
+connect ("LPERA_GripperControl.gripper_measurement","LPERA_Homing.gripper_measurement", 		ConnPolicy() ); # GripperMeasurement
+connect ("LPERA_Homing.gripper_command",			"LPERA_GripperControl.gripper_command", 	ConnPolicy() ); # GripperCmd
 
 ## Ros communication ##
-connect ("LPERA_MotorToJointSpace.out",				"LPERA_JointOutputLimiter.in", 				ConnPolicy() )
-connect ("LPERA_JointOutputLimiter.out",			"LPERA_WriteClippedJointAngles.pos_in", 	ConnPolicy() )
-connect ("LPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.left_arm", 			ConnPolicy() )
+connect ("LPERA_MotorToJointSpace.out",				"LPERA_JointOutputLimiter.in", 				ConnPolicy() ); # Positions JS
+connect ("LPERA_JointOutputLimiter.out",			"LPERA_WriteClippedJointAngles.pos_in", 	ConnPolicy() ); # Clipped Positions
+connect ("LPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.left_arm", 			ConnPolicy() ); # Jointstate
 
 ## Safety ##
-connect ("LPERA_Controller.jointErrors",			"LPERA_Safety.jointErrors", 				ConnPolicy() )
-connect ("LPERA_Controller.out",					"LPERA_Safety.controlEffort", 				ConnPolicy() )
-connect ("LPERA_Safety.enable",						"LPERA_Controller.enable", 					ConnPolicy() )
-connect ("LPERA_Safety.error",						"Supervisor.left_arm_error", 				ConnPolicy() )
-connect ("LPERA_Safety.enable",						LEFT_ARM_SHOULDER+".enablePort", 			ConnPolicy() )
-connect ("LPERA_Safety.enable",						LEFT_ARM_UPPERARM+".enablePort", 			ConnPolicy() )
-connect ("LPERA_Safety.enable",						LEFT_ARM_LOWERARM+".enablePort", 			ConnPolicy() )
+connect ("LPERA_Controller.jointErrors",			"LPERA_Safety.jointErrors", 				ConnPolicy() ); # JointErrors
+connect ("LPERA_Controller.out",					"LPERA_Safety.controlEffort", 				ConnPolicy() ); # ControlEffort
+connect ("LPERA_Safety.enable",						"LPERA_Controller.enable", 					ConnPolicy() ); # Enable
+connect ("LPERA_Safety.error",						"Supervisor.left_arm_error", 				ConnPolicy() ); # Error
+connect ("LPERA_Safety.enable",						LEFT_ARM_SHOULDER+".enablePort", 			ConnPolicy() ); # Enable
+connect ("LPERA_Safety.enable",						LEFT_ARM_UPPERARM+".enablePort", 			ConnPolicy() ); # Enable
+connect ("LPERA_Safety.enable",						LEFT_ARM_LOWERARM+".enablePort", 			ConnPolicy() ); # Enable
 
 ## Homing ##
-connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() )
-connect ("LPERA_AnalogIns.out2",					"LPERA_Homing.measAbsJointAnglesPort", 		ConnPolicy() )
-connect ("LPERA_Homing.homJntAnglesPort",			"LPERA_VectorConcatenate.in1", 				ConnPolicy() )
-connect ("LPERA_Homing.resetInterpolatorPort",		"LPERA_ReferenceGenerator.resetValues", 	ConnPolicy() )
-connect ("LPERA_Homing.reNullPort",					"LPERA_ReadEncoders.in_reNull", 			ConnPolicy() )
-connect ("LPERA_Homing.reNullPort",					"LPERA_GripperControl.reNullPort", 			ConnPolicy() )
-connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.errorPort", 					ConnPolicy() )
-connect ("LPERA_MotorToJointSpace.out",				"LPERA_Homing.measRelJointAnglesPort", 		ConnPolicy() )
-connect ("LPERA_Homing.endpos_out",					"LPERA_VectorConcatenate.in1", 				ConnPolicy() ) 
+connect ("LPERA_ReadEncoders.out",					"LPERA_Homing.position", 					ConnPolicy() ); # Position
+connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
+connect ("LPERA_AnalogIns.out2",					"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
+connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
+connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
+connect ("LPERA_Homing.ref_out",					"LPERA_ReferenceGenerator.posin", 			ConnPolicy() ); # Reference
 
 ## Diagnostics ##
-connect ("LPERA_VectorConcatenate.out", 			"LPERA_Diagnostics.vec1", 					ConnPolicy() )
-connect ("LPERA_Controller.jointErrors",			"LPERA_Diagnostics.vec2", 					ConnPolicy() )
-connect ("LPERA_ReadReferences.pos_out", 			"LPERA_Diagnostics.vec3", 					ConnPolicy() )
-connect ("LPERA_Safety.enable", 					"LPERA_Diagnostics.bool1", 					ConnPolicy() )
+connect ("LPERA_VectorConcatenate.out", 			"LPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
+connect ("LPERA_Controller.jointErrors",			"LPERA_Diagnostics.vec2", 					ConnPolicy() ); # JointErrors
+connect ("LPERA_Controller.out", 					"LPERA_Diagnostics.vec3", 					ConnPolicy() ); # ControlEffort
+connect ("LPERA_Safety.enable", 					"LPERA_Diagnostics.bool1", 					ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
 stream ("LPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/left_arm/measurements"))

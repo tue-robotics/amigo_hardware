@@ -1,10 +1,10 @@
-########################################################################
-#                                                                      #
-# Right Philips Experimental Robotic Arm deployer file.                #
-#                                                                      #
-# Max Baeten								                           #
-#                                                                      #
-########################################################################
+#########################################################################
+#																		#
+# Right Philips Experimental Robotic Arm deployer file.					#
+#																		#
+# Max Baeten															#
+#																		#
+#########################################################################
 
 #### DECLARATION OF PARAMETERS ####
 var double TS 					= 0.001
@@ -13,12 +13,13 @@ var string RIGHT_ARM_UPPERARM 	= "Soem.Slave_1016"
 var string RIGHT_ARM_LOWERARM 	= "Soem.Slave_1017"
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_right", "shoulder_pitch_joint_right", "shoulder_roll_joint_right", "elbow_pitch_joint_right", "elbow_roll_joint_right", "wrist_pitch_joint_right", "wrist_yaw_joint_right" ) 
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_right", "finger1_tip_joint_right", "finger2_joint_right", "finger2_tip_joint_right" )
-var array UPPERJOINTLIMIT 		= array (   0.0,  		1.57,  		1.57, 		2.23,  		1.83,  		0.95,  		0.61,  4.0		)
-var array LOWERJOINTLIMIT 		= array (   -1.57, 		-1.57, 		-1.57,  	0.0, 		-1.83		-0.95, 		-0.61, -4.0		)
-var array UPPERJOINTTORQUELIMIT = array (   26.4, 		26.4, 		9.8, 		11.8, 		11.8, 		2.5, 		2.5 			)
-var array LOWERJOINTTORQUELIMIT = array (   -26.4, 		-26.4, 		-9.8, 		-11.8, 		-11.8, 		-2.5, 		-2.5 			)
-var array MAXERRORS 			= array (   0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 	 2.0	)
-var array HOMED_POS 			= array (	1382.0, 	642.0,  	1.5708, 	0.0, 		1.8326,		0.985,		0.7854			)
+var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61,  	4.0		)
+var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	-4.0	)
+var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	0.0		)
+var array UPPERJOINTTORQUELIMIT = array (	26.4,		26.4,		9.8, 		11.8, 		11.8, 		2.5, 		2.5 	)
+var array LOWERJOINTTORQUELIMIT = array (	-26.4, 		-26.4,		-9.8, 		-11.8, 		-11.8, 		-2.5, 		-2.5 	)
+var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 	2.0		)
+var ints ABS_POS 				= ints	(	1382,		642,		0,			0,			0,			0,			0,		0		)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -82,17 +83,12 @@ loadComponent("RPERA_ReferenceGenerator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","RPERA_ReferenceGenerator")
 setActivity("RPERA_ReferenceGenerator",TS,HighestPriority,ORO_SCHED_RT)
 RPERA_ReferenceGenerator.NrInterpolators 	= N
-RPERA_ReferenceGenerator.InterpolatorDt 		= TS
+RPERA_ReferenceGenerator.InterpolatorDt 	= TS
 RPERA_ReferenceGenerator.InterpolatorEps 	= 1.0
+RPERA_ReferenceGenerator.maxpos 			= array (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+RPERA_ReferenceGenerator.maxvel 			= array (0.4, 0.4, 0.6, 0.8, 0.8, 1.0, 1.0, 10.0)
+RPERA_ReferenceGenerator.maxacc 			= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5, 100.0)
 RPERA_ReferenceGenerator.configure
-RPERA_ReferenceGenerator.interpolator1 		= array (0.0, 0.4, 0.2)
-RPERA_ReferenceGenerator.interpolator2 		= array (0.0, 0.4, 0.2)
-RPERA_ReferenceGenerator.interpolator3 		= array (0.0, 0.6, 0.3)
-RPERA_ReferenceGenerator.interpolator4 		= array (0.0, 0.8, 0.5)
-RPERA_ReferenceGenerator.interpolator5 		= array (0.0, 0.8, 0.5)
-RPERA_ReferenceGenerator.interpolator6 		= array (0.0, 1.0, 0.5)
-RPERA_ReferenceGenerator.interpolator7 		= array (0.0, 1.0, 0.5)
-RPERA_ReferenceGenerator.interpolator8 		= array (0.0, 10.0, 100.0)
 
 ### LOAD READENCODERS
 loadComponent("RPERA_ReadEncoders","SOEM::ReadEncoders")
@@ -157,9 +153,9 @@ RPERA_Safety.configure
 loadComponent("RPERA_JointOutputLimiter","DISCONTINUITIES::Saturation")
 addPeer("Supervisor","RPERA_JointOutputLimiter")
 setActivity("RPERA_JointOutputLimiter",0.0,HighestPriority,ORO_SCHED_RT)
-RPERA_JointOutputLimiter.upper_limit = UPPERJOINTLIMIT
-RPERA_JointOutputLimiter.lower_limit = LOWERJOINTLIMIT
-RPERA_JointOutputLimiter.vector_size = N
+RPERA_JointOutputLimiter.upper_limit 	= UPPERJOINTLIMIT
+RPERA_JointOutputLimiter.lower_limit 	= LOWERJOINTLIMIT
+RPERA_JointOutputLimiter.vector_size 	= N
 RPERA_JointOutputLimiter.configure
 
 ### Publishing joint angles on ROS-topic ###
@@ -173,28 +169,32 @@ RPERA_WriteClippedJointAngles.configure
 loadComponent("RPERA_SensorTorques","ARM::SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
 setActivity("RPERA_SensorTorques",(TS),LowestPriority,ORO_SCHED_OTHER)
-RPERA_SensorTorques.vector_size	= N
-RPERA_SensorTorques.c1 			= array (42.0,		4250.0,		94.0,		20.0,		825.0,		1.0,		1.0,		32.3375		)
-RPERA_SensorTorques.c2 			= array (-0.8,		12.0,	     1.0,		-2.2,		1.0,		1.0,		1.0,		0.2			)
-RPERA_SensorTorques.c3 			= array (-35.63,	-294.40,	-30.56,		-30.9,		-168.32,	1.0, 		1.0,		-22.66		)
+RPERA_SensorTorques.vector_size		= N
+RPERA_SensorTorques.c1 				= array (42.0,		4250.0,		94.0,		20.0,		825.0,		1.0,		1.0,		32.3375		)
+RPERA_SensorTorques.c2 				= array (-0.8,		12.0,	     1.0,		-2.2,		1.0,		1.0,		1.0,		0.2			)
+RPERA_SensorTorques.c3 				= array (-35.63,	-294.40,	-30.56,		-30.9,		-168.32,	1.0, 		1.0,		-22.66		)
 RPERA_SensorTorques.configure
 
 ### PERA Homing ###
 loadComponent("RPERA_Homing","AMIGOPERA::PeraHoming")
 addPeer("Supervisor","RPERA_Homing")
+addPeer("RPERA_Homing","RPERA_ReadReferences")
+addPeer("RPERA_Homing","RPERA_ReadEncoders")
 addPeer("RPERA_Homing","RPERA_Safety")
 setActivity("RPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
-RPERA_Homing.requireHoming			= REQUIREHOMING
-RPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
-RPERA_Homing.maxJointErrors 		= MAXERRORS
-RPERA_Homing.jointNames				= JOINT_NAMES
-RPERA_Homing.controllerName			= "RPERA_Safety"
-RPERA_Homing.stepSize 				= 0.5
-RPERA_Homing.startJoint 			= 7
-RPERA_Homing.absSenDir 				= array (	1.0,	-1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
-RPERA_Homing.homedPos 				= HOMED_POS
-RPERA_Homing.absOrRel 				= array (	0.0,	0.0, 	1.0,	1.0,	1.0,	1.0,	1.0,	1.0	)
-RPERA_Homing.endPose				= array (  -0.1,   -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0)
+RPERA_Homing.vector_size 			= N
+RPERA_Homing.bodypart 				= BODYPARTNAME
+RPERA_Homing.prefix 				= "RPERA"
+RPERA_Homing.homing_type			= strings	("absolutesensor","absolutesensor","servoerror","servoerror","servoerror","servoerror","servoerror","servoerror")
+RPERA_Homing.require_homing			= ints 		(0, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
+RPERA_Homing.homing_order			= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
+RPERA_Homing.homing_direction		= ints 		(1, 	-1, 	1,	 	1, 		1,	 	1, 		1,	 	1 	)
+RPERA_Homing.homing_velocity		= array 	(0.05,	0.05,	0.05,	0.075,	0.075,	0.05,	0.1,	0.1 )
+RPERA_Homing.homing_stroke			= HOMINGSTROKE
+RPERA_Homing.homing_midpos			= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0)
+RPERA_Homing.homing_endpos			= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0)
+RPERA_Homing.homing_errors			= MAX_ERRORS
+RPERA_Homing.homing_absPos			= ABS_POS
 RPERA_Homing.configure
 
 #### Diagnostics ###
@@ -217,62 +217,59 @@ JointStateAggregator.addAggregationPort(BODYPARTNAME)
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
-connect (RIGHT_ARM_SHOULDER+".encoderAngle1",		"RPERA_ReadEncoders.enc1_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_SHOULDER+".encoderAngle2",		"RPERA_ReadEncoders.enc2_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_UPPERARM+".encoderAngle1",		"RPERA_ReadEncoders.enc3_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_UPPERARM+".encoderAngle2",		"RPERA_ReadEncoders.enc4_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_UPPERARM+".encoderAngle3",		"RPERA_ReadEncoders.enc5_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_LOWERARM+".encoderAngle1",		"RPERA_ReadEncoders.enc6_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_LOWERARM+".encoderAngle2",		"RPERA_ReadEncoders.enc7_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_LOWERARM+".encoderAngle3",		"RPERA_ReadEncoders.enc8_in", 				ConnPolicy() )
-connect ("RPERA_ReadEncoders.out",					"RPERA_MotorToJointSpace.in", 				ConnPolicy() ) 
-connect ("RPERA_MotorToJointSpace.out",				"RPERA_Controller.pos_in", 					ConnPolicy() )
-connect ("RPERA_Controller.out",					"RPERA_JointToMotorSpace.in", 				ConnPolicy() )
-connect ("RPERA_JointToMotorSpace.out",				"RPERA_AnalogOuts.in1", 					ConnPolicy() )
+connect (RIGHT_ARM_SHOULDER+".encoderAngle1",		"RPERA_ReadEncoders.enc1_in", 				ConnPolicy() ); # Enc 1
+connect (RIGHT_ARM_SHOULDER+".encoderAngle2",		"RPERA_ReadEncoders.enc2_in", 				ConnPolicy() ); # Enc 2
+connect (RIGHT_ARM_UPPERARM+".encoderAngle1",		"RPERA_ReadEncoders.enc3_in", 				ConnPolicy() ); # Enc 3
+connect (RIGHT_ARM_UPPERARM+".encoderAngle2",		"RPERA_ReadEncoders.enc4_in", 				ConnPolicy() ); # Enc 4
+connect (RIGHT_ARM_UPPERARM+".encoderAngle3",		"RPERA_ReadEncoders.enc5_in", 				ConnPolicy() ); # Enc 5
+connect (RIGHT_ARM_LOWERARM+".encoderAngle1",		"RPERA_ReadEncoders.enc6_in", 				ConnPolicy() ); # Enc 6
+connect (RIGHT_ARM_LOWERARM+".encoderAngle2",		"RPERA_ReadEncoders.enc7_in", 				ConnPolicy() ); # Enc 7
+connect (RIGHT_ARM_LOWERARM+".encoderAngle3",		"RPERA_ReadEncoders.enc8_in", 				ConnPolicy() ); # Enc 8
+connect ("RPERA_ReadEncoders.out",					"RPERA_MotorToJointSpace.in", 				ConnPolicy() ); # Position MS
+connect ("RPERA_MotorToJointSpace.out",				"RPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
+connect ("RPERA_Controller.out",					"RPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
+connect ("RPERA_JointToMotorSpace.out",				"RPERA_AnalogOuts.in1", 					ConnPolicy() ); # ControlEffort MS
+connect ("RPERA_AnalogIns.out1",					"RPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
-connect ("RPERA_ReadReferences.pos_out",			"RPERA_VectorConcatenate.in1",				ConnPolicy() )
-connect ("RPERA_GripperControl.gripper_ref",		"RPERA_VectorConcatenate.in2",				ConnPolicy() )
-connect ("RPERA_VectorConcatenate.out",				"RPERA_ReferenceGenerator.posin", 		ConnPolicy() )
-connect ("RPERA_ReferenceGenerator.posout",			"RPERA_Controller.ref_in", 					ConnPolicy() )
+connect ("RPERA_ReadReferences.pos_out",			"RPERA_VectorConcatenate.in1",				ConnPolicy() ); # References
+connect ("RPERA_GripperControl.gripper_ref",		"RPERA_VectorConcatenate.in2",				ConnPolicy() ); # Gripper ref
+connect ("RPERA_VectorConcatenate.out",				"RPERA_ReferenceGenerator.posin", 			ConnPolicy() ); # References
+connect ("RPERA_ReferenceGenerator.posout",			"RPERA_Controller.ref_in", 					ConnPolicy() ); # InterpolatedReference
 
 ## Gripper control ##
-connect ("RPERA_AnalogIns.out1",					"RPERA_SensorTorques.voltage_in", 			ConnPolicy() )
-connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque_in", 			ConnPolicy() )
-connect ("RPERA_MotorToJointSpace.out", 			"RPERA_GripperControl.position_in", 		ConnPolicy() )
-connect ("RPERA_GripperControl.gripper_measurement","RPERA_Homing.gripper_measurement", 		ConnPolicy() )
-connect ("RPERA_Homing.gripper_command",			"RPERA_GripperControl.gripper_command", 	ConnPolicy() )
+connect ("RPERA_SensorTorques.measured_torques_out","RPERA_GripperControl.torque_in", 			ConnPolicy() ); # Torqin
+connect ("RPERA_MotorToJointSpace.out", 			"RPERA_GripperControl.position_in", 		ConnPolicy() ); # Posin
+connect ("RPERA_GripperControl.gripper_measurement","RPERA_Homing.gripper_measurement", 		ConnPolicy() ); # GripperMeasurement
+connect ("RPERA_Homing.gripper_command",			"RPERA_GripperControl.gripper_command", 	ConnPolicy() ); # GripperCmd
 
 ## Ros communication ##
-connect ("RPERA_MotorToJointSpace.out",				"RPERA_JointOutputLimiter.in", 				ConnPolicy() )
-connect ("RPERA_JointOutputLimiter.out",			"RPERA_WriteClippedJointAngles.pos_in", 	ConnPolicy() )
-connect ("RPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.right_arm", 			ConnPolicy() )
+connect ("RPERA_MotorToJointSpace.out",				"RPERA_JointOutputLimiter.in", 				ConnPolicy() ); # Positions JS
+connect ("RPERA_JointOutputLimiter.out",			"RPERA_WriteClippedJointAngles.pos_in", 	ConnPolicy() ); # Clipped Positions
+connect ("RPERA_WriteClippedJointAngles.out", 		"JointStateAggregator.right_arm", 			ConnPolicy() ); # Jointstate
 
 ## Safety ##
-connect ("RPERA_Controller.jointErrors",			"RPERA_Safety.jointErrors", 				ConnPolicy() )
-connect ("RPERA_Controller.out",					"RPERA_Safety.controlEffort", 				ConnPolicy() )
-connect ("RPERA_Safety.enable",						"RPERA_Controller.enable", 					ConnPolicy() )
-connect ("RPERA_Safety.error",						"Supervisor.right_arm_error", 				ConnPolicy() )
-connect ("RPERA_Safety.enable",						RIGHT_ARM_SHOULDER+".enablePort", 			ConnPolicy() )
-connect ("RPERA_Safety.enable",						RIGHT_ARM_UPPERARM+".enablePort", 			ConnPolicy() )
-connect ("RPERA_Safety.enable",						RIGHT_ARM_LOWERARM+".enablePort", 			ConnPolicy() )
+connect ("RPERA_Controller.jointErrors",			"RPERA_Safety.jointErrors", 				ConnPolicy() ); # JointErrors
+connect ("RPERA_Controller.out",					"RPERA_Safety.controlEffort", 				ConnPolicy() ); # ControlEffort
+connect ("RPERA_Safety.enable",						"RPERA_Controller.enable", 					ConnPolicy() ); # Enable
+connect ("RPERA_Safety.error",						"Supervisor.right_arm_error", 				ConnPolicy() ); # Error
+connect ("RPERA_Safety.enable",						RIGHT_ARM_SHOULDER+".enablePort", 			ConnPolicy() ); # Enable
+connect ("RPERA_Safety.enable",						RIGHT_ARM_UPPERARM+".enablePort", 			ConnPolicy() ); # Enable
+connect ("RPERA_Safety.enable",						RIGHT_ARM_LOWERARM+".enablePort", 			ConnPolicy() ); # Enable
 
 ## Homing ##
-connect ("RPERA_Homing.homing_finished",			"Supervisor.right_arm_homingfinished", 		ConnPolicy() )
-connect ("RPERA_AnalogIns.out2",					"RPERA_Homing.measAbsJointAnglesPort", 		ConnPolicy() )
-connect ("RPERA_Homing.homJntAnglesPort",			"RPERA_VectorConcatenate.in1", 				ConnPolicy() )
-connect ("RPERA_Homing.resetInterpolatorPort",		"RPERA_ReferenceGenerator.resetValues", 	ConnPolicy() )
-connect ("RPERA_Homing.reNullPort",					"RPERA_ReadEncoders.in_reNull", 			ConnPolicy() )
-connect ("RPERA_Homing.reNullPort",					"RPERA_GripperControl.reNullPort", 			ConnPolicy() )
-connect ("RPERA_Controller.jointErrors",			"RPERA_Homing.errorPort", 					ConnPolicy() )
-connect ("RPERA_MotorToJointSpace.out",				"RPERA_Homing.measRelJointAnglesPort", 		ConnPolicy() )
-connect ("RPERA_Homing.endpos_out",					"RPERA_VectorConcatenate.in1", 				ConnPolicy() ) 
+connect ("RPERA_ReadEncoders.out",					"RPERA_Homing.position", 					ConnPolicy() ); # Position
+connect ("RPERA_Controller.jointErrors",			"RPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
+connect ("RPERA_AnalogIns.out2",					"RPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
+connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
+connect ("RPERA_Homing.homing_finished",			"Supervisor.right_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
+connect ("RPERA_Homing.ref_out",					"RPERA_ReferenceGenerator.posin", 			ConnPolicy() ); # Reference
 
 ## Diagnostics ##
-connect ("RPERA_VectorConcatenate.out", 			"RPERA_Diagnostics.vec1", 					ConnPolicy() )
-connect ("RPERA_Controller.jointErrors",			"RPERA_Diagnostics.vec2", 					ConnPolicy() )
-connect ("RPERA_ReadReferences.pos_out", 			"RPERA_Diagnostics.vec3", 					ConnPolicy() )
-connect ("RPERA_Safety.enable",						"RPERA_Diagnostics.bool1", 					ConnPolicy() )
+connect ("RPERA_VectorConcatenate.out", 			"RPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
+connect ("RPERA_Controller.jointErrors",			"RPERA_Diagnostics.vec2", 					ConnPolicy() ); # JointErrors
+connect ("RPERA_Controller.out", 					"RPERA_Diagnostics.vec3", 					ConnPolicy() ); # ControlEffort
+connect ("RPERA_Safety.enable",						"RPERA_Diagnostics.bool1", 					ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
 stream ("RPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/right_arm/measurements"))
