@@ -38,10 +38,6 @@ right_arm_controller.ops
 head_controller.ops
 DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
-### Generic Hardware Components - If done move to rtt_control_components ###
-orocos_component(Homing src/Homing.cpp ${HEADER_FILES})
-target_link_libraries(Homing ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
-
 ### Specific Hardware Components - Head ###
 orocos_component(PanTiltController src/PanTiltController.cpp ${HEADER_FILES})
 orocos_component(HeadEnabler src/HeadEnabler.cpp ${HEADER_FILES})
