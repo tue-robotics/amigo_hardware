@@ -86,7 +86,7 @@ LPERA_ReferenceGenerator.InterpolatorEps 	= 1.0
 LPERA_ReferenceGenerator.minPosition		= LOWERJOINTLIMIT
 LPERA_ReferenceGenerator.maxPosition		= UPPERJOINTLIMIT
 LPERA_ReferenceGenerator.maxVelocity		= array (0.4, 0.4, 0.6, 0.8, 0.8, 1.0, 1.0, 10.0)
-LPERA_ReferenceGenerator.maxVelocity		= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5, 100.0)
+LPERA_ReferenceGenerator.maxAcceleration	= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5, 100.0)
 LPERA_ReferenceGenerator.configure
 
 ### LOAD READENCODERS
@@ -184,10 +184,10 @@ setActivity("LPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_Homing.vector_size 					= N
 LPERA_Homing.bodypart 						= BODYPARTNAME
 LPERA_Homing.prefix 						= "LPERA"
-LPERA_Homing.homing_type					= strings	("absolutesensor","absolutesensor","servoerror","servoerror","servoerror","servoerror","servoerror","servoerror")
+LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
 LPERA_Homing.require_homing					= ints 		(0, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
 LPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
-LPERA_Homing.homing_direction				= ints 		(1, 	1, 		1,	 	1, 		1,	 	1, 		1,	 	1 	)
+LPERA_Homing.homing_direction				= ints 		(1, 	1,		1,	 	1, 		1,	 	1, 		1,	 	1 	)
 LPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.05,	0.075,	0.075,	0.05,	0.1,	0.1 )
 LPERA_Homing.homing_stroke					= HOMINGSTROKE
 LPERA_Homing.homing_midpos					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0)

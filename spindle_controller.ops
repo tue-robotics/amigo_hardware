@@ -99,7 +99,7 @@ setActivity("SPINDLE_Homing",Ts,HighestPriority,ORO_SCHED_RT)
 SPINDLE_Homing.vector_size 					= N
 SPINDLE_Homing.bodypart 					= BODYPARTNAME
 SPINDLE_Homing.prefix 						= "SPINDLE"
-SPINDLE_Homing.homing_type					= strings("endswitch")
+SPINDLE_Homing.homing_type					= ints (1)
 SPINDLE_Homing.require_homing				= ints (1)
 SPINDLE_Homing.homing_order					= ints (1)
 SPINDLE_Homing.homing_direction				= ints (1)

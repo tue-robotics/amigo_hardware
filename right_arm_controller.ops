@@ -184,10 +184,10 @@ setActivity("RPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
 RPERA_Homing.vector_size 					= N
 RPERA_Homing.bodypart 						= BODYPARTNAME
 RPERA_Homing.prefix 						= "RPERA"
-RPERA_Homing.homing_type					= strings	("absolutesensor","absolutesensor","servoerror","servoerror","servoerror","servoerror","servoerror","servoerror")
+LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
 RPERA_Homing.require_homing					= ints 		(0, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
 RPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
-RPERA_Homing.homing_direction				= ints 		(1, 	-1, 	1,	 	1, 		1,	 	1, 		1,	 	1 	)
+RPERA_Homing.homing_direction				= ints 		(1, 	-1,		1,	 	1, 		1,	 	1, 		1,	 	1 	)
 RPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.05,	0.075,	0.075,	0.05,	0.1,	0.1 )
 RPERA_Homing.homing_stroke					= HOMINGSTROKE
 RPERA_Homing.homing_midpos					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0)
