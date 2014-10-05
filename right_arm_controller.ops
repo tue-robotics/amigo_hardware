@@ -86,7 +86,7 @@ RPERA_ReferenceGenerator.InterpolatorEps	= 1.0
 RPERA_ReferenceGenerator.minPosition		= LOWERJOINTLIMIT
 RPERA_ReferenceGenerator.maxPosition		= UPPERJOINTLIMIT
 RPERA_ReferenceGenerator.maxVelocity		= array (0.4, 0.4, 0.6, 0.8, 0.8, 1.0, 1.0, 10.0)
-RPERA_ReferenceGenerator.maxVelocity		= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5, 100.0)
+RPERA_ReferenceGenerator.maxAcceleration	= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5, 100.0)
 RPERA_ReferenceGenerator.configure
 
 ### LOAD READENCODERS
@@ -176,7 +176,7 @@ RPERA_SensorTorques.configure
 
 ### PERA Homing ###
 loadComponent("RPERA_Homing","SUPERVISORY::Homing")
-addPeer("Supervisor","RPERA_Homing")
+connectPeers("Supervisor","RPERA_Homing")
 addPeer("RPERA_Homing","RPERA_ReadReferences")
 addPeer("RPERA_Homing","RPERA_ReadEncoders")
 addPeer("RPERA_Homing","RPERA_Safety")
@@ -187,13 +187,14 @@ RPERA_Homing.prefix 						= "RPERA"
 LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
 RPERA_Homing.require_homing					= ints 		(0, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
 RPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
-RPERA_Homing.homing_direction				= ints 		(1, 	-1,		1,	 	1, 		1,	 	1, 		1,	 	1 	)
-RPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.05,	0.075,	0.075,	0.05,	0.1,	0.1 )
+RPERA_Homing.homing_direction				= ints 		(1, 	-1,		1,	 	1, 		1,	 	1, 		1,	 	1  	)
+RPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.05,	0.075,	0.075,	0.05,	0.1,	0.1	)
 RPERA_Homing.homing_stroke					= HOMINGSTROKE
-RPERA_Homing.homing_midpos					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0)
-RPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0)
+RPERA_Homing.homing_midpos					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0	)
+RPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0	)
 RPERA_Homing.homing_errors					= MAXERRORS
 RPERA_Homing.homing_absPos					= ABSPOS
+RPERA_Homing.homing_forces					= array 	(0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0	)
 RPERA_Homing.configure
 
 #### Diagnostics ###

@@ -176,9 +176,9 @@ LPERA_SensorTorques.configure
 
 ### PERA Homing ###
 loadComponent("LPERA_Homing","SUPERVISORY::Homing")
-addPeer("Supervisor","LPERA_Homing")
-addPeer("LPERA_Homing","LPERA_ReadReferences")
+connectPeers("Supervisor","LPERA_Homing")
 addPeer("LPERA_Homing","LPERA_ReadEncoders")
+addPeer("LPERA_Homing","LPERA_ReferenceGenerator")
 addPeer("LPERA_Homing","LPERA_Safety")
 setActivity("LPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_Homing.vector_size 					= N
@@ -194,6 +194,7 @@ LPERA_Homing.homing_midpos					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0
 LPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0)
 LPERA_Homing.homing_errors					= MAXERRORS
 LPERA_Homing.homing_absPos					= ABSPOS
+LPERA_Homing.homing_forces					= array 	(0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0	)
 LPERA_Homing.configure
 
 #### Diagnostics ###
