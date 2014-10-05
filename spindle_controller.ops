@@ -6,6 +6,12 @@
 #                                                                      #
 ########################################################################
 
+# Test spindle homing and reference 
+# What to do with gripper homing
+# Add homing order
+# Test Arm homing
+# Add moving max min pos to homing component
+
 #### DECLARATION OF PARAMETERS ####
 var double Ts 				= 0.001
 var strings JOINT_NAMES 	= strings( "torso_joint" )
@@ -39,11 +45,9 @@ SPINDLE_WriteJointStates.JointNames 		= JOINT_NAMES
 SPINDLE_WriteJointStates.configure
 
 #Reading spindle setpoints
-loadComponent("SPINDLE_ReadReferences","AMIGOSPINDLE::ReadSpindleSetpointJointState")
+loadComponent("SPINDLE_ReadReferences","ROS::JointStateToDoubles")
 addPeer("Supervisor","SPINDLE_ReadReferences")
-SPINDLE_ReadReferences.min_pos 				= MINPOS
-SPINDLE_ReadReferences.max_pos 				= MAXPOS
-SPINDLE_ReadReferences.max_vel 				= MAXVEL
+SPINDLE_ReadReferences.vector_size			= N
 SPINDLE_ReadReferences.configure
 
 #Loading Reference Generator
@@ -53,30 +57,11 @@ setActivity("SPINDLE_ReferenceGenerator",Ts,HighestPriority,ORO_SCHED_RT)
 SPINDLE_ReferenceGenerator.vector_size 		= N
 SPINDLE_ReferenceGenerator.InterpolatorDt	= Ts
 SPINDLE_ReferenceGenerator.InterpolatorEps 	= 1.0
-SPINDLE_ReferenceGenerator.max_pos 			= 0.0
-SPINDLE_ReferenceGenerator.max_vel 			= MAXVEL
-SPINDLE_ReferenceGenerator.max_acc 			= MAXACC
+SPINDLE_ReferenceGenerator.minPosition 		= array(MINPOS)
+SPINDLE_ReferenceGenerator.maxPosition		= array(MAXPOS)
+SPINDLE_ReferenceGenerator.maxVelocity 		= array(MAXVEL)
+SPINDLE_ReferenceGenerator.maxAcceleration	= array(MAXACC)
 SPINDLE_ReferenceGenerator.configure
-
-#Loading Homing component
-loadComponent("SPINDLE_Homing","AMIGOGENERIC::Homing")
-connectPeers("Supervisor","SPINDLE_Homing")	
-addPeer("SPINDLE_Homing","SPINDLE_ReadEncoders")
-addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
-addPeer("SPINDLE_Homing","SPINDLE_Safety")
-setActivity("SPINDLE_Homing",Ts,HighestPriority,ORO_SCHED_RT)
-SPINDLE_Homing.vector_size 					= N
-SPINDLE_Homing.bodypart 					= BODYPARTNAME
-SPINDLE_Homing.prefix 						= "SPINDLE"
-SPINDLE_Homing.homing_type					= strings("endswitch")
-SPINDLE_Homing.require_homing				= array (1.0)
-SPINDLE_Homing.homing_order					= array (1.0)
-SPINDLE_Homing.homing_direction				= array (1.0)
-SPINDLE_Homing.homing_velocity				= array (0.01)
-SPINDLE_Homing.homing_stroke				= array (0.41)
-SPINDLE_Homing.homing_midpos				= array (0.41)
-SPINDLE_Homing.homing_endpos				= array (0.35)
-SPINDLE_Homing.configure
 
 ### Negative feedback controller ###
 loadComponent("SPINDLE_Controller","FILTERS::Controller")
@@ -104,6 +89,26 @@ SPINDLE_Safety.motorSaturations				= array (200.0)
 SPINDLE_Safety.maxConSatTime				= 5.0
 SPINDLE_Safety.configure
 
+#Loading Homing component
+loadComponent("SPINDLE_Homing","SUPERVISORY::Homing")
+connectPeers("Supervisor","SPINDLE_Homing")	
+addPeer("SPINDLE_Homing","SPINDLE_ReadEncoders")
+addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
+addPeer("SPINDLE_Homing","SPINDLE_Safety")
+setActivity("SPINDLE_Homing",Ts,HighestPriority,ORO_SCHED_RT)
+SPINDLE_Homing.vector_size 					= N
+SPINDLE_Homing.bodypart 					= BODYPARTNAME
+SPINDLE_Homing.prefix 						= "SPINDLE"
+SPINDLE_Homing.homing_type					= strings("endswitch")
+SPINDLE_Homing.require_homing				= ints (1)
+SPINDLE_Homing.homing_order					= ints (1)
+SPINDLE_Homing.homing_direction				= ints (1)
+SPINDLE_Homing.homing_velocity				= array (0.01)
+SPINDLE_Homing.homing_stroke				= array (0.41)
+SPINDLE_Homing.homing_midpos				= array (0.41)
+SPINDLE_Homing.homing_endpos				= array (0.35)
+SPINDLE_Homing.configure
+
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###
 loadComponent("SPINDLE_Diagnostics","ROS::RosDiagnostics")
 addPeer("Supervisor","SPINDLE_Diagnostics")
@@ -128,7 +133,7 @@ connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_Controller.pos_in", 				ConnPol
 connect ("SPINDLE_Controller.out",					"BASESPINDLE_AnalogOuts.in2", 				ConnPolicy() ); # ControlEffort
 
 ## References ##
-connect ("SPINDLE_ReadReferences.out",				"SPINDLE_ReferenceGenerator.posin", 		ConnPolicy() ); # RefGoal
+connect ("SPINDLE_ReadReferences.pos_out",			"SPINDLE_ReferenceGenerator.posin", 		ConnPolicy() ); # RefGoal
 connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_ReferenceGenerator.actual_pos", 	ConnPolicy() ); # Position
 connect ("SPINDLE_ReferenceGenerator.posout",		"SPINDLE_Controller.ref_in", 				ConnPolicy() ); # Reference
 
@@ -157,19 +162,19 @@ connect ("SPINDLE_Controller.out", 					"SPINDLE_Diagnostics.vec3", 				ConnPoli
 connect ("SPINDLE_Safety.enable",					"SPINDLE_Diagnostics.bool1", 				ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
-stream("SPINDLE_ReadReferences.spindle_setpoint", 	ros.topic("/amigo/torso/references"))
+stream("SPINDLE_ReadReferences.in", 				ros.topic("/amigo/torso/references"))
 stream("SPINDLE_Diagnostics.diagnostics", 			ros.topic("/diagnostics"))
 stream("SPINDLE_WriteJointStates.out", 				ros.topic("/amigo/torso/measurements"))
 
 #### START COMPONENTS ####
-Supervisor.AddAllwaysOnPeer ("SPINDLE_ReadEncoders")
-Supervisor.AddAllwaysOnPeer ("SPINDLE_WriteJointStates")
-Supervisor.AddAllwaysOnPeer ("SPINDLE_Diagnostics")
-Supervisor.AddAllwaysOnPeer ("SPINDLE_Controller")
+Supervisor.AddAllwaysOnPeer (	"SPINDLE_ReadEncoders")
+Supervisor.AddAllwaysOnPeer (	"SPINDLE_WriteJointStates")
+Supervisor.AddAllwaysOnPeer (	"SPINDLE_Diagnostics")
+Supervisor.AddAllwaysOnPeer (	"SPINDLE_Controller")
 
-Supervisor.AddHomingOnlyPeer ("SPINDLE_Homing", BODYNUMBER )
+Supervisor.AddHomingOnlyPeer (	"SPINDLE_Homing", 				BODYNUMBER )
 
-Supervisor.AddOpOnlyPeer ("SPINDLE_ReadReferences", BODYNUMBER )
+Supervisor.AddOpOnlyPeer (		"SPINDLE_ReadReferences", 		BODYNUMBER )
 
-Supervisor.AddEnabledPeer ("SPINDLE_ReferenceGenerator", BODYNUMBER )
-Supervisor.AddEnabledPeer ("SPINDLE_Safety", BODYNUMBER )
+Supervisor.AddEnabledPeer (		"SPINDLE_ReferenceGenerator", 	BODYNUMBER )
+Supervisor.AddEnabledPeer (		"SPINDLE_Safety", 				BODYNUMBER )
