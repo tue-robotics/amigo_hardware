@@ -13,11 +13,11 @@ var string LEFT_ARM_UPPERARM 	= "Soem.Slave_1013"
 var string LEFT_ARM_LOWERARM 	= "Soem.Slave_1014"
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_left", "finger1_tip_joint_left", "finger2_joint_left", "finger2_tip_joint_left" )
-var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61,  	4.0		)
-var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	-4.0	)
-var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	0.0		)
-var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 	2.0		)
-var ints ABSPOS 				= ints	(	394,		597,		0,			0,			0,			0,			0,		0		)
+var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61,  		4.0		)
+var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 		-4.0	)
+var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 		0.0		)
+var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 		2.0		)
+var ints ABSPOS 				= ints	(	394,		597,		0,			0,			0,			0,			0,			0		)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -174,7 +174,7 @@ LPERA_SensorTorques.c2 						= array (-0.2,		0.2,		6.0,		-0.8,		1.0,		1.0,		1.0,
 LPERA_SensorTorques.c3 						= array (-76.26,	-95.29,	    -145.16,	-38.71,		-111.7,		1.0,		1.0,		0.0		)
 LPERA_SensorTorques.configure
 
-### PERA Homing ###
+### PERA Homing ###							## Note that all properties follow the [q1,q2,q3....q8] structure and not the structure provided by homing_order
 loadComponent("LPERA_Homing","SUPERVISORY::Homing")
 connectPeers("Supervisor","LPERA_Homing")
 addPeer("LPERA_Homing","LPERA_ReadEncoders")
@@ -184,11 +184,11 @@ setActivity("LPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_Homing.vector_size 					= N
 LPERA_Homing.bodypart 						= BODYPARTNAME
 LPERA_Homing.prefix 						= "LPERA"
-LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
-LPERA_Homing.require_homing					= ints 		(0, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
+LPERA_Homing.homing_type					= ints 		(2, 	2,	 	2, 		2,	 	2, 		2,	 	2, 		2 	)
+LPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		0 	)
 LPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
-LPERA_Homing.homing_direction				= ints 		(1, 	1,		1,	 	1, 		1,	 	1, 		1,	 	1 	)
-LPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.05,	0.075,	0.075,	0.05,	0.1,	0.1 )
+LPERA_Homing.homing_direction				= ints 		(-1, 	-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
+LPERA_Homing.homing_velocity				= array 	(0.25,	0.25,	0.25,	0.25,	0.25,	0.2,	0.2,	0.1 )
 LPERA_Homing.homing_stroke					= HOMINGSTROKE
 LPERA_Homing.homing_midpos					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0)
 LPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0)
