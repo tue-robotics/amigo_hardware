@@ -31,15 +31,15 @@ var bool HOMEABLE 		= false
 Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 
 ## Pan-tilt controller
-loadComponent("HEAD_PanTiltController", "SERGIOCUSTOM::DynamixelControllers")
+loadComponent("HEAD_PanTiltController", "DYNAMIXEL::DynamixelController")
 addPeer("Supervisor","HEAD_PanTiltController")
 setActivity("HEAD_PanTiltController",TS,HighestPriority,ORO_SCHED_RT)
 HEAD_PanTiltController.joint_names 			= JOINT_NAMES
-HEAD_PanTiltController.dynamixel_ids		= ints(PAN_ID, TILT_ID)
-HEAD_PanTiltController.dynamixel_offset 	= ints(PAN_OFFSET, TILT_OFFSET)
-HEAD_PanTiltController.dynamixel_max 		= ints(PAN_OFFSET + PAN_MAX, TILT_OFFSET + TILT_MAX)
-HEAD_PanTiltController.dynamixel_min 		= ints(PAN_OFFSET + PAN_MIN, TILT_OFFSET + TILT_MIN)
-HEAD_PanTiltController.dynamixel_speed 		= ints(PAN_SPEED, TILT_SPEED)
+HEAD_PanTiltController.dynamixel_ids		= ints(PAN_ID, 					TILT_ID)
+HEAD_PanTiltController.dynamixel_offset 	= ints(PAN_OFFSET, 				TILT_OFFSET)
+HEAD_PanTiltController.dynamixel_max 		= ints(PAN_OFFSET + PAN_MAX, 	TILT_OFFSET + TILT_MAX)
+HEAD_PanTiltController.dynamixel_min 		= ints(PAN_OFFSET + PAN_MIN, 	TILT_OFFSET + TILT_MIN)
+HEAD_PanTiltController.dynamixel_speed 		= ints(PAN_SPEED, 				TILT_SPEED)
 HEAD_PanTiltController.configure
 
 ## Pan-tilt controller

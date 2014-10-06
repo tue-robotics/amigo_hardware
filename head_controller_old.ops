@@ -6,15 +6,10 @@
 #                                                                      #
 ########################################################################
 
-# Temporary to load dynamixel controller
-import("sergio_hardware")
-
 #### DECLARATION OF PARAMETERS ####
 var double TS 			= 0.001
 var double RAD_TO_STEP 	= 195.37860814; # IF YOU CHANGE THIS VARIABLE, ALSO RECALCULATE PAN_MIN, PAN_MAX, TILT_MIN AND TILT_MAX, (From header file) 
 var strings JOINT_NAMES = strings( "neck_pan_joint", "neck_tilt_joint" )
-var int PAN_ID 			= 2 	; # Dynamixel id
-var int TILT_ID 		= 1 	; # Dynamixel id
 var int PAN_OFFSET 		= 512	; # Center pan dynamixel
 var int TILT_OFFSET 	= 512	; # Center tilt dynamixel
 var int PAN_MIN 		= -306 	; # -1.57*RAD_TO_STEP
@@ -31,15 +26,20 @@ var bool HOMEABLE 		= false
 Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 
 ## Pan-tilt controller
-loadComponent("HEAD_PanTiltController", "DYNAMIXEL::DynamixelController")
+loadComponent("HEAD_PanTiltController", "AMIGOHEAD::PanTiltController")
 addPeer("Supervisor","HEAD_PanTiltController")
 setActivity("HEAD_PanTiltController",TS,HighestPriority,ORO_SCHED_RT)
-HEAD_PanTiltController.joint_names 			= JOINT_NAMES
-HEAD_PanTiltController.dynamixel_ids		= ints(PAN_ID, 					TILT_ID)
-HEAD_PanTiltController.dynamixel_offset 	= ints(PAN_OFFSET, 				TILT_OFFSET)
-HEAD_PanTiltController.dynamixel_max 		= ints(PAN_OFFSET + PAN_MAX, 	TILT_OFFSET + TILT_MAX)
-HEAD_PanTiltController.dynamixel_min 		= ints(PAN_OFFSET + PAN_MIN, 	TILT_OFFSET + TILT_MIN)
-HEAD_PanTiltController.dynamixel_speed 		= ints(PAN_SPEED, 				TILT_SPEED)
+HEAD_PanTiltController.joint_names 	= JOINT_NAMES
+HEAD_PanTiltController.pan_id 		= 2
+HEAD_PanTiltController.tilt_id 		= 1
+HEAD_PanTiltController.pan_offset 	= PAN_OFFSET
+HEAD_PanTiltController.tilt_offset 	= TILT_OFFSET
+HEAD_PanTiltController.pan_max 		= PAN_OFFSET + PAN_MAX
+HEAD_PanTiltController.pan_min 		= PAN_OFFSET + PAN_MIN
+HEAD_PanTiltController.tilt_max 	= TILT_OFFSET + TILT_MAX
+HEAD_PanTiltController.tilt_min 	= TILT_OFFSET + TILT_MIN
+HEAD_PanTiltController.pan_speed 	= PAN_SPEED
+HEAD_PanTiltController.tilt_speed 	= TILT_SPEED
 HEAD_PanTiltController.configure
 
 ## Pan-tilt controller
