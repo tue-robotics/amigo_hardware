@@ -1,7 +1,7 @@
 <launch>
   <include file="$(find rtt_ros)/launch/deployer.launch">
     <arg name="DEPLOYER_ARGS" value="gnulinux
-    -s $(find amigo_hardware)/soem.ops
+    -s $(find amigo_hardware)/ops/soem.ops
     "/>
     <arg name="LOG_LEVEL" value="Warning"/>
     <arg name="DEBUG" value="false"/>

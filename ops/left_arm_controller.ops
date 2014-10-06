@@ -235,7 +235,8 @@ connect ("LPERA_AnalogIns.out1",					"LPERA_SensorTorques.voltage_in", 			ConnPo
 connect ("LPERA_ReadReferences.pos_out",			"LPERA_VectorConcatenate.in1", 				ConnPolicy() ); # References
 connect ("LPERA_GripperControl.gripper_ref",		"LPERA_VectorConcatenate.in2",				ConnPolicy() ); # Gripper ref
 connect ("LPERA_VectorConcatenate.out",				"LPERA_ReferenceGenerator.posin", 			ConnPolicy() ); # References
-connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in", 					ConnPolicy() ); # InterpolatedReference
+connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in", 					ConnPolicy() ); # InterpolatedReference 
+connect ("LPERA_MotorToJointSpace.out",				"LPERA_ReferenceGenerator.actual_pos", 		ConnPolicy() ); # Initial position
 
 ## Gripper control ##
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() ); # Torqin
@@ -256,7 +257,7 @@ connect ("LPERA_Safety.enable",						LEFT_ARM_UPPERARM+".enablePort", 			ConnPol
 connect ("LPERA_Safety.enable",						LEFT_ARM_LOWERARM+".enablePort", 			ConnPolicy() ); # Enable
 
 ## Homing ##
-connect ("LPERA_ReadEncoders.out",					"LPERA_Homing.position", 					ConnPolicy() ); # Position
+connect ("LPERA_MotorToJointSpace.out",				"LPERA_Homing.position", 					ConnPolicy() ); # Position
 connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
 connect ("LPERA_AnalogIns.out2",					"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
@@ -270,6 +271,7 @@ connect ("LPERA_Controller.out", 					"LPERA_Diagnostics.vec3", 					ConnPolicy(
 connect ("LPERA_Safety.error",						"LPERA_Diagnostics.bool1", 					ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
+stream ("LPERA_ReferenceGenerator.resetref", 		ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/left_arm/measurements"))
 stream ("LPERA_ReadReferences.in", 					ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
