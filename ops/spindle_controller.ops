@@ -55,6 +55,8 @@ loadComponent("SPINDLE_ReferenceGenerator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","SPINDLE_ReferenceGenerator")
 setActivity("SPINDLE_ReferenceGenerator",Ts,HighestPriority,ORO_SCHED_RT)
 SPINDLE_ReferenceGenerator.vector_size 		= N
+SPINDLE_ReferenceGenerator.number_of_inports= 1
+SPINDLE_ReferenceGenerator.inport_sizes 	= ints (1)
 SPINDLE_ReferenceGenerator.InterpolatorDt	= Ts
 SPINDLE_ReferenceGenerator.InterpolatorEps 	= 1.0
 SPINDLE_ReferenceGenerator.minPosition 		= array(MINPOS)
@@ -133,8 +135,8 @@ connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_Controller.pos_in", 				ConnPol
 connect ("SPINDLE_Controller.out",					"BASESPINDLE_AnalogOuts.in2", 				ConnPolicy() ); # ControlEffort
 
 ## References ##
-connect ("SPINDLE_ReadReferences.pos_out",			"SPINDLE_ReferenceGenerator.posin", 		ConnPolicy() ); # RefGoal
-connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_ReferenceGenerator.actual_pos", 	ConnPolicy() ); # Position
+connect ("SPINDLE_ReadReferences.pos_out",			"SPINDLE_ReferenceGenerator.posin1", 		ConnPolicy() ); # RefGoal
+connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_ReferenceGenerator.initial_pos", 	ConnPolicy() ); # Position
 connect ("SPINDLE_ReferenceGenerator.posout",		"SPINDLE_Controller.ref_in", 				ConnPolicy() ); # Reference
 
 ## Ros communication ##
@@ -145,7 +147,7 @@ connect ("SPINDLE_WriteJointStates.out", 			"JointStateAggregator.torso", 				Co
 connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_Homing.position", 					ConnPolicy() ); # Position
 connect ("DigitalIns2.out2", 						"SPINDLE_Homing.endswitch", 				ConnPolicy() ); # Endswitch
 connect ("SPINDLE_Homing.homing_finished",			"Supervisor.spindle_homingfinished", 		ConnPolicy() ); # Homing_finished
-connect ("SPINDLE_Homing.ref_out",					"SPINDLE_ReferenceGenerator.posin", 		ConnPolicy() ); # Reference
+connect ("SPINDLE_Homing.ref_out",					"SPINDLE_ReferenceGenerator.posin1", 		ConnPolicy() ); # Reference
 
 ## Safety ##
 connect ("SPINDLE_Controller.jointErrors",			"SPINDLE_Safety.jointErrors", 				ConnPolicy() ); # Joint Errors

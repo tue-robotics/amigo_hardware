@@ -52,14 +52,6 @@ setActivity("LPERA_ReadReferences",0.0,HighestPriority,ORO_SCHED_RT)
 LPERA_ReadReferences.vector_size 			= 7
 LPERA_ReadReferences.configure
 
-### Vector concatenate ###
-loadComponent("LPERA_VectorConcatenate","SIGNALROUTING::VectorConcatenate")
-addPeer("Supervisor","LPERA_VectorConcatenate")
-setActivity("LPERA_VectorConcatenate",0.0,HighestPriority,ORO_SCHED_RT)
-LPERA_VectorConcatenate.vector_size 		= 2
-LPERA_VectorConcatenate.event_port 			= array (1.0, 1.0)
-LPERA_VectorConcatenate.configure
-
 ### Motor to joint angles ###
 loadComponent("LPERA_MotorToJointSpace","MATH::MatrixTransform")
 addPeer("Supervisor","LPERA_MotorToJointSpace")
@@ -81,6 +73,8 @@ loadComponent("LPERA_ReferenceGenerator","SOURCES::ReferenceGenerator")
 addPeer("Supervisor","LPERA_ReferenceGenerator")
 setActivity("LPERA_ReferenceGenerator",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_ReferenceGenerator.vector_size 		= N
+LPERA_ReferenceGenerator.number_of_inports 	= 2
+LPERA_ReferenceGenerator.inport_sizes 		= ints (7, 1)
 LPERA_ReferenceGenerator.InterpolatorDt 	= TS
 LPERA_ReferenceGenerator.InterpolatorEps 	= 1.0
 LPERA_ReferenceGenerator.minPosition		= LOWERJOINTLIMIT
@@ -232,11 +226,10 @@ connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 					ConnPoli
 connect ("LPERA_AnalogIns.out1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
-connect ("LPERA_ReadReferences.pos_out",			"LPERA_VectorConcatenate.in1", 				ConnPolicy() ); # References
-connect ("LPERA_GripperControl.gripper_ref",		"LPERA_VectorConcatenate.in2",				ConnPolicy() ); # Gripper ref
-connect ("LPERA_VectorConcatenate.out",				"LPERA_ReferenceGenerator.posin", 			ConnPolicy() ); # References
+connect ("LPERA_ReadReferences.pos_out",			"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Ref
+connect ("LPERA_GripperControl.gripper_ref",		"LPERA_ReferenceGenerator.posin2",			ConnPolicy() ); # Gripper Ref
 connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in", 					ConnPolicy() ); # InterpolatedReference 
-connect ("LPERA_MotorToJointSpace.out",				"LPERA_ReferenceGenerator.actual_pos", 		ConnPolicy() ); # Initial position
+connect ("LPERA_MotorToJointSpace.out",				"LPERA_ReferenceGenerator.initial_pos", 	ConnPolicy() ); # Initial position
 
 ## Gripper control ##
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() ); # Torqin
@@ -262,10 +255,10 @@ connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.servo_error_in", 				Co
 connect ("LPERA_AnalogIns.out2",					"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
 connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
-connect ("LPERA_Homing.ref_out",					"LPERA_ReferenceGenerator.posin", 			ConnPolicy() ); # Reference
+connect ("LPERA_Homing.ref_out",					"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Reference
 
 ## Diagnostics ##
-connect ("LPERA_VectorConcatenate.out", 			"LPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
+connect ("LPERA_ReadReferences.pos_out", 			"LPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
 connect ("LPERA_Controller.jointErrors",			"LPERA_Diagnostics.vec2", 					ConnPolicy() ); # JointErrors
 connect ("LPERA_Controller.out", 					"LPERA_Diagnostics.vec3", 					ConnPolicy() ); # ControlEffort
 connect ("LPERA_Safety.error",						"LPERA_Diagnostics.bool1", 					ConnPolicy() ); # Enable
@@ -288,10 +281,8 @@ Supervisor.AddAllwaysOnPeer(	"LPERA_Controller")
 
 Supervisor.AddHomingOnlyPeer(	"LPERA_Homing", 			BODYNUMBER)
 
-Supervisor.AddOpOnlyPeer(		"LPERA_ReadReferences", 	BODYNUMBER)
-
+#Supervisor.AddOpOnlyPeer(		"LPERA_ReadReferences", 	BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_ReferenceGenerator", BODYNUMBER)
-Supervisor.AddEnabledPeer(		"LPERA_VectorConcatenate", 	BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_SensorTorques", 		BODYNUMBER)
-Supervisor.AddEnabledPeer(		"LPERA_GripperControl", 	BODYNUMBER)
+#Supervisor.AddEnabledPeer(		"LPERA_GripperControl",		BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_Safety", 			BODYNUMBER)
