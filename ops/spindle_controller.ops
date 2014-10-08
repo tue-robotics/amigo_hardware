@@ -99,6 +99,8 @@ addPeer("SPINDLE_Homing","SPINDLE_ReferenceGenerator")
 addPeer("SPINDLE_Homing","SPINDLE_Safety")
 setActivity("SPINDLE_Homing",Ts,HighestPriority,ORO_SCHED_RT)
 SPINDLE_Homing.vector_size 					= N
+SPINDLE_Homing.number_of_outports 			= 1
+SPINDLE_Homing.outport_sizes				= ints (1)
 SPINDLE_Homing.bodypart 					= BODYPARTNAME
 SPINDLE_Homing.prefix 						= "SPINDLE"
 SPINDLE_Homing.homing_type					= ints (1)
@@ -147,7 +149,7 @@ connect ("SPINDLE_WriteJointStates.out", 			"JointStateAggregator.torso", 				Co
 connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_Homing.position", 					ConnPolicy() ); # Position
 connect ("DigitalIns2.out2", 						"SPINDLE_Homing.endswitch", 				ConnPolicy() ); # Endswitch
 connect ("SPINDLE_Homing.homing_finished",			"Supervisor.spindle_homingfinished", 		ConnPolicy() ); # Homing_finished
-connect ("SPINDLE_Homing.ref_out",					"SPINDLE_ReferenceGenerator.posin1", 		ConnPolicy() ); # Reference
+connect ("SPINDLE_Homing.refout1",					"SPINDLE_ReferenceGenerator.posin1", 		ConnPolicy() ); # Reference
 
 ## Safety ##
 connect ("SPINDLE_Controller.jointErrors",			"SPINDLE_Safety.jointErrors", 				ConnPolicy() ); # Joint Errors

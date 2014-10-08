@@ -176,6 +176,8 @@ addPeer("LPERA_Homing","LPERA_ReferenceGenerator")
 addPeer("LPERA_Homing","LPERA_Safety")
 setActivity("LPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_Homing.vector_size 					= N
+LPERA_Homing.number_of_outports 			= 2
+LPERA_Homing.outport_sizes					= ints (7 , 1)
 LPERA_Homing.bodypart 						= BODYPARTNAME
 LPERA_Homing.prefix 						= "LPERA"
 LPERA_Homing.homing_type					= ints 		(2, 	2,	 	2, 		2,	 	2, 		2,	 	2, 		2 	)
@@ -255,7 +257,8 @@ connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.servo_error_in", 				Co
 connect ("LPERA_AnalogIns.out2",					"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
 connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
-connect ("LPERA_Homing.ref_out",					"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Reference
+connect ("LPERA_Homing.refout1",					"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Reference
+connect ("LPERA_Homing.refout2",					"LPERA_ReferenceGenerator.posin2", 			ConnPolicy() ); # Reference
 
 ## Diagnostics ##
 connect ("LPERA_ReadReferences.pos_out", 			"LPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
