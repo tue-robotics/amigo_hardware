@@ -108,8 +108,8 @@ SPINDLE_Homing.require_homing				= ints (1)
 SPINDLE_Homing.homing_order					= ints (1)
 SPINDLE_Homing.homing_direction				= ints (1)
 SPINDLE_Homing.homing_velocity				= array (0.01)
-SPINDLE_Homing.homing_stroke				= array (0.41)
-SPINDLE_Homing.homing_midpos				= array (0.41)
+SPINDLE_Homing.homing_stroke				= array (0.0)
+SPINDLE_Homing.reset_stroke					= array (0.41)
 SPINDLE_Homing.homing_endpos				= array (0.35)
 SPINDLE_Homing.configure
 
