@@ -21,6 +21,15 @@ var string RIGHT_ARM_SHOULDER = "Soem.Slave_1015"
 var string RIGHT_ARM_UPPERARM = "Soem.Slave_1016"
 var string RIGHT_ARM_LOWERARM = "Soem.Slave_1017"
 
+#### MAKING PARAMETERS GLOBAL
+loadService("ETHERCAT_HARDWARE","os")
+os.setenv("LEFT_ARM_SHOULDER",LEFT_ARM_SHOULDER)
+os.setenv("LEFT_ARM_UPPERARM",LEFT_ARM_UPPERARM)
+os.setenv("LEFT_ARM_LOWERARM",LEFT_ARM_LOWERARM)
+os.setenv("RIGHT_ARM_SHOULDER",RIGHT_ARM_SHOULDER)
+os.setenv("RIGHT_ARM_UPPERARM",RIGHT_ARM_UPPERARM)
+os.setenv("RIGHT_ARM_LOWERARM",RIGHT_ARM_LOWERARM)
+
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","SUPERVISORY::Supervisor")
 Supervisor.configure
