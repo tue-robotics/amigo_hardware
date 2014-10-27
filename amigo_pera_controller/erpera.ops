@@ -18,9 +18,9 @@ wbcstr = os.getenv("wbc")
 
 #### DECLARATION OF PARAMETERS ####
 var double Ts 					= 0.001
-var string RIGHT_ARM_SHOULDER 	= "Soem.Slave_1015"
-var string RIGHT_ARM_UPPERARM 	= "Soem.Slave_1016"
-var string RIGHT_ARM_LOWERARM 	= "Soem.Slave_1017"
+var string RIGHT_ARM_SHOULDER 	= os.getenv("RIGHT_ARM_SHOULDER")
+var string RIGHT_ARM_UPPERARM 	= os.getenv("RIGHT_ARM_UPPERARM")
+var string RIGHT_ARM_LOWERARM 	= os.getenv("RIGHT_ARM_LOWERARM")
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_right", "shoulder_pitch_joint_right", "shoulder_roll_joint_right", "elbow_pitch_joint_right", "elbow_roll_joint_right", "wrist_pitch_joint_right", "wrist_yaw_joint_right" ) 
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_right", "finger1_tip_joint_right", "finger2_joint_right", "finger2_tip_joint_right" )
 var array UPPERJOINTLIMIT 		= array (   0.0,  		1.57,  		1.57, 		2.23,  		1.83,  		0.95,  		0.61,  4.0		)
@@ -28,7 +28,7 @@ var array LOWERJOINTLIMIT 		= array (   -1.57, 		-1.57, 		-1.57,  	0.0, 		-1.83	
 var array UPPERJOINTTORQUELIMIT = array (   26.4, 		26.4, 		9.8, 		11.8, 		11.8, 		2.5, 		2.5 			)
 var array LOWERJOINTTORQUELIMIT = array (   -26.4, 		-26.4, 		-9.8, 		-11.8, 		-11.8, 		-2.5, 		-2.5 			)
 var array MAXERRORS 			= array (   0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.19, 	 1.0	)
-var array HOMED_POS 			= array (	1377.0, 	644.0,  	1.5708, 	0.0, 		1.8326,		0.985,		0.7854			)
+var array HOMED_POS 			= array (	1373.0, 	640.0,  	1.5708, 	0.0, 		1.8326,		0.985,		0.7854			)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -139,10 +139,10 @@ RPERA_ReferenceInterpolator.interpolator8 		= array (0.0, 10.0, 100.0)
 loadComponent("RPERA_Safety","SUPERVISORY::SafetyMonitor")
 addPeer("Supervisor","RPERA_Safety")
 setActivity("RPERA_Safety",Ts,HighestPriority,ORO_SCHED_RT)
-RPERA_Safety.vectorsize_motorspace 	= Nm;
+RPERA_Safety.vectorsize_motorspace 	= Nj;
 RPERA_Safety.vectorsize_jointspace 	= Nj;
 RPERA_Safety.maxJointErrors 		= MAXERRORS;
-RPERA_Safety.motorSaturations 		= array (  1000.0, 	1000.0,     100.0, 	 400.0, 	   500.0,  	500.0, 	   500.0, 	500.0, 	900.0)
+RPERA_Safety.motorSaturations 		= array (  900.0, 	900.0,     750.0, 	   500.0,  	500.0, 	   500.0, 	500.0, 	900.0)
 RPERA_Safety.maxConSatTime 			= 5.0;
 RPERA_Safety.partNr					= BODYNUMBER;
 RPERA_Safety.configure
@@ -181,7 +181,7 @@ RPERA_ReadEncoders.configure
 loadComponent("RPERA_GripperControl","PERA::GripperControl")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",Ts,HighestPriority,ORO_SCHED_RT)
-RPERA_GripperControl.threshold_closed 	= 15.0
+RPERA_GripperControl.threshold_closed 	= 35.0
 RPERA_GripperControl.max_pos 			= 5.3
 RPERA_GripperControl.gripper_gain 		= 0.1
 RPERA_GripperControl.sensorPos 			= 8
@@ -292,14 +292,14 @@ JointStateAggregator.addAggregationPort(BODYNAME)
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
-connect (RIGHT_ARM_SHOULDER+".encoderAngle1",		"RPERA_ReadEncoders.enc1_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_SHOULDER+".encoderAngle2",		"RPERA_ReadEncoders.enc2_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_UPPERARM+".encoderAngle1",		"RPERA_ReadEncoders.enc3_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_UPPERARM+".encoderAngle2",		"RPERA_ReadEncoders.enc4_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_UPPERARM+".encoderAngle3",		"RPERA_ReadEncoders.enc5_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_LOWERARM+".encoderAngle1",		"RPERA_ReadEncoders.enc6_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_LOWERARM+".encoderAngle2",		"RPERA_ReadEncoders.enc7_in", 				ConnPolicy() ) 
-connect (RIGHT_ARM_LOWERARM+".encoderAngle3",		"RPERA_ReadEncoders.enc8_in", 				ConnPolicy() )
+connect (RIGHT_ARM_SHOULDER+".encoder1",		"RPERA_ReadEncoders.enc1_in", 				ConnPolicy() ) 
+connect (RIGHT_ARM_SHOULDER+".encoder2",		"RPERA_ReadEncoders.enc2_in", 				ConnPolicy() ) 
+connect (RIGHT_ARM_UPPERARM+".encoder1",		"RPERA_ReadEncoders.enc3_in", 				ConnPolicy() ) 
+connect (RIGHT_ARM_UPPERARM+".encoder2",		"RPERA_ReadEncoders.enc4_in", 				ConnPolicy() ) 
+connect (RIGHT_ARM_UPPERARM+".encoder3",		"RPERA_ReadEncoders.enc5_in", 				ConnPolicy() ) 
+connect (RIGHT_ARM_LOWERARM+".encoder1",		"RPERA_ReadEncoders.enc6_in", 				ConnPolicy() ) 
+connect (RIGHT_ARM_LOWERARM+".encoder2",		"RPERA_ReadEncoders.enc7_in", 				ConnPolicy() ) 
+connect (RIGHT_ARM_LOWERARM+".encoder3",		"RPERA_ReadEncoders.enc8_in", 				ConnPolicy() )
 connect ("RPERA_ReadEncoders.out","RPERA_MotorToJointSpace.in" , ConnPolicy() ); 
 connect ("RPERA_MotorToJointSpace.out","RPERA_ComputeErrors.in_minus", ConnPolicy() )
 connect ("RPERA_ComputeErrors.out","RPERA_Gains.in", ConnPolicy() )
