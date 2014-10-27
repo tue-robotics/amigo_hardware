@@ -8,14 +8,14 @@
 
 #### DECLARATION OF PARAMETERS ####
 var double TS 					= 0.001
-var string LEFT_ARM_SHOULDER 	= "Soem.Slave_1012"
-var string LEFT_ARM_UPPERARM 	= "Soem.Slave_1013"
-var string LEFT_ARM_LOWERARM 	= "Soem.Slave_1014"
+var string LEFT_ARM_SHOULDER 	= os.getenv("LEFT_ARM_SHOULDER")
+var string LEFT_ARM_UPPERARM 	= os.getenv("LEFT_ARM_UPPERARM")
+var string LEFT_ARM_LOWERARM 	= os.getenv("LEFT_ARM_LOWERARM")
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_left", "shoulder_pitch_joint_left", "shoulder_roll_joint_left", "elbow_pitch_joint_left", "elbow_roll_joint_left", "wrist_pitch_joint_left", "wrist_yaw_joint_left" )
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_left", "finger1_tip_joint_left", "finger2_joint_left", "finger2_tip_joint_left" )
 var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61,  		4.0		)
 var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 		-4.0	)
-var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 		0.0		)
+var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.75, 		0.0		)
 var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 		2.0		)
 var ints ABSPOS 				= ints	(	394,		597,		0,			0,			0,			0,			0,			0		)
 var double TWOPI 				= 2.0*3.141592
@@ -180,15 +180,15 @@ LPERA_Homing.number_of_outports 			= 2
 LPERA_Homing.outport_sizes					= ints (7 , 1)
 LPERA_Homing.bodypart 						= BODYPARTNAME
 LPERA_Homing.prefix 						= "LPERA"
-LPERA_Homing.homing_type					= ints 		(2, 	2,	 	2, 		2,	 	2, 		2,	 	2, 		2 	)
-LPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		0 	)
+LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
+LPERA_Homing.require_homing					= ints 		(1, 	1,	 	0, 		0,	 	0, 		0,	 	0, 		0 	)
 LPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
 LPERA_Homing.homing_direction				= ints 		(-1, 	-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
 LPERA_Homing.homing_velocity				= array 	(0.25,	0.25,	0.25,	0.25,	0.25,	0.2,	0.2,	0.1 )
 LPERA_Homing.homing_stroke					= HOMINGSTROKE
-LPERA_Homing.reset_stroke					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0)
-LPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0)
-LPERA_Homing.homing_errors					= MAXERRORS
+LPERA_Homing.reset_stroke					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0 )
+LPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0 )
+LPERA_Homing.homing_errors					= array 	(0.03,  0.03,   0.03,   0.03, 	0.03,   0.03,  	0.03,	2.0 )
 LPERA_Homing.homing_absPos					= ABSPOS
 LPERA_Homing.homing_forces					= array 	(0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0	)
 LPERA_Homing.configure
@@ -274,18 +274,18 @@ stream ("LPERA_GripperControl.gripper_command", 	ros.topic("/amigo/left_gripper/
 stream ("LPERA_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
 
 #### START COMPONENTS ####
+Supervisor.AddAllwaysOnPeer(	"LPERA_ReadEncoders")
 Supervisor.AddAllwaysOnPeer(	"LPERA_Diagnostics")
 Supervisor.AddAllwaysOnPeer(	"LPERA_JointOutputLimiter")
 Supervisor.AddAllwaysOnPeer(	"LPERA_WriteClippedJointAngles")
-Supervisor.AddAllwaysOnPeer(	"LPERA_ReadEncoders")
 Supervisor.AddAllwaysOnPeer(	"LPERA_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer(	"LPERA_JointToMotorSpace")
 Supervisor.AddAllwaysOnPeer(	"LPERA_Controller")
 
 Supervisor.AddHomingOnlyPeer(	"LPERA_Homing", 			BODYNUMBER)
 
-#Supervisor.AddOpOnlyPeer(		"LPERA_ReadReferences", 	BODYNUMBER)
-Supervisor.AddEnabledPeer(		"LPERA_ReferenceGenerator", BODYNUMBER)
+Supervisor.AddOpOnlyPeer(		"LPERA_ReadReferences", 	BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_SensorTorques", 		BODYNUMBER)
-#Supervisor.AddEnabledPeer(		"LPERA_GripperControl",		BODYNUMBER)
+Supervisor.AddEnabledPeer(		"LPERA_GripperControl",		BODYNUMBER)
+Supervisor.AddEnabledPeer(		"LPERA_ReferenceGenerator", BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_Safety", 			BODYNUMBER)
