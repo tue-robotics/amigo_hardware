@@ -181,9 +181,9 @@ LPERA_Homing.outport_sizes					= ints (7 , 1)
 LPERA_Homing.bodypart 						= BODYPARTNAME
 LPERA_Homing.prefix 						= "LPERA"
 LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
-LPERA_Homing.require_homing					= ints 		(1, 	1,	 	0, 		0,	 	0, 		0,	 	0, 		0 	)
+LPERA_Homing.require_homing					= ints 		(0, 	0,	 	0, 		0,	 	0, 		0,	 	0, 		0 	)
 LPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
-LPERA_Homing.homing_direction				= ints 		(-1, 	-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
+LPERA_Homing.homing_direction				= ints 		(1, 	1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
 LPERA_Homing.homing_velocity				= array 	(0.25,	0.25,	0.25,	0.25,	0.25,	0.2,	0.2,	0.1 )
 LPERA_Homing.homing_stroke					= HOMINGSTROKE
 LPERA_Homing.reset_stroke					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0 )
@@ -213,14 +213,14 @@ JointStateAggregator.addAggregationPort(BODYPARTNAME)
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
-connect (LEFT_ARM_SHOULDER+".encoderAngle1",		"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ); # Enc 1
-connect (LEFT_ARM_SHOULDER+".encoderAngle2",		"LPERA_ReadEncoders.enc2_in", 				ConnPolicy() ); # Enc 2
-connect (LEFT_ARM_UPPERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc3_in", 				ConnPolicy() ); # Enc 3
-connect (LEFT_ARM_UPPERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc4_in", 				ConnPolicy() ); # Enc 4
-connect (LEFT_ARM_UPPERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc5_in", 				ConnPolicy() ); # Enc 5
-connect (LEFT_ARM_LOWERARM+".encoderAngle1",		"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ); # Enc 6
-connect (LEFT_ARM_LOWERARM+".encoderAngle2",		"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ); # Enc 7
-connect (LEFT_ARM_LOWERARM+".encoderAngle3",		"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() ); # Enc 8
+connect (LEFT_ARM_SHOULDER+".encoder1",				"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ); # Enc 1
+connect (LEFT_ARM_SHOULDER+".encoder2",				"LPERA_ReadEncoders.enc2_in", 				ConnPolicy() ); # Enc 2
+connect (LEFT_ARM_UPPERARM+".encoder1",				"LPERA_ReadEncoders.enc3_in", 				ConnPolicy() ); # Enc 3
+connect (LEFT_ARM_UPPERARM+".encoder2",				"LPERA_ReadEncoders.enc4_in", 				ConnPolicy() ); # Enc 4
+connect (LEFT_ARM_UPPERARM+".encoder3",				"LPERA_ReadEncoders.enc5_in", 				ConnPolicy() ); # Enc 5
+connect (LEFT_ARM_LOWERARM+".encoder1",				"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ); # Enc 6
+connect (LEFT_ARM_LOWERARM+".encoder2",				"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ); # Enc 7
+connect (LEFT_ARM_LOWERARM+".encoder3",				"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() ); # Enc 8
 connect ("LPERA_ReadEncoders.out",					"LPERA_MotorToJointSpace.in", 				ConnPolicy() ); # Position MS
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
 connect ("LPERA_Controller.out",					"LPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
