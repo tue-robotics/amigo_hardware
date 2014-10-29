@@ -1,0 +1,70 @@
+########################################################################
+#                                                                      #
+# Controller TEST				 									   #
+#                                                                      #
+# Max Baeten                                                           #
+# Mostly 2011                                                          #
+#                                                                      #
+########################################################################
+
+#### Importing components ####
+import("rtt_ros")
+import("rtt_control_components")
+import("soem_master")
+import("soem_beckhoff_drivers")
+import("tue_ethercat_drivers")
+import("amigo_force_controller")
+
+
+#### DECLARATION OF PARAMETERS ####
+var double TS = 0.001
+var double GEARRATIO 		= 8.0/343.0 ;## to do check param
+var double TWOPI 			= 2.0*3.141592
+var double ENCODERCOUNTS 	= 500.0*4.0
+var double ENC2SI 			= TWOPI*GEARRATIO/ENCODERCOUNTS
+var uint ENCBITS			= 65536
+var uint N					= 3
+
+#### DECLARATION OF COMPONENTS ####
+
+### SOEM ###
+loadComponent("Soem","soem_master::SoemMasterComponent")
+Soem.configure
+setActivity("Soem",TS,HighestPriority,ORO_SCHED_RT)
+
+### Constant Signal to provide runtime goals ###
+loadComponent("ConstantGoal","SOURCES::ConstantSignal")
+setActivity("ConstantGoal",TS,HighestPriority,ORO_SCHED_RT)
+ConstantGoal.vector_size	= N
+ConstantGoal.value 			= array(100.0, 100.0, 100.0)
+ConstantGoal.configure
+
+### Constant Bool (Fake safety) ###
+loadComponent("FakeSafety","SOURCES::ConstantBool")
+setActivity("FakeSafety",TS,HighestPriority,ORO_SCHED_RT)
+FakeSafety.value 			= true
+FakeSafety.configure
+
+#### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
+loadComponent("AnalogOuts","SOEM::AnalogOutsGeneric")
+setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
+AnalogOuts.numberofinports    				= 1
+AnalogOuts.numberofoutports    				= 1
+AnalogOuts.input_sizes 						= array (3.0)
+AnalogOuts.output_sizes 					= array (3.0)
+AnalogOuts.output_positions 				= array (1.0, 1.0, 1.0)
+AnalogOuts.configure
+
+#### DECLARATION OF CONECTIONS ####
+
+connect ("ConstantGoal.out","AnalogOuts.in1", ConnPolicy())
+connect ("AnalogOuts.out1","Soem.Slave_1002.pwmDutyMotors", ConnPolicy() );
+connect ("FakeSafety.out", "Soem.Slave_1002.enablePort", ConnPolicy() );
+
+### STARTING OF COMPONENTS ####
+Soem.start()
+AnalogOuts.start()
+FakeSafety.start()
+ConstantGoal.start()
+
+
