@@ -1,3 +1,0 @@
-#! /bin/bash
-
-rostopic pub /amigo/base/reset_odometry std_msgs/Bool true --once

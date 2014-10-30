@@ -1,2 +1,0 @@
-loadService("ETHERCAT_HARDWARE","os")
-os.setenv("wbc","true")

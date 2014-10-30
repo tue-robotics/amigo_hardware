@@ -1,4 +1,0 @@
-import("amigo_etherCAT")
-trigger
-var double Ts = 0.001
-loadComponent("Soem","soem_master::SoemMasterComponent")

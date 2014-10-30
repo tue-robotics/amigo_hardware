@@ -1,0 +1,88 @@
+########################################################################
+#                                                                      #
+# Controller TEST				 									   #
+#                                                                      #
+# Max Baeten                                                           #
+# Mostly 2011                                                          #
+#                                                                      #
+########################################################################
+
+#### Importing components ####
+import("rtt_ros")
+import("rtt_control_components")
+import("soem_master")
+import("soem_beckhoff_drivers")
+import("tue_ethercat_drivers")
+
+#### DECLARATION OF PARAMETERS ####
+var double Ts = 0.001
+var double GEARRATIO 		= 8.0/343.0 ;## to do check param
+var double TWOPI 			= 2.0*3.141592
+var double ENCODERCOUNTS 	= 500.0*4.0
+var double ENC2SI 			= TWOPI*GEARRATIO/ENCODERCOUNTS
+var uint ENCBITS			= 65536
+
+#### DECLARATION OF COMPONENTS ####
+
+### SOEM ###
+loadComponent("Soem","soem_master::SoemMasterComponent")
+Soem.configure
+setActivity("Soem",Ts,HighestPriority,ORO_SCHED_RT)
+
+### READ WHEEL ENCODERS ###
+loadComponent("ReadEncoders","SOEM::ReadEncoders")
+setActivity("ReadEncoders",Ts,HighestPriority,ORO_SCHED_RT)
+ReadEncoders.encoderbits = ENCBITS
+ReadEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI)
+ReadEncoders.configure
+
+### READ WHEEL ENCODERS ###
+loadComponent("ReadEncoders30","SOEM::ReadEncoders")
+setActivity("ReadEncoders30",Ts,HighestPriority,ORO_SCHED_RT)
+ReadEncoders30.encoderbits = ENCBITS
+ReadEncoders30.enc2SI = array (ENC2SI, ENC2SI, ENC2SI)
+ReadEncoders30.configure
+
+### Constant ###
+loadComponent("Constant","SOURCES::ConstantSignal")
+setActivity("Constant",Ts,HighestPriority,ORO_SCHED_RT)
+Constant.vector_size = 3
+Constant.value = array (1.0, 0.0, 0.0)
+Constant.configure
+
+### Constant Bool (Fake safety) ###
+loadComponent("FakeSafety","SOURCES::ConstantBool")
+setActivity("FakeSafety",Ts,HighestPriority,ORO_SCHED_RT)
+FakeSafety.value = true
+FakeSafety.configure
+
+#### LOAD COMPONENT TO ENABLE ANALOG OUTS PERA ###
+loadComponent("AnalogOuts","SOEM::AnalogOutsGeneric")
+setActivity("AnalogOuts",0.0,HighestPriority,ORO_SCHED_RT)
+AnalogOuts.numberofinports    				= 1
+AnalogOuts.numberofoutports    				= 1
+AnalogOuts.input_sizes 						= array (3.0)
+AnalogOuts.output_sizes 					= array (3.0)
+AnalogOuts.output_positions 				= array (1.0, 1.0, 1.0)
+AnalogOuts.configure
+
+#### DECLARATION OF CONECTIONS ####
+connect ("Soem.Slave_1002.encoderAngle1","ReadEncoders.enc1_in", ConnPolicy()) 
+connect ("Soem.Slave_1002.encoderAngle2","ReadEncoders.enc2_in", ConnPolicy()) 
+connect ("Soem.Slave_1002.encoderAngle3","ReadEncoders.enc3_in", ConnPolicy()) 
+connect ("Soem.Slave_1003.encoderAngle1","ReadEncoders30.enc1_in", ConnPolicy()) 
+connect ("Soem.Slave_1003.encoderAngle2","ReadEncoders30.enc2_in", ConnPolicy()) 
+connect ("Soem.Slave_1003.encoderAngle3","ReadEncoders30.enc3_in", ConnPolicy()) 
+connect ("Constant.out","AnalogOuts.in1", ConnPolicy()) 
+connect ("AnalogOuts.out1","Soem.Slave_1002.pwmDutyMotors", ConnPolicy() );
+connect ("FakeSafety.out", "Soem.Slave_1002.enablePort", ConnPolicy() ); 
+connect ("FakeSafety.out", "Soem.Slave_1003.enablePort", ConnPolicy() ); 
+
+### STARTING OF COMPONENTS ####
+Soem.start()
+ReadEncoders.start()
+ReadEncoders30.start()
+Constant.start()
+AnalogOuts.start()
+FakeSafety.start()
+

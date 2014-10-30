@@ -1,7 +1,0 @@
-import("amigo_base_controller")
-
-loadComponent("BaseDiagnostics","AMIGO::BaseDiagnostics")
-setActivity("BaseDiagnostics",1.0,LowestPriority,ORO_SCHED_OTHER)
-BaseDiagnostics.configure
-BaseDiagnostics.start
-stream("BaseDiagnostics.diagnostics",base_ROStopics.diagnostics);
