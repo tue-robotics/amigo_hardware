@@ -3,7 +3,7 @@
     <arg name="DEPLOYER_ARGS" value="gnulinux
     HARDWARE
     -s $(find amigo_hardware)/ops/soem.ops
-    -s $(find amigo_hardware)/ops/left_arm_controller.ops
+    -s $(find amigo_force_controller)/ops/test/left_arm_controller_motorchar_test.ops
     "/>
     <arg name="LOG_LEVEL" value="Warning"/>
     <arg name="DEBUG" value="false"/>

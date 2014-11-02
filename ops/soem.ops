@@ -15,6 +15,7 @@ import("soem_master")
 import("soem_beckhoff_drivers")
 import("tue_ethercat_drivers")
 import("amigo_hardware")
+import("amigo_force_controller")
 ros.import("rtt_control_components")
 
 #### DECLARATION OF PARAMETERS ####
