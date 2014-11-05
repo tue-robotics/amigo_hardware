@@ -158,7 +158,7 @@ LPERA_JointOutputLimiter.configure
 ### Publishing joint angles on ROS-topic ###
 loadComponent("LPERA_WriteClippedJointAngles","ROS::DoublesToJointState")
 addPeer("Supervisor","LPERA_WriteClippedJointAngles")
-setActivity("LPERA_WriteClippedJointAngles",0.05,LowestPriority,ORO_SCHED_OTHER)
+setActivity("LPERA_WriteClippedJointAngles",0.005,LowestPriority,ORO_SCHED_OTHER)
 LPERA_WriteClippedJointAngles.JointNames 	= JOINT_NAMES
 LPERA_WriteClippedJointAngles.configure
 
