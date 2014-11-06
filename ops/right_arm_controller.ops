@@ -80,8 +80,8 @@ RPERA_ReferenceGenerator.InterpolatorDt 	= TS
 RPERA_ReferenceGenerator.InterpolatorEps	= 1.0
 RPERA_ReferenceGenerator.minPosition		= LOWERJOINTLIMIT
 RPERA_ReferenceGenerator.maxPosition		= UPPERJOINTLIMIT
-RPERA_ReferenceGenerator.maxVelocity		= array (0.4, 0.4, 0.6, 0.8, 0.8, 1.0, 1.0, 10.0)
-RPERA_ReferenceGenerator.maxAcceleration	= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5, 100.0)
+RPERA_ReferenceGenerator.maxVelocity		= array (10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0)
+RPERA_ReferenceGenerator.maxAcceleration	= array (10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0, 10000.0)
 RPERA_ReferenceGenerator.configure
 
 ### LOAD READENCODERS
