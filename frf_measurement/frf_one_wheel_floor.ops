@@ -1,12 +1,12 @@
 
 ### VARIABLES
 ############ Settings #######################################
-var int 	wheel 			= 1;			# define wheel
+var int 	wheel 			= 4;			# define wheel
 var int 	dir 			= 3;			# define direction of motion
-var double 	noise_level 	= 0.4;			# 
+var double 	noise_level 	= 0.1;			# 0.6
 var double	ref_velocity 	= 0.6;			# m/s or rad/s
-var int buffersize 			= 16384*8;
-var string	FILENAME 		= "12-11-14_AMIGO_FRF_wheel1_floor.dat"
+var int buffersize 			= 130000;
+var string	FILENAME 		= "test.dat"; #"12-11-14_AMIGO_FRF_wheel4_floor.dat"
 #############################################################
 
 # Configure settings
@@ -86,30 +86,34 @@ IDENTIFICATION_AddNoise.configure
 
 ### TRACING COMPONENT ###
 loadComponent("Tracing","Signal::Tracing")
-addPeer("Supervisor","Tracing")
+#addPeer("Supervisor","Tracing")
 setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
 Tracing.vector_sizes = array (4.0, 4.0, 4.0) 
 Tracing.buffersize = buffersize
-Tracing.filename = "/home/ton/ros/data/Ton_data/amigo_frf/"+FILENAME;
+Tracing.filename = "/home/amigo/ros/data/Ton_data/amigo_frf/"+FILENAME;
 Tracing.Ts = Ts
 Tracing.configure
 
+
+var ConnPolicy largebuffer;
+largebuffer.type = CIRCULAR_BUFFER;
+largebuffer.size = 2;
+  
 ### Disconnect and connect components ###
 BASE_ReadReferences.out.disconnect()
 connect ("IDENTIFICATION_Step.out",		"BASE_JointToMotorSpace.in", ConnPolicy() )
-BASE_Controller.out.disconnect();
+BASE_SI2Volt.in.disconnect();
 connect ("BASE_Controller.out",			"IDENTIFICATION_AddNoise.in1_ev", ConnPolicy() );
-connect ("BASE_Controller.out",			"BASE_Safety.controlEffort", ConnPolicy() );
 connect ("IDENTIFICATION_Noise.out",	"IDENTIFICATION_AddNoise.in2", ConnPolicy() );
 connect ("IDENTIFICATION_AddNoise.out",	"BASE_SI2Volt.in", ConnPolicy() );
 
 ### Connect tracing componenets ###
-connect ("BASE_Controller.jointErrors",	"Tracing.in3", ConnPolicy() );
-connect ("BASE_Controller.out",			"Tracing.in2", ConnPolicy() );
-connect ("IDENTIFICATION_AddNoise.out",	"Tracing.in1", ConnPolicy() );
+connect ("BASE_Controller.jointErrors",	"Tracing.in2", largebuffer );
+connect ("BASE_Controller.out",			"Tracing.in3", largebuffer );
+connect ("IDENTIFICATION_AddNoise.out",	"Tracing.in1", largebuffer );
 
 # safety and reference
 Supervisor.AddEnabledPeer  	("IDENTIFICATION_Step",		BODYNUMBER)
 Supervisor.AddEnabledPeer  	("IDENTIFICATION_Noise",	BODYNUMBER )
-Supervisor.AddEnabledPeer  	("IDENTIFICATION_AddNoise",	BODYNUMBER )
-Supervisor.AddEnabledPeer  	("Tracing",					BODYNUMBER )
+Supervisor.AddAllwaysOnPeer  	("IDENTIFICATION_AddNoise")
+#Supervisor.AddEnabledPeer  	("Tracing",					BODYNUMBER )

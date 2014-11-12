@@ -27,7 +27,12 @@ var string RIGHT_ARM_SHOULDER = "Soem.Slave_1015"
 var string RIGHT_ARM_UPPERARM = "Soem.Slave_1016"
 var string RIGHT_ARM_LOWERARM = "Soem.Slave_1017"
 
-#### MAKING PARAMETERS GLOBAL #### to do find a way to add a doubles/ints globally
+var double GEARRATIO 		= 8.0/343.0
+var double TWOPI 			= 2.0*3.141592
+var double ENCODERCOUNTS 	= 500.0*4.0
+var double ENC2SI 			= TWOPI*GEARRATIO/ENCODERCOUNTS
+
+#### MAKING PARAMETERS GLOBAL ####
 loadService("HARDWARE","os")
 os.setenv("LEFT_ARM_SHOULDER",LEFT_ARM_SHOULDER)
 os.setenv("LEFT_ARM_UPPERARM",LEFT_ARM_UPPERARM)
@@ -136,11 +141,11 @@ connect (RIGHT_ARM_LOWERARM+".positionSensors","RPERA_AnalogIns.in6", ConnPolicy
 loadComponent("LPERA_AnalogIns","SOEM::AnalogInsGeneric")
 addPeer("Supervisor","LPERA_AnalogIns")
 setActivity("LPERA_AnalogIns",TS,HighestPriority,ORO_SCHED_RT)
-LPERA_AnalogIns.numberofinports    					= 6
-LPERA_AnalogIns.numberofoutports    				= 2
-LPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
-LPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-LPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
+LPERA_AnalogIns.numberofinports    					= 7
+LPERA_AnalogIns.numberofoutports    				= 3
+LPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
+LPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+LPERA_AnalogIns.output_sizes 						= array (8.0, 8.0, 3.0)
 LPERA_AnalogIns.direct_to_ROS 						= false
 LPERA_AnalogIns.configure
 connect (LEFT_ARM_SHOULDER+".forceSensors","LPERA_AnalogIns.in1", ConnPolicy() )  
@@ -149,6 +154,7 @@ connect (LEFT_ARM_LOWERARM+".forceSensors","LPERA_AnalogIns.in3", ConnPolicy() )
 connect (LEFT_ARM_SHOULDER+".positionSensors","LPERA_AnalogIns.in4", ConnPolicy() )  
 connect (LEFT_ARM_UPPERARM+".positionSensors","LPERA_AnalogIns.in5", ConnPolicy() )  
 connect (LEFT_ARM_LOWERARM+".positionSensors","LPERA_AnalogIns.in6", ConnPolicy() )
+connect (LEFT_ARM_UPPERARM+".currents","LPERA_AnalogIns.in7", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS (Slave_100b) ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
@@ -196,6 +202,19 @@ EnableAmps.value = true
 connect ("EnableAmps.out", "DigitalOuts.in1", ConnPolicy() ); # Enable amps (D04:DO1)
 connect ("EnableAmps.out", "DigitalOuts.in2", ConnPolicy() ); # tue-logo
 
+### READ WHEEL ENCODERS ###
+loadComponent("BASE_ReadEncoders","SOEM::ReadEncoders")
+addPeer("Supervisor","BASE_ReadEncoders")
+setActivity("BASE_ReadEncoders",TS,HighestPriority,ORO_SCHED_RT)
+BASE_ReadEncoders.encoderbits = 65536
+BASE_ReadEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI, ENC2SI)
+BASE_ReadEncoders.configure
+
+connect ("Soem.Slave_1002.Slave_1002_value",		"BASE_ReadEncoders.enc1_in", 		ConnPolicy() ); # Enc 1
+connect ("Soem.Slave_1003.Slave_1003_value",		"BASE_ReadEncoders.enc2_in", 		ConnPolicy() ); # Enc 2
+connect ("Soem.Slave_1004.Slave_1004_value",		"BASE_ReadEncoders.enc3_in", 		ConnPolicy() ); # Enc 3
+connect ("Soem.Slave_1005.Slave_1005_value",		"BASE_ReadEncoders.enc4_in", 		ConnPolicy() ); # Enc 4
+
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("JointStateAggregator")
 Supervisor.AddAllwaysOnPeer ("BASESPINDLE_AnalogOuts")
@@ -204,6 +223,7 @@ Supervisor.AddAllwaysOnPeer ("LPERA_AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("DigitalOuts")
 Supervisor.AddAllwaysOnPeer ("DigitalOuts2")
 Supervisor.AddAllwaysOnPeer ("Soem")
+Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("BATTERY_AnalogIns")
 Supervisor.AddAllwaysOnPeer ("RPERA_AnalogIns")
 Supervisor.AddAllwaysOnPeer ("LPERA_AnalogIns")

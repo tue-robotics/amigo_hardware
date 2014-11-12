@@ -28,13 +28,7 @@ var bool HOMEABLE 			= false
 ### NameBodyPart ###
 Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 
-### READ WHEEL ENCODERS ###
-loadComponent("BASE_ReadEncoders","SOEM::ReadEncoders")
-addPeer("Supervisor","BASE_ReadEncoders")
-setActivity("BASE_ReadEncoders",Ts,HighestPriority,ORO_SCHED_RT)
-BASE_ReadEncoders.encoderbits = 65536
-BASE_ReadEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI, ENC2SI)
-BASE_ReadEncoders.configure
+
 
 ### DECOUPLE POSITION ###
 loadComponent("BASE_MotorToJointSpace","MATH::MatrixTransform")
@@ -135,10 +129,6 @@ BASE_Diagnostics.boolname1 = "Amplifiers"
 # To Do JointState message base
 
 #### CONNECT COMPONENTS ####
-connect ("Soem.Slave_1002.Slave_1002_value",		"BASE_ReadEncoders.enc1_in", 		ConnPolicy() ); # Enc 1
-connect ("Soem.Slave_1003.Slave_1003_value",		"BASE_ReadEncoders.enc2_in", 		ConnPolicy() ); # Enc 2
-connect ("Soem.Slave_1004.Slave_1004_value",		"BASE_ReadEncoders.enc3_in", 		ConnPolicy() ); # Enc 3
-connect ("Soem.Slave_1005.Slave_1005_value",		"BASE_ReadEncoders.enc4_in", 		ConnPolicy() ); # Enc 4
 connect ("BASE_ReadEncoders.out",					"BASE_MotorToJointSpace.in", 		ConnPolicy() ); # Positions MS
 connect ("BASE_MotorToJointSpace.out", 				"BASE_OdometryPublisher.pos", 		ConnPolicy() ); # Positions JS
 connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in", 			ConnPolicy() ); # Positions
@@ -170,7 +160,6 @@ stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
 stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/base_diagnostics"));
 
 #### START COMPONENTS ####
-Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("BASE_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer ("BASE_OdometryPublisher")
 Supervisor.AddAllwaysOnPeer ("BASE_Diagnostics")
