@@ -1,0 +1,28 @@
+
+### VARIABLES
+############ Settings #######################################
+
+var string	FILENAME 		= "data_wh.dat"
+var int buffersize 			= 10000;
+	# Part settings
+var double 	Ts 				= 0.001
+var int 	BODYNUMBER 		= 1
+
+### TRACING COMPONENT ###
+loadComponent("Tracing","Signal::TraceCrash")
+addPeer("Supervisor","Tracing")
+setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+Tracing.vector_sizes = array (4.0, 4.0, 4.0); 
+Tracing.buffersize = buffersize
+Tracing.filename = "/home/amigo/ros/data/Ton_data/"+FILENAME;
+Tracing.Ts = Ts
+Tracing.configure
+
+
+# tracing
+connect ("BASE_Controller.jointErrors",	"Tracing.in1", ConnPolicy() );
+connect ("BASE_Controller.out",			"Tracing.in2", ConnPolicy() );
+connect ("BASE_ReadEncoders.out",		"Tracing.in3", ConnPolicy() );
+
+# start components
+Supervisor.AddEnabledPeer  	("Tracing",			BODYNUMBER )

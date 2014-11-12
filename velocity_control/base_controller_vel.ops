@@ -20,7 +20,7 @@ var double TWOPI 			= 2.0*3.141592
 var double ENCODERCOUNTS 	= 500.0*4.0
 var double ENC2SI 			= TWOPI*GEARRATIO/ENCODERCOUNTS
 var double SI2V 			= TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
-var array MAX_ERRORS 		= array ( 2.2, 2.2, 2.2, 2.2 )
+var array MAX_ERRORS 		= array ( 10.0, 10.0, 10.0, 10.0)
 var array MAX_VELOCITIES	= array (1.8, 1.0, 3.1415)
 var double MAX_START_VEL  	= 0.7
 var array MAX_ACC 			= array (0.7, 0.7, 2.0)
@@ -35,7 +35,7 @@ var string ROBOT 			= "/amigo"
  
 	 # Controller 1, test (bw ~19.0Hz): 
 	var strings CONTROLLERS 				= strings ("WeakIntegrator","LowPass")
-	var array 	GAINS                     	= array (1.0, 1.0, 1.0, 1.0)
+	var array 	GAINS                     	= array (0.25, 0.25, 0.25, 0.25)
 	var array 	INTEGRATOR_ZERO_FREQUENCY 	= array (20.0, 20.0, 20.0, 20.0)
 	var array 	LOWPASS_FREQUENCY         	= array (500.0, 500.0, 500.0, 500.0)
 	var array 	LOWPASS_DAMPING           	= array (0.7, 0.7, 0.7, 0.7)
