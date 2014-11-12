@@ -1,0 +1,115 @@
+
+### VARIABLES
+############ Settings #######################################
+var int 	wheel 			= 1;			# define wheel
+var int 	dir 			= 3;			# define direction of motion
+var double 	noise_level 	= 0.4;			# 
+var double	ref_velocity 	= 0.6;			# m/s or rad/s
+var int buffersize 			= 16384*8;
+var string	FILENAME 		= "12-11-14_AMIGO_FRF_wheel1_floor.dat"
+#############################################################
+
+# Configure settings
+
+	# all wheels
+#var array 	NOISE_MIN 		= array(-noise_level, -noise_level, -noise_level, -noise_level);
+#var array 	NOISE_MAX 		= array(noise_level, noise_level, noise_level, noise_level);
+
+	# per wheel
+var array 	NOISE_MIN 		= array(-0.0, -0.0, -0.0, -0.0);
+var array 	NOISE_MAX 		= array(0.0, 0.0, 0.0, 0.0);
+NOISE_MIN[wheel-1] 			= -noise_level;
+NOISE_MAX[wheel-1] 			= noise_level;
+
+var array	VELOCITY 		= array(0.0, 0.0, 0.0);
+VELOCITY[dir-1] 			= ref_velocity;
+
+	# Part settings
+var double 	Ts = 0.001
+var int 	BODYNUMBER 			= 1
+
+# Controller parameters
+var strings CONTROLLERS 			= strings ("WeakIntegrator","LeadLag","LowPass")
+var array GAINS                     = array (5.0, 5.0, 5.0, 5.0)
+var array INTEGRATOR_ZERO_FREQUENCY = array (0.0001, 	0.0001, 	0.0001, 	0.0001)
+var array LEAD_FREQUENCY            = array (15.0, 		15.0, 		15.0, 		15.0)
+var array LAG_FREQUENCY             = array (50.0, 		50.0, 		50.0, 		50.0)
+var array LOWPASS_FREQUENCY         = array (100.0, 	100.0, 		100.0, 		100.0)
+var array LOWPASS_DAMPING           = array (0.7, 0.7, 0.7, 0.7)
+
+### RECONFIGURE CONTROLLER
+#BASE_Controller.stop
+#BASE_Controller.vector_size = 4;
+#BASE_Controller.sampling_time = Ts;
+#BASE_Controller.controllers = CONTROLLERS;
+#BASE_Controller.gains = GAINS;
+#BASE_Controller.zero_freq_WeakIntegrator = INTEGRATOR_ZERO_FREQUENCY;
+#BASE_Controller.zero_freq_LeadLag = LEAD_FREQUENCY;
+#BASE_Controller.pole_freq_LeadLag = LAG_FREQUENCY;
+##BASE_Controller.zero_freq_Notch = NOTCH_ZERO_FREQ;
+##BASE_Controller.zero_damp_Notch = NOTCH_ZERO_DAMP;
+##BASE_Controller.pole_freq_Notch = NOTCH_POLE_FREQ;
+##BASE_Controller.pole_damp_Notch = NOTCH_POLE_DAMP;
+#BASE_Controller.pole_freq_LowPass = LOWPASS_FREQUENCY;
+#BASE_Controller.pole_damp_LowPass = LOWPASS_DAMPING;
+#BASE_Controller.configure
+#connect ("BASE_ReadEncoders.out",		"BASE_Controller.pos_in", 	ConnPolicy() ); #enc4[-]
+#connect ("BASE_VelocityToPosition.out",	"BASE_Controller.ref_in", 	ConnPolicy() );
+#BASE_Controller.start();
+
+#### STEP COMPONENT ###
+loadComponent("IDENTIFICATION_Step","SOURCES::StepSignal")
+addPeer("Supervisor","IDENTIFICATION_Step")
+setActivity("IDENTIFICATION_Step",0.5*Ts,HighestPriority,ORO_SCHED_RT); #Since this component is not triggered, it runs at a higher frequency to make sure every timestep a new random number is available
+IDENTIFICATION_Step.vector_size = 3
+IDENTIFICATION_Step.init_value = array(0.0, 0.0, 0.0)
+IDENTIFICATION_Step.final_value = VELOCITY; #vx 0.25?, vy 0.25?, vphi 0.5?
+IDENTIFICATION_Step.step_time = array(2.0, 2.0, 2.0)
+IDENTIFICATION_Step.configure
+
+#### NOISE COMPONENT ###
+loadComponent("IDENTIFICATION_Noise","SOURCES::UniformRandomNumber")
+addPeer("Supervisor","IDENTIFICATION_Noise")
+setActivity("IDENTIFICATION_Noise",0.5*Ts,HighestPriority,ORO_SCHED_RT); #Since this component is not triggered, it runs at a higher frequency to make sure every timestep a new random number is available
+IDENTIFICATION_Noise.vector_size = 4
+IDENTIFICATION_Noise.minimum = NOISE_MIN; 
+IDENTIFICATION_Noise.maximum = NOISE_MAX;
+IDENTIFICATION_Noise.configure
+
+### ADD Noise component ###
+loadComponent("IDENTIFICATION_AddNoise","MATH::Addition")
+addPeer("Supervisor","IDENTIFICATION_AddNoise")
+IDENTIFICATION_AddNoise.vectorsize = 4
+IDENTIFICATION_AddNoise.numberofinputs = 2
+setActivity("IDENTIFICATION_AddNoise",0.0,HighestPriority,ORO_SCHED_RT)
+IDENTIFICATION_AddNoise.configure
+
+### TRACING COMPONENT ###
+loadComponent("Tracing","Signal::Tracing")
+addPeer("Supervisor","Tracing")
+setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+Tracing.vector_sizes = array (4.0, 4.0, 4.0) 
+Tracing.buffersize = buffersize
+Tracing.filename = "/home/ton/ros/data/Ton_data/amigo_frf/"+FILENAME;
+Tracing.Ts = Ts
+Tracing.configure
+
+### Disconnect and connect components ###
+BASE_ReadReferences.out.disconnect()
+connect ("IDENTIFICATION_Step.out",		"BASE_JointToMotorSpace.in", ConnPolicy() )
+BASE_Controller.out.disconnect();
+connect ("BASE_Controller.out",			"IDENTIFICATION_AddNoise.in1_ev", ConnPolicy() );
+connect ("BASE_Controller.out",			"BASE_Safety.controlEffort", ConnPolicy() );
+connect ("IDENTIFICATION_Noise.out",	"IDENTIFICATION_AddNoise.in2", ConnPolicy() );
+connect ("IDENTIFICATION_AddNoise.out",	"BASE_SI2Volt.in", ConnPolicy() );
+
+### Connect tracing componenets ###
+connect ("BASE_Controller.jointErrors",	"Tracing.in3", ConnPolicy() );
+connect ("BASE_Controller.out",			"Tracing.in2", ConnPolicy() );
+connect ("IDENTIFICATION_AddNoise.out",	"Tracing.in1", ConnPolicy() );
+
+# safety and reference
+Supervisor.AddEnabledPeer  	("IDENTIFICATION_Step",		BODYNUMBER)
+Supervisor.AddEnabledPeer  	("IDENTIFICATION_Noise",	BODYNUMBER )
+Supervisor.AddEnabledPeer  	("IDENTIFICATION_AddNoise",	BODYNUMBER )
+Supervisor.AddEnabledPeer  	("Tracing",					BODYNUMBER )
