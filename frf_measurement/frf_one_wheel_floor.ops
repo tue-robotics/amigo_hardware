@@ -3,10 +3,10 @@
 ############ Settings #######################################
 var int 	wheel 			= 4;			# define wheel
 var int 	dir 			= 3;			# define direction of motion
-var double 	noise_level 	= 0.1;			# 0.6
+var double 	noise_level 	= 0.6;			# 0.6
 var double	ref_velocity 	= 0.6;			# m/s or rad/s
 var int buffersize 			= 130000;
-var string	FILENAME 		= "test.dat"; #"12-11-14_AMIGO_FRF_wheel4_floor.dat"
+var string	FILENAME 		= "13-11-14_AMIGO_FRF_vel_wheel4_floor.dat"
 #############################################################
 
 # Configure settings
@@ -108,9 +108,9 @@ connect ("IDENTIFICATION_Noise.out",	"IDENTIFICATION_AddNoise.in2", ConnPolicy()
 connect ("IDENTIFICATION_AddNoise.out",	"BASE_SI2Volt.in", ConnPolicy() );
 
 ### Connect tracing componenets ###
-connect ("BASE_Controller.jointErrors",	"Tracing.in2", largebuffer );
-connect ("BASE_Controller.out",			"Tracing.in3", largebuffer );
-connect ("IDENTIFICATION_AddNoise.out",	"Tracing.in1", largebuffer );
+connect ("BASE_Controller.jointErrors",	"Tracing.in2", largebuffer ); # writen first
+connect ("BASE_Controller.out",			"Tracing.in3", largebuffer ); # writen second
+connect ("IDENTIFICATION_AddNoise.out",	"Tracing.in1", largebuffer ); # writen third (trigger)
 
 # safety and reference
 Supervisor.AddEnabledPeer  	("IDENTIFICATION_Step",		BODYNUMBER)
