@@ -5,8 +5,8 @@
     -s $(find amigo_hardware)/ops/soem.ops
     -s $(find amigo_hardware)/ops/base_controller.ops
     -s $(find amigo_hardware)/ops/spindle_controller.ops
-    -s $(find amigo_hardware)/ops/left_arm_controller.ops
-    -s $(find amigo_hardware)/ops/right_arm_controller.ops
+    -s $(find amigo_hardware)/ops/left_arm_controller_newhoming.ops
+    -s $(find amigo_hardware)/ops/right_arm_controller_newhoming.ops
     -s $(find amigo_hardware)/ops/head_controller.ops
     "/>
     <arg name="LOG_LEVEL" value="Warning"/>

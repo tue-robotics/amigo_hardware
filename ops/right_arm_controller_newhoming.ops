@@ -18,7 +18,6 @@ var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0
 var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	0.0		)
 var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 	2.0		)
 var ints ABSPOS 				= ints	(	1374,		642,		0,			0,			0,			0,			0,		0		)
-var array HOMED_POS 			= array (	1373.0, 	640.0,  	1.5708, 	0.0, 		1.8326,		0.985,		0.7854			)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -169,26 +168,29 @@ RPERA_SensorTorques.c2 						= array (-0.8,		12.0,	     1.0,		-2.2,		1.0,		1.0,	
 RPERA_SensorTorques.c3 						= array (-35.63,	-294.40,	-30.56,		-30.9,		-168.32,	1.0, 		1.0,		-22.66		)
 RPERA_SensorTorques.configure
 
-### PERA ActuatorEnabler ###
-loadComponent("RPERA_ActuatorEnabler","SUPERVISORY::ActuatorEnabler")
-addPeer("Supervisor","RPERA_ActuatorEnabler")
-setActivity("RPERA_ActuatorEnabler",TS,HighestPriority,ORO_SCHED_RT)
-RPERA_ActuatorEnabler.configure
-
-### PERA Homing ###
-loadComponent("RPERA_Homing","AMIGOPERA::PeraHoming")
-addPeer("Supervisor","RPERA_Homing")
+### PERA Homing ###							## Note that all properties follow the [q1,q2,q3....q8] structure and not the structure provided by homing_order
+loadComponent("RPERA_Homing","SUPERVISORY::Homing")
+connectPeers("Supervisor","RPERA_Homing")
+addPeer("RPERA_Homing","RPERA_ReadEncoders")
+addPeer("RPERA_Homing","RPERA_ReferenceGenerator")
+addPeer("RPERA_Homing","RPERA_Safety")
 setActivity("RPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
-RPERA_Homing.requireHoming			= REQUIREHOMING
-RPERA_Homing.requireGripperHoming	= REQUIREGRIPPERHOMING
-RPERA_Homing.maxJointErrors 		= MAXERRORS
-RPERA_Homing.jointNames				= JOINT_NAMES
-RPERA_Homing.stepSize 				= 0.5
-RPERA_Homing.startJoint 			= 7
-RPERA_Homing.absSenDir 				= array (	1.0,	-1.0,	1.0,	1.0,	1.0,	1.0,	-1.0		)
-RPERA_Homing.homedPos 				= HOMED_POS
-RPERA_Homing.absOrRel 				= array (	0.0,	0.0, 	1.0,	1.0,	1.0,	1.0,	1.0,	1.0	)
-RPERA_Homing.endPose				= array (  -0.1,   -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0)
+RPERA_Homing.vector_size 					= N
+RPERA_Homing.number_of_outports 			= 2
+RPERA_Homing.outport_sizes					= ints (7 , 1)
+RPERA_Homing.bodypart 						= BODYPARTNAME
+RPERA_Homing.prefix 						= "RPERA"
+RPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
+RPERA_Homing.require_homing					= ints 		(0, 	0,	 	0, 		0,	 	0, 		0,	 	0, 		0 	)
+RPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
+RPERA_Homing.homing_direction				= ints 		(1, 	-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
+RPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.25,	0.25,	0.25,	0.2,	0.2,	0.1 )
+RPERA_Homing.homing_stroke					= HOMINGSTROKE
+RPERA_Homing.reset_stroke					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0 )
+RPERA_Homing.homing_endpos					= array 	(0.0,   0.0, 	0.0, 	0.0,	0.0,	0.0, 	0.0, 	0.0 )
+RPERA_Homing.homing_errors					= array 	(0.03,  0.03,   0.03,   0.03, 	0.03,   0.03,  	0.03,	2.0 )
+RPERA_Homing.homing_absPos					= ABSPOS
+RPERA_Homing.homing_forces					= array 	(0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0	)
 RPERA_Homing.configure
 
 #### Diagnostics ###
