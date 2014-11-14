@@ -47,8 +47,11 @@ Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
 loadComponent("BASE_EncoderToVelocity","MATH::Differentiate")
 addPeer("Supervisor","BASE_EncoderToVelocity")
 setActivity("BASE_EncoderToVelocity",0.0,HighestPriority,ORO_SCHED_RT)
-BASE_EncoderToVelocity.sampling_time = Ts;
 BASE_EncoderToVelocity.vector_size = 4;
+BASE_EncoderToVelocity.sampling_time = Ts;
+BASE_EncoderToVelocity.use_time_check = true;
+BASE_EncoderToVelocity.allowed_variation_Ts = Ts*0.4;
+BASE_EncoderToVelocity.use_discrete = true;
 BASE_EncoderToVelocity.configure
 
 ### CONTROLLER COMPONENT ###
