@@ -8,9 +8,13 @@
     -s $(find amigo_hardware)/ops/left_arm_controller.ops
     -s $(find amigo_hardware)/ops/right_arm_controller.ops
     -s $(find amigo_hardware)/ops/head_controller.ops
-    -s $(find amigo_hardware)/ops/rgb_lights.ops
     "/>
     <arg name="LOG_LEVEL" value="Warning"/>
     <arg name="DEBUG" value="false"/>
   </include>
 </launch>
+
+
+<!--
+    -s $(find amigo_hardware)/ops/rgb_lights.ops
+-->
