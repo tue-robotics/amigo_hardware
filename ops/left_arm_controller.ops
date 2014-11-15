@@ -118,7 +118,7 @@ LPERA_JointToMotorSpace.function8 			= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0
 	
 ### Negative feedback controller ###
 loadComponent("LPERA_Controller","FILTERS::Controller")
-setActivity("LPERA_Controller",0.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("LPERA_Controller",0.0,HighestPriority,ORO_SCHED_RT)
 addPeer("Supervisor","LPERA_Controller")
 LPERA_Controller.vector_size    			= N
 LPERA_Controller.gains						= array(20000.0, 	20000.0, 	10000.0, 	17500.0, 	17500.0, 	17500.0, 	21500.0, 	5000.0);
@@ -161,7 +161,7 @@ LPERA_WriteClippedJointAngles.configure
 ### Conversion analog PERA_IO values to torques ###
 loadComponent("LPERA_SensorTorques","ARM::SensorTorques")
 addPeer("Supervisor","LPERA_SensorTorques")
-setActivity("LPERA_SensorTorques",(TS),LowestPriority,ORO_SCHED_OTHER)
+setActivity("LPERA_SensorTorques",(TS),HighestPriority,ORO_SCHED_RT)
 LPERA_SensorTorques.vector_size				= N
 LPERA_SensorTorques.c1 						= array (35.0,		87.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
 LPERA_SensorTorques.c2 						= array (-0.2,		0.2,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
@@ -181,7 +181,7 @@ LPERA_Homing.outport_sizes					= ints (7 , 1)
 LPERA_Homing.bodypart 						= BODYPARTNAME
 LPERA_Homing.prefix 						= "LPERA"
 LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
-LPERA_Homing.require_homing					= ints 		(0, 	0,	 	0, 		0,	 	0, 		0,	 	0, 		0 	)
+LPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		0 	)
 LPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
 LPERA_Homing.homing_direction				= ints 		(1, 	1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
 LPERA_Homing.homing_velocity				= array 	(0.25,	0.25,	0.25,	0.25,	0.25,	0.2,	0.2,	0.1 )

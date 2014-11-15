@@ -118,7 +118,7 @@ RPERA_JointToMotorSpace.function8 			= array ( 0.0,  0.0,  0.0,  0.0,  0.0,  0.0
 
 ### Negative feedback controller ###
 loadComponent("RPERA_Controller","FILTERS::Controller")
-setActivity("RPERA_Controller",0.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("RPERA_Controller",0.0,HighestPriority,ORO_SCHED_RT)
 addPeer("Supervisor","RPERA_Controller")
 RPERA_Controller.vector_size    			= N
 RPERA_Controller.gains						= array(20000.0, 	20000.0, 	10000.0, 	17500.0, 	17500.0, 	17500.0, 	21500.0, 	5000.0);
@@ -181,7 +181,7 @@ RPERA_Homing.outport_sizes					= ints (7 , 1)
 RPERA_Homing.bodypart 						= BODYPARTNAME
 RPERA_Homing.prefix 						= "RPERA"
 RPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
-RPERA_Homing.require_homing					= ints 		(0, 	0,	 	0, 		0,	 	0, 		0,	 	0, 		0 	)
+RPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		0 	)
 RPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
 RPERA_Homing.homing_direction				= ints 		(1, 	-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
 RPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.25,	0.25,	0.25,	0.2,	0.2,	0.1 )
