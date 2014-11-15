@@ -7,25 +7,22 @@
 #                                                                      #
 ########################################################################
 
-#### IMPORT PACKAGE ####
-# To be able to load components from this package and all packages in the manifest
-import("rgb_lights")
-trigger
-
 #### DECLARATION OF PARAMETERS ####
 var double Ts = 0.001
 
-loadComponent("rgb_controller", "rgb_controller")
-rgb_controller.configure
-setActivity("rgb_controller",Ts,HighestPriority,ORO_SCHED_RT)
+#### RGB CONTROLLER ####
+loadComponent("RGB_light_controller", "LIGHTING::rgb_controller")
+addPeer("Supervisor","RGB_light_controller")
+setActivity("RGB_light_controller",Ts,HighestPriority,ORO_SCHED_RT)
+RGB_light_controller.configure
 
 #### CONNECT COMPONENTS ####
-connect ("rgb_controller.red", "DigitalOuts.in6", ConnPolicy() );	#Red
-connect ("rgb_controller.green", "DigitalOuts.in7", ConnPolicy() );	#Gree
-connect ("rgb_controller.blue", "DigitalOuts.in8", ConnPolicy() );	#Blue
+connect ("RGB_light_controller.red", 	"DigitalOuts.in6", 	ConnPolicy() );	#Red
+connect ("RGB_light_controller.green", 	"DigitalOuts.in7", 	ConnPolicy() );	#Green
+connect ("RGB_light_controller.blue", 	"DigitalOuts.in8", 	ConnPolicy() );	#Blue
 
 #### CONNECT ROS STREAMS ####
-stream("rgb_controller.rgbtopic", ros.topic("/rgb_lights_controller/reference"));
+stream("RGB_light_controller.rgbtopic", ros.topic("/rgb_lights_controller/reference"));
 
 #### START COMPONENTS ####
-rgb_controller.start
+Supervisor.AddAllwaysOnPeer ("RGB_light_controller")
