@@ -40,13 +40,14 @@ SPINDLE_ReadEncoders.configure
 # Publish JointState Component
 loadComponent("SPINDLE_WriteJointStates","ROS::DoublesToJointState")
 addPeer("Supervisor","SPINDLE_WriteJointStates")
-setActivity("SPINDLE_WriteJointStates",0.05,HighestPriority,ORO_SCHED_RT)
+setActivity("SPINDLE_WriteJointStates",0.05,LowestPriority,ORO_SCHED_OTHER)
 SPINDLE_WriteJointStates.JointNames 		= JOINT_NAMES
 SPINDLE_WriteJointStates.configure
 
-#Reading spindle setpoints
+#Reading spindle setpoints HighestPriority,ORO_SCHED_RT)
 loadComponent("SPINDLE_ReadReferences","ROS::JointStateToDoubles")
 addPeer("Supervisor","SPINDLE_ReadReferences")
+setActivity("SPINDLE_ReadReferences",0.01,LowestPriority,ORO_SCHED_OTHER)
 SPINDLE_ReadReferences.vector_size			= N
 SPINDLE_ReadReferences.configure
 
@@ -67,7 +68,7 @@ SPINDLE_ReferenceGenerator.configure
 
 ### Negative feedback controller ###
 loadComponent("SPINDLE_Controller","FILTERS::Controller")
-setActivity("SPINDLE_Controller",0.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("SPINDLE_Controller",0.0,HighestPriority,ORO_SCHED_RT)
 addPeer("Supervisor","SPINDLE_Controller")
 SPINDLE_Controller.vector_size    			= N
 SPINDLE_Controller.gains					= array(-40.0)
