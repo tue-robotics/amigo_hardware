@@ -6,12 +6,6 @@
 #                                                                      #
 ########################################################################
 
-# Test spindle homing and reference 
-# What to do with gripper homing
-# Add homing order
-# Test Arm homing
-# Add moving max min pos to homing component
-
 #### DECLARATION OF PARAMETERS ####
 var double Ts 				= 0.001
 var strings JOINT_NAMES 	= strings( "torso_joint" )

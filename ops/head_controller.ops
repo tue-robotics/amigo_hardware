@@ -6,9 +6,6 @@
 #                                                                      #
 ########################################################################
 
-# Temporary to load dynamixel controller
-import("sergio_hardware")
-
 #### DECLARATION OF PARAMETERS ####
 var double TS 			= 0.001
 var double RAD_TO_STEP 	= 195.37860814; # IF YOU CHANGE THIS VARIABLE, ALSO RECALCULATE PAN_MIN, PAN_MAX, TILT_MIN AND TILT_MAX, (From header file) 
