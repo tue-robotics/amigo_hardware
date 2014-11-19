@@ -88,7 +88,7 @@ AnalogOuts.output_sizes 					= array (3.0)
 AnalogOuts.output_positions 				= array (1.0, 1.0, 1.0)
 AnalogOuts.configure
 
-#### DECLARATION OF COMPONENTS ####
+
 loadComponent("CurrentFFW","FORCECONTROL::CurrentFFW")
 setActivity("CurrentFFW",TS,HighestPriority,ORO_SCHED_RT)
 CurrentFFW.Ts 							= TS
@@ -99,6 +99,26 @@ CurrentFFW.TerminalResistance			= array (0.611, 1.0, 1.0)
 CurrentFFW.ArmatureWindingInductance	= array (0.000119, 1.0, 1.0)
 CurrentFFW.VoltageGains					= array (1.0/24.0*1024.0, 0.0, 0.0)
 CurrentFFW.configure
+
+#### Motor Char ####
+loadComponent("MotorChar","FORCECONTROL::MotorCharacteristics")
+addPeer("Supervisor","MotorChar")
+setActivity("MotorChar",TS,HighestPriority,ORO_SCHED_RT)
+MotorChar.TS 							= TS
+MotorChar.vector_size					= N
+MotorChar.NumberOfInports				= 1
+MotorChar.MotorVoltageConstant			= array (0.0259, 1.0, 1.0)
+MotorChar.GearRatio 					= array (245.0/16224.0, 1.0, 1.0)
+MotorChar.TerminalResistance			= array (0.611, 1.0, 1.0)
+MotorChar.ArmatureWindingInductance		= array (0.000119, 1.0, 1.0)
+MotorChar.Volt2PWM						= array (1.0/24.0*1024.0, 0.0, 0.0)
+MotorChar.configure
+
+
+
+
+
+
 
 ### Setting up tracing ###
 loadComponent("Tracing","Signal::Tracing")

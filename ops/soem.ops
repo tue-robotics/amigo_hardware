@@ -38,9 +38,12 @@ os.setenv("RIGHT_ARM_LOWERARM",RIGHT_ARM_LOWERARM)
 
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","SUPERVISORY::Supervisor")
+#Supervisor.ebuttonorder	= strings('wireless','wired')
 Supervisor.configure
 setActivity("Supervisor",0.04,HighestPriority,ORO_SCHED_RT)
 stream("Supervisor.rosemergency", ros.topic("/amigo/emergency_switch"))
+#stream("Supervisor.emergency_switch", ros.topic("/amigo/emergency_switch"))
+#stream("Supervisor.runstop1", ros.topic("/amigo/run_stop"))
 stream("Supervisor.rosshutdown", ros.topic("/amigo/etherCAT_shutdown")); 
 stream("Supervisor.rosetherCATenabled", ros.topic("/amigo/etherCAT_enabled")); 
 stream("Supervisor.hardware_status", ros.topic("/amigo/hardware_status"));
