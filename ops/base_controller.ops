@@ -24,9 +24,10 @@ var int N					= 4
 var int BODYNUMBER 			= 1
 var string BODYPARTNAME 	= "base"
 var bool HOMEABLE 			= false
- 
-### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
+var bool HOMINGOBLIGATORY	= false
+var bool RESETTABLE			= true
+### AddBodyPart ###
+Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RESETTABLE)
 
 ### READ WHEEL ENCODERS ###
 loadComponent("BASE_ReadEncoders","SOEM::ReadEncoders")

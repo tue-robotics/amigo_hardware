@@ -12,14 +12,14 @@ import("rtt_ros")
 ros.import("amigo_hardware")
 
 #### DECLARATION OF PARAMETERS ####
-var double TS = 0.001
-var string LEFT_ARM_SHOULDER = "Soem.Slave_1012"
-var string LEFT_ARM_UPPERARM = "Soem.Slave_1013"
-var string LEFT_ARM_LOWERARM = "Soem.Slave_1014"
-var string RIGHT_ARM_SHOULDER = "Soem.Slave_1015"
-var string RIGHT_ARM_UPPERARM = "Soem.Slave_1016"
-var string RIGHT_ARM_LOWERARM = "Soem.Slave_1017"
-
+var double TS 					= 0.001
+var string LEFT_ARM_SHOULDER 	= "Soem.Slave_1012"
+var string LEFT_ARM_UPPERARM 	= "Soem.Slave_1013"
+var string LEFT_ARM_LOWERARM 	= "Soem.Slave_1014"
+var string RIGHT_ARM_SHOULDER 	= "Soem.Slave_1015"
+var string RIGHT_ARM_UPPERARM 	= "Soem.Slave_1016"
+var string RIGHT_ARM_LOWERARM 	= "Soem.Slave_1017"
+		
 #### MAKING PARAMETERS GLOBAL #### to do find a way to add a doubles/ints globally
 loadService("HARDWARE","os")
 os.setenv("LEFT_ARM_SHOULDER",LEFT_ARM_SHOULDER)
@@ -41,6 +41,10 @@ stream("Supervisor.rosshutdown", ros.topic("/amigo/etherCAT_shutdown"));
 stream("Supervisor.rosetherCATenabled", ros.topic("/amigo/etherCAT_enabled")); 
 stream("Supervisor.hardware_status", ros.topic("/amigo/hardware_status"));
 stream("Supervisor.dashboardCmd", ros.topic("/amigo/dashboard_ctrlcmds"));
+
+#### Create Robot Object ####
+var strings DEFAULT_PART_NAMES = strings("base","spindle","left_arm", "right_arm", "head")
+Supervisor.CreateRobotObject("amigo", DEFAULT_PART_NAMES)
 
 #### LOAD JOINTSTATEAGGREGATOR ####
 loadComponent("JointStateAggregator","ROS::JointStateAggregator")

@@ -9,18 +9,19 @@
 #### DECLARATION OF PARAMETERS ####
 var double Ts 				= 0.001
 var strings JOINT_NAMES 	= strings( "torso_joint" )
-var int BODYNUMBER 			= 2
-var string BODYPARTNAME 	= "spindle"
-var bool HOMEABLE 			= true
 var double ENC2SI 			= -4.1666667e-7; # Minus because spindle up is defined positive.
 var double MINPOS 			= 0.075
 var double MAXPOS 			= 0.4
 var double MAXVEL 			= 0.07
 var double MAXACC			= 0.1
 var int N 					= 1
- 
-### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
+var int BODYNUMBER 			= 2
+var string BODYPARTNAME 	= "spindle"
+var bool HOMEABLE 			= true
+var bool HOMINGOBLIGATORY	= true
+var bool RESETTABLE			= false
+### AddBodyPart ###
+Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RESETTABLE)
 
 ### Loading Components ###
 #Reading Encoders

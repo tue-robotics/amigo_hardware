@@ -35,14 +35,15 @@ var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
 var int N						= 8
+var bool REQUIREHOMING   		= true
+var bool REQUIREGRIPPERHOMING   = false 
 var int BODYNUMBER 				= 3
 var string BODYPARTNAME 		= "left_arm"
 var bool HOMEABLE 				= true
-var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = false
- 
-### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
+var bool HOMINGOBLIGATORY		= false
+var bool RESETTABLE				= true
+### AddBodyPart ###
+Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RESETTABLE)
 
 #### HIGH PRIORITY COMPONENTS ####
 ### Read reference joint angles ###
