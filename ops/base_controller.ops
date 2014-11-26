@@ -24,11 +24,10 @@ var int N					= 4
 var int BODYNUMBER 			= 1
 var string BODYPARTNAME 	= "base"
 var bool HOMEABLE 			= false
- 
-### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
-
-
+var bool HOMINGOBLIGATORY	= false
+var bool RESETTABLE			= true
+### AddBodyPart ###
+Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RESETTABLE)
 
 ### DECOUPLE POSITION ###
 loadComponent("BASE_MotorToJointSpace","MATH::MatrixTransform")
@@ -52,7 +51,7 @@ BASE_OdometryPublisher.configure
 ### READ REFERENCE VELOCITIES ###
 loadComponent("BASE_ReadReferences","ROS::ReadTwistMsg")
 addPeer("Supervisor","BASE_ReadReferences")
-setActivity("BASE_ReadReferences",0.01,LowestPriority,ORO_SCHED_OTHER)
+setActivity("BASE_ReadReferences",Ts,HighestPriority,ORO_SCHED_RT)
 BASE_ReadReferences.max_start_vel = 0.7
 BASE_ReadReferences.max_vel = MAX_VELOCITIES
 BASE_ReadReferences.max_acc = array (0.7, 0.7, 2.0)
@@ -62,7 +61,7 @@ BASE_ReadReferences.configure
 ### DECOUPLE REFERENCE ###
 loadComponent("BASE_JointToMotorSpace","MATH::MatrixTransform")
 addPeer("Supervisor","BASE_JointToMotorSpace")
-setActivity("BASE_JointToMotorSpace",0.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("BASE_JointToMotorSpace",Ts,HighestPriority,ORO_SCHED_RT)
 BASE_JointToMotorSpace.Nrows = N
 BASE_JointToMotorSpace.Ncolumns = 3
 BASE_JointToMotorSpace.configure
@@ -74,7 +73,7 @@ BASE_JointToMotorSpace.function4 = array (  HALFSQRT2/WHEELRAD,  HALFSQRT2/WHEEL
 ### VELOCITY TO POSITION ###
 loadComponent("BASE_VelocityToPosition","MATH::Integrator")
 addPeer("Supervisor","BASE_VelocityToPosition")
-setActivity("BASE_VelocityToPosition",0.0,LowestPriority,ORO_SCHED_OTHER)
+setActivity("BASE_VelocityToPosition",Ts,HighestPriority,ORO_SCHED_RT)
 BASE_VelocityToPosition.vector_size = N
 BASE_VelocityToPosition.configure
 

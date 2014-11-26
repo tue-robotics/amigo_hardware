@@ -31,6 +31,8 @@ var int N					= 4
 var int BODYNUMBER 			= 1
 var string BODYPARTNAME 	= "base"
 var bool HOMEABLE 			= false
+var bool HOMINGOBLIGATORY	= false
+var bool RESETTABLE			= true
 var string ROBOT 			= "/amigo"
  
 	 # Controller 1, test (bw ~19.0Hz): 
@@ -40,8 +42,8 @@ var string ROBOT 			= "/amigo"
 	var array 	LOWPASS_FREQUENCY         	= array (500.0, 500.0, 500.0, 500.0)
 	var array 	LOWPASS_DAMPING           	= array (0.7, 0.7, 0.7, 0.7)
 
-### NameBodyPart ###
-Supervisor.NameBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE)
+### AddBodyPart ###
+Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RESETTABLE)
 
 ### ENCODER TO VELOCITY ###
 loadComponent("BASE_EncoderToVelocity","MATH::Differentiate")
@@ -146,22 +148,6 @@ BASE_Diagnostics.vecname2 				= "Error"
 BASE_Diagnostics.vecname3 				= "Voltage"
 BASE_Diagnostics.boolname1 				= "Amplifiers"
 
-### OFFSET OF THE ANALOG OUTPUTS ###
-loadComponent("BASE_AnalogOffset","SOURCES::ConstantSignal")
-addPeer("Supervisor","BASE_AnalogOffset")
-setActivity("BASE_AnalogOffset",Ts,HighestPriority,ORO_SCHED_RT)
-BASE_AnalogOffset.vector_size 	= 4;
-BASE_AnalogOffset.value 		= array (-108.0, -105.0, -70.0, -70.0); 
-BASE_AnalogOffset.configure
-
-### ADD OFFSET ###
-loadComponent("BASE_AddOffset","MATH::Addition")
-addPeer("Supervisor","BASE_AddOffset")
-BASE_AddOffset.vectorsize 		= 4
-BASE_AddOffset.numberofinputs 	= 2
-setActivity("BASE_AddOffset",0.0,HighestPriority,ORO_SCHED_RT)
-BASE_AddOffset.configure
-
 #### CONNECT COMPONENTS ####
 # Control loop
 connect ("BASE_ReadEncoders.out",		"BASE_EncoderToVelocity.in", 	ConnPolicy() ); #enc4[-]
@@ -199,7 +185,7 @@ stream ("BASE_Diagnostics.diagnostics", ros.topic(ROBOT+"/base_diagnostics"));
 #### START COMPONENTS ####
 # Control loop
 Supervisor.AddAllwaysOnPeer ("BASE_EncoderToVelocity")
-Supervisor.AddAllwaysOnPeer	("BASE_Controller")
+Supervisor.AddEnabledPeer	("BASE_Controller", BODYNUMBER)
 Supervisor.AddAllwaysOnPeer ("BASE_SI2Volt")
 # diagnostics
 Supervisor.AddAllwaysOnPeer ("BASE_MotorToJointSpace")

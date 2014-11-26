@@ -1,0 +1,77 @@
+
+### VARIABLES
+############ Settings #######################################
+
+var string	FILENAME 		= "26-11-14_vel_extra_slow.dat"
+#var string	FILENAME 		= "26-11-14_pos_slow2.dat"
+var double 	v_x  			= 0.1;
+var double 	v_y  			= 0.1;
+var double 	v_p  			= 0.1;
+
+# velocities linear 0.75, slow = 0.2; extra_slow = 0.1
+# velocities angular 01.0, slow = 0.4; extra_slow = 0.1
+#############################################################
+
+var double HS2				= 0.7071; # 0.5*sqrt(2)
+	# linear
+var int buffersize 			= 59000;
+var array VELOCITY_X   	= array(0.0  ,v_x,0.0,-v_x,0.0,  0.0,0.0, 0.0,0.0,  HS2*v_x,0.0,-HS2*v_x,0.0, 0.0,0.0, 0.0,0.0);
+var array VELOCITY_Y   	= array(0.0  ,0.0,0.0, 0.0,0.0,  v_y,0.0,-v_y,0.0,  HS2*v_y,0.0,-HS2*v_y,0.0,  0.0,0.0, 0.0,0.0);
+var array VELOCITY_PHI  = array(0.0  ,0.0,0.0, 0.0,0.0,  0.0,0.0, 0.0,0.0,  0.0    ,0.0, 0.0    ,0.0,  v_p,0.0,-v_p,0.0);
+var array DURATION   	= array(1.0  ,4.0,3.0, 4.0,3.0,  4.0,3.0, 4.0,3.0,  4.0    ,3.0, 4.0    ,3.0,  4.0,3.0, 4.0,3.0);
+	# rotation
+#var int buffersize 			= 59000;
+#var array VELOCITY_X   		= array(0.0,  0.0,0.0, 0.0,0.0,  v_x,0.0,-v_x,0.0,  0.0,0.0,-0.0,0.0,  HS2*v_x,0.0,-HS2*v_x,0.0);
+#var array VELOCITY_Y   		= array(0.0,  0.0,0.0, 0.0,0.0,  0.0,0.0,-0.0,0.0,  v_y,0.0,-v_y,0.0,  HS2*v_y,0.0,-HS2*v_y,0.0);
+#var array VELOCITY_PHI  		= array(0.0,  v_p,0.0,-v_p,0.0,  v_p,0.0,-v_p,0.0,  v_p,0.0,-v_p,0.0,  v_p,0.0,-v_p,0.0);
+#var array DURATION   			= array(1.0,  4.0,3.0, 4.0,3.0,  4.0,3.0, 4.0,3.0,  4.0,3.0, 4.0,3.0,  4.0,3.0, 4.0,3.0);
+
+	# Part settings
+var double 	Ts = 0.001
+var int 	BODYNUMBER 			= 1
+
+#### REFERENCE GENERATOR ###
+loadComponent("REFERENCE","SERGIOCUSTOM::RefGenerator")
+addPeer("Supervisor","REFERENCE")
+setActivity("REFERENCE",Ts,HighestPriority,ORO_SCHED_RT); #Since this component is not triggered, it runs at a higher frequency to make sure every timestep a new random number is available
+REFERENCE.velocity_x = VELOCITY_X
+REFERENCE.velocity_y = VELOCITY_Y
+REFERENCE.velocity_phi = VELOCITY_PHI
+REFERENCE.duration = DURATION
+REFERENCE.Ts = Ts
+REFERENCE.configure
+
+
+### TRACING COMPONENT ###
+loadComponent("Tracing","Signal::Tracing")
+addPeer("Supervisor","Tracing")
+setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+Tracing.vector_sizes = array (4.0, 4.0, 4.0,3.0, 4.0); # 
+Tracing.buffersize = buffersize
+Tracing.filename = "/home/amigo/ros/data/Ton_data/amigo_time_measurements/"+FILENAME;
+Tracing.Ts = Ts
+Tracing.configure
+
+var ConnPolicy largebuffer;
+largebuffer.type = CIRCULAR_BUFFER;
+largebuffer.size = 2;
+
+
+### Disconnect and connect components ###
+BASE_ReadReferences.cmd_vel.disconnect()
+connect ("REFERENCE.cmd_vel",		"BASE_ReadReferences.cmd_vel", ConnPolicy() )
+
+
+### Connect tracing componenets ###
+
+connect ("BASE_Controller.jointErrors",	"Tracing.in1", largebuffer );
+connect ("BASE_ReadEncoders.out",		"Tracing.in2", largebuffer );
+connect ("BASE_JointToMotorSpace.out",	"Tracing.in3", largebuffer );
+connect ("BASE_ReadReferences.out",		"Tracing.in4", largebuffer );
+#connect ("BASE_VelocityToPosition.out",	"Tracing.in5", largebuffer );  # position control
+connect ("BASE_EncoderToVelocity.out",	"Tracing.in5", largebuffer ); 	# velocity control
+
+
+# safety and reference
+Supervisor.AddEnabledPeer  	("REFERENCE",		BODYNUMBER)
+Supervisor.AddEnabledPeer  	("Tracing",			BODYNUMBER )

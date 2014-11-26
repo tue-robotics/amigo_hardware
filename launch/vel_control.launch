@@ -3,7 +3,7 @@
     <arg name="DEPLOYER_ARGS" value="gnulinux
     HARDWARE
     -s $(find amigo_hardware)/ops/soem.ops
-    -s $(find amigo_hardware)/velocity_control/base_controller_vel.ops
+    -s $(find amigo_hardware)/ops/base_controller_vel.ops
     -s $(find amigo_hardware)/velocity_control/trace_always.ops
     "/>
     <arg name="LOG_LEVEL" value="Warning"/>
