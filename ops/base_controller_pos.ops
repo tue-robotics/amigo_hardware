@@ -21,6 +21,7 @@ var double SI2V 			= TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
 var array MAX_ERRORS 		= array ( 2.2, 2.2, 2.2, 2.2 )
 var array MAX_VELOCITIES	= array (1.8, 1.0, 3.1415)
 var int N					= 4
+var string ROBOT 			= "/amigo"
 var int BODYNUMBER 			= 1
 var string BODYPARTNAME 	= "base"
 var bool HOMEABLE 			= false
@@ -59,7 +60,7 @@ BASE_OdometryPublisher.configure
 ### READ REFERENCE VELOCITIES ###
 loadComponent("BASE_ReadReferences","ROS::ReadTwistMsg")
 addPeer("Supervisor","BASE_ReadReferences")
-setActivity("BASE_ReadReferences",0.01,LowestPriority,ORO_SCHED_OTHER)
+setActivity("BASE_ReadReferences",Ts,HighestPriority,ORO_SCHED_RT)
 BASE_ReadReferences.max_start_vel = 0.7
 BASE_ReadReferences.max_vel = MAX_VELOCITIES
 BASE_ReadReferences.max_acc = array (0.7, 0.7, 2.0)
@@ -164,9 +165,9 @@ connect ("BASE_SI2Volt.out", 						"BASE_Diagnostics.vec3", 			ConnPolicy() ); #
 connect ("BASE_Safety.enable", 						"BASE_Diagnostics.bool1", 			ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
-stream ("BASE_OdometryPublisher.odom", 				ros.topic("/amigo/base/measurements"));
-stream ("BASE_OdometryPublisher.reset", 			ros.topic("/amigo/base/reset_odometry"));
-stream ("BASE_ReadReferences.cmd_vel", 				ros.topic("/amigo/base/references"));
+stream ("BASE_OdometryPublisher.odom", 				ros.topic(ROBOT+"/base/measurements"));
+stream ("BASE_OdometryPublisher.reset", 			ros.topic(ROBOT+"/base/reset_odometry"));
+stream ("BASE_ReadReferences.cmd_vel", 				ros.topic(ROBOT+"/base/references"));
 stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
 stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/base_diagnostics"));
 
@@ -175,9 +176,9 @@ Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer ("BASE_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer ("BASE_OdometryPublisher")
 Supervisor.AddAllwaysOnPeer ("BASE_Diagnostics")
-Supervisor.AddAllwaysOnPeer ("BASE_Controller")
 Supervisor.AddAllwaysOnPeer ("BASE_SI2Volt")
 
+Supervisor.AddEnabledPeer ("BASE_Controller", BODYNUMBER)
 Supervisor.AddEnabledPeer ("BASE_ReadReferences",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_JointToMotorSpace",BODYNUMBER )
 Supervisor.AddEnabledPeer ("BASE_VelocityToPosition",BODYNUMBER )
