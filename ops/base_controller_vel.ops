@@ -20,7 +20,7 @@ var double TWOPI 			= 2.0*3.141592
 var double ENCODERCOUNTS 	= 500.0*4.0
 var double ENC2SI 			= TWOPI*GEARRATIO/ENCODERCOUNTS
 var double SI2V 			= TORQUE2CURRENT * CURRENT2VOLT * GEARRATIO
-var array MAX_ERRORS 		= array ( 10.0, 10.0, 10.0, 10.0)
+var array MAX_ERRORS 		= array ( 4.25, 4.25, 4.25, 4.25); # 25% of max wheel speed (x-direction)
 var array MAX_VELOCITIES	= array (1.8, 1.0, 3.1415)
 var double MAX_START_VEL  	= 0.7
 var array MAX_ACC 			= array (0.7, 0.7, 2.0)
@@ -83,7 +83,7 @@ BASE_SI2Volt.vectorsize = N;
 BASE_SI2Volt.gain = array (SI2V, SI2V, SI2V, SI2V)
 BASE_SI2Volt.configure
 
-### ERROR FILTER ###
+### ERROR FILTER (used to filter out missed encoder counts) ###
 loadComponent("BASE_ErrorFilter","FILTERS::SecondOrderLowPasses")
 addPeer("Supervisor","BASE_ErrorFilter")
 setActivity("BASE_ErrorFilter",0.0,HighestPriority,ORO_SCHED_RT)
@@ -167,7 +167,7 @@ connect ("BASE_SI2Volt.out", 			"BASESPINDLE_AnalogOuts.in1", 		ConnPolicy() );
 
 # Safety
 connect ("BASE_Controller.jointErrors",	"BASE_ErrorFilter.in", 	ConnPolicy() ); # jointerrors
-connect ("BASE_Controller.jointErrors",	"BASE_Safety.jointErrors", 	ConnPolicy() ); # jointerrors
+connect ("BASE_ErrorFilter.out",		"BASE_Safety.jointErrors", 	ConnPolicy() ); # jointerrors
 connect ("BASE_Controller.out",			"BASE_Safety.controlEffort",ConnPolicy() )
 connect ("BASE_Safety.error",			"Supervisor.base_error", 	ConnPolicy() ); # error
 connect ("BASE_Safety.enable",			"BASE_Controller.enable", 	ConnPolicy() ); # error
