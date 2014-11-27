@@ -83,6 +83,16 @@ BASE_SI2Volt.vectorsize = N;
 BASE_SI2Volt.gain = array (SI2V, SI2V, SI2V, SI2V)
 BASE_SI2Volt.configure
 
+### ERROR FILTER ###
+loadComponent("BASE_ErrorFilter","FILTERS::SecondOrderLowPasses")
+addPeer("Supervisor","BASE_ErrorFilter")
+setActivity("BASE_ErrorFilter",0.0,HighestPriority,ORO_SCHED_RT)
+BASE_ErrorFilter.vector_size	= 4
+BASE_ErrorFilter.sampling_time	= Ts
+BASE_ErrorFilter.pole_frequency	= array(100.0, 100.0, 100.0, 100.0);
+BASE_ErrorFilter.pole_damping	= array(0.7, 0.7, 0.7, 0.7);
+BASE_ErrorFilter.configure
+
 ### Safety ###
 loadComponent("BASE_Safety","SUPERVISORY::Safety")
 addPeer("Supervisor","BASE_Safety")
@@ -156,6 +166,7 @@ connect ("BASE_Controller.out",			"BASE_SI2Volt.in", 			ConnPolicy() )
 connect ("BASE_SI2Volt.out", 			"BASESPINDLE_AnalogOuts.in1", 		ConnPolicy() );
 
 # Safety
+connect ("BASE_Controller.jointErrors",	"BASE_ErrorFilter.in", 	ConnPolicy() ); # jointerrors
 connect ("BASE_Controller.jointErrors",	"BASE_Safety.jointErrors", 	ConnPolicy() ); # jointerrors
 connect ("BASE_Controller.out",			"BASE_Safety.controlEffort",ConnPolicy() )
 connect ("BASE_Safety.error",			"Supervisor.base_error", 	ConnPolicy() ); # error
@@ -192,6 +203,7 @@ Supervisor.AddAllwaysOnPeer ("BASE_MotorToJointSpace")
 Supervisor.AddAllwaysOnPeer ("BASE_OdometryPublisher")
 Supervisor.AddAllwaysOnPeer ("BASE_Diagnostics")
 # safety and reference
+Supervisor.AddEnabledPeer  	("BASE_ErrorFilter", 			BODYNUMBER)
 Supervisor.AddEnabledPeer  	("BASE_Safety", 			BODYNUMBER)
 Supervisor.AddEnabledPeer  	("BASE_ReadReferences",		BODYNUMBER )
 Supervisor.AddEnabledPeer  	("BASE_JointToMotorSpace",	BODYNUMBER )
