@@ -31,16 +31,16 @@ os.setenv("RIGHT_ARM_LOWERARM",RIGHT_ARM_LOWERARM)
 
 #### LOAD SUPERVISOR ###
 loadComponent("Supervisor","SUPERVISORY::Supervisor")
-#Supervisor.ebuttonorder	= strings('wireless','wired')
+Supervisor.ebuttonorder	= strings("wired","wireless")
 Supervisor.configure
 setActivity("Supervisor",0.04,HighestPriority,ORO_SCHED_RT)
-stream("Supervisor.rosemergency", ros.topic("/amigo/emergency_switch"))
-#stream("Supervisor.emergency_switch", ros.topic("/amigo/emergency_switch"))
-#stream("Supervisor.runstop1", ros.topic("/amigo/run_stop"))
+stream("Supervisor.ebuttonWired", ros.topic("/amigo/runstop"))
+stream("Supervisor.ebuttonWireless", ros.topic("/amigo/emergency_switch"))
 stream("Supervisor.rosshutdown", ros.topic("/amigo/etherCAT_shutdown")); 
 stream("Supervisor.rosetherCATenabled", ros.topic("/amigo/etherCAT_enabled")); 
 stream("Supervisor.hardware_status", ros.topic("/amigo/hardware_status"));
 stream("Supervisor.dashboardCmd", ros.topic("/amigo/dashboard_ctrlcmds"));
+stream("Supervisor.ebutton_status", ros.topic("/amigo/ebutton_status"));
 
 #### Create Robot Object ####
 var strings DEFAULT_PART_NAMES = strings("base","spindle","left_arm", "right_arm", "head")
