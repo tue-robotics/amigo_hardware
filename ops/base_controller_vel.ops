@@ -182,7 +182,7 @@ connect ("BASE_JointToMotorSpace.out",			"BASE_Controller.ref_in", 		ConnPolicy(
 # Odom to ros
 connect ("BASE_ReadEncoders.out",				"BASE_MotorToJointSpace.in", 	ConnPolicy() )
 connect ("BASE_MotorToJointSpace.out", 			"BASE_OdometryPublisher.pos", 	ConnPolicy() );
-stream ("BASE_OdometryPublisher.odom", 			ros.topic(ROBOT+"base/measurements"));
+stream ("BASE_OdometryPublisher.odom", 			ros.topic(ROBOT+"/base/measurements"));
 stream ("BASE_OdometryPublisher.reset", 		ros.topic(ROBOT+"/base/reset_odometry"));
 
 # Diagnostics
