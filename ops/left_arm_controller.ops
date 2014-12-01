@@ -166,7 +166,7 @@ setActivity("LPERA_SensorTorques",(TS),HighestPriority,ORO_SCHED_RT)
 LPERA_SensorTorques.vector_size				= N
 LPERA_SensorTorques.c1 						= array (35.0,		87.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
 LPERA_SensorTorques.c2 						= array (-0.2,		0.2,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
-LPERA_SensorTorques.c3 						= array (-76.26,	-95.29,	    -145.16,	-38.71,		-111.7,		1.0,		1.0,		0.0		)
+LPERA_SensorTorques.c3 						= array (-76.26,	-95.29,	    -145.16,	-38.71,		-111.7,		1.0,		1.0,	  -60.0		)
 LPERA_SensorTorques.configure
 
 ### PERA Homing ###							## Note that all properties follow the [q1,q2,q3....q8] structure and not the structure provided by homing_order
@@ -182,16 +182,16 @@ LPERA_Homing.outport_sizes					= ints (7 , 1)
 LPERA_Homing.bodypart 						= BODYPARTNAME
 LPERA_Homing.prefix 						= "LPERA"
 LPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
-LPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
+LPERA_Homing.require_homing					= ints 		(0, 	0,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
 LPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
-LPERA_Homing.homing_direction				= ints 		(1, 	1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
-LPERA_Homing.homing_velocity				= array 	(0.25,	0.25,	0.25,	0.25,	0.25,	0.2,	0.2,	0.1 )
+LPERA_Homing.homing_direction				= ints 		(1,		-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
+LPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.25,	0.25,	0.25,	0.2,	0.2,	0.4 )
 LPERA_Homing.homing_stroke					= HOMINGSTROKE
 LPERA_Homing.reset_stroke					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0 )
 LPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0 )
-LPERA_Homing.homing_errors					= array 	(0.03,  0.03,   0.03,   0.03, 	0.03,   0.03,  	0.03,	2.0 )
+LPERA_Homing.homing_errors					= array 	(0.03,  0.03,   0.03,   0.03, 	0.03,   0.03,  	0.03,	0.03)
 LPERA_Homing.homing_absPos					= ABSPOS
-LPERA_Homing.homing_forces					= array 	(0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0	)
+LPERA_Homing.homing_forces					= array 	(0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	20.0)
 LPERA_Homing.configure
 
 #### Diagnostics ###
