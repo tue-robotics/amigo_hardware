@@ -9,8 +9,8 @@
 
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
-#include <amigo_msgs/AmigoGripperCommand.h>
-#include <amigo_msgs/AmigoGripperMeasurement.h>
+#include <tue_msgs/GripperCommand.h>
+#include <tue_msgs/GripperMeasurement.h>
 #include <sensor_msgs/JointState.h>
 #include <diagnostic_msgs/DiagnosticStatus.h>
 
