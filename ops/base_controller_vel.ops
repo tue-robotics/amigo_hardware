@@ -48,17 +48,6 @@ BASE_ReadEncoders.encoderbits = 65536
 BASE_ReadEncoders.enc2SI = array (ENC2SI, ENC2SI, ENC2SI, ENC2SI)
 BASE_ReadEncoders.configure
 
-### ENCODER TO VELOCITY ###
-loadComponent("BASE_EncoderToVelocity","MATH::Differentiate")
-addPeer("Supervisor","BASE_EncoderToVelocity")
-setActivity("BASE_EncoderToVelocity",0.0,HighestPriority,ORO_SCHED_RT)
-BASE_EncoderToVelocity.vector_size = 4;
-BASE_EncoderToVelocity.sampling_time = Ts;
-BASE_EncoderToVelocity.use_time_check = true;
-BASE_EncoderToVelocity.allowed_variation_Ts = Ts*0.4;
-BASE_EncoderToVelocity.use_discrete = true;
-BASE_EncoderToVelocity.configure
-
 ### CONTROLLER COMPONENT ###
 loadComponent("BASE_Controller","FILTERS::Controller")
 addPeer("Supervisor","BASE_Controller")
@@ -161,8 +150,7 @@ connect ("Soem.Slave_1002.Slave_1002_value",	"BASE_ReadEncoders.enc1_in", 	ConnP
 connect ("Soem.Slave_1003.Slave_1003_value",	"BASE_ReadEncoders.enc2_in", 	ConnPolicy() ); # Enc 2
 connect ("Soem.Slave_1004.Slave_1004_value",	"BASE_ReadEncoders.enc3_in", 	ConnPolicy() ); # Enc 3
 connect ("Soem.Slave_1005.Slave_1005_value",	"BASE_ReadEncoders.enc4_in", 	ConnPolicy() ); # Enc 4
-connect ("BASE_ReadEncoders.out",				"BASE_EncoderToVelocity.in", 	ConnPolicy() ); #enc4[-]
-connect ("BASE_EncoderToVelocity.out",			"BASE_Controller.pos_in", 		ConnPolicy() ); #enc4[-]
+connect ("BASE_ReadEncoders.vel",				"BASE_Controller.pos_in", 		ConnPolicy() ); #enc4[-]
 connect ("BASE_Controller.out",					"BASE_SI2Volt.in", 				ConnPolicy() )
 connect ("BASE_SI2Volt.out", 					"BASESPINDLE_AnalogOuts.in1", 	ConnPolicy() );
 
@@ -196,7 +184,6 @@ stream ("BASE_Diagnostics.diagnostics", 		ros.topic(ROBOT+"/base_diagnostics"));
 #### START COMPONENTS ####
 # Control loop
 Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")
-Supervisor.AddEnabledPeer 	("BASE_EncoderToVelocity", 	BODYNUMBER)
 Supervisor.AddEnabledPeer	("BASE_Controller", 		BODYNUMBER)
 Supervisor.AddAllwaysOnPeer ("BASE_SI2Volt")
 # Reference
