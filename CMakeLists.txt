@@ -41,5 +41,7 @@ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 ### Specific Hardware Components - Head ###
 orocos_component(PanTiltController src/PanTiltController.cpp ${HEADER_FILES})
 orocos_component(HeadEnabler src/HeadEnabler.cpp ${HEADER_FILES})
+orocos_component(CalculateFFW src/CalculateFFW.cpp ${HEADER_FILES})
 target_link_libraries(PanTiltController ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
 target_link_libraries(HeadEnabler ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})
+target_link_libraries(CalculateFFW ${catkin_LIBRARIES} ${USE_OROCOS_LIBRARIES})

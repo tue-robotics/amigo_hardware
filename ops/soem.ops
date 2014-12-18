@@ -185,6 +185,7 @@ addPeer("Supervisor","DigitalIns2")
 DigitalIns2.configure
 setActivity("DigitalIns2",TS,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_100a.bits", "DigitalIns2.in", ConnPolicy() )
+stream("DigitalIns2.out1", ros.topic("/spindle_homeswitch") )
 stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
 
 #### LOAD COMPONENT TO ENABLE AMPLIFIERS (D04) ####
