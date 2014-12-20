@@ -29,13 +29,6 @@ orocos_generate_package(
 )
 
 install(FILES
-amigohardware.launch
-soem.ops
-base_controller.ops
-spindle_controller.ops
-left_arm_controller.ops
-right_arm_controller.ops
-head_controller.ops
 DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ### Specific Hardware Components - Head ###
