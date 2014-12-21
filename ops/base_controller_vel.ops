@@ -55,6 +55,9 @@ setActivity("BASE_Controller",0.0,HighestPriority,ORO_SCHED_RT)
 BASE_Controller.vector_size 				= N;
 BASE_Controller.sampling_time 				= Ts;
 BASE_Controller.controllers 				= strings ("WeakIntegrator","LowPass");
+BASE_Controller.number_of_refports			= 1
+BASE_Controller.refinport_sizes				= ints (N)
+BASE_Controller.number_of_ffwports			= 0
 BASE_Controller.gains 						= array (0.25, 	0.25, 	0.25, 	0.25);
 BASE_Controller.zero_freq_WeakIntegrator 	= array (20.0, 	20.0, 	20.0, 	20.0);
 BASE_Controller.pole_freq_LowPass 			= array (500.0, 500.0, 	500.0, 	500.0);
@@ -165,7 +168,7 @@ connect ("BASE_Safety.enable", 					"DigitalOuts2.in2", 			ConnPolicy() ); # Ena
 # Reference signal
 stream  ("BASE_ReadReferences.cmd_vel", 		ros.topic(ROBOT+"/base/references"		));
 connect ("BASE_ReadReferences.out",				"BASE_JointToMotorSpace.in", 	ConnPolicy() )
-connect ("BASE_JointToMotorSpace.out",			"BASE_Controller.ref_in", 		ConnPolicy() );
+connect ("BASE_JointToMotorSpace.out",			"BASE_Controller.ref_in1", 		ConnPolicy() );
 
 # Odom to ros
 connect ("BASE_ReadEncoders.out",				"BASE_MotorToJointSpace.in", 	ConnPolicy() )

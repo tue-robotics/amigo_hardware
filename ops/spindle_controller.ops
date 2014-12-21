@@ -70,6 +70,9 @@ SPINDLE_Controller.vector_size    			= N
 SPINDLE_Controller.gains					= array(-40.0)
 SPINDLE_Controller.controllers				= strings("WeakIntegrator","LeadLag","LowPass")
 SPINDLE_Controller.sampling_time			= TS
+SPINDLE_Controller.number_of_refports		= 1
+SPINDLE_Controller.refinport_sizes			= ints (N)
+SPINDLE_Controller.number_of_ffwports		= 1
 SPINDLE_Controller.zero_freq_WeakIntegrator	= array (0.3)
 SPINDLE_Controller.zero_freq_LeadLag		= array (1.6)
 SPINDLE_Controller.pole_freq_LeadLag		= array (60.0)
@@ -79,20 +82,14 @@ SPINDLE_Controller.configure
 
 #Calculating Feed Forward
 loadComponent("SPINDLE_FFW","CalculateFFW")
+setActivity("SPINDLE_FFW",TS,HighestPriority,ORO_SCHED_RT)
 addPeer("Supervisor","SPINDLE_FFW")
-SPINDLE_FFW.FFWgrav = 0.07
-SPINDLE_FFW.FFWstat = 0.05
-SPINDLE_FFW.FFWdyn = 0.4
-SPINDLE_FFW.FFWacc = 0.3
-SPINDLE_FFW.direction = -1.0
+SPINDLE_FFW.FFWgrav 						= 0.07
+SPINDLE_FFW.FFWstat 						= 0.05
+SPINDLE_FFW.FFWdyn 							= 0.4
+SPINDLE_FFW.FFWacc 							= 0.3
+SPINDLE_FFW.direction 						= -1.0
 SPINDLE_FFW.configure
-
-#Calculating Output to encoders
-loadComponent("SPINDLE_Addition","MATH::Addition")
-addPeer("Supervisor","SPINDLE_Addition")
-SPINDLE_Addition.vectorsize = 1
-SPINDLE_Addition.numberofinputs = 2
-SPINDLE_Addition.configure
 
 ### Safety ###
 loadComponent("SPINDLE_Safety","SUPERVISORY::Safety")
@@ -149,31 +146,18 @@ JointStateAggregator.addAggregationPort("torso")
 #loadComponent("Tracing","Signal::Tracing")
 #addPeer("Supervisor","Tracing")
 #setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+#Tracing.vector_sizes = array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
 #Tracing.buffersize = 30000;
-#Tracing.filename = "/home/amigo/ros/data/hardware_tracing/max/SPINDLETEST3.dat"
+#Tracing.filename = "/home/amigo/ros/data/hardware_tracing/max/SPINDLETEST.dat"
 #Tracing.Ts = TS
 #Tracing.configure
 #connect ("SPINDLE_ReferenceGenerator.posout",		"Tracing.in1", 								ConnPolicy() );	# Reference
 #connect ("SPINDLE_Controller.jointErrors",			"Tracing.in2", 								ConnPolicy() ); # Errors
 #connect ("SPINDLE_Controller.out",					"Tracing.in3", 								ConnPolicy() ); # Control effort without feedforward
-#connect ("SPINDLE_FFW.FFW_out",						"Tracing.in4", 								ConnPolicy() ); # FFW
+#connect ("SPINDLE_FFW.FFW_out",					"Tracing.in4", 								ConnPolicy() ); # FFW
 #connect ("SPINDLE_ReadEncoders.out_enc",			"Tracing.in5", 								ConnPolicy() );	# Reference
 #connect ("SPINDLE_ReadEncoders.out",				"Tracing.in6", 								ConnPolicy() ); # Errors
-#connect ("SPINDLE_Safety.enable2",					"Tracing.in7", 								ConnPolicy() ); # Safety
-
-
-##### LOAD COMPONENT TO SET UP TRACING ###
-#loadComponent("Tracing","Signal::Tracing")
-#addPeer("Supervisor","Tracing")
-#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array (1.0 , 1.0 )
-#Tracing.buffersize = 30000;
-#Tracing.filename = "/home/amigo/ros/data/hardware_tracing/max/SPINDLETEST2.dat"
-#Tracing.Ts = TS
-#Tracing.configure
-#connect ("SPINDLE_ReadEncoders.out_enc",			"Tracing.in1", 								ConnPolicy() );	# enc out
-#connect ("SPINDLE_ReadEncoders.out",				"Tracing.in2", 								ConnPolicy() ); # RE
+#connect ("Soem.Slave_1006.Slave_1006_value",		"Tracing.encport", 							ConnPolicy() ); # Errors
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
@@ -181,14 +165,13 @@ connect ("Soem.Slave_1006.Slave_1006_value",		"SPINDLE_ReadEncoders.enc1_in", 		
 connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_Controller.pos_in", 				ConnPolicy() ); # Position
 connect ("SPINDLE_ReferenceGenerator.velout",		"SPINDLE_FFW.ref_vel", 						ConnPolicy() ); # vel
 connect ("SPINDLE_ReferenceGenerator.accout",		"SPINDLE_FFW.ref_acc", 						ConnPolicy() ); # acc
-connect ("SPINDLE_Controller.out",					"SPINDLE_Addition.in1_ev", 					ConnPolicy() ); # Controller Effort
-connect ("SPINDLE_FFW.FFW_out",						"SPINDLE_Addition.in2", 					ConnPolicy() ); # FFW
-connect ("SPINDLE_Addition.out",					"BASESPINDLE_AnalogOuts.in2", 				ConnPolicy() ); # Total Control Effort
+connect ("SPINDLE_FFW.FFW_out",						"SPINDLE_Controller.ffw_in1", 				ConnPolicy() ); # FFW
+connect ("SPINDLE_Controller.out",					"BASESPINDLE_AnalogOuts.in2", 				ConnPolicy() ); # Total Control Effort
 
 ## References ##
 connect ("SPINDLE_ReadReferences.pos_out",			"SPINDLE_ReferenceGenerator.posin1", 		ConnPolicy() ); # RefGoal
 connect ("SPINDLE_ReadEncoders.out",				"SPINDLE_ReferenceGenerator.initial_pos", 	ConnPolicy() ); # Position
-connect ("SPINDLE_ReferenceGenerator.posout",		"SPINDLE_Controller.ref_in", 				ConnPolicy() ); # Reference
+connect ("SPINDLE_ReferenceGenerator.posout",		"SPINDLE_Controller.ref_in1", 				ConnPolicy() ); # Reference
 
 ## Ros communication ##
 connect( "SPINDLE_ReadEncoders.out", 				"SPINDLE_WriteJointStates.pos_in", 			ConnPolicy() ); # Position
@@ -235,5 +218,4 @@ Supervisor.AddOpOnlyPeer (		"SPINDLE_ReadReferences", 		BODYNUMBER )
 
 Supervisor.AddEnabledPeer (		"SPINDLE_ReferenceGenerator", 	BODYNUMBER )
 Supervisor.AddEnabledPeer (		"SPINDLE_FFW", 					BODYNUMBER )
-Supervisor.AddEnabledPeer (		"SPINDLE_Addition", 			BODYNUMBER )
 Supervisor.AddEnabledPeer (		"SPINDLE_Safety", 				BODYNUMBER )
