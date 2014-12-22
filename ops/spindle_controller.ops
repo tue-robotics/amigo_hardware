@@ -142,23 +142,6 @@ SPINDLE_Diagnostics.boolname1 				= "Safe"
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("torso")
 
-##### LOAD COMPONENT TO SET UP TRACING ###
-#loadComponent("Tracing","Signal::Tracing")
-#addPeer("Supervisor","Tracing")
-#setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
-#Tracing.vector_sizes = array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-#Tracing.buffersize = 30000;
-#Tracing.filename = "/home/amigo/ros/data/hardware_tracing/max/SPINDLETEST.dat"
-#Tracing.Ts = TS
-#Tracing.configure
-#connect ("SPINDLE_ReferenceGenerator.posout",		"Tracing.in1", 								ConnPolicy() );	# Reference
-#connect ("SPINDLE_Controller.jointErrors",			"Tracing.in2", 								ConnPolicy() ); # Errors
-#connect ("SPINDLE_Controller.out",					"Tracing.in3", 								ConnPolicy() ); # Control effort without feedforward
-#connect ("SPINDLE_FFW.FFW_out",					"Tracing.in4", 								ConnPolicy() ); # FFW
-#connect ("SPINDLE_ReadEncoders.out_enc",			"Tracing.in5", 								ConnPolicy() );	# Reference
-#connect ("SPINDLE_ReadEncoders.out",				"Tracing.in6", 								ConnPolicy() ); # Errors
-#connect ("Soem.Slave_1006.Slave_1006_value",		"Tracing.encport", 							ConnPolicy() ); # Errors
-
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
 connect ("Soem.Slave_1006.Slave_1006_value",		"SPINDLE_ReadEncoders.enc1_in", 			ConnPolicy() ); # Encoder
@@ -208,9 +191,6 @@ Supervisor.AddAllwaysOnPeer (	"SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Diagnostics")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Controller")
-
-#Supervisor.AddEnabledPeer(		"Tracing", 			BODYNUMBER)
-#Supervisor.AddAllwaysOnPeer(	"Tracing")
 
 Supervisor.AddHomingOnlyPeer (	"SPINDLE_Homing", 				BODYNUMBER )
 
