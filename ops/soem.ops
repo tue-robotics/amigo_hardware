@@ -170,10 +170,10 @@ addPeer("Supervisor","DigitalIns")
 DigitalIns.configure
 setActivity("DigitalIns",0.1,LowestPriority,ORO_SCHED_OTHER)
 connect ("Soem.Slave_1009.bits", "DigitalIns.in", ConnPolicy() )
-stream("DigitalIns.out1", ros.topic("/fuse1"))
-stream("DigitalIns.out2", ros.topic("/fuse2"))
-stream("DigitalIns.out3", ros.topic("/fuse3"))
-stream("DigitalIns.out4", ros.topic("/fuse4"))
+stream("DigitalIns.out1", ros.topic("/amigo/fuse1"))
+stream("DigitalIns.out2", ros.topic("/amigo/fuse2"))
+stream("DigitalIns.out3", ros.topic("/amigo/fuse3"))
+stream("DigitalIns.out4", ros.topic("/amigo/fuse4"))
 DigitalIns.flip_out5 = 1
 stream("DigitalIns.out5", ros.topic("/amigo/runstop"))
 DigitalIns.flip_out6 = 1
@@ -185,8 +185,8 @@ addPeer("Supervisor","DigitalIns2")
 DigitalIns2.configure
 setActivity("DigitalIns2",TS,HighestPriority,ORO_SCHED_RT)
 connect ("Soem.Slave_100a.bits", "DigitalIns2.in", ConnPolicy() )
-stream("DigitalIns2.out1", ros.topic("/spindle_homeswitch") )
-stream("DigitalIns2.out2", ros.topic("/spindle_endstop") )
+stream("DigitalIns2.out1", ros.topic("/amigo/spindle_homeswitch") )
+stream("DigitalIns2.out2", ros.topic("/amigo/spindle_endstop") )
 
 #### LOAD COMPONENT TO ENABLE AMPLIFIERS (D04) ####
 loadComponent("EnableAmps","SOURCES::ConstantBool")

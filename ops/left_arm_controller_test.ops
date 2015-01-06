@@ -297,7 +297,7 @@ stream ("LPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/left_arm/measur
 #stream ("LPERA_ReadReferences.in", 					ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
 stream ("LPERA_GripperControl.gripper_command", 	ros.topic("/amigo/left_gripper/references"))
-stream ("LPERA_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
+stream ("LPERA_Diagnostics.diagnostics", 			ros.topic("/amigo/diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer(	"LPERA_ReadEncoders")

@@ -183,7 +183,7 @@ connect ("SPINDLE_Safety.enable",					"SPINDLE_Diagnostics.bool1", 				ConnPolic
 
 #### CONNECT ROS STREAMS ####
 stream("SPINDLE_ReadReferences.in", 				ros.topic("/amigo/torso/references"))
-stream("SPINDLE_Diagnostics.diagnostics", 			ros.topic("/diagnostics"))
+stream("SPINDLE_Diagnostics.diagnostics", 			ros.topic("/amigo/diagnostics"))
 stream("SPINDLE_WriteJointStates.out", 				ros.topic("/amigo/torso/measurements"))
 
 #### START COMPONENTS ####

@@ -171,8 +171,8 @@ connect ("BASE_Safety.enable", 						"BASE_Diagnostics.bool1", 			ConnPolicy() )
 stream ("BASE_OdometryPublisher.odom", 				ros.topic(ROBOT+"/base/measurements"));
 stream ("BASE_OdometryPublisher.reset", 			ros.topic(ROBOT+"/base/reset_odometry"));
 stream ("BASE_ReadReferences.cmd_vel", 				ros.topic(ROBOT+"/base/references"));
-stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
-stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/base_diagnostics"));
+stream ("BASE_Diagnostics.diagnostics", 			ros.topic(ROBOT+"/diagnostics"));
+stream ("BASE_Diagnostics.diagnostics", 			ros.topic(ROBOT+"/base_diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")

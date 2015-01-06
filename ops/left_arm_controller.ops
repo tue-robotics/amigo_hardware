@@ -36,7 +36,7 @@ var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
 var int N						= 8
 var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = false 
+var bool REQUIREGRIPPERHOMING   = true 
 var int BODYNUMBER 				= 3
 var string BODYPARTNAME 		= "left_arm"
 var bool HOMEABLE 				= true
@@ -275,7 +275,7 @@ stream ("LPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/left_arm/measur
 stream ("LPERA_ReadReferences.in", 					ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
 stream ("LPERA_GripperControl.gripper_command", 	ros.topic("/amigo/left_gripper/references"))
-stream ("LPERA_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
+stream ("LPERA_Diagnostics.diagnostics", 			ros.topic("/amigo/diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer(	"LPERA_ReadEncoders")
