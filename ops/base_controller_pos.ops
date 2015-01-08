@@ -91,9 +91,12 @@ loadComponent("BASE_Controller","FILTERS::Controller")
 setActivity("BASE_Controller",0.0,HighestPriority,ORO_SCHED_RT)
 addPeer("Supervisor","BASE_Controller")
 BASE_Controller.vector_size    				= N
-BASE_Controller.gains						= array (5.0, 5.0, 5.0, 5.0)
 BASE_Controller.controllers					= strings("WeakIntegrator","LeadLag","LowPass")
 BASE_Controller.sampling_time				= Ts
+BASE_Controller.number_of_refports			= 1
+BASE_Controller.refinport_sizes				= ints (N)
+BASE_Controller.number_of_ffwports			= 0
+BASE_Controller.gains						= array (5.0, 		5.0, 		5.0, 		5.0)
 BASE_Controller.zero_freq_WeakIntegrator	= array (0.0001, 	0.0001, 	0.0001, 	0.0001)
 BASE_Controller.zero_freq_LeadLag			= array (15.0, 		15.0, 		15.0, 		15.0)
 BASE_Controller.pole_freq_LeadLag			= array (50.0, 		50.0, 		50.0, 		50.0)
@@ -143,7 +146,7 @@ connect ("Soem.Slave_1004.Slave_1004_value",		"BASE_ReadEncoders.enc3_in", 		Con
 connect ("Soem.Slave_1005.Slave_1005_value",		"BASE_ReadEncoders.enc4_in", 		ConnPolicy() ); # Enc 4
 connect ("BASE_ReadEncoders.out",					"BASE_MotorToJointSpace.in", 		ConnPolicy() ); # Positions MS
 connect ("BASE_MotorToJointSpace.out", 				"BASE_OdometryPublisher.pos", 		ConnPolicy() ); # Positions JS
-connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in", 			ConnPolicy() ); # Positions
+connect ("BASE_VelocityToPosition.out",				"BASE_Controller.ref_in1", 			ConnPolicy() ); # Positions
 connect ("BASE_ReadEncoders.out",					"BASE_Controller.pos_in", 			ConnPolicy() ); # Positions MS
 connect ("BASE_Controller.out",						"BASE_SI2Volt.in", 					ConnPolicy() ); # ControlEffort [SI]
 connect ("BASE_SI2Volt.out", 						"BASESPINDLE_AnalogOuts.in1", 		ConnPolicy() ); # ControlEffort [V]
@@ -168,8 +171,8 @@ connect ("BASE_Safety.enable", 						"BASE_Diagnostics.bool1", 			ConnPolicy() )
 stream ("BASE_OdometryPublisher.odom", 				ros.topic(ROBOT+"/base/measurements"));
 stream ("BASE_OdometryPublisher.reset", 			ros.topic(ROBOT+"/base/reset_odometry"));
 stream ("BASE_ReadReferences.cmd_vel", 				ros.topic(ROBOT+"/base/references"));
-stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
-stream ("BASE_Diagnostics.diagnostics", 			ros.topic("/base_diagnostics"));
+stream ("BASE_Diagnostics.diagnostics", 			ros.topic(ROBOT+"/diagnostics"));
+stream ("BASE_Diagnostics.diagnostics", 			ros.topic(ROBOT+"/base_diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("BASE_ReadEncoders")

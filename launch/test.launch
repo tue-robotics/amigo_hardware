@@ -1,0 +1,11 @@
+<launch>
+  <include file="$(find rtt_ros)/launch/deployer.launch" ns="amigo" >
+    <arg name="DEPLOYER_ARGS" value="gnulinux
+    HARDWARE
+    -s $(find amigo_hardware)/ops/test/test_global_refgen.ops
+    "/>
+    <arg name="NAME" value ="hardware"/>
+    <arg name="LOG_LEVEL" value="Warning"/>
+    <arg name="DEBUG" value="false"/>
+  </include>
+</launch>
