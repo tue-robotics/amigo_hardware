@@ -1,0 +1,68 @@
+########################################################################
+#                                                                      #
+# Load orocos components to read whisker input and pass these          #
+# to a rostopic                                                        #
+#                                                                      #
+# Robin, Jan 2015                                                      #
+#                                                                      #
+########################################################################
+
+#### IMPORT PACKAGE ####
+import("rtt_ros")
+ros.import("amigo_hardware")
+
+#### DECLARATION OF PARAMETERS ####
+var double TS_w					= 1.0
+var string WHISKER_SLAVE_1			= "Soem.Slave_1002"
+var string WHISKER_SLAVE_2			= "Soem.Slave_1003"
+var string WHISKER_SLAVE_3			= "Soem.Slave_1004"
+
+### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
+loadComponent("Soem","soem_master::SoemMasterComponent")
+Soem.configure
+setActivity("Soem",TS_w,HighestPriority,ORO_SCHED_RT)
+Soem.start
+
+### LOAD WHISKER ANALOG_INS COMPONENT
+loadComponent("Whisker_AnalogIns","SOEM::AnalogInsGeneric")
+setActivity("Whisker_AnalogIns",TS_w,HighestPriority,ORO_SCHED_RT)
+Whisker_AnalogIns.numberofinports    					= 6 
+Whisker_AnalogIns.numberofoutports					= 1
+Whisker_AnalogIns.input_sizes						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
+Whisker_AnalogIns.input_positions					= array (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+Whisker_AnalogIns.output_sizes 						= array (18.0)
+Whisker_AnalogIns.direct_to_ROS 					= false
+Whisker_AnalogIns.configure
+connect (WHISKER_SLAVE_1+".forceSensors","Whisker_AnalogIns.in1", ConnPolicy() )  
+connect (WHISKER_SLAVE_1+".positionSensors","Whisker_AnalogIns.in2", ConnPolicy() )  
+connect (WHISKER_SLAVE_2+".forceSensors","Whisker_AnalogIns.in3", ConnPolicy() )   
+connect (WHISKER_SLAVE_2+".positionSensors","Whisker_AnalogIns.in4", ConnPolicy() )
+connect (WHISKER_SLAVE_3+".forceSensors","Whisker_AnalogIns.in5", ConnPolicy() )   
+connect (WHISKER_SLAVE_3+".positionSensors","Whisker_AnalogIns.in6", ConnPolicy() )
+Whisker_AnalogIns.start
+
+### Stream whisker values to rostopic ###
+loadComponent("StreamWhiskerValues","ROS::DoublesToROS")
+setActivity("StreamWhiskerValues",TS_w,LowestPriority,ORO_SCHED_OTHER)
+StreamWhiskerValues.NumberOfDoublesInVector = 18
+StreamWhiskerValues.configure
+connect ("Whisker_AnalogIns.out1","StreamWhiskerValues.in", ConnPolicy() );
+stream ("StreamWhiskerValues.out1",ros.topic("/amigo/whiskergripper/measurements1"))
+stream ("StreamWhiskerValues.out2",ros.topic("/amigo/whiskergripper/measurements2"))
+stream ("StreamWhiskerValues.out3",ros.topic("/amigo/whiskergripper/measurements3"))
+stream ("StreamWhiskerValues.out4",ros.topic("/amigo/whiskergripper/measurements4"))
+stream ("StreamWhiskerValues.out5",ros.topic("/amigo/whiskergripper/measurements5"))
+stream ("StreamWhiskerValues.out6",ros.topic("/amigo/whiskergripper/measurements6"))
+stream ("StreamWhiskerValues.out7",ros.topic("/amigo/whiskergripper/measurements7"))
+stream ("StreamWhiskerValues.out8",ros.topic("/amigo/whiskergripper/measurements8"))
+stream ("StreamWhiskerValues.out9",ros.topic("/amigo/whiskergripper/measurements9"))
+stream ("StreamWhiskerValues.out10",ros.topic("/amigo/whiskergripper/measurements10"))
+stream ("StreamWhiskerValues.out11",ros.topic("/amigo/whiskergripper/measurements11"))
+stream ("StreamWhiskerValues.out12",ros.topic("/amigo/whiskergripper/measurements12"))
+stream ("StreamWhiskerValues.out13",ros.topic("/amigo/whiskergripper/measurements13"))
+stream ("StreamWhiskerValues.out14",ros.topic("/amigo/whiskergripper/measurements14"))
+stream ("StreamWhiskerValues.out15",ros.topic("/amigo/whiskergripper/measurements15"))
+stream ("StreamWhiskerValues.out16",ros.topic("/amigo/whiskergripper/measurements16"))
+stream ("StreamWhiskerValues.out17",ros.topic("/amigo/whiskergripper/measurements17"))
+stream ("StreamWhiskerValues.out18",ros.topic("/amigo/whiskergripper/measurements18"))
+StreamWhiskerValues.start
