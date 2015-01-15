@@ -12,7 +12,7 @@ import("rtt_ros")
 ros.import("amigo_hardware")
 
 #### DECLARATION OF PARAMETERS ####
-var double TS_w					= 1.0
+var double TS_w					= 0.01
 var string WHISKER_SLAVE_1			= "Soem.Slave_1002"
 var string WHISKER_SLAVE_2			= "Soem.Slave_1003"
 var string WHISKER_SLAVE_3			= "Soem.Slave_1004"
