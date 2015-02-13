@@ -24,19 +24,19 @@ setActivity("Soem",TS_w,HighestPriority,ORO_SCHED_RT)
 Soem.start
 
 ### LOAD WHISKER ANALOG_INS COMPONENT
-loadComponent("Whisker_AnalogIns","SOEM::AnalogInsGeneric2")
+loadComponent("Whisker_AnalogIns","SOEM::AnalogInsGeneric")
 setActivity("Whisker_AnalogIns",TS_w,HighestPriority,ORO_SCHED_RT)
 Whisker_AnalogIns.inport_dimensions	= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
 Whisker_AnalogIns.outport_dimensions	= array (18.0)
                                             #    1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18
-Whisker_AnalogIns.from_which_inport     = array (0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0)
-Whisker_AnalogIns.from_which_entry      = array (0.0, 1.0, 2.0, 0.0, 1.0, 2.0, 0.0, 1.0, 2.0, 0.0, 1.0, 2.0, 0.0, 1.0, 2.0, 0.0, 1.0, 2.0)
+Whisker_AnalogIns.from_which_inport     = array (1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0)
+Whisker_AnalogIns.from_which_entry      = array (1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0)
 Whisker_AnalogIns.configure
-connect (WHISKER_SLAVE_1+".forceSensors","Whisker_AnalogIns.beckhoffmsg_in_0", ConnPolicy() )
-connect (WHISKER_SLAVE_1+".positionSensors","Whisker_AnalogIns.beckhoffmsg_in_1", ConnPolicy() )
-connect (WHISKER_SLAVE_2+".forceSensors","Whisker_AnalogIns.beckhoffmsg_in_2", ConnPolicy() )
-connect (WHISKER_SLAVE_2+".positionSensors","Whisker_AnalogIns.beckhoffmsg_in_3", ConnPolicy() )
-connect (WHISKER_SLAVE_3+".forceSensors","Whisker_AnalogIns.beckhoffmsg_in_4", ConnPolicy() )
-connect (WHISKER_SLAVE_3+".positionSensors","Whisker_AnalogIns.beckhoffmsg_in_5", ConnPolicy() )
-stream ("Whisker_AnalogIns.rosmsg_out_0",ros.topic("/amigo/whiskergripper/measurements"))
+connect (WHISKER_SLAVE_1+".forceSensors","Whisker_AnalogIns.beckhoffmsg_in_1", ConnPolicy() )
+connect (WHISKER_SLAVE_1+".positionSensors","Whisker_AnalogIns.beckhoffmsg_in_2", ConnPolicy() )
+connect (WHISKER_SLAVE_2+".forceSensors","Whisker_AnalogIns.beckhoffmsg_in_3", ConnPolicy() )
+connect (WHISKER_SLAVE_2+".positionSensors","Whisker_AnalogIns.beckhoffmsg_in_4", ConnPolicy() )
+connect (WHISKER_SLAVE_3+".forceSensors","Whisker_AnalogIns.beckhoffmsg_in_5", ConnPolicy() )
+connect (WHISKER_SLAVE_3+".positionSensors","Whisker_AnalogIns.beckhoffmsg_in_6", ConnPolicy() )
+stream ("Whisker_AnalogIns.rosmsg_out_1",ros.topic("/amigo/whiskergripper/measurements"))
 Whisker_AnalogIns.start
