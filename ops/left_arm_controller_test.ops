@@ -229,7 +229,7 @@ Tracing.Ts = TS
 Tracing.configure
 connect ("LPERA_ReferenceGenerator.posout",         "Tracing.in1",                              ConnPolicy())         ;# Reference
 connect ("LPERA_Controller.out",            		"Tracing.in2",                              ConnPolicy())         ;# Control Output
-connect ("LPERA_AnalogIns.out1",                    "Tracing.in3",                              ConnPolicy())         ;# Torque Sensor Output
+connect ("LPERA_AnalogIns.stdvect_out_1",                    "Tracing.in3",                              ConnPolicy())         ;# Torque Sensor Output
 connect ("LPERA_SensorTorques.measured_torques_out","Tracing.in4",                              ConnPolicy())         ;# Sensor torques output 
 
 #### SET UP JOINTSTATE AGGREGATOR ####
@@ -247,11 +247,11 @@ connect (LEFT_ARM_UPPERARM+".encoder3",				"LPERA_ReadEncoders.enc5_in", 				Con
 connect (LEFT_ARM_LOWERARM+".encoder1",				"LPERA_ReadEncoders.enc6_in", 				ConnPolicy() ); # Enc 6
 connect (LEFT_ARM_LOWERARM+".encoder2",				"LPERA_ReadEncoders.enc7_in", 				ConnPolicy() ); # Enc 7
 connect (LEFT_ARM_LOWERARM+".encoder3",				"LPERA_ReadEncoders.enc8_in", 				ConnPolicy() ); # Enc 8
-connect ("LPERA_ReadEncoders.out",					"LPERA_MotorToJointSpace.in", 				ConnPolicy() ); # Position MS
-connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
-connect ("LPERA_Controller.out",					"LPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
-connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 					ConnPolicy() ); # ControlEffort MS
-connect ("LPERA_AnalogIns.out1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
+connect ("LPERA_ReadEncoders.out",				"LPERA_MotorToJointSpace.in", 				ConnPolicy() ); # Position MS
+connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 				ConnPolicy() ); # Position JS
+connect ("LPERA_Controller.out",				"LPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
+connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 				ConnPolicy() ); # ControlEffort MS
+connect ("LPERA_AnalogIns.stdvect_out_1",			"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
 connect ("LPERA_ReadReferences.pos_out",			"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Ref
@@ -280,7 +280,7 @@ connect ("LPERA_Safety.enable",						LEFT_ARM_LOWERARM+".enablePort", 			ConnPol
 ## Homing ##
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_Homing.position", 					ConnPolicy() ); # Position
 connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
-connect ("LPERA_AnalogIns.out2",					"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
+connect ("LPERA_AnalogIns.stdvect_out_2",			"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
 connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
 connect ("LPERA_Homing.refout1",					"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Reference

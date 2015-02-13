@@ -104,51 +104,45 @@ connect ("LPERA_AnalogOuts.out3",LEFT_ARM_LOWERARM+".pwmDutyMotors", ConnPolicy(
 loadComponent("BATTERY_AnalogIns","SOEM::AnalogInsGeneric")
 addPeer("Supervisor","BATTERY_AnalogIns")
 setActivity("BATTERY_AnalogIns",1.0,LowestPriority,ORO_SCHED_OTHER)
-BATTERY_AnalogIns.numberofinports    				= 1
-BATTERY_AnalogIns.numberofoutports    				= 1
-BATTERY_AnalogIns.input_sizes 						= array (1.0)
-BATTERY_AnalogIns.input_positions 					= array (1.0)
-BATTERY_AnalogIns.output_sizes 						= array (1.0)
-BATTERY_AnalogIns.direct_to_ROS 					= true
+BATTERY_AnalogIns.inport_dimensions                                     = array (1.0)
+BATTERY_AnalogIns.outport_dimensions                                    = array (1.0)
+BATTERY_AnalogIns.from_which_inport                                     = array (1.0)
+BATTERY_AnalogIns.from_which_entry                                      = array (1.0)
 BATTERY_AnalogIns.configure
-connect ("Soem.Slave_100e.values","BATTERY_AnalogIns.in1", ConnPolicy() );
-stream("BATTERY_AnalogIns.outmsg1", ros.topic("/amigo/battery_value"))
+connect ("Soem.Slave_100e.values","BATTERY_AnalogIns.beckhoffmsg_in_1", ConnPolicy() );
+stream("BATTERY_AnalogIns.rosmsg_out_1", ros.topic("/amigo/battery_value"))
 
 ##### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
 loadComponent("RPERA_AnalogIns","SOEM::AnalogInsGeneric")
 addPeer("Supervisor","RPERA_AnalogIns")
 setActivity("RPERA_AnalogIns",TS,HighestPriority,ORO_SCHED_RT)
-RPERA_AnalogIns.numberofinports    					= 6
-RPERA_AnalogIns.numberofoutports    				= 2
-RPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
-RPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-RPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
-RPERA_AnalogIns.direct_to_ROS 						= false
+RPERA_AnalogIns.inport_dimensions                                       = array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
+RPERA_AnalogIns.outport_dimensions                                      = array (8.0, 8.0)
+RPERA_AnalogIns.from_which_inport                                       = array (1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0)
+RPERA_AnalogIns.from_which_entry                                        = array (1.0, 2.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0)
 RPERA_AnalogIns.configure
-connect (RIGHT_ARM_SHOULDER+".forceSensors","RPERA_AnalogIns.in1", ConnPolicy() )  
-connect (RIGHT_ARM_UPPERARM+".forceSensors","RPERA_AnalogIns.in2", ConnPolicy() )  
-connect (RIGHT_ARM_LOWERARM+".forceSensors","RPERA_AnalogIns.in3", ConnPolicy() )   
-connect (RIGHT_ARM_SHOULDER+".positionSensors","RPERA_AnalogIns.in4", ConnPolicy() )  
-connect (RIGHT_ARM_UPPERARM+".positionSensors","RPERA_AnalogIns.in5", ConnPolicy() )  
-connect (RIGHT_ARM_LOWERARM+".positionSensors","RPERA_AnalogIns.in6", ConnPolicy() )
+connect (RIGHT_ARM_SHOULDER+".forceSensors","RPERA_AnalogIns.beckhoffmsg_in_1", ConnPolicy() )
+connect (RIGHT_ARM_UPPERARM+".forceSensors","RPERA_AnalogIns.beckhoffmsg_in_2", ConnPolicy() )
+connect (RIGHT_ARM_LOWERARM+".forceSensors","RPERA_AnalogIns.beckhoffmsg_in_3", ConnPolicy() )
+connect (RIGHT_ARM_SHOULDER+".positionSensors","RPERA_AnalogIns.beckhoffmsg_in_4", ConnPolicy() )
+connect (RIGHT_ARM_UPPERARM+".positionSensors","RPERA_AnalogIns.beckhoffmsg_in_5", ConnPolicy() )
+connect (RIGHT_ARM_LOWERARM+".positionSensors","RPERA_AnalogIns.beckhoffmsg_in_6", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE ANALOG INS PERA ###
 loadComponent("LPERA_AnalogIns","SOEM::AnalogInsGeneric")
 addPeer("Supervisor","LPERA_AnalogIns")
 setActivity("LPERA_AnalogIns",TS,HighestPriority,ORO_SCHED_RT)
-LPERA_AnalogIns.numberofinports    					= 6
-LPERA_AnalogIns.numberofoutports    				= 2
-LPERA_AnalogIns.input_sizes 						= array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
-LPERA_AnalogIns.input_positions						= array (1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
-LPERA_AnalogIns.output_sizes 						= array (8.0, 8.0)
-LPERA_AnalogIns.direct_to_ROS 						= false
+LPERA_AnalogIns.inport_dimensions                                       = array (3.0, 3.0, 3.0, 3.0, 3.0, 3.0)
+LPERA_AnalogIns.outport_dimensions                                      = array (8.0, 8.0)
+LPERA_AnalogIns.from_which_inport                                       = array (1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0)
+LPERA_AnalogIns.from_which_entry                                        = array (1.0, 2.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0)
 LPERA_AnalogIns.configure
-connect (LEFT_ARM_SHOULDER+".forceSensors","LPERA_AnalogIns.in1", ConnPolicy() )  
-connect (LEFT_ARM_UPPERARM+".forceSensors","LPERA_AnalogIns.in2", ConnPolicy() )  
-connect (LEFT_ARM_LOWERARM+".forceSensors","LPERA_AnalogIns.in3", ConnPolicy() )   
-connect (LEFT_ARM_SHOULDER+".positionSensors","LPERA_AnalogIns.in4", ConnPolicy() )  
-connect (LEFT_ARM_UPPERARM+".positionSensors","LPERA_AnalogIns.in5", ConnPolicy() )  
-connect (LEFT_ARM_LOWERARM+".positionSensors","LPERA_AnalogIns.in6", ConnPolicy() )
+connect (LEFT_ARM_SHOULDER+".forceSensors","LPERA_AnalogIns.beckhoffmsg_in_1", ConnPolicy() )
+connect (LEFT_ARM_UPPERARM+".forceSensors","LPERA_AnalogIns.beckhoffmsg_in_2", ConnPolicy() )
+connect (LEFT_ARM_LOWERARM+".forceSensors","LPERA_AnalogIns.beckhoffmsg_in_3", ConnPolicy() )
+connect (LEFT_ARM_SHOULDER+".positionSensors","LPERA_AnalogIns.beckhoffmsg_in_4", ConnPolicy() )
+connect (LEFT_ARM_UPPERARM+".positionSensors","LPERA_AnalogIns.beckhoffmsg_in_5", ConnPolicy() )
+connect (LEFT_ARM_LOWERARM+".positionSensors","LPERA_AnalogIns.beckhoffmsg_in_6", ConnPolicy() )
 
 #### LOAD COMPONENT TO ENABLE DIGITAL OUTS (Slave_100b) ###
 loadComponent("DigitalOuts","SOEM::DigitalOuts")
