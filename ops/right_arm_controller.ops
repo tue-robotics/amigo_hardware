@@ -229,7 +229,7 @@ connect ("RPERA_ReadEncoders.out",					"RPERA_MotorToJointSpace.in", 				ConnPol
 connect ("RPERA_MotorToJointSpace.out",				"RPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
 connect ("RPERA_Controller.out",					"RPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
 connect ("RPERA_JointToMotorSpace.out",				"RPERA_AnalogOuts.in1", 					ConnPolicy() ); # ControlEffort MS
-connect ("RPERA_AnalogIns.out1",					"RPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
+connect ("RPERA_AnalogIns.stdvect_out_1",					"RPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
 connect ("RPERA_ReadReferences.pos_out",			"RPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Ref
@@ -258,7 +258,7 @@ connect ("RPERA_Safety.enable",						RIGHT_ARM_LOWERARM+".enablePort", 			ConnPo
 ## Homing ##
 connect ("RPERA_MotorToJointSpace.out",				"RPERA_Homing.position", 					ConnPolicy() ); # Position
 connect ("RPERA_Controller.jointErrors",			"RPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
-connect ("RPERA_AnalogIns.out2",					"RPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
+connect ("RPERA_AnalogIns.stdvect_out_2",					"RPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
 connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
 connect ("RPERA_Homing.homing_finished",			"Supervisor.right_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
 connect ("RPERA_Homing.refout1",					"RPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Reference
