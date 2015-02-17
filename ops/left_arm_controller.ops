@@ -98,7 +98,7 @@ addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed 		= 25.0
 LPERA_GripperControl.max_pos 				= 5.3
-LPERA_GripperControl.gripper_gain 			= 0.1
+#LPERA_GripperControl.gripper_gain 			= 0.1
 LPERA_GripperControl.configure
 
 ### Joint to motor torques ###
