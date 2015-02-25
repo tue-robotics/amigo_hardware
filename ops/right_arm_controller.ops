@@ -17,7 +17,7 @@ var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95
 var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	-4.0	)
 var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 	0.0		)
 var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 	2.0		)
-var ints ABSPOS 				= ints	(	1374,		642,		0,			0,			0,			0,			0,		0		)
+var array ABSPOS				= array	(	1.08388,	0.567326,	0.0,		0.0,		0.0,		0.0,		0.0,	0.0		)  
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -35,8 +35,6 @@ var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
 var int N						= 8
-var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = false
 var int BODYNUMBER 				= 4
 var string BODYPARTNAME 		= "right_arm"
 var bool HOMEABLE 				= true
@@ -165,7 +163,7 @@ RPERA_WriteClippedJointAngles.configure
 ### Conversion analog PERA_IO values to torques ###
 loadComponent("RPERA_SensorTorques","ARM::SensorTorques")
 addPeer("Supervisor","RPERA_SensorTorques")
-setActivity("RPERA_SensorTorques",(TS),LowestPriority,ORO_SCHED_OTHER)
+setActivity("RPERA_SensorTorques",TS,HighestPriority/2,ORO_SCHED_RT)
 RPERA_SensorTorques.vector_size				= N
 RPERA_SensorTorques.c1 						= array (42.0,		4250.0,		94.0,		20.0,		825.0,		1.0,		1.0,		32.3375		)
 RPERA_SensorTorques.c2 						= array (-0.8,		12.0,	     1.0,		-2.2,		1.0,		1.0,		1.0,		0.2			)
@@ -185,13 +183,13 @@ RPERA_Homing.outport_sizes					= ints (7 , 1)
 RPERA_Homing.bodypart 						= BODYPARTNAME
 RPERA_Homing.prefix 						= "RPERA"
 RPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
-RPERA_Homing.require_homing					= ints 		(0, 	0,	 	0, 		1,	 	1, 		1,	 	1, 		1 	)
+RPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
 RPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
 RPERA_Homing.homing_direction				= ints 		(1, 	-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
 RPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.25,	0.25,	0.25,	0.2,	0.2,	0.4 )
 RPERA_Homing.homing_stroke					= HOMINGSTROKE
 RPERA_Homing.reset_stroke					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0 )
-RPERA_Homing.homing_endpos					= array 	(0.0,   0.0, 	0.0, 	0.0,	0.0,	0.0, 	0.0, 	0.0 )
+RPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0 )
 RPERA_Homing.homing_errors					= array 	(0.03,  0.03,   0.03,   0.03, 	0.03,   0.03,  	0.03,	0.0	)
 RPERA_Homing.homing_absPos					= ABSPOS
 RPERA_Homing.homing_forces					= array 	(0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	0.0, 	20.0)
@@ -229,7 +227,7 @@ connect ("RPERA_ReadEncoders.out",					"RPERA_MotorToJointSpace.in", 				ConnPol
 connect ("RPERA_MotorToJointSpace.out",				"RPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
 connect ("RPERA_Controller.out",					"RPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
 connect ("RPERA_JointToMotorSpace.out",				"RPERA_AnalogOuts.in1", 					ConnPolicy() ); # ControlEffort MS
-connect ("RPERA_AnalogIns.out1",					"RPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
+connect ("RPERA_AnalogIns.stdvect_out_1",			"RPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
 connect ("RPERA_ReadReferences.pos_out",			"RPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Ref
@@ -258,7 +256,7 @@ connect ("RPERA_Safety.enable",						RIGHT_ARM_LOWERARM+".enablePort", 			ConnPo
 ## Homing ##
 connect ("RPERA_MotorToJointSpace.out",				"RPERA_Homing.position", 					ConnPolicy() ); # Position
 connect ("RPERA_Controller.jointErrors",			"RPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
-connect ("RPERA_AnalogIns.out2",					"RPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
+connect ("RPERA_AnalogIns.stdvect_out_2",			"RPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
 connect ("RPERA_SensorTorques.measured_torques_out","RPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
 connect ("RPERA_Homing.homing_finished",			"Supervisor.right_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
 connect ("RPERA_Homing.refout1",					"RPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Reference
@@ -275,7 +273,7 @@ stream ("RPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/right_arm/measu
 stream ("RPERA_ReadReferences.in", 					ros.topic("/amigo/right_arm/references"))
 stream ("RPERA_GripperControl.gripper_measurement", ros.topic("/amigo/right_gripper/measurements"))
 stream ("RPERA_GripperControl.gripper_command", 	ros.topic("/amigo/right_gripper/references"))
-stream ("RPERA_Diagnostics.diagnostics", 			ros.topic("/diagnostics"));
+stream ("RPERA_Diagnostics.diagnostics", 			ros.topic("/amigo/diagnostics"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer(	"RPERA_ReadEncoders")

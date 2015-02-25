@@ -22,7 +22,7 @@ connect ("RGB_light_controller.green", 	"DigitalOuts.in7", 	ConnPolicy() );	#Gre
 connect ("RGB_light_controller.blue", 	"DigitalOuts.in8", 	ConnPolicy() );	#Blue
 
 #### CONNECT ROS STREAMS ####
-stream("RGB_light_controller.rgbtopic", ros.topic("/rgb_lights_controller/reference"));
+stream("RGB_light_controller.rgbtopic", ros.topic("/amigo/rgb_lights_controller/reference"));
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("RGB_light_controller")

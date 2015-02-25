@@ -5,7 +5,6 @@
     -s $(find amigo_hardware)/ops/soem.ops
     -s $(find amigo_hardware)/ops/base_controller_vel.ops
     -s $(find amigo_hardware)/ops/spindle_controller.ops
-    -s $(find amigo_hardware)/ops/left_arm_controller.ops
     -s $(find amigo_hardware)/ops/head_controller.ops
     -s $(find amigo_hardware)/ops/rgb_lights.ops
     "/>

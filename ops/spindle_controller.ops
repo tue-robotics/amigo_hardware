@@ -128,6 +128,20 @@ SPINDLE_Diagnostics.vecname2 				= "Error"
 SPINDLE_Diagnostics.vecname3 				= "ControlEffort"
 SPINDLE_Diagnostics.boolname1 				= "Safe"
 
+### Setting up tracing ###
+loadComponent("Tracing","Signal::Tracing")
+addPeer("Supervisor","Tracing")
+setActivity("Tracing",0.0,HighestPriority,ORO_SCHED_RT)
+Tracing.vector_sizes = array (1.0, 1.0, 1.0, 1.0)
+Tracing.buffersize =  20000;
+Tracing.filename = "/home/amigo/ros/data/private/hardware_tracing/max/homingrefactor/homingtest.dat"
+Tracing.Ts = TS
+Tracing.configure
+connect ("SPINDLE_Controller.jointErrors",      	"Tracing.in1",                              ConnPolicy() ); # Reference
+connect ("SPINDLE_Homing.posout1",         			"Tracing.in2",                              ConnPolicy() ); # Reference
+connect ("SPINDLE_ReadEncoders.out",         		"Tracing.in3",                              ConnPolicy() ); # Reference
+connect ("SPINDLE_Controller.out",         			"Tracing.in4",                              ConnPolicy() ); # Reference
+
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
 connect ("Soem.Slave_1006.Slave_1006_value",		"SPINDLE_ReadEncoders.enc1_in", 			ConnPolicy() ); # Encoder
@@ -177,6 +191,8 @@ Supervisor.AddAllwaysOnPeer (	"SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Diagnostics")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Controller")
+Supervisor.AddAllwaysOnPeer (	"Tracing")
+
 
 Supervisor.AddHomingOnlyPeer (	"SPINDLE_Homing", 				BODYNUMBER )
 
