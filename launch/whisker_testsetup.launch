@@ -2,7 +2,7 @@
   <include file="$(find rtt_ros)/launch/deployer.launch" ns="amigo" >
     <arg name="DEPLOYER_ARGS" value="gnulinux
     HARDWARE
-    -s $(find amigo_hardware)/ops/whisker_inputs.ops
+    -s $(find amigo_bringup)/parameters/hardware/actuators/whisker_inputs.ops
     "/>
     <arg name="NAME" value ="hardware"/>
     <arg name="LOG_LEVEL" value="Info"/>
