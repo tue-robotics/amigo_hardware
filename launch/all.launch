@@ -13,8 +13,3 @@
     <arg name="DEBUG" value="false"/>
   </include>
 </launch>
-
-
-<!--
-	-s $(find amigo_hardware)/ops/right_arm_controller.ops
--->

@@ -96,12 +96,14 @@ loadComponent("SPINDLE_Homing","SUPERVISORY::Homing")
 connectPeers("Supervisor","SPINDLE_Homing")	
 addPeer("SPINDLE_Homing","SPINDLE_ReadEncoders")
 addPeer("SPINDLE_Homing","SPINDLE_Safety")
+addPeer("SPINDLE_Homing","GlobalReferenceGenerator")
 setActivity("SPINDLE_Homing",TS,HighestPriority,ORO_SCHED_RT)
 SPINDLE_Homing.vector_size 					= N
 SPINDLE_Homing.number_of_outports 			= 1
 SPINDLE_Homing.outport_sizes				= ints (1)
 SPINDLE_Homing.bodypart 					= BODYPARTNAME
 SPINDLE_Homing.prefix 						= "SPINDLE"
+SPINDLE_Homing.partNr 						= BODYNUMBER
 SPINDLE_Homing.homing_type					= ints (1)
 SPINDLE_Homing.require_homing				= ints (1)
 SPINDLE_Homing.homing_order					= ints (1)
@@ -137,10 +139,10 @@ Tracing.buffersize =  20000;
 Tracing.filename = "/home/amigo/ros/data/private/hardware_tracing/max/homingrefactor/homingtest.dat"
 Tracing.Ts = TS
 Tracing.configure
-connect ("SPINDLE_Controller.jointErrors",      	"Tracing.in1",                              ConnPolicy() ); # Reference
-connect ("SPINDLE_Homing.posout1",         			"Tracing.in2",                              ConnPolicy() ); # Reference
-connect ("SPINDLE_ReadEncoders.out",         		"Tracing.in3",                              ConnPolicy() ); # Reference
-connect ("SPINDLE_Controller.out",         			"Tracing.in4",                              ConnPolicy() ); # Reference
+connect ("SPINDLE_Controller.jointErrors",      	"Tracing.in1",                              ConnPolicy() ); # Err
+connect ("SPINDLE_Homing.posout1",         			"Tracing.in2",                              ConnPolicy() ); # Homing ref
+connect ("SPINDLE_ReadEncoders.out",         		"Tracing.in3",                              ConnPolicy() ); # pos
+connect ("SPINDLE_Controller.out",         			"Tracing.in4",                              ConnPolicy() ); # controller output
 
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
