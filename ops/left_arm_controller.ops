@@ -35,8 +35,11 @@ var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
 var int N						= 8
+<<<<<<< HEAD
 var bool REQUIREHOMING   		= true
 var bool REQUIREGRIPPERHOMING   = true 
+=======
+>>>>>>> homingrefactor
 var int BODYNUMBER 				= 3
 var string BODYPARTNAME 		= "left_arm"
 var bool HOMEABLE 				= true
@@ -155,7 +158,7 @@ LPERA_WriteClippedJointAngles.configure
 ### Conversion analog PERA_IO values to torques ###
 loadComponent("LPERA_SensorTorques","ARM::SensorTorques")
 addPeer("Supervisor","LPERA_SensorTorques")
-setActivity("LPERA_SensorTorques",(TS),HighestPriority,ORO_SCHED_RT)
+setActivity("LPERA_SensorTorques",TS,HighestPriority/2,ORO_SCHED_RT)
 LPERA_SensorTorques.vector_size				= N
 LPERA_SensorTorques.c1 						= array (35.0,		87.0,		1050.0,		35.0,		300.0,		1.0,		1.0,		32.34	)
 LPERA_SensorTorques.c2 						= array (-0.2,		0.2,		6.0,		-0.8,		1.0,		1.0,		1.0,		0.2		)
@@ -219,7 +222,17 @@ connect ("LPERA_ReadEncoders.out",					"LPERA_MotorToJointSpace.in", 				ConnPol
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
 connect ("LPERA_Controller.out",					"LPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
 connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 					ConnPolicy() ); # ControlEffort MS
+<<<<<<< HEAD
 connect ("LPERA_AnalogIns.stdvect_out_1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
+=======
+connect ("LPERA_AnalogIns.stdvect_out_1",			"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
+
+## References ##
+connect ("LPERA_ReadReferences.pos_out",			"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Ref
+connect ("LPERA_GripperControl.gripper_ref",		"LPERA_ReferenceGenerator.posin2",			ConnPolicy() ); # Gripper Ref
+connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in1",					ConnPolicy() ); # InterpolatedReference 
+connect ("LPERA_MotorToJointSpace.out",				"LPERA_ReferenceGenerator.initial_pos", 	ConnPolicy() ); # Initial position
+>>>>>>> homingrefactor
 
 ## Gripper control ##
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() ); # Torqin
@@ -242,7 +255,11 @@ connect ("LPERA_Safety.enable",						LEFT_ARM_LOWERARM+".enablePort", 			ConnPol
 ## Homing ##
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_Homing.position", 					ConnPolicy() ); # Position
 connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
+<<<<<<< HEAD
 connect ("LPERA_AnalogIns.stdvect_out_2",					"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
+=======
+connect ("LPERA_AnalogIns.stdvect_out_2",			"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
+>>>>>>> homingrefactor
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
 connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
 

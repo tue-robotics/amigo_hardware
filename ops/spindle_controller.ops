@@ -96,12 +96,14 @@ loadComponent("SPINDLE_Homing","SUPERVISORY::Homing")
 connectPeers("Supervisor","SPINDLE_Homing")	
 addPeer("SPINDLE_Homing","SPINDLE_ReadEncoders")
 addPeer("SPINDLE_Homing","SPINDLE_Safety")
+addPeer("SPINDLE_Homing","GlobalReferenceGenerator")
 setActivity("SPINDLE_Homing",TS,HighestPriority,ORO_SCHED_RT)
 SPINDLE_Homing.vector_size 					= N
 SPINDLE_Homing.number_of_outports 			= 1
 SPINDLE_Homing.outport_sizes				= ints (1)
 SPINDLE_Homing.bodypart 					= BODYPARTNAME
 SPINDLE_Homing.prefix 						= "SPINDLE"
+SPINDLE_Homing.partNr 						= BODYNUMBER
 SPINDLE_Homing.homing_type					= ints (1)
 SPINDLE_Homing.require_homing				= ints (1)
 SPINDLE_Homing.homing_order					= ints (1)
@@ -177,6 +179,8 @@ Supervisor.AddAllwaysOnPeer (	"SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Diagnostics")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Controller")
+Supervisor.AddAllwaysOnPeer (	"Tracing")
+
 
 Supervisor.AddHomingOnlyPeer (	"SPINDLE_Homing", 				BODYNUMBER )
 
