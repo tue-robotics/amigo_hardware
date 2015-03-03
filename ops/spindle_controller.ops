@@ -10,8 +10,8 @@
 var double TS 				= 0.001
 var strings JOINT_NAMES 	= strings( "torso_joint" )
 var double ENC2SI 			= -4.1666667e-7; # Minus because spindle up is defined positive.
-var array MINPOS 			= array (0.075)
-var array MAXPOS 			= array (0.4)
+var array LOWERJOINTLIMIT 	= array (0.075)
+var array UPPERJOINTLIMIT 	= array (0.4)
 var array MAXVEL 			= array (0.07)
 var array MAXACC			= array (0.1)
 var array MAXERR			= array (0.01)
@@ -27,8 +27,8 @@ Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RE
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("torso")
 TrajectoryActionlib.AddBodyPart (BODYNUMBER, JOINT_NAMES)
-TrajectoryActionlib.minPos2			= MINPOS
-TrajectoryActionlib.maxPos2			= MAXPOS
+TrajectoryActionlib.minPos2			= LOWERJOINTLIMIT
+TrajectoryActionlib.maxPos2			= UPPERJOINTLIMIT
 TrajectoryActionlib.maxVel2			= MAXVEL
 TrajectoryActionlib.maxAcc2			= MAXACC
 TrajectoryActionlib.interpolatorDt2 	= TS
@@ -96,7 +96,7 @@ loadComponent("SPINDLE_Homing","SUPERVISORY::Homing")
 connectPeers("Supervisor","SPINDLE_Homing")	
 addPeer("SPINDLE_Homing","SPINDLE_ReadEncoders")
 addPeer("SPINDLE_Homing","SPINDLE_Safety")
-addPeer("SPINDLE_Homing","GlobalReferenceGenerator")
+addPeer("SPINDLE_Homing","TrajectoryActionlib")
 setActivity("SPINDLE_Homing",TS,HighestPriority,ORO_SCHED_RT)
 SPINDLE_Homing.vector_size 					= N
 SPINDLE_Homing.number_of_outports 			= 1
@@ -179,8 +179,6 @@ Supervisor.AddAllwaysOnPeer (	"SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Diagnostics")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Controller")
-Supervisor.AddAllwaysOnPeer (	"Tracing")
-
 
 Supervisor.AddHomingOnlyPeer (	"SPINDLE_Homing", 				BODYNUMBER )
 

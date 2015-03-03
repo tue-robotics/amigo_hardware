@@ -18,6 +18,10 @@ var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0
 var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.75, 		0.0		)
 var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 		2.0		)
 var array ABSPOS				= array	(	0.634,		0.895,		0.0,		0.0,		0.0,		0.0,		0.0,		0.0		)
+var array MINPOS 				= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61	)
+var array MAXPOS 				= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61	)
+var array MAXVEL 				= array (	0.4, 		0.4, 		0.6, 		0.8, 		0.8, 		1.0, 		1.0		)
+var array MAXACC				= array (	0.2, 		0.2, 		0.3, 		0.5,	 	0.5, 		0.5,		0.5		)
 var double TWOPI 				= 2.0*3.141592
 var double GEARRATIO_SM			= 1.0/550.0
 var double GEARRATIO_S3		    = 1.0/371.25
@@ -35,31 +39,31 @@ var double ENC2SI_EM			= TWOPI*GEARRATIO_EM/ENCODERCOUNTS_EM
 var double ENC2SI_WM			= TWOPI*GEARRATIO_WM/ENCODERCOUNTS_WM
 var double ENC2SI_HM 			= TWOPI*GEARRATIO_HM/ENCODERCOUNTS_HM
 var int N						= 8
-<<<<<<< HEAD
-var bool REQUIREHOMING   		= true
-var bool REQUIREGRIPPERHOMING   = true 
-=======
->>>>>>> homingrefactor
 var int BODYNUMBER 				= 3
 var string BODYPARTNAME 		= "left_arm"
 var bool HOMEABLE 				= true
 var bool HOMINGOBLIGATORY		= false
 var bool RESETTABLE				= true
 
-
 ### Configuring Supervisor, JointStateAggregator and TrajectoryActionlib
 Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RESETTABLE)
 JointStateAggregator.addJointNames(JOINT_NAMES)
-JointStateAggregator.addAggregationPort("links")
+JointStateAggregator.addAggregationPort(BODYPARTNAME)
 TrajectoryActionlib.AddBodyPart (BODYNUMBER, JOINT_NAMES)
-TrajectoryActionlib.minPos3			= LOWERJOINTLIMIT
-TrajectoryActionlib.maxPos3			= UPPERJOINTLIMIT
-TrajectoryActionlib.maxVel3			= array (0.4, 0.4, 0.6, 0.8, 0.8, 1.0, 1.0)
-TrajectoryActionlib.maxAcc3			= array (0.2, 0.2, 0.3, 0.5, 0.5, 0.5, 0.5)
+TrajectoryActionlib.minPos3			= MINPOS
+TrajectoryActionlib.maxPos3			= MAXPOS
+TrajectoryActionlib.maxVel3			= MAXVEL
+TrajectoryActionlib.maxAcc3			= MAXACC
 TrajectoryActionlib.interpolatorDt3 	= TS
 TrajectoryActionlib.interpolatorEps3	= 1.0
 
 #### HIGH PRIORITY COMPONENTS ####
+### Read reference joint angles ###
+loadComponent("LPERA_ReadReferences","ROS::JointStateToDoubles")
+addPeer("Supervisor","LPERA_ReadReferences")
+setActivity("LPERA_ReadReferences",0.0,HighestPriority,ORO_SCHED_RT)
+LPERA_ReadReferences.vector_size 			= 7
+LPERA_ReadReferences.configure
 
 ### Motor to joint angles ###
 loadComponent("LPERA_MotorToJointSpace","MATH::MatrixTransform")
@@ -91,7 +95,11 @@ addPeer("Supervisor","LPERA_GripperControl")
 setActivity("LPERA_GripperControl",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_GripperControl.threshold_closed 		= 25.0
 LPERA_GripperControl.max_pos 				= 5.3
-#LPERA_GripperControl.gripper_gain 			= 0.1
+LPERA_GripperControl.min_pos 				= 0.0
+LPERA_GripperControl.gripper_vel 			= 0.5
+LPERA_GripperControl.gripper_acc 			= 0.25
+LPERA_GripperControl.InterpolDt 			= TS
+LPERA_GripperControl.InterpolEps 			= 1.0
 LPERA_GripperControl.configure
 
 ### Joint to motor torques ###
@@ -169,6 +177,7 @@ LPERA_SensorTorques.configure
 loadComponent("LPERA_Homing","SUPERVISORY::Homing")
 connectPeers("Supervisor","LPERA_Homing")
 addPeer("LPERA_Homing","LPERA_ReadEncoders")
+addPeer("LPERA_Homing","TrajectoryActionlib")
 addPeer("LPERA_Homing","LPERA_Safety")
 setActivity("LPERA_Homing",TS,HighestPriority,ORO_SCHED_RT)
 LPERA_Homing.vector_size 					= N
@@ -181,7 +190,6 @@ LPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1 	)
 LPERA_Homing.homing_order					= ints 		(8,		6, 		7, 		5, 		4, 		3, 		2, 		1 	)
 LPERA_Homing.homing_direction				= ints 		(1,		1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
 LPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.25,	0.25,	0.25,	0.2,	0.2,	0.4 )
-LPERA_Homing.homing_acceleration			= array 	(0.05,	0.05,	0.25,	0.25,	0.25,	0.2,	0.2,	0.4 )
 LPERA_Homing.homing_stroke					= HOMINGSTROKE
 LPERA_Homing.reset_stroke					= array 	(0.0,	0.0,	0.0,	0.0,	0.0,	0.0,	0.0, 	0.0 )
 LPERA_Homing.homing_endpos					= array 	(-0.1,  -0.2, 	0.2, 	0.8,	0.0,	0.0, 	0.0, 	0.0 )
@@ -203,11 +211,6 @@ LPERA_Diagnostics.vecname2 					= "Joint Errors"
 LPERA_Diagnostics.vecname3 					= "Reference Path Planning"
 LPERA_Diagnostics.boolname1 				= "Error"
 
-#### SET UP JOINTSTATE AGGREGATOR ####
-JointStateAggregator.addJointNames(JOINT_NAMES)
-JointStateAggregator.addJointNames(DUMMY_JOINT_NAMES)
-JointStateAggregator.addAggregationPort(BODYPARTNAME)
-
 #### CONNECT COMPONENTS ####
 ## Control loop	## 
 connect (LEFT_ARM_SHOULDER+".encoder1",				"LPERA_ReadEncoders.enc1_in", 				ConnPolicy() ); # Enc 1
@@ -222,17 +225,15 @@ connect ("LPERA_ReadEncoders.out",					"LPERA_MotorToJointSpace.in", 				ConnPol
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_Controller.pos_in", 					ConnPolicy() ); # Position JS
 connect ("LPERA_Controller.out",					"LPERA_JointToMotorSpace.in", 				ConnPolicy() ); # ControlEffort JS
 connect ("LPERA_JointToMotorSpace.out",				"LPERA_AnalogOuts.in1", 					ConnPolicy() ); # ControlEffort MS
-<<<<<<< HEAD
-connect ("LPERA_AnalogIns.stdvect_out_1",					"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
-=======
 connect ("LPERA_AnalogIns.stdvect_out_1",			"LPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
-connect ("LPERA_ReadReferences.pos_out",			"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Ref
-connect ("LPERA_GripperControl.gripper_ref",		"LPERA_ReferenceGenerator.posin2",			ConnPolicy() ); # Gripper Ref
-connect ("LPERA_ReferenceGenerator.posout",			"LPERA_Controller.ref_in1",					ConnPolicy() ); # InterpolatedReference 
-connect ("LPERA_MotorToJointSpace.out",				"LPERA_ReferenceGenerator.initial_pos", 	ConnPolicy() ); # Initial position
->>>>>>> homingrefactor
+connect ("LPERA_ReadEncoders.out",					"GlobalReferenceGenerator.current_pos3",	ConnPolicy() ); # Ref Pos
+connect ("TrajectoryActionlib.pos_out3",		"LPERA_Controller.ref_in1", 				ConnPolicy() ); # Ref Pos
+#connect ("LPERA_ReadReferences.pos_out",			"LPERA_ReferenceGenerator.posin1", 			ConnPolicy() ); # Ref
+#connect ("LPERA_GripperControl.gripper_ref",		"LPERA_ReferenceGenerator.posin2",			ConnPolicy() ); # Gripper Ref
+#connect ("LPERA_ReferenceGenerator.posout",		"LPERA_Controller.ref_in1",					ConnPolicy() ); # InterpolatedReference 
+#connect ("LPERA_MotorToJointSpace.out",			"LPERA_ReferenceGenerator.initial_pos", 	ConnPolicy() ); # Initial position
 
 ## Gripper control ##
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_GripperControl.torque_in", 			ConnPolicy() ); # Torqin
@@ -255,21 +256,20 @@ connect ("LPERA_Safety.enable",						LEFT_ARM_LOWERARM+".enablePort", 			ConnPol
 ## Homing ##
 connect ("LPERA_MotorToJointSpace.out",				"LPERA_Homing.position", 					ConnPolicy() ); # Position
 connect ("LPERA_Controller.jointErrors",			"LPERA_Homing.servo_error_in", 				ConnPolicy() ); # JointErrors
-<<<<<<< HEAD
-connect ("LPERA_AnalogIns.stdvect_out_2",					"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
-=======
 connect ("LPERA_AnalogIns.stdvect_out_2",			"LPERA_Homing.abs_pos_in", 					ConnPolicy() ); # AbsoluteSensors
->>>>>>> homingrefactor
 connect ("LPERA_SensorTorques.measured_torques_out","LPERA_Homing.force_in", 					ConnPolicy() ); # ForceSensors
 connect ("LPERA_Homing.homing_finished",			"Supervisor.left_arm_homingfinished", 		ConnPolicy() ); # Homing_finished
+connect ("LPERA_Homing.posout1",					"LPERA_Controller.ref_in1", 				ConnPolicy() ); # Ref Pos
 
 ## Diagnostics ##
+connect ("LPERA_ReadReferences.pos_out", 			"LPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
 connect ("LPERA_Controller.jointErrors",			"LPERA_Diagnostics.vec2", 					ConnPolicy() ); # JointErrors
 connect ("LPERA_Controller.out", 					"LPERA_Diagnostics.vec3", 					ConnPolicy() ); # ControlEffort
 connect ("LPERA_Safety.error",						"LPERA_Diagnostics.bool1", 					ConnPolicy() ); # Enable
 
 #### CONNECT ROS STREAMS ####
 stream ("LPERA_WriteClippedJointAngles.out", 		ros.topic("/amigo/left_arm/measurements"))
+stream ("LPERA_ReadReferences.in", 					ros.topic("/amigo/left_arm/references"))
 stream ("LPERA_GripperControl.gripper_measurement", ros.topic("/amigo/left_gripper/measurements"))
 stream ("LPERA_GripperControl.gripper_command", 	ros.topic("/amigo/left_gripper/references"))
 stream ("LPERA_Diagnostics.diagnostics", 			ros.topic("/amigo/diagnostics"));
@@ -285,7 +285,7 @@ Supervisor.AddAllwaysOnPeer(	"LPERA_Controller")
 
 Supervisor.AddHomingOnlyPeer(	"LPERA_Homing", 			BODYNUMBER)
 
-Supervisor.AddOpOnlyPeer(		"TrajectoryAction", 		BODYNUMBER)
+Supervisor.AddOpOnlyPeer(		"LPERA_ReadReferences", 	BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_SensorTorques", 		BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_GripperControl",		BODYNUMBER)
 Supervisor.AddEnabledPeer(		"LPERA_Safety", 			BODYNUMBER)
