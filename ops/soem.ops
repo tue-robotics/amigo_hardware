@@ -53,12 +53,11 @@ setActivity("JointStateAggregator",0.02,LowestPriority, ORO_SCHED_OTHER)
 JointStateAggregator.configure
 stream("JointStateAggregator.out", ros.topic("/amigo/joint_states"))
 
-#### LOAD GlobalReferenceGenerator ####
-loadComponent("GlobalReferenceGenerator","SOURCES::GlobalReferenceGenerator")
-addPeer("Supervisor","GlobalReferenceGenerator")
-setActivity("GlobalReferenceGenerator",TS,HighestPriority, ORO_SCHED_RT)
-GlobalReferenceGenerator.configure
-stream("GlobalReferenceGenerator.in", ros.topic("/amigo/torso/references"))
+#### LOAD TrajectoryActionlib ####
+loadComponent("TrajectoryActionlib","ROS::TrajectoryActionlib")
+addPeer("Supervisor","TrajectoryActionlib")
+setActivity("TrajectoryActionlib",TS,HighestPriority, ORO_SCHED_RT)
+TrajectoryActionlib.configure
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 loadComponent("Soem","soem_master::SoemMasterComponent")
@@ -200,7 +199,7 @@ connect ("EnableAmps.out", "DigitalOuts.in2", ConnPolicy() ); # tue-logo
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("JointStateAggregator")
-Supervisor.AddAllwaysOnPeer ("GlobalReferenceGenerator")
+#Supervisor.AddAllwaysOnPeer ("TrajectoryActionlib")
 Supervisor.AddAllwaysOnPeer ("BASESPINDLE_AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("RPERA_AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("LPERA_AnalogOuts")
