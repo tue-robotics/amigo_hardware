@@ -10,8 +10,8 @@
 var double TS 				= 0.001
 var strings JOINT_NAMES 	= strings( "torso_joint" )
 var double ENC2SI 			= -4.1666667e-7; # Minus because spindle up is defined positive.
-var array MINPOS 			= array (0.075)
-var array MAXPOS 			= array (0.4)
+var array LOWERJOINTLIMIT 	= array (0.075)
+var array UPPERJOINTLIMIT 	= array (0.4)
 var array MAXVEL 			= array (0.07)
 var array MAXACC			= array (0.1)
 var array MAXERR			= array (0.01)
@@ -27,8 +27,8 @@ Supervisor.AddBodyPart( BODYNUMBER, BODYPARTNAME, HOMEABLE, HOMINGOBLIGATORY, RE
 JointStateAggregator.addJointNames(JOINT_NAMES)
 JointStateAggregator.addAggregationPort("torso")
 GlobalReferenceGenerator.AddBodyPart (BODYNUMBER, JOINT_NAMES)
-GlobalReferenceGenerator.minPos2			= MINPOS
-GlobalReferenceGenerator.maxPos2			= MAXPOS
+GlobalReferenceGenerator.minPos2			= LOWERJOINTLIMIT
+GlobalReferenceGenerator.maxPos2			= UPPERJOINTLIMIT
 GlobalReferenceGenerator.maxVel2			= MAXVEL
 GlobalReferenceGenerator.maxAcc2			= MAXACC
 GlobalReferenceGenerator.interpolatorDt2 	= TS
@@ -179,7 +179,7 @@ Supervisor.AddAllwaysOnPeer (	"SPINDLE_ReadEncoders")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_WriteJointStates")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Diagnostics")
 Supervisor.AddAllwaysOnPeer (	"SPINDLE_Controller")
-Supervisor.AddAllwaysOnPeer (	"Tracing")
+#Supervisor.AddAllwaysOnPeer (	"Tracing")
 
 
 Supervisor.AddHomingOnlyPeer (	"SPINDLE_Homing", 				BODYNUMBER )
