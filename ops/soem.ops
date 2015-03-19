@@ -58,7 +58,7 @@ loadComponent("GlobalReferenceGenerator","SOURCES::GlobalReferenceGenerator")
 addPeer("Supervisor","GlobalReferenceGenerator")
 setActivity("GlobalReferenceGenerator",TS,HighestPriority, ORO_SCHED_RT)
 GlobalReferenceGenerator.configure
-stream("GlobalReferenceGenerator.in", ros.topic("/amigo/torso/references"))
+stream("GlobalReferenceGenerator.in", ros.topic("/amigo/right_arm/references"))
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 loadComponent("Soem","soem_master::SoemMasterComponent")
