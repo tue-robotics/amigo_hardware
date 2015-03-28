@@ -113,8 +113,8 @@ SPINDLE_Homing.homing_acceleration			= array (0.02)
 SPINDLE_Homing.homing_stroke				= array (0.0)
 SPINDLE_Homing.reset_stroke					= array (0.41)
 SPINDLE_Homing.homing_endpos				= array (0.35)
-SPINDLE_Homing.InterpolatorDt				= TS
-SPINDLE_Homing.InterpolatorEps				= 1.0
+SPINDLE_Homing.interpolatorDt				= TS
+SPINDLE_Homing.interpolatorEps				= 1.0
 SPINDLE_Homing.configure
 
 #### LOAD COMPONENT TO PUBLISH DIAGNOSTICS ###

@@ -199,7 +199,7 @@ connect ("EnableAmps.out", "DigitalOuts.in2", ConnPolicy() ); # tue-logo
 
 #### START COMPONENTS ####
 Supervisor.AddAllwaysOnPeer ("JointStateAggregator")
-#Supervisor.AddAllwaysOnPeer ("TrajectoryActionlib")
+Supervisor.AddAllwaysOnPeer ("TrajectoryActionlib")
 Supervisor.AddAllwaysOnPeer ("BASESPINDLE_AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("RPERA_AnalogOuts")
 Supervisor.AddAllwaysOnPeer ("LPERA_AnalogOuts")
