@@ -57,7 +57,10 @@ stream("JointStateAggregator.out", ros.topic("/amigo/joint_states"))
 loadComponent("TrajectoryActionlib","ROS::TrajectoryActionlib")
 addPeer("Supervisor","TrajectoryActionlib")
 setActivity("TrajectoryActionlib",TS,HighestPriority, ORO_SCHED_RT)
+loadService("TrajectoryActionlib","actionlib")
+TrajectoryActionlib.actionlib.connect("/amigo/joint_trajectory_action");
 TrajectoryActionlib.configure
+
 
 ### LOAD SOEM COMPONENT FOR ETHERCAT COMMUNICATION ###
 loadComponent("Soem","soem_master::SoemMasterComponent")
