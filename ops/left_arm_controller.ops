@@ -259,7 +259,7 @@ connect ("LPERA_Homing.posout1",					"LPERA_Controller.ref_in1", 				ConnPolicy(
 connect ("LPERA_Homing.posout2",					"LPERA_Controller.ref_in2", 				ConnPolicy() ); # Ref Pos
 
 ## Diagnostics ##
-connect ("TrajectoryActionlib.pos_out3",		"LPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
+connect ("TrajectoryActionlib.pos_out3",			"LPERA_Diagnostics.vec1", 					ConnPolicy() ); # Reference
 connect ("LPERA_Controller.jointErrors",			"LPERA_Diagnostics.vec2", 					ConnPolicy() ); # JointErrors
 connect ("LPERA_Controller.out", 					"LPERA_Diagnostics.vec3", 					ConnPolicy() ); # ControlEffort
 connect ("LPERA_Safety.error",						"LPERA_Diagnostics.bool1", 					ConnPolicy() ); # Enable
