@@ -13,11 +13,11 @@ var string RIGHT_ARM_UPPERARM 	= os.getenv("RIGHT_ARM_UPPERARM")
 var string RIGHT_ARM_LOWERARM 	= os.getenv("RIGHT_ARM_LOWERARM")
 var strings JOINT_NAMES 		= strings( "shoulder_yaw_joint_right", "shoulder_pitch_joint_right", "shoulder_roll_joint_right", "elbow_pitch_joint_right", "elbow_roll_joint_right", "wrist_pitch_joint_right", "wrist_yaw_joint_right" ) 
 var strings DUMMY_JOINT_NAMES 	= strings( "finger1_joint_right", "finger1_tip_joint_right", "finger2_joint_right", "finger2_tip_joint_right" )
-var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61,  		4.0		)
-var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 		-4.0	)
+var array UPPERJOINTLIMIT 		= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61,  		7.5		)
+var array LOWERJOINTLIMIT 		= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61, 		-1.0	)
 var array HOMINGSTROKE 			= array (	0.0,		0.0,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.75, 		0.0		)
 var array MAXERRORS 			= array (	0.09,     	0.09,   	0.09,     	0.09, 	   	0.09,    	0.09, 	   	0.09, 		2.0		)
-var array ABSPOS				= array	(	1.10,		1.71,		0.0,		0.0,		0.0,		0.0,		0.0,		0.0		)
+var array ABSPOS				= array	(	1.07,		1.72,		0.0,		0.0,		0.0,		0.0,		0.0,		0.0		)
 var array MINPOS 				= array (	-1.57,		-1.57,		-1.57,  	0.0, 		-1.83,		-0.95, 		-0.61	)
 var array MAXPOS 				= array (	0.0,		1.57,		1.57, 		2.23,  		1.83, 		0.95,  		0.61	)
 var array MAXVEL 				= array (	0.4, 		0.4, 		0.6, 		0.8, 		0.8, 		1.0, 		1.0		)
@@ -88,8 +88,8 @@ RPERA_ReadEncoders.configure
 loadComponent("RPERA_GripperControl","ARM::GripperControl")
 addPeer("Supervisor","RPERA_GripperControl")
 setActivity("RPERA_GripperControl",TS,HighestPriority,ORO_SCHED_RT)
-RPERA_GripperControl.threshold_closed 		= 9.0
-RPERA_GripperControl.max_pos 				= 5.3
+RPERA_GripperControl.threshold_closed 		= 19.0
+RPERA_GripperControl.max_pos 				= 7.0
 RPERA_GripperControl.min_pos 				= 0.0
 RPERA_GripperControl.gripper_vel 			= 0.5
 RPERA_GripperControl.gripper_acc 			= 0.25
@@ -183,7 +183,7 @@ RPERA_Homing.partNr 						= BODYNUMBER
 RPERA_Homing.prefix 						= "RPERA"
 RPERA_Homing.homing_type					= ints 		(3, 	3,	 	2, 		2,	 	2, 		2,	 	2, 		4 	)
 RPERA_Homing.require_homing					= ints 		(1, 	1,	 	1, 		1,	 	1, 		1,	 	1, 		1	)
-RPERA_Homing.homing_direction				= ints 		(1, 	-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
+RPERA_Homing.homing_direction				= ints 		(1,		-1,		-1,	 	-1, 	-1,	 	-1, 	-1,	 	-1 	)
 RPERA_Homing.homing_velocity				= array 	(0.05,	0.05,	0.25,	0.25,	0.25,	0.2,	0.2,	0.4 )
 RPERA_Homing.homing_acceleration			= array 	(0.2, 	0.2, 	0.3, 	0.5,	0.5, 	0.5,	0.5,	0.5	)
 RPERA_Homing.homing_stroke					= HOMINGSTROKE
