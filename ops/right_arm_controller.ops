@@ -227,7 +227,7 @@ connect ("RPERA_JointToMotorSpace.out",				"RPERA_AnalogOuts.in1", 					ConnPoli
 connect ("RPERA_AnalogIns.stdvect_out_1",			"RPERA_SensorTorques.voltage_in", 			ConnPolicy() ); # TorqueSensor
 
 ## References ##
-connect ("LPERA_ReadEncoders.out",					"GlobalReferenceGenerator.current_pos4",	ConnPolicy() ); # Ref Pos
+connect ("RPERA_ReadEncoders.out",					"GlobalReferenceGenerator.current_pos4",	ConnPolicy() ); # Ref Pos
 connect ("GlobalReferenceGenerator.pos_out4",		"RPERA_Controller.ref_in1", 				ConnPolicy() ); # Ref Pos
 
 ## Gripper control ##
