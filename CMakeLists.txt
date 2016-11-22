@@ -5,7 +5,6 @@ find_package(catkin REQUIRED COMPONENTS
   rtt_ros
   rtt_roscomm
   rtt_rosclock
-  rtt_rosdeployment
   rtt_rosnode
   rtt_ros_msgs
   std_msgs

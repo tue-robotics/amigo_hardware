@@ -10,7 +10,6 @@
   <build_depend>rtt</build_depend>
   <build_depend>rtt_ros</build_depend>
   <build_depend>rtt_roscomm</build_depend>
-  <build_depend>rtt_rosdeployment</build_depend>
   <build_depend>rtt_ros_msgs</build_depend>
   <build_depend>rtt_rosnode</build_depend>
   <build_depend>amigo_ref_interpolator</build_depend>
@@ -36,7 +35,6 @@
   <run_depend>rtt</run_depend>
   <run_depend>rtt_ros</run_depend>
   <run_depend>rtt_roscomm</run_depend>
-  <run_depend>rtt_rosdeployment</run_depend>
   <run_depend>rtt_ros_msgs</run_depend>
   <run_depend>rtt_rosnode</run_depend>
   <run_depend>amigo_ref_interpolator</run_depend>
