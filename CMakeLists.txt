@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 include_directories(
 	include
+	SYSTEM
 	${catkin_INCLUDE_DIRS} 
 	${scl_filters_INCLUDE_DIRS} 
 	${USE_OROCOS_INCLUDE_DIRS})
