@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(amigo_hardware)
 
+add_compile_options(-Wall -Werror=all)
+add_compile_options(-Wextra -Werror=extra)
+
 find_package(catkin REQUIRED COMPONENTS
   rtt_ros
   rtt_roscomm
@@ -13,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 include_directories(
 	include
+	SYSTEM
 	${catkin_INCLUDE_DIRS} 
 	${scl_filters_INCLUDE_DIRS} 
 	${USE_OROCOS_INCLUDE_DIRS})
